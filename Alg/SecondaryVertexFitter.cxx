@@ -21,6 +21,14 @@ SecondaryVertexFitter::SecondaryVertexFitter(double Pull){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+void SecondaryVertexFitter::SetPull(double Pull){
+
+   fPull = Pull;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 SecondaryVertex SecondaryVertexFitter::MakeVertex(RecoParticle P1,RecoParticle P2){
 
    // Make an initial guess, point of closest approach of tracks

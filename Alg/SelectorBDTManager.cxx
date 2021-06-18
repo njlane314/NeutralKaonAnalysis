@@ -152,6 +152,7 @@ bool SelectorBDTManager::SetVariables(RecoParticle thisProtonCandidate, RecoPart
    v_proton_LLR = Limit(thisProtonCandidate.Track_LLR_PID,LLR_limits);
    v_pion_LLR = Limit(thisPionCandidate.Track_LLR_PID,LLR_limits);
 
+
    // Proton PID Cut
    if(v_pion_LLR < fPionPIDCut) return false;
 
@@ -175,7 +176,9 @@ void SelectorBDTManager::SetupSelectorBDT(std::string WeightsDir){
          std::cout << "No weights directory given, assuming default location" << std::endl;
          fWeightsDir = "/home/lar/cthorpe/uboone/HyperonSelection/TMVA/SelectorMVA/v1/dataset/weights";
       }
-   
+     else fWeightsDir = WeightsDir;  
+
+ 
    TMVA::Tools::Instance();
    reader = new TMVA::Reader( "!Color:!Silent" );
 
@@ -197,6 +200,9 @@ void SelectorBDTManager::SetupSelectorBDT(std::string WeightsDir){
       if (it->second) {
          TString methodName = TString(it->first) + TString(" method");
          TString weightfile = fWeightsDir + "/" + prefix + TString("_") + TString(it->first) + TString(".weights.xml");
+
+         std::cout << "Opening weight file " << weightfile << std::endl; 
+
          reader->BookMVA( methodName, weightfile );
       }
    }

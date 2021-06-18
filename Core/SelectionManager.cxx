@@ -36,7 +36,8 @@ SelectionManager::SelectionManager(SelectionParameters p) :
    // Set the selection parameters
    TheParams = p;
    DeclareCuts();
-
+   a_SelectorBDTManager.SetCuts(p.p_Proton_PID_Cut,p.p_Pion_PID_Cut,p.p_Separation_Cut);
+   a_AnalysisBDTManager.SetPull(p.p_VertexPull);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +190,21 @@ Cut SelectionManager::GetCut(std::string CutName){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+void SelectionManager::Reset(){
+
+   for(size_t i_c=0;i_c<Cuts.size();i_c++){
+
+      Cuts[i_c].Reset();
+
+   }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 void SelectionManager::ImportSelectorBDTWeights(std::string WeightDir){
+
+std::cout << "SelectionManager: Importing Selector BDT Weights from " << WeightDir << std::endl;
 
 a_SelectorBDTManager.SetupSelectorBDT(WeightDir);
 
@@ -198,6 +213,8 @@ a_SelectorBDTManager.SetupSelectorBDT(WeightDir);
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 void SelectionManager::ImportAnalysisBDTWeights(std::string WeightDir){
+
+std::cout << "SelectionManager: Importing Analysis BDT Weights from " << WeightDir << std::endl;
 
 a_AnalysisBDTManager.SetupAnalysisBDT(WeightDir);
 

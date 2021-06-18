@@ -6,16 +6,17 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 AnalysisBDTManager::AnalysisBDTManager() :
-Fitter()
+   Fitter()
 {
 
    fMode = "Test";
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 AnalysisBDTManager::AnalysisBDTManager(std::string Mode) :
-Fitter()
+   Fitter()
 {
 
    fMode = Mode;
@@ -90,18 +91,18 @@ void AnalysisBDTManager::FillTree(Event e){
 
    // Check in the right running mode first
    assert(fMode == "Train");
-  
+
    if(!SetVariables(e)) return;
- 
+
    if(e.GoodReco) t_Signal->Fill();
    else t_Background->Fill();
- 
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 bool AnalysisBDTManager::SetVariables(Event e){
-   
+
    SecondaryVertex V = Fitter.MakeVertex(e.DecayProtonCandidate,e.DecayPionCandidate);
 
    // Reject if fit failed
@@ -120,7 +121,7 @@ bool AnalysisBDTManager::SetVariables(Event e){
    v_lambda_angle = (180/3.142)*lambdadirection.Angle(gap_vector);
    v_lambda_V_crossing_dist = V.CrossingDist;
    v_weight = e.Weight;
-   
+
    return true;
 
 }
@@ -131,11 +132,12 @@ void AnalysisBDTManager::SetupAnalysisBDT(std::string WeightsDir){
 
    assert(fMode == "Test");
 
-      if(WeightsDir == ""){ 
-         std::cout << "No weights directory given, assuming default location" << std::endl;
-         fWeightsDir = "/home/lar/cthorpe/uboone/HyperonSelection/TMVA/AnalysisMVA/v1/dataset/weights";
-      }
-   
+   if(WeightsDir == ""){ 
+      std::cout << "No weights directory given, assuming default location" << std::endl;
+      fWeightsDir = "/home/lar/cthorpe/uboone/HyperonSelection/TMVA/AnalysisMVA/v1/dataset/weights";
+   }
+   else fWeightsDir = WeightsDir;  
+
    TMVA::Tools::Instance();
    reader = new TMVA::Reader( "!Color:!Silent" );
 
@@ -144,12 +146,12 @@ void AnalysisBDTManager::SetupAnalysisBDT(std::string WeightsDir){
    reader->AddVariable("BDT_Score",&v_bdt_score);
    reader->AddVariable("Lambda_Angle",&v_lambda_angle);
    reader->AddVariable("Lambda_V_Crossing_Dist",&v_lambda_V_crossing_dist);
-   
+
    std::map<std::string,int> Use;
    Use["BDT"] = 1;
    Use["BDTG"] = 1;
 
-  TString prefix = "TMVAClassification";
+   TString prefix = "TMVAClassification";
 
    for (std::map<std::string,int>::iterator it = Use.begin(); it != Use.end(); it++) {
       if (it->second) {
@@ -167,14 +169,20 @@ double AnalysisBDTManager::CalculateScore(Event &e){
 
    if(!SetVariables(e)) return -1.0;
 
-  double score = reader->EvaluateMVA("BDT method");
+   double score = reader->EvaluateMVA("BDT method");
 
-  e.AnalysisBDTScore = score;
+   e.AnalysisBDTScore = score;
 
- return score;
+   return score;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+void AnalysisBDTManager::SetPull(double Pull){
+
+   Fitter.SetPull(Pull);
+
+}
 
 #endif

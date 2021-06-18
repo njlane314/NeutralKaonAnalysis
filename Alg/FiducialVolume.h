@@ -7,7 +7,7 @@
 namespace FV {
 
 
-         enum FV_Versions{ kOldFV , kWholeTPC , kWirecell , kWholeTPCPadded , kWirecellPadded };
+   enum FV_Versions{ kOldFV , kWholeTPC , kWirecell , kWholeTPCPadded , kWirecellPadded };
 
    // Fiducial volume class //
 

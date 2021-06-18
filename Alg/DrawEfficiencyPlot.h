@@ -8,17 +8,7 @@
 
 #include <sstream>
 
-   template <typename T>
-std::string to_string_with_precision(const T a_value, const int n = 1)
-{
-   std::ostringstream out;
-   out.precision(n);
-   out << std::fixed << a_value;
-   return out.str();
-}
-
-
-void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,std::string title,std::string name,double SecondaryTrackLengthCut=-1.0,double TertiaryTrackLengthCut=-1.0){
+void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,std::string title,std::string name){
 
    TCanvas *c1 = new TCanvas("c1","c1",800,600);
 
@@ -57,7 +47,7 @@ void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,st
    p_plot->cd();
 
    Efficiency->SetConfidenceLevel(0.68);
-   Efficiency->SetStatisticOption(TEfficiency::kBUniform);
+   Efficiency->SetStatisticOption(TEfficiency::kFCP);
 
 
    // Find the highest bin of the   
@@ -113,7 +103,6 @@ void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,st
 
    g_Efficiency->Draw("P same");
 
-
    // Setup the legend
    c1->cd();
    p_legend->cd();
@@ -121,23 +110,6 @@ void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,st
 
    c1->cd();
    p_plot->cd();
-
-
-   if(SecondaryTrackLengthCut != -1.0 && TertiaryTrackLengthCut != -1.0){
-
-      TLegend *l_title = new TLegend(0.2,0.88,0.89,0.98);
-
-      std::string Title1 = "Secondary Track Length Cut = " + to_string_with_precision(SecondaryTrackLengthCut,0) + " cm";
-      std::string Title2 = "Tertiary Track Length Cut = " + to_string_with_precision(TertiaryTrackLengthCut,0) + " cm";
-
-      l_title->SetHeader((Title1 + " , " + Title2).c_str(),"C");
-
-      l_title->SetBorderSize(0);
-      l_title->SetMargin(0.000);
-
-      l_title->Draw();
-
-   }
 
    c1->Print(("Plots/" + name + "_Ratio.pdf").c_str());
    c1->Print(("Plots/" + name + "_Ratio.png").c_str());

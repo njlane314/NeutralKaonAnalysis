@@ -12,6 +12,5 @@ setup uboonecode v08_30_02 -q e17:prof
 
 export HYP_TOP=$PWD/
 
-export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$PWD/Core:$PWD/Alg
-#export DATA_DIR=$PWD/data/
-export DATA_DIR=/home/lar/cthorpe/uboone/hyperons/data/
+export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$PWD/Core:$PWD/Alg:$PWD/ParameterSets
+export DATA_DIR=$PWD/data/

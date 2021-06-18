@@ -31,9 +31,9 @@ if(P_v.size() < 2) return false;
 // Sort the tracks into descending order of length
 SortTracks(P_v);
 
-for(size_t i=0;i<P_v.size();i++) std::cout << P_v.at(i).TrackLength << "  ";
+//for(size_t i=0;i<P_v.size();i++) std::cout << P_v.at(i).TrackLength << "  ";
 
-std::cout << std::endl;
+//std::cout << std::endl;
 
 return P_v.at(P_v.size()-1).TrackLength < fSecondaryCut && P_v.at(P_v.size()-2).TrackLength < fTertiaryCut;
 

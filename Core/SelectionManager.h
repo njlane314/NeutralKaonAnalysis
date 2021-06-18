@@ -92,6 +92,7 @@ class SelectionManager {
    public:
 
       Cut GetCut(std::string CutName);
+      void Reset();
 
       // Cut Functions //
 

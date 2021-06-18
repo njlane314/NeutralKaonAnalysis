@@ -29,6 +29,8 @@ class AnalysisBDTManager {
       void WriteTrainingTrees();    
 
       void SetupAnalysisBDT(std::string WeightsDir="");
+  
+      void SetPull(double Pull);
 
    private:
 

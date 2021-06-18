@@ -48,6 +48,8 @@ class SecondaryVertexFitter {
 
       SecondaryVertex MakeVertex(RecoParticle P1,RecoParticle P2);
 
+      void SetPull(double Pull);
+
       //Draw();
       
    private:
