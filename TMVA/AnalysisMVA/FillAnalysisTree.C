@@ -8,39 +8,34 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
 #include "SelectionParameters.h"
 
 #include "Parameters.h"
+#include "SampleSets.h"
+
+   // Fills the trees for the analysis MVA training
 
    void FillAnalysisTree(std::string Mode){
 
-      EventAssembler E;
-
       BuildTunes();
 
-      // Set the parameters you want to use
-      SelectionParameters P = P_FHC_Tune_249;
+      // POT to scale samples to
+      double POT = 1.0e21;
 
-      double POT = 1e21; // POT to scale samples to
+      // Set the parameters you want to use
+      SelectionParameters P = P_FHC_Tune_325;
 
       SelectionManager M(P);
       M.SetPOT(POT);
       M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
 
-      std::vector<std::string> SampleNames,SampleTypes,SampleFiles;
+      EventAssembler E;
+
 
       if(Mode == "Signal"){
-         // Signal dataset
-         SampleNames = { "NuWro NoCosmic Hyperon" };
-         SampleTypes = { "Hyperon" };
-         SampleFiles = { "analysisOutputFHC_NuWro_Lambda_NoCosmic_cthorpe_prod_numi_uboone_nocosmic_Lambda_nuwro_reco2_reco2.root"};
+         ImportSamples(sNuWroNoCosmicFHC);
       }
       else if(Mode == "Background"){  
-         // Background dataset
-         SampleNames = { "NuWro Overlay Backgroud" , "NuWro Overlay Hyperon" , "GENIE Dirt" , "EXT" };
-         SampleTypes = { "Background" , "Hyperon" , "Dirt" , "EXT" };
-         SampleFiles = { "analysisOutputFHC_Overlay_NuWro_Background_kmistry_numi_run1_fhc_nuwro.root" , "analysisOutputFHC_Overlay_NuWro_Hyperon_prod_numi_uboone_overlay_fhc_mcc9_run1_v51_nuwro_hyperon_nuwro_reco2_reco2.root" , "analysisOutputFHC_Overlay_GENIE_Dirt_prodgenie_numi_uboone_overlay_dirt_fhc_mcc9_run1_v28_sample0.root" , "analysisOutput_EXT_cthorpe_numi_uboone_run1_beamoff_offset1_mcc9_reco2_v08_00_00_28_sample0_sample1_all.root" };
+         ImportSamples(sGENIEFullFHC_Train);
       }
       else { std::cout << "Select \"Signal\" or \"Background\" Modes" << std::endl; return; }
-
-      double EXT_Scale = 9.5961;
 
       // Setup Selector BDT Manager Object
       AnalysisBDTManager BDTManager("Train");
@@ -48,10 +43,11 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
 
       // Sample Loop
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
-
+        
          E.SetFile(SampleFiles.at(i_s));
-         if(SampleTypes.at(i_s) != "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
-         else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),POT/EXT_Scale);
+         if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
+         else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT);
+         else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),EXT_POT);
 
          // Event Loop
          for(int i=0;i<E.GetNEvents();i++){
@@ -77,8 +73,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
 
       BDTManager.WriteTrainingTrees();
 
-    if(Mode == "Signal") gSystem->Exec("mv AnalysisMVA/Trees.root AnalysisMVA/Trees_Signal.root");
-    else if(Mode == "Background") gSystem->Exec("mv AnalysisMVA/Trees.root AnalysisMVA/Trees_Background.root");
+      if(Mode == "Signal") gSystem->Exec("mv AnalysisMVA/Trees.root AnalysisMVA/Trees_Signal.root");
+      else if(Mode == "Background") gSystem->Exec("mv AnalysisMVA/Trees.root AnalysisMVA/Trees_Background.root");
 
 
    }

@@ -13,8 +13,6 @@
 
 void TrainAnalysisBDT(){
 
-   //get input trees
-
    TFile *f_Signal = TFile::Open("AnalysisMVA/Trees_Signal.root");
    TFile *f_Background = TFile::Open("AnalysisMVA/Trees_Background.root");
 
@@ -49,10 +47,10 @@ void TrainAnalysisBDT(){
    TMVA::DataLoader *dataloader=new TMVA::DataLoader("dataset");
 
    dataloader->AddVariable("W","W (Reco'd)","GeV",'F');
-   dataloader->AddVariable("Gap","Gap","cm",'F');
+   //dataloader->AddVariable("Gap","Gap","cm",'F');
    dataloader->AddVariable("BDT_Score","BDT Score",' ');
    dataloader->AddVariable("Lambda_Angle","Lambda Angle",' ');
-   dataloader->AddVariable("Lambda_V_Crossing_Dist","Lambda Crossing Dist",'F');
+   //dataloader->AddVariable("Lambda_V_Crossing_Dist","Lambda Crossing Dist",'F');
 
    dataloader->SetBackgroundWeightExpression( "Weight" );
 

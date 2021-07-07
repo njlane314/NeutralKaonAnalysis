@@ -10,7 +10,7 @@
          MuonID();
          MuonID(double PIDCut,double MinLength,double MaxSeparation);
 
-         bool SelectCandidate(std::vector<RecoParticle> P_v);
+         int SelectCandidate(std::vector<RecoParticle> P_v);
 
          void SetTune(double PIDCut,double MinLength,double MaxSeparation);
 

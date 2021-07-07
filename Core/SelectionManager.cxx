@@ -11,7 +11,8 @@ SelectionManager::SelectionManager() :
    a_MuonID(-0.35,18.0,0.0) ,
    a_TrackLengthCutManager(1000.0,1000.0) , 
    a_SelectorBDTManager("Test") ,
-   a_AnalysisBDTManager("Test") 
+   a_AnalysisBDTManager("Test") ,
+   a_EventListFilter()
 {
    DeclareCuts();
 }
@@ -31,7 +32,8 @@ SelectionManager::SelectionManager(SelectionParameters p) :
    a_MuonID(p.p_PID_Cut,p.p_Minimum_MIP_Length,p.p_Max_Displacement) ,
    a_TrackLengthCutManager(p.p_SecondaryTrackLengthCut,p.p_SecondaryTrackLengthCut) ,
    a_SelectorBDTManager("Test") , 
-   a_AnalysisBDTManager("Test")
+   a_AnalysisBDTManager("Test") ,
+   a_EventListFilter()
 {
    // Set the selection parameters
    TheParams = p;
@@ -50,7 +52,17 @@ void SelectionManager::SetPOT(double POT){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void SelectionManager::AddSample(std::string Name,std::string Type,double SamplePOT){
+void SelectionManager::SetBeamMode(std::string Mode){
+
+   assert(Mode == "FHC" || Mode == "RHC");
+
+   BeamMode = Mode;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void SelectionManager::AddSample(std::string Name,std::string Type,double SamplePOT,std::string EventList){
 
    std::cout << "Processing Sample " << Name << " of type " << Type << " and POT " << SamplePOT <<  std::endl;
 
@@ -62,11 +74,24 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
 
   if(Type == "Data") fHasData = true;
 
+  TString DataDir = getenv("DATA_DIR");         
+
+  TString file = DataDir + TString("/EventLists/") +  TString(EventList);  
+
+  if(EventList != "") a_EventListFilter.SetList(file); 
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 void SelectionManager::AddEvent(Event &e){
+
+/*
+    // Sample Orthogonality
+   if(((thisSampleType == "Background" || thisSampleType == "Hyperon") && e.NMCTruths > 1) ||
+         (thisSampleType == "Background" && e.Mode == "HYP") ||
+         (thisSampleType == "Hyperon" && e.Mode != "HYP")){ e.Weight = 0.0; return; }
+*/
 
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
@@ -79,6 +104,7 @@ void SelectionManager::AddEvent(Event &e){
 
    }
 
+
    if(thisSampleType != "Data") e.Weight *= thisSampleWeight;
 
    for(size_t i_c=0;i_c<Cuts.size();i_c++){
@@ -86,6 +112,10 @@ void SelectionManager::AddEvent(Event &e){
       Cuts[i_c].fTotalEvents += e.Weight;    
       if(e.IsSignal) Cuts[i_c].fSignalEvents += e.Weight;
       if(e.GoodReco) Cuts[i_c].fGoodRecoEvents += e.Weight;
+
+      Cuts[i_c].fTotalEventsVar += e.Weight*e.Weight;    
+      if(e.IsSignal) Cuts[i_c].fSignalEventsVar += e.Weight*e.Weight;
+      if(e.GoodReco) Cuts[i_c].fGoodRecoEventsVar += e.Weight*e.Weight;
 
    }
 
@@ -158,11 +188,19 @@ void SelectionManager::UpdateCut(Event e,bool Passed,std::string CutName){
          if(e.IsSignal) Cuts[i_c].fSignalEventsIn += e.Weight;
          if(e.GoodReco) Cuts[i_c].fGoodRecoEventsIn += e.Weight;
 
+         Cuts[i_c].fEventsInVar += e.Weight*e.Weight;
+         if(e.IsSignal) Cuts[i_c].fSignalEventsInVar += e.Weight*e.Weight;
+         if(e.GoodReco) Cuts[i_c].fGoodRecoEventsInVar += e.Weight*e.Weight;
+
          if(Passed){
 
             Cuts[i_c].fEventsOut += e.Weight;
             if(e.IsSignal) Cuts[i_c].fSignalEventsOut += e.Weight;
             if(e.GoodReco) Cuts[i_c].fGoodRecoEventsOut += e.Weight;
+
+            Cuts[i_c].fEventsOutVar += e.Weight*e.Weight;
+            if(e.IsSignal) Cuts[i_c].fSignalEventsOutVar += e.Weight*e.Weight;
+            if(e.GoodReco) Cuts[i_c].fGoodRecoEventsOutVar += e.Weight*e.Weight;
 
          }       
 
@@ -333,6 +371,18 @@ return passed;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+bool SelectionManager::EventListCut(Event e){
+
+bool passed = a_EventListFilter.EventPassed(e.run,e.subrun,e.event); 
+
+UpdateCut(e,passed,"Connectedness");
+
+return passed;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 void SelectionManager::SetupHistograms(int n,double low,double high,std::string title){
 
    fTitle = title;
@@ -459,8 +509,12 @@ void SelectionManager::DrawHistograms(std::string label,double Scale){
    l_POT->SetMargin(0.005);
 
 
-   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
-   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
+   //if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
+   //if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
+
+   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
+   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
+
 
    l->SetNColumns(3);
 
@@ -536,6 +590,7 @@ if(fHasData){
 
    hs_Type->Draw();
 
+   
 
    h_errors->Draw("E2");
    hs_Type->Draw("HIST same");
@@ -547,6 +602,15 @@ if(fHasData){
    l_POT->Draw();
    if(fHasData)   l_DataMCRatio->Draw();
    if(y_limit != -1){ hs_Type->SetMaximum(y_limit); gPad->Update(); }
+
+/*
+   std::vector<double> X = {2.5,2.5};
+   std::vector<double> Y = {0.0,100000};
+   TGraph *g = new TGraph(X.size(),&(X[0]),&(Y[0]));
+   g->Draw("L same");
+   g->SetLineWidth(4);
+   g->SetLineColor(2);
+*/
 
    c->cd();
 

@@ -105,4 +105,38 @@ std::string to_string_with_precision(const T a_value, const int n = 6)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+inline double PurityError(double Signal,double Background,double SignalError,double BackgroundError){
+
+//std::cout << "Signal = " << Signal << " +/- " << SignalError << std::endl;
+//std::cout << "Background = " << Background << " +/- " << BackgroundError << std::endl;
+
+
+double dPdS = Background/(Signal+Background)/(Signal+Background);
+double dPdB = Signal/(Signal+Background)/(Signal+Background);
+
+//std::cout << "dPdS = " << dPdS << std::endl;
+//std::cout << "dPdB = " << dPdB << std::endl;  
+
+return sqrt(SignalError*SignalError*dPdS*dPdS + BackgroundError*BackgroundError*dPdB*dPdB);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+inline double PurityError_Low(double Signal,double Background,double SignalError,double BackgroundError){
+
+return (Signal-SignalError)/(Signal-SignalError+Background+BackgroundError);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+inline double PurityError_High(double Signal,double Background,double SignalError,double BackgroundError){
+
+return (Signal+SignalError)/(Signal+SignalError+Background-BackgroundError);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 #endif

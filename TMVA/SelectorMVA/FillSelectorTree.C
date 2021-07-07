@@ -7,30 +7,24 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
 #include "Cut.h"
 #include "SelectionParameters.h"
 
-
 #include "Parameters.h"
+#include "SampleSets.h"
 
    void FillSelectorTree(){
 
       BuildTunes();
+      ImportSamples(sNuWroNoCosmic); 
 
       // POT to scale samples to
-      double POT = 1e21; 
+      double POT = 1.0e21; 
 
       // Set the parameters you want to use
-      SelectionParameters P = P_FHC_Tune_249;
+      SelectionParameters P = P_RHC_Tune_397;
 
       SelectionManager M(P);
       M.SetPOT(POT);
       EventAssembler E;
 
-     std::vector<std::string> SampleNames,SampleTypes,SampleFiles;
-
-     SampleNames = { "NuWro NoCosmic Hyperon" };
-     SampleTypes = { "Hyperon" };
-     SampleFiles = { "analysisOutputFHC_NuWro_Lambda_NoCosmic_cthorpe_prod_numi_uboone_nocosmic_Lambda_nuwro_reco2_reco2.root"};
-
-      double EXT_Scale = 9.5961;
 
      // Setup Selector BDT Manager Object
      SelectorBDTManager BDTManager("Train");
@@ -40,9 +34,10 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
       // Sample Loop
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
 
-         E.SetFile(SampleFiles.at(i_s));
-         if(SampleTypes.at(i_s) != "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
-         else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),POT/EXT_Scale);
+      E.SetFile(SampleFiles.at(i_s));
+      if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
+      else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT);
+      else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),EXT_POT);
 
          // Event Loop
          for(int i=0;i<E.GetNEvents();i++){
@@ -51,7 +46,6 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
 
             M.SetSignal(e);                
             M.AddEvent(e);
-
 
             if(!M.FiducialVolumeCut(e)) continue;
             if(!M.TrackCut(e)) continue;

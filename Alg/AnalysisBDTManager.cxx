@@ -94,7 +94,10 @@ void AnalysisBDTManager::FillTree(Event e){
 
    if(!SetVariables(e)) return;
 
-   if(e.GoodReco) t_Signal->Fill();
+
+//    if(e.IsSignal) t_Signal->Fill();
+   if(e.GoodReco && e.DecayProtonCandidate.TrackTruePDG == 2212 && e.DecayPionCandidate.TrackTruePDG == -211 &&  e.DecayProtonCandidate.TrackTrueOrigin == 2 && e.DecayPionCandidate.TrackTrueOrigin == 2 ) t_Signal->Fill();
+//   if(e.GoodReco) t_Signal->Fill();
    else t_Background->Fill();
 
 }
@@ -142,10 +145,10 @@ void AnalysisBDTManager::SetupAnalysisBDT(std::string WeightsDir){
    reader = new TMVA::Reader( "!Color:!Silent" );
 
    reader->AddVariable("W",&v_w);
-   reader->AddVariable("Gap",&v_gap);
+   //reader->AddVariable("Gap",&v_gap);
    reader->AddVariable("BDT_Score",&v_bdt_score);
    reader->AddVariable("Lambda_Angle",&v_lambda_angle);
-   reader->AddVariable("Lambda_V_Crossing_Dist",&v_lambda_V_crossing_dist);
+   //reader->AddVariable("Lambda_V_Crossing_Dist",&v_lambda_V_crossing_dist);
 
    std::map<std::string,int> Use;
    Use["BDT"] = 1;

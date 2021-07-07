@@ -11,7 +11,7 @@
 #include "TMVA/Reader.h"
 #include "TLegend.h"
 #include "TPad.h"
-
+#include "TGraph.h"
 
 // Local includes
 #include "FluxWeight.h"
@@ -27,6 +27,7 @@
 #include "SelectorBDTManager.h"
 #include "AnalysisBDTManager.h"
 #include "PlottingFunctions.h"
+#include "EventListFilter.h"
 
 class SelectionManager {
 
@@ -41,7 +42,7 @@ class SelectionManager {
       SelectionManager(SelectionParameters p);
 
       // Start processing a sample
-      void AddSample(std::string Name,std::string Type,double SamplePOT);
+      void AddSample(std::string Name,std::string Type,double SamplePOT,std::string EventList="");
 
       // Increment metadata
       void AddEvent(Event &e);  
@@ -52,6 +53,7 @@ class SelectionManager {
 
       // Beam Mode
       std::string BeamMode = "FHC"; 
+      void SetBeamMode(std::string Mode);
 
       void ImportSelectorBDTWeights(std::string WeightDir="");
       void ImportAnalysisBDTWeights(std::string WeightDir="");
@@ -81,10 +83,10 @@ class SelectionManager {
       TrackLengthCutManager a_TrackLengthCutManager;
       SelectorBDTManager a_SelectorBDTManager;
       AnalysisBDTManager a_AnalysisBDTManager;
-
+      EventListFilter a_EventListFilter;
 
       // Cut Data Management //
-      std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" };
+      std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" };
       void DeclareCuts();
       std::vector<Cut> Cuts;
       void UpdateCut(Event e,bool Passed,std::string CutName);
@@ -105,6 +107,7 @@ class SelectionManager {
       bool TrackLengthCut(Event e);
       bool ChooseProtonPionCandidates(Event &e);
       bool AnalysisBDTCut(Event &e);
+      bool EventListCut(Event e);
 
       // Histogram Functions //
 

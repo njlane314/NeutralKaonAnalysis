@@ -35,7 +35,7 @@ void MuonID::SetTune(double PIDCut,double MinLength,double MaxSeparation){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-bool MuonID::SelectCandidate(std::vector<RecoParticle> P_v){
+int MuonID::SelectCandidate(std::vector<RecoParticle> P_v){
 
    int i_longest=-1;
    int length=-1;
@@ -53,6 +53,7 @@ bool MuonID::SelectCandidate(std::vector<RecoParticle> P_v){
       }
 
    }
+
 
    // Return -1 if no candidate was found
    return i_longest;
