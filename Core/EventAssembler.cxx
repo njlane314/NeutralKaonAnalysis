@@ -229,7 +229,7 @@ void EventAssembler::SetFile(std::string infilename){
    t_in->SetBranchStatus("TracklikePrimaryDaughters.TrackTrueKE",1);
    t_in->SetBranchStatus("TracklikePrimaryDaughters.TrackTrueLength",1);
    t_in->SetBranchStatus("TracklikePrimaryDaughters.TrackTrueOrigin",1);
-   t_in->SetBranchStatus("TracklikePrimaryDaughters.TrackTrueTotalEdep",1);
+   //t_in->SetBranchStatus("TracklikePrimaryDaughters.TrackTrueTotalEdep",1);
    t_in->SetBranchStatus("TracklikePrimaryDaughters.TrackEdepPurity",1);
    t_in->SetBranchStatus("ShowerlikePrimaryDaughters",1);
    t_in->SetBranchStatus("ShowerlikePrimaryDaughters.Index",1);
@@ -269,7 +269,7 @@ void EventAssembler::SetFile(std::string infilename){
    t_in->SetBranchStatus("ShowerlikePrimaryDaughters.TrackTrueKE",1);
    t_in->SetBranchStatus("ShowerlikePrimaryDaughters.TrackTrueLength",1);
    t_in->SetBranchStatus("ShowerlikePrimaryDaughters.TrackTrueOrigin",1);
-   t_in->SetBranchStatus("ShowerlikePrimaryDaughters.TrackTrueTotalEdep",1);
+   //t_in->SetBranchStatus("ShowerlikePrimaryDaughters.TrackTrueTotalEdep",1);
    t_in->SetBranchStatus("ShowerlikePrimaryDaughters.TrackEdepPurity",1);
    t_in->SetBranchStatus("MuonIndex",1);
    t_in->SetBranchStatus("TrueMuonIndex",1);
@@ -504,7 +504,7 @@ void EventAssembler::SetFile(std::string infilename){
    t_in->SetBranchAddress("TracklikePrimaryDaughters.TrackTrueKE", TracklikePrimaryDaughters_TrackTrueKE);
    t_in->SetBranchAddress("TracklikePrimaryDaughters.TrackTrueLength", TracklikePrimaryDaughters_TrackTrueLength);
    t_in->SetBranchAddress("TracklikePrimaryDaughters.TrackTrueOrigin", TracklikePrimaryDaughters_TrackTrueOrigin);
-   t_in->SetBranchAddress("TracklikePrimaryDaughters.TrackTrueTotalEdep", TracklikePrimaryDaughters_TrackTrueTotalEdep);
+   //t_in->SetBranchAddress("TracklikePrimaryDaughters.TrackTrueTotalEdep", TracklikePrimaryDaughters_TrackTrueTotalEdep);
    t_in->SetBranchAddress("TracklikePrimaryDaughters.TrackEdepPurity", TracklikePrimaryDaughters_TrackEdepPurity);
    t_in->SetBranchAddress("ShowerlikePrimaryDaughters", &ShowerlikePrimaryDaughters_);
    t_in->SetBranchAddress("ShowerlikePrimaryDaughters.Index", ShowerlikePrimaryDaughters_Index);
@@ -544,7 +544,7 @@ void EventAssembler::SetFile(std::string infilename){
    t_in->SetBranchAddress("ShowerlikePrimaryDaughters.TrackTrueKE", ShowerlikePrimaryDaughters_TrackTrueKE);
    t_in->SetBranchAddress("ShowerlikePrimaryDaughters.TrackTrueLength", ShowerlikePrimaryDaughters_TrackTrueLength);
    t_in->SetBranchAddress("ShowerlikePrimaryDaughters.TrackTrueOrigin", ShowerlikePrimaryDaughters_TrackTrueOrigin);
-   t_in->SetBranchAddress("ShowerlikePrimaryDaughters.TrackTrueTotalEdep", ShowerlikePrimaryDaughters_TrackTrueTotalEdep);
+  // t_in->SetBranchAddress("ShowerlikePrimaryDaughters.TrackTrueTotalEdep", ShowerlikePrimaryDaughters_TrackTrueTotalEdep);
    t_in->SetBranchAddress("ShowerlikePrimaryDaughters.TrackEdepPurity", ShowerlikePrimaryDaughters_TrackEdepPurity);
    t_in->SetBranchAddress("MuonIndex", &MuonIndex);
    t_in->SetBranchAddress("TrueMuonIndex", &TrueMuonIndex);
@@ -781,7 +781,7 @@ Event EventAssembler::GetEvent(int i){
       TracklikePrimaryDaughters[j].TrackTrueKE = TracklikePrimaryDaughters_TrackTrueKE[j];
       TracklikePrimaryDaughters[j].TrackTrueLength = TracklikePrimaryDaughters_TrackTrueLength[j];
       TracklikePrimaryDaughters[j].TrackTrueOrigin = TracklikePrimaryDaughters_TrackTrueOrigin[j];
-      TracklikePrimaryDaughters[j].TrackTrueTotalEdep = TracklikePrimaryDaughters_TrackTrueTotalEdep[j];
+      //TracklikePrimaryDaughters[j].TrackTrueTotalEdep = TracklikePrimaryDaughters_TrackTrueTotalEdep[j];
 
 
    }
@@ -835,7 +835,7 @@ Event EventAssembler::GetEvent(int i){
       ShowerlikePrimaryDaughters[j].TrackTrueKE = ShowerlikePrimaryDaughters_TrackTrueKE[j];
       ShowerlikePrimaryDaughters[j].TrackTrueLength = ShowerlikePrimaryDaughters_TrackTrueLength[j];
       ShowerlikePrimaryDaughters[j].TrackTrueOrigin = ShowerlikePrimaryDaughters_TrackTrueOrigin[j];
-      ShowerlikePrimaryDaughters[j].TrackTrueTotalEdep = ShowerlikePrimaryDaughters_TrackTrueTotalEdep[j];
+      //ShowerlikePrimaryDaughters[j].TrackTrueTotalEdep = ShowerlikePrimaryDaughters_TrackTrueTotalEdep[j];
 
 
    }

@@ -9,6 +9,7 @@
 #include "RecoParticle.h"
 
 using std::vector;
+using std::string;
 
 struct Event {
 
@@ -19,7 +20,7 @@ struct Event {
 	Int_t           event;
 	Int_t           fileID;
 
-	//event type information
+	//event type information      
 
 	bool GoodReco;
 	bool IsSignal;
@@ -40,7 +41,11 @@ struct Event {
 	std::vector<SimParticle> Hyperon;
 	std::vector<SimParticle> PrimaryNucleon;
 	std::vector<SimParticle> PrimaryPion;
+	std::vector<SimParticle> PrimaryKaon;
 	std::vector<SimParticle> Decay;
+	std::vector<SimParticle> SigmaZeroDecayLambda;
+	std::vector<SimParticle> SigmaZeroDecayPhoton;
+	std::vector<SimParticle> KaonDecay;
 
 	TVector3 TruePrimaryVertex;
 	TVector3 DecayVertex;

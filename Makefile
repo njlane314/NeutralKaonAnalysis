@@ -7,8 +7,15 @@ INC=-I${HYP_TOP}/Core  -I${HYP_TOP}/Alg
 all: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight.o Muon_ID.o\
 	TrackLengthCutManager.o SelectorBDTManager.o AnalysisBDTManager.o\
 	EventListFilter.o ForwardFolder.o ForwardFolder2.o GenG4WeightHandler.o\
-	SecondaryVertexFitter.o SelectionManager.o EventAssembler.o\
-	libHyperon.so) 
+	SecondaryVertexFitter.o SelectionManager.o EventAssembler.o EventAssembler2.o  libParticleDict.rootmap\
+	libParticleDict.so libHyperon.so) 
+
+
+lib/libParticleDict.rootmap: Core/LinkDef.h
+	rootcling -v4 -f ${HYP_TOP}/lib/ParticleDict.cxx  -rmf ${HYP_TOP}/lib/libParticleDict.rootmap -rml ${HYP_TOP}/lib/libParticleDict.so  ${HYP_TOP}/Core/LinkDef.h
+
+lib/libParticleDict.so: lib/libParticleDict.rootmap	
+	g++ -shared -fPIC -I${HYP_TOP}/Core -o ${HYP_TOP}/lib/libParticleDict.so ${HYP_TOP}/lib/ParticleDict.cxx `root-config --cflags --libs`
 
 %.o: %.cxx
 	g++ $(CFLAGS) -c $(INC)  $< -o $@
@@ -56,6 +63,9 @@ lib/EventAssembler.o: Core/EventAssembler.cxx
 	g++ $(CFLAGS) -c $(INC)  $< -o $@	
 	
 
+lib/EventAssembler2.o: Core/EventAssembler2.cxx
+	g++ $(CFLAGS) -c $(INC)  $< -o $@	
+
 	
-lib/libHyperon.so: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight.o Muon_ID.o TrackLengthCutManager.o SelectorBDTManager.o SecondaryVertexFitter.o EventListFilter.o ForwardFolder.o ForwardFolder2.o GenG4WeightHandler.o EventAssembler.o SelectionManager.o)
-	g++ -shared `${ROOTSYS}/bin/root-config --libs` lib/FiducialVolume.o lib/FluxWeight.o lib/Muon_ID.o lib/TrackLengthCutManager.o lib/SelectorBDTManager.o lib/SecondaryVertexFitter.o lib/AnalysisBDTManager.o lib/EventListFilter.o lib/ForwardFolder.o lib/ForwardFolder2.o lib/CTTest.o lib/GenG4WeightHandler.o lib/EventAssembler.o  lib/SelectionManager.o -o lib/libHyperon.so
+lib/libHyperon.so: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight.o Muon_ID.o TrackLengthCutManager.o SelectorBDTManager.o SecondaryVertexFitter.o EventListFilter.o ForwardFolder.o ForwardFolder2.o GenG4WeightHandler.o EventAssembler.o EventAssembler2.o SelectionManager.o)
+	g++ -shared `${ROOTSYS}/bin/root-config --libs` lib/FiducialVolume.o lib/FluxWeight.o lib/Muon_ID.o lib/TrackLengthCutManager.o lib/SelectorBDTManager.o lib/SecondaryVertexFitter.o lib/AnalysisBDTManager.o lib/EventListFilter.o lib/ForwardFolder.o lib/ForwardFolder2.o lib/CTTest.o lib/GenG4WeightHandler.o lib/EventAssembler.o  lib/EventAssembler2.o lib/SelectionManager.o -o lib/libHyperon.so

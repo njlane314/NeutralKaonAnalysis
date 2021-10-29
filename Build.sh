@@ -54,13 +54,16 @@ g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC -I$HYP_TOP/Alg -I$HYP_TOP/Cor
 echo "Building EventAssembler"
 g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC -I$HYP_TOP/Alg -I$HYP_TOP/Core $HYP_TOP/Core/EventAssembler.cxx  -o $HYP_TOP/lib/EventAssembler.o
 
-echo -e "${BLUE}${bold}Linking Core${NC}"
-g++ -shared `${ROOTSYS}/bin/root-config --libs` $HYP_TOP/lib/EventAssembler.o  $HYP_TOP/lib/SelectionManager.o -o $HYP_TOP/lib/libCore.so
+echo "Building EventAssembler2"
+g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC -I$HYP_TOP/Alg -I$HYP_TOP/Core $HYP_TOP/Core/EventAssembler2.cxx  -o $HYP_TOP/lib/EventAssembler2.o
 
-#echo -e "${BLUE}${bold}Building Dictionary${NC}"
-#rootcling -v4 -f ${HYP_TOP}/lib/particledict.cxx  -rmf ${HYP_TOP}/lib/libparticledict.rootmap -rml ${HYP_TOP}/lib/libparticledict.so  ${HYP_TOP}/Core/LinkDef.h
-#g++ -shared -fPIC -I$HYP_TOP/Core -o ${HYP_TOP}/lib/libmydict.so ${HYP_TOP}/lib/particledict.cxx `root-config --cflags --libs`
+#echo -e "${BLUE}${bold}Linking Core${NC}"
+#g++ -shared `${ROOTSYS}/bin/root-config --libs` $HYP_TOP/lib/EventAssembler.o  $HYP_TOP/lib/SelectionManager.o -o $HYP_TOP/lib/libCore.so
 
-g++ -shared `${ROOTSYS}/bin/root-config --libs` $HYP_TOP/lib/FiducialVolume.o $HYP_TOP/lib/FluxWeight.o $HYP_TOP/lib/Muon_ID.o $HYP_TOP/lib/TrackLengthCutManager.o $HYP_TOP/lib/SelectorBDTManager.o $HYP_TOP/lib/SecondaryVertexFitter.o $HYP_TOP/lib/AnalysisBDTManager.o $HYP_TOP/lib/EventListFilter.o $HYP_TOP/lib/ForwardFolder.o $HYP_TOP/lib/ForwardFolder2.o $HYP_TOP/lib/CTTest.o $HYP_TOP/lib/EventAssembler.o  $HYP_TOP/lib/SelectionManager.o $HYP_TOP/lib/GenG4WeightHandler.o  -o $HYP_TOP/lib/libHyperon.so
+echo -e "${BLUE}${bold}Building Dictionary${NC}"
+rootcling -v4 -f ${HYP_TOP}/lib/ParticleDict.cxx  -rmf ${HYP_TOP}/lib/libParticleDict.rootmap -rml ${HYP_TOP}/lib/libParticleDict.so  ${HYP_TOP}/Core/LinkDef.h
+g++ -shared -fPIC -I$HYP_TOP/Core -o ${HYP_TOP}/lib/libParticleDict.so ${HYP_TOP}/lib/ParticleDict.cxx `root-config --cflags --libs`
+
+g++ -shared `${ROOTSYS}/bin/root-config --libs` $HYP_TOP/lib/FiducialVolume.o $HYP_TOP/lib/FluxWeight.o $HYP_TOP/lib/Muon_ID.o $HYP_TOP/lib/TrackLengthCutManager.o $HYP_TOP/lib/SelectorBDTManager.o $HYP_TOP/lib/SecondaryVertexFitter.o $HYP_TOP/lib/AnalysisBDTManager.o $HYP_TOP/lib/EventListFilter.o $HYP_TOP/lib/ForwardFolder.o $HYP_TOP/lib/ForwardFolder2.o $HYP_TOP/lib/CTTest.o $HYP_TOP/lib/EventAssembler.o $HYP_TOP/lib/EventAssembler2.o  $HYP_TOP/lib/SelectionManager.o $HYP_TOP/lib/GenG4WeightHandler.o  -o $HYP_TOP/lib/libHyperon.so
 
 echo "Done!"
