@@ -1,5 +1,4 @@
-R__LOAD_LIBRARY($HYP_TOP/lib/libAlg.so)
-R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
+R__LOAD_LIBRARY($HYP_TOP/lib/libHyperon.so)
 
 #include "SelectionManager.h"
 #include "EventAssembler.h"
@@ -19,7 +18,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
       double POT = 1.0e21; 
 
       // Set the parameters you want to use
-      SelectionParameters P = P_RHC_Tune_397;
+      SelectionParameters P = P_FHC_Tune_325;
 
       SelectionManager M(P);
       M.SetPOT(POT);

@@ -12,9 +12,12 @@
 #include "TLegend.h"
 #include "TPad.h"
 #include "TGraph.h"
+#include <TROOT.h>
+#include <TStyle.h>
 
 // Local includes
 #include "FluxWeight.h"
+#include "GenG4WeightHandler.h"
 #include "FiducialVolume.h"
 #include "Muon_ID.h"
 #include "TrackLengthCutManager.h"
@@ -28,9 +31,11 @@
 #include "AnalysisBDTManager.h"
 #include "PlottingFunctions.h"
 #include "EventListFilter.h"
+#include "CTTest.h"
+
+enum Generators {kGENIE,kNuWro};
 
 class SelectionManager {
-
 
    // General variables/functions //
 
@@ -73,9 +78,11 @@ class SelectionManager {
       double thisSampleWeight;
       std::string thisSampleName;
       std::string thisSampleType;
+      int thisSampleGenerator;
 
-      // Flux weight calculator
-      FluxWeight::FluxWeighter a_FluxWeightCalc;
+      // Flux and Generator/G4 weight calculators
+      FluxWeighter a_FluxWeightCalc;
+      GenG4WeightHandler a_GenG4WeightCalc;
 
       // Selection Algs
       FV::FiducialVolume a_FiducialVolume;
@@ -84,6 +91,9 @@ class SelectionManager {
       SelectorBDTManager a_SelectorBDTManager;
       AnalysisBDTManager a_AnalysisBDTManager;
       EventListFilter a_EventListFilter;
+      CTTest a_CTTest_Plane0;
+      CTTest a_CTTest_Plane1;
+      CTTest a_CTTest_Plane2;
 
       // Cut Data Management //
       std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" };
@@ -105,9 +115,10 @@ class SelectionManager {
       bool ShowerCut(Event e);
       bool ChooseMuonCandidate(Event &e);
       bool TrackLengthCut(Event e);
-      bool ChooseProtonPionCandidates(Event &e);
+      bool ChooseProtonPionCandidates(Event &e, bool cheat=false);
       bool AnalysisBDTCut(Event &e);
       bool EventListCut(Event e);
+      bool ConnectednessTest(Event e);
 
       // Histogram Functions //
 
@@ -126,7 +137,7 @@ class SelectionManager {
 
       void SetupHistograms(int n=20,double low=0.0,double high=1.0,std::string title="");
       void FillHistograms(Event e,double variable,double weight=1.0);
-      void DrawHistograms(std::string label="Hists",double Scale=1.0);
+      void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
 
 };
 

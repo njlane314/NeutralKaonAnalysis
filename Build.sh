@@ -11,7 +11,7 @@ echo "Building FiducialVolume"
 g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC $HYP_TOP/Alg/FiducialVolume.cxx  -o $HYP_TOP/lib/FiducialVolume.o
 
 echo "Building FluxWeight"
-g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC $HYP_TOP/Alg/FluxWeight.cxx  -o $HYP_TOP/lib/FluxWeight.o
+g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC -I$HYP_TOP/Core $HYP_TOP/Alg/FluxWeight.cxx  -o $HYP_TOP/lib/FluxWeight.o
 
 echo "Building Muon_ID"
 g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC -I$HYP_TOP/Core $HYP_TOP/Alg/Muon_ID.cxx  -o $HYP_TOP/lib/Muon_ID.o
@@ -31,9 +31,20 @@ g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC -I$HYP_TOP/Core $HYP_TOP/Alg/
 echo "Building EventListFilter"
 g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC $HYP_TOP/Alg/EventListFilter.cxx  -o $HYP_TOP/lib/EventListFilter.o
 
+echo "Building ForwardFolder"
+g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC $HYP_TOP/Alg/ForwardFolder.cxx  -o $HYP_TOP/lib/ForwardFolder.o
 
-echo -e "${BLUE}${bold}Linking Algs${NC}"
-g++ -shared `${ROOTSYS}/bin/root-config --libs` $HYP_TOP/lib/FiducialVolume.o $HYP_TOP/lib/FluxWeight.o $HYP_TOP/lib/Muon_ID.o $HYP_TOP/lib/TrackLengthCutManager.o $HYP_TOP/lib/SelectorBDTManager.o $HYP_TOP/lib/SecondaryVertexFitter.o $HYP_TOP/lib/AnalysisBDTManager.o $HYP_TOP/lib/EventListFilter.o -o $HYP_TOP/lib/libAlg.so 
+echo "Building ForwardFolder2"
+g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC $HYP_TOP/Alg/ForwardFolder2.cxx  -o $HYP_TOP/lib/ForwardFolder2.o
+
+echo "Building CTTest"
+g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC $HYP_TOP/Alg/CTTest.cxx  -o $HYP_TOP/lib/CTTest.o
+
+echo "Building GenG4WeightHandler"
+g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC -I$HYP_TOP/Core $HYP_TOP/Alg/GenG4WeightHandler.cxx  -o $HYP_TOP/lib/GenG4WeightHandler.o
+
+#echo -e "${BLUE}${bold}Linking Algs${NC}"
+#g++ -shared `${ROOTSYS}/bin/root-config --libs` $HYP_TOP/lib/FiducialVolume.o $HYP_TOP/lib/FluxWeight.o $HYP_TOP/lib/Muon_ID.o $HYP_TOP/lib/TrackLengthCutManager.o $HYP_TOP/lib/SelectorBDTManager.o $HYP_TOP/lib/SecondaryVertexFitter.o $HYP_TOP/lib/AnalysisBDTManager.o $HYP_TOP/lib/EventListFilter.o $HYP_TOP/lib/ForwardFolder.o $HYP_TOP/lib/ForwardFolder2.o $HYP_TOP/lib/CTTest.o  -o $HYP_TOP/lib/libAlg.so 
 
 echo -e "${BLUE}${bold}Building Core${NC}"
 
@@ -45,5 +56,11 @@ g++ `${ROOTSYS}/bin/root-config --cflags` -c -fPIC -I$HYP_TOP/Alg -I$HYP_TOP/Cor
 
 echo -e "${BLUE}${bold}Linking Core${NC}"
 g++ -shared `${ROOTSYS}/bin/root-config --libs` $HYP_TOP/lib/EventAssembler.o  $HYP_TOP/lib/SelectionManager.o -o $HYP_TOP/lib/libCore.so
+
+#echo -e "${BLUE}${bold}Building Dictionary${NC}"
+#rootcling -v4 -f ${HYP_TOP}/lib/particledict.cxx  -rmf ${HYP_TOP}/lib/libparticledict.rootmap -rml ${HYP_TOP}/lib/libparticledict.so  ${HYP_TOP}/Core/LinkDef.h
+#g++ -shared -fPIC -I$HYP_TOP/Core -o ${HYP_TOP}/lib/libmydict.so ${HYP_TOP}/lib/particledict.cxx `root-config --cflags --libs`
+
+g++ -shared `${ROOTSYS}/bin/root-config --libs` $HYP_TOP/lib/FiducialVolume.o $HYP_TOP/lib/FluxWeight.o $HYP_TOP/lib/Muon_ID.o $HYP_TOP/lib/TrackLengthCutManager.o $HYP_TOP/lib/SelectorBDTManager.o $HYP_TOP/lib/SecondaryVertexFitter.o $HYP_TOP/lib/AnalysisBDTManager.o $HYP_TOP/lib/EventListFilter.o $HYP_TOP/lib/ForwardFolder.o $HYP_TOP/lib/ForwardFolder2.o $HYP_TOP/lib/CTTest.o $HYP_TOP/lib/EventAssembler.o  $HYP_TOP/lib/SelectionManager.o $HYP_TOP/lib/GenG4WeightHandler.o  -o $HYP_TOP/lib/libHyperon.so
 
 echo "Done!"

@@ -7,12 +7,16 @@
 
 SelectionManager::SelectionManager() : 
    a_FluxWeightCalc(0) ,
+   a_GenG4WeightCalc() ,
    a_FiducialVolume(1,0.0) ,
    a_MuonID(-0.35,18.0,0.0) ,
    a_TrackLengthCutManager(1000.0,1000.0) , 
    a_SelectorBDTManager("Test") ,
    a_AnalysisBDTManager("Test") ,
-   a_EventListFilter()
+   a_EventListFilter() ,
+   a_CTTest_Plane0(0) ,
+   a_CTTest_Plane1(1) ,
+   a_CTTest_Plane2(2) 
 {
    DeclareCuts();
 }
@@ -28,12 +32,16 @@ SelectionManager::~SelectionManager(){
 
 SelectionManager::SelectionManager(SelectionParameters p) :
    a_FluxWeightCalc(p.p_RunPeriod) ,
+   a_GenG4WeightCalc() ,
    a_FiducialVolume(p.p_FV,p.p_Padding) ,
    a_MuonID(p.p_PID_Cut,p.p_Minimum_MIP_Length,p.p_Max_Displacement) ,
    a_TrackLengthCutManager(p.p_SecondaryTrackLengthCut,p.p_SecondaryTrackLengthCut) ,
    a_SelectorBDTManager("Test") , 
    a_AnalysisBDTManager("Test") ,
-   a_EventListFilter()
+   a_EventListFilter() ,
+   a_CTTest_Plane0(0) ,
+   a_CTTest_Plane1(1) ,
+   a_CTTest_Plane2(2) 
 {
    // Set the selection parameters
    TheParams = p;
@@ -72,13 +80,19 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
    thisSampleName = Name;
    thisSampleType = Type;
 
-  if(Type == "Data") fHasData = true;
+   if(thisSampleType != "Data" && thisSampleType != "EXT"){
+      if (thisSampleName.find("GENIE") != std::string::npos) thisSampleGenerator = kGENIE;
+      else if (thisSampleName.find("NuWro") != std::string::npos) thisSampleGenerator = kNuWro;      
+      else thisSampleGenerator = -1;
+   }
 
-  TString DataDir = getenv("DATA_DIR");         
+   if(Type == "Data") fHasData = true;
 
-  TString file = DataDir + TString("/EventLists/") +  TString(EventList);  
+   TString DataDir = getenv("DATA_DIR");         
 
-  if(EventList != "") a_EventListFilter.SetList(file); 
+   TString file = DataDir + TString("/EventLists/") +  TString(EventList);  
+
+   if(EventList != "") a_EventListFilter.SetList(file); 
 
 }
 
@@ -86,22 +100,20 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
 
 void SelectionManager::AddEvent(Event &e){
 
-/*
-    // Sample Orthogonality
+
+   // Sample Orthogonality
    if(((thisSampleType == "Background" || thisSampleType == "Hyperon") && e.NMCTruths > 1) ||
          (thisSampleType == "Background" && e.Mode == "HYP") ||
          (thisSampleType == "Hyperon" && e.Mode != "HYP")){ e.Weight = 0.0; return; }
-*/
+
 
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
 
-      double nu_e = e.Neutrino.at(0).E;
-      double nu_angle = GetNuMIAngle(e.Neutrino.at(0).Px,e.Neutrino.at(0).Py,e.Neutrino.at(0).Pz);
-      int nu_pdg = e.Neutrino.at(0).PDG;
-
-      e.Weight *= a_FluxWeightCalc.GetFluxWeight(nu_e,nu_angle,nu_pdg);
-
+      e.Weight *= a_FluxWeightCalc.GetFluxWeight(e);
+        
+      a_GenG4WeightCalc.LoadEvent(e);
+      e.Weight *= a_GenG4WeightCalc.GetCVWeight();
    }
 
 
@@ -131,7 +143,10 @@ void SelectionManager::SetSignal(Event &e){
    e.InActiveTPC = a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex);
 
    if( e.Mode == "HYP" && e.IsLambdaCharged && e.InActiveTPC && e.Neutrino.size() == 1 && e.Neutrino.at(0).PDG == -14 ){
+
       e.IsSignal = true;
+
+      
 
       // Search the list of reco'd tracks for the proton and pion
       bool found_proton=false,found_pion=false;
@@ -152,14 +167,10 @@ void SelectionManager::SetSignal(Event &e){
    //get Lambda decay products
    for(size_t i_d=0;i_d<e.Decay.size();i_d++){
 
-      //cut on proton momentum
       if( e.Decay.at(i_d).PDG == 2212 && e.Decay.at(i_d).ModMomentum < 0.3 ) { e.IsSignal = false; e.GoodReco = false; return; }
-
       if( e.Decay.at(i_d).PDG == -211 && e.Decay.at(i_d).ModMomentum < 0.1 ) { e.IsSignal = false; e.GoodReco = false; return; }
 
    }
-
-
 
 }
 
@@ -242,9 +253,9 @@ void SelectionManager::Reset(){
 
 void SelectionManager::ImportSelectorBDTWeights(std::string WeightDir){
 
-std::cout << "SelectionManager: Importing Selector BDT Weights from " << WeightDir << std::endl;
+   std::cout << "SelectionManager: Importing Selector BDT Weights from " << WeightDir << std::endl;
 
-a_SelectorBDTManager.SetupSelectorBDT(WeightDir);
+   a_SelectorBDTManager.SetupSelectorBDT(WeightDir);
 
 }
 
@@ -252,9 +263,9 @@ a_SelectorBDTManager.SetupSelectorBDT(WeightDir);
 
 void SelectionManager::ImportAnalysisBDTWeights(std::string WeightDir){
 
-std::cout << "SelectionManager: Importing Analysis BDT Weights from " << WeightDir << std::endl;
+   std::cout << "SelectionManager: Importing Analysis BDT Weights from " << WeightDir << std::endl;
 
-a_AnalysisBDTManager.SetupAnalysisBDT(WeightDir);
+   a_AnalysisBDTManager.SetupAnalysisBDT(WeightDir);
 
 }
 
@@ -262,11 +273,11 @@ a_AnalysisBDTManager.SetupAnalysisBDT(WeightDir);
 
 bool SelectionManager::FiducialVolumeCut(Event e){
 
-bool passed = a_FiducialVolume.InFiducialVolume(e.RecoPrimaryVertex);
+   bool passed = a_FiducialVolume.InFiducialVolume(e.RecoPrimaryVertex);
 
-UpdateCut(e,passed,"FV");
+   UpdateCut(e,passed,"FV");
 
-return passed;
+   return passed;
 
 }
 
@@ -274,11 +285,11 @@ return passed;
 
 bool SelectionManager::TrackCut(Event e){
 
-bool passed = e.NPrimaryTrackDaughters > 2; 
+   bool passed = e.NPrimaryTrackDaughters > 2; 
 
-UpdateCut(e,passed,"Tracks");
+   UpdateCut(e,passed,"Tracks");
 
-return passed;
+   return passed;
 
 }
 
@@ -286,11 +297,11 @@ return passed;
 
 bool SelectionManager::ShowerCut(Event e){
 
-bool passed = e.NPrimaryShowerDaughters < 1; 
+   bool passed = e.NPrimaryShowerDaughters < 1; 
 
-UpdateCut(e,passed,"Showers");
+   UpdateCut(e,passed,"Showers");
 
-return passed;
+   return passed;
 
 }
 
@@ -298,20 +309,20 @@ return passed;
 
 bool SelectionManager::ChooseMuonCandidate(Event &e){
 
-int i_muon = a_MuonID.SelectCandidate(e.TracklikePrimaryDaughters);
+   int i_muon = a_MuonID.SelectCandidate(e.TracklikePrimaryDaughters);
 
-if(i_muon == -1){
- UpdateCut(e,false,"MuonID");
- return false;
-}
+   if(i_muon == -1){
+      UpdateCut(e,false,"MuonID");
+      return false;
+   }
 
-RecoParticle theMuonCandidate = e.TracklikePrimaryDaughters.at(i_muon);
-e.MuonCandidate = theMuonCandidate;
-e.TracklikePrimaryDaughters.erase(e.TracklikePrimaryDaughters.begin()+i_muon);
- 
-UpdateCut(e,true,"MuonID");
+   RecoParticle theMuonCandidate = e.TracklikePrimaryDaughters.at(i_muon);
+   e.MuonCandidate = theMuonCandidate;
+   e.TracklikePrimaryDaughters.erase(e.TracklikePrimaryDaughters.begin()+i_muon);
 
-return true;
+   UpdateCut(e,true,"MuonID");
+
+   return true;
 
 }
 
@@ -319,19 +330,22 @@ return true;
 
 bool SelectionManager::TrackLengthCut(Event e){
 
-bool passed = a_TrackLengthCutManager.ApplyCut(e.TracklikePrimaryDaughters);
+   bool passed = a_TrackLengthCutManager.ApplyCut(e.TracklikePrimaryDaughters);
 
-UpdateCut(e,passed,"SubleadingTracks");
+   UpdateCut(e,passed,"SubleadingTracks");
 
-return passed;
+   return passed;
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-bool SelectionManager::ChooseProtonPionCandidates(Event &e){
+bool SelectionManager::ChooseProtonPionCandidates(Event &e,bool cheat){
 
-   std::pair<int,int> candidates = a_SelectorBDTManager.NominateTracks(e);
+   std::pair<int,int> candidates;
+
+   if(cheat) candidates = a_SelectorBDTManager.NominateTracksCheat(e);
+   else candidates = a_SelectorBDTManager.NominateTracks(e);
 
    bool passed = candidates.first != -1 && candidates.second != -1;
 
@@ -351,7 +365,7 @@ bool SelectionManager::ChooseProtonPionCandidates(Event &e){
 
    e.TracklikePrimaryDaughters = TracklikePrimaryDaughters_tmp;
 
-   
+
    UpdateCut(e,passed,"DecaySelector");
    return true;
 
@@ -361,11 +375,11 @@ bool SelectionManager::ChooseProtonPionCandidates(Event &e){
 
 bool SelectionManager::AnalysisBDTCut(Event &e){
 
-bool passed = a_AnalysisBDTManager.CalculateScore(e) > TheParams.p_AnalysisBDT_Cut; 
+   bool passed = a_AnalysisBDTManager.CalculateScore(e) > TheParams.p_AnalysisBDT_Cut; 
 
-UpdateCut(e,passed,"DecayAnalysis");
+   UpdateCut(e,passed,"DecayAnalysis");
 
-return passed;
+   return passed;
 
 }
 
@@ -373,11 +387,33 @@ return passed;
 
 bool SelectionManager::EventListCut(Event e){
 
-bool passed = a_EventListFilter.EventPassed(e.run,e.subrun,e.event); 
+   bool passed = a_EventListFilter.EventPassed(e.run,e.subrun,e.event); 
 
-UpdateCut(e,passed,"Connectedness");
+   UpdateCut(e,passed,"Connectedness");
 
-return passed;
+   return passed;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+bool SelectionManager::ConnectednessTest(Event e){
+
+   int muon_index = e.MuonCandidate.Index;
+   int proton_index = e.DecayProtonCandidate.Index;
+   int pion_index = e.DecayPionCandidate.Index;
+
+   a_CTTest_Plane0.LoadInfo(*e.ConnSeedIndexes_Plane0,*e.ConnOutputIndexes_Plane0,*e.ConnOutputSizes_Plane0,*e.ConnSeedChannels_Plane0);
+   a_CTTest_Plane1.LoadInfo(*e.ConnSeedIndexes_Plane1,*e.ConnOutputIndexes_Plane1,*e.ConnOutputSizes_Plane1,*e.ConnSeedChannels_Plane1);
+   a_CTTest_Plane2.LoadInfo(*e.ConnSeedIndexes_Plane2,*e.ConnOutputIndexes_Plane2,*e.ConnOutputSizes_Plane2,*e.ConnSeedChannels_Plane2);
+
+           bool passed = a_CTTest_Plane0.DoTest(muon_index,proton_index,pion_index) 
+                      || a_CTTest_Plane1.DoTest(muon_index,proton_index,pion_index) 
+                      || a_CTTest_Plane2.DoTest(muon_index,proton_index,pion_index);
+
+   UpdateCut(e,passed,"Connectedness");
+
+   return passed;
 
 }
 
@@ -446,7 +482,7 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void SelectionManager::DrawHistograms(std::string label,double Scale){
+void SelectionManager::DrawHistograms(std::string label,double Scale,double SignalScale){
 
    double y_limit = -1;
 
@@ -469,26 +505,11 @@ void SelectionManager::DrawHistograms(std::string label,double Scale){
 
    }
 
+   Hists_ByProc["Signal"]->Scale(SignalScale);
+   Hists_ByType["Signal"]->Scale(SignalScale);
 
 
-//   if(y_limit != -1) gStyle->SetHistTopMargin(0);
-
-/*
-   //write histograms to file
-   TFile *f_Hists = TFile::Open("rootfiles/Hists.root","RECREATE");
-
-   for(size_t i_proc=0;i_proc<Procs.size();i_proc++){
-
-      //scale according to POT
-      if(Procs.at(i_proc) == "Signal" || Procs.at(i_proc) == "OtherHYP") Hists_ByProc[Procs.at(i_proc)]->Scale(HyperonScale);
-      Hists_ByProc[Procs.at(i_proc)]->Write();
-
-   }
-
-
-   f_Hists->Close();
-*/
-
+   if(y_limit != -1) gStyle->SetHistTopMargin(0);
 
    TCanvas *c = new TCanvas("c","c",800,600);
 
@@ -504,16 +525,32 @@ void SelectionManager::DrawHistograms(std::string label,double Scale){
    TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
    l->SetBorderSize(0);
 
-   TLegend *l_POT = new TLegend(0.55,0.905,0.89,0.985);
+   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
+   l_Watermark->SetBorderSize(0);
+   l_Watermark->SetMargin(0.005);
+   l_Watermark->SetTextAlign(32);
+
+   l_Watermark->SetTextFont(62);
+
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+
+   TLegend *l_POT = new TLegend(0.55,0.820,0.89,0.900);
    l_POT->SetBorderSize(0);
    l_POT->SetMargin(0.005);
+   l_POT->SetTextAlign(32);
+
+   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
+   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
+
+   //if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
+   //if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
 
 
-   //if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
-   //if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
-
-   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
-   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
+   TLegend *l_Scale = new TLegend(0.65,0.745,0.89,0.805);
+   l_Scale->SetHeader(("Signal #times " + to_string_with_precision(SignalScale,0)).c_str());
+   l_Scale->SetBorderSize(0);
+   l_Scale->SetMargin(0.005);
+   l_Scale->SetTextAlign(32);
 
 
    l->SetNColumns(3);
@@ -523,26 +560,32 @@ void SelectionManager::DrawHistograms(std::string label,double Scale){
    h_errors->SetFillStyle(3253);
    h_errors->SetFillColor(1);
 
+   h_errors->GetXaxis()->SetTitleSize(0.05);
+   h_errors->GetYaxis()->SetTitleSize(0.05);
+
+   h_errors->GetXaxis()->SetTitleOffset(0.9);
+   h_errors->GetYaxis()->SetTitleOffset(0.9);
+
+   h_errors->GetXaxis()->SetLabelSize(0.045);
+   h_errors->GetYaxis()->SetLabelSize(0.045);
+
+
    // Draw histograms by event category
 
    // Signal first
    Hists_ByType["Signal"]->SetFillColor(8);
-   //Hists_ByType["Signal"]->SetLineWidth(0.5);
-   //Hists_ByType["Signal"]->SetLineColor(1);
    hs_Type->Add(Hists_ByType["Signal"],"HIST");
    if(fHasData) l->AddEntry(Hists_ByType["Signal"],("Signal = "+ to_string_with_precision(Hists_ByType["Signal"]->Integral(),1)).c_str(),"F");
+   else if(SignalScale != 1.0) l->AddEntry(Hists_ByType["Signal"],("Signal #times " + to_string_with_precision(SignalScale,0)).c_str() ,"F");
    else l->AddEntry(Hists_ByType["Signal"],"Signal","F");
 
+
    Hists_ByType["OtherHYP"]->SetFillColor(46);
-   //Hists_ByType["OtherHYP"]->SetLineWidth(0.5);
-   //Hists_ByType["OtherHYP"]->SetLineColor(1);
    hs_Type->Add(Hists_ByType["OtherHYP"],"HIST");
    if(fHasData) l->AddEntry(Hists_ByType["OtherHYP"],("Other HYP = "+ to_string_with_precision(Hists_ByType["OtherHYP"]->Integral(),1)).c_str(),"F");
    else l->AddEntry(Hists_ByType["OtherHYP"],"Other Hyperon","F");
 
    Hists_ByType["OtherNu"]->SetFillColor(38);
-   //Hists_ByType["OtherNu"]->SetLineWidth(0.5);
-   //Hists_ByType["OtherNu"]->SetLineColor(1);
    hs_Type->Add(Hists_ByType["OtherNu"],"HIST");
    if(fHasData) l->AddEntry(Hists_ByType["OtherNu"],("Other #nu = "+ to_string_with_precision(Hists_ByType["OtherNu"]->Integral(),1)).c_str(),"F");
    else l->AddEntry(Hists_ByType["OtherNu"],"Other #nu","F");
@@ -553,21 +596,19 @@ void SelectionManager::DrawHistograms(std::string label,double Scale){
    else l->AddEntry(Hists_ByType["Dirt"],"Dirt","F");
 
    Hists_ByType["EXT"]->SetFillColor(15);
-   //Hists_ByType["Signal"]->SetLineWidth(0.5);
-   //Hists_ByType["Signal"]->SetLineColor(1);
    hs_Type->Add(Hists_ByType["EXT"],"HIST");
    if(fHasData) l->AddEntry(Hists_ByType["EXT"],("EXT = "+ to_string_with_precision(Hists_ByType["EXT"]->Integral(),1)).c_str(),"F");
    else l->AddEntry(Hists_ByType["EXT"],"EXT","F");
 
-if(fHasData){
+   if(fHasData){
 
-   Hists_ByType["Data"]->SetLineWidth(1);
-   Hists_ByType["Data"]->SetLineColor(1);
-   Hists_ByType["Data"]->SetMarkerStyle(20);
-   Hists_ByType["Data"]->SetMarkerColor(1);
-   l->AddEntry(Hists_ByType["Data"],("Data = "+ to_string_with_precision(Hists_ByType["Data"]->Integral(),1)).c_str(),"P");
+      Hists_ByType["Data"]->SetLineWidth(1);
+      Hists_ByType["Data"]->SetLineColor(1);
+      Hists_ByType["Data"]->SetMarkerStyle(20);
+      Hists_ByType["Data"]->SetMarkerColor(1);
+      l->AddEntry(Hists_ByType["Data"],("Data = "+ to_string_with_precision(Hists_ByType["Data"]->Integral(),1)).c_str(),"P");
 
-}
+   }
 
    TLegend *l_DataMCRatio = new TLegend(0.12,0.905,0.46,0.985);
    l_DataMCRatio->SetBorderSize(0);
@@ -575,12 +616,11 @@ if(fHasData){
 
    double Data = Hists_ByType["Data"]->Integral();
    double MC = Hists_ByType["Signal"]->Integral() + Hists_ByType["OtherHYP"]->Integral() + Hists_ByType["OtherNu"]->Integral() + Hists_ByType["Dirt"]->Integral() + Hists_ByType["EXT"]->Integral();
- 
+
 
    l_DataMCRatio->SetHeader(("Data/MC = " + to_string_with_precision(Data/MC,2)).c_str());
 
-   // Find the highest bin off the error hist
-  
+
    p_legend->Draw();
    p_legend->cd();
    l->Draw();
@@ -590,7 +630,6 @@ if(fHasData){
 
    hs_Type->Draw();
 
-   
 
    h_errors->Draw("E2");
    hs_Type->Draw("HIST same");
@@ -600,17 +639,11 @@ if(fHasData){
    if(fHasData)   Hists_ByType["Data"]->Draw("E0 P0 same");
 
    l_POT->Draw();
+   l_Watermark->Draw();
+   //if(SignalScale != 1.0) l_Scale->Draw();
    if(fHasData)   l_DataMCRatio->Draw();
-   if(y_limit != -1){ hs_Type->SetMaximum(y_limit); gPad->Update(); }
+   if(y_limit != -1){ h_errors->SetMaximum(y_limit); gPad->Update(); }
 
-/*
-   std::vector<double> X = {2.5,2.5};
-   std::vector<double> Y = {0.0,100000};
-   TGraph *g = new TGraph(X.size(),&(X[0]),&(Y[0]));
-   g->Draw("L same");
-   g->SetLineWidth(4);
-   g->SetLineColor(2);
-*/
 
    c->cd();
 
@@ -618,23 +651,21 @@ if(fHasData){
    c->Print(("Plots/" + label + "_By_Type.pdf").c_str());
    c->Print(("Plots/" + label + "_By_Type.C").c_str());
 
-  c->Clear();
+   c->Clear();
 
    if(fHasData) {
 
-        std::cout << std::endl << "Performing Chi2 test" << std::endl;
-        double p = Hists_ByType["Data"]->Chi2Test(h_errors,"UWP");
-        std::cout << "Chi2 test p value = " << p << std::endl << std::endl;
+      double p = Hists_ByType["Data"]->Chi2Test(h_errors,"UWP");
 
       TH1D * DataMCRatioPlot = MakeRatioPlot(Hists_ByType,h_errors);
-        
+
       DataMCRatioPlot->Draw("E0 P0");
       //c->Print("Plots/Hists_By_Type_Ratio.pdf");
 
       c->Clear();
       c->SetCanvasSize(800,750);
 
-       // Setup split canvas
+      // Setup split canvas
       TPad *p_plot2 = new TPad("p_plot2","p_plot2",0,0.25,1,0.9);
       TPad *p_legend2 = new TPad("p_plot2","p_plot2",0,0.9,1,1);
       TPad *p_ratio = new TPad("p_ratio","p_ratio",0,0.0,1,0.25);
@@ -642,56 +673,56 @@ if(fHasData){
       p_legend2->SetTopMargin(0.1);
       p_ratio->SetTopMargin(0.01);
       p_plot2->SetTopMargin(0.01);
-   // p_plot2->SetBottomMargin(0.01);
+      // p_plot2->SetBottomMargin(0.01);
 
-        p_ratio->SetGrid(0,1);
-        
-        p_plot2->Draw();
-        p_plot2->cd();
-        h_errors->Draw("E2");
-        hs_Type->Draw("HIST same");
-        h_errors->Draw("E2 same");
-        h_errors->GetYaxis()->SetRangeUser(0.0,std::max(GetHistMax(h_errors),GetHistMax(Hists_ByType["Data"]))*1.20);
-        h_errors->SetStats(0);
-        Hists_ByType["Data"]->Draw("E0 P0 same");
+      p_ratio->SetGrid(0,1);
 
-             l_POT->Draw();
-        l_DataMCRatio->Draw();
-        if(y_limit != -1){ hs_Type->SetMaximum(y_limit); gPad->Update(); }
-     
-        c->cd();
-        p_legend2->Draw();
-        p_legend2->cd();
-                
-        l->Draw(); 
+      p_plot2->Draw();
+      p_plot2->cd();
+      h_errors->Draw("E2");
+      hs_Type->Draw("HIST same");
+      h_errors->Draw("E2 same");
+      h_errors->GetYaxis()->SetRangeUser(0.0,std::max(GetHistMax(h_errors),GetHistMax(Hists_ByType["Data"]))*1.20);
+      h_errors->SetStats(0);
+      Hists_ByType["Data"]->Draw("E0 P0 same");
 
-        c->cd();
-        
-        p_ratio->Draw();
-        p_ratio->cd();
-        DataMCRatioPlot->Draw("E0 P0");
-        DataMCRatioPlot->SetStats(0);
+      l_POT->Draw();
+      l_Watermark->Draw();
+      l_DataMCRatio->Draw();
 
-        DataMCRatioPlot->GetYaxis()->SetTitle("Data/MC");
-        DataMCRatioPlot->GetYaxis()->SetTitleSize(0.08);
-        DataMCRatioPlot->GetYaxis()->SetTitleOffset(0.45);
-        DataMCRatioPlot->GetXaxis()->SetLabelSize(0.09);
-        DataMCRatioPlot->GetYaxis()->SetLabelSize(0.09);
+      if(y_limit != -1){ h_errors->SetMaximum(y_limit); gPad->Update(); }
 
-        c->cd();
-        c->Print(("Plots/" + label + "_By_Type_Combined.png").c_str());
-        c->Print(("Plots/" + label + "_By_Type_Combined.pdf").c_str());
-        c->Print(("Plots/" + label + "_By_Type_Combined.C").c_str());
-        c->Clear();    
-    
+      c->cd();
+      p_legend2->Draw();
+      p_legend2->cd();
+
+      l->Draw(); 
+
+      c->cd();
+
+      p_ratio->Draw();
+      p_ratio->cd();
+      DataMCRatioPlot->Draw("E0 P0");
+      DataMCRatioPlot->SetStats(0);
+
+      DataMCRatioPlot->GetYaxis()->SetTitle("Data/MC");
+      DataMCRatioPlot->GetYaxis()->SetTitleSize(0.08);
+      DataMCRatioPlot->GetYaxis()->SetTitleOffset(0.45);
+      DataMCRatioPlot->GetXaxis()->SetLabelSize(0.09);
+      DataMCRatioPlot->GetYaxis()->SetLabelSize(0.09);
+
+      c->cd();
+      c->Print(("Plots/" + label + "_By_Type_Combined.png").c_str());
+      c->Print(("Plots/" + label + "_By_Type_Combined.pdf").c_str());
+      c->Print(("Plots/" + label + "_By_Type_Combined.C").c_str());
+      c->Clear();    
+
    }
 
 
-  // Split neutrino backgrounds by channel
+   // Split neutrino backgrounds by channel
 
-  std::cout << "Drawing Proc Hist" << std::endl;
-
-  c->SetCanvasSize(800,600);
+   c->SetCanvasSize(800,600);
    TPad *p_plot3 = new TPad("p_plot3","p_plot3",0,0,1,0.85);
    TPad *p_legend3 = new TPad("p_legend3","p_legend3",0,0.85,1,1);
 
@@ -699,80 +730,72 @@ if(fHasData){
    p_legend3->SetTopMargin(0.1);
    p_plot3->SetTopMargin(0.01);
 
-  THStack *hs_Proc = new THStack("hs_Proc",fTitle.c_str());
+   THStack *hs_Proc = new THStack("hs_Proc",fTitle.c_str());
 
-  l->Clear();
-  l->SetNColumns(7);
+   l->Clear();
+   l->SetNColumns(7);
 
-  // reuse the error hist (errors on predicton should be the same) 
+   // reuse the error hist (errors on predicton should be the same) 
 
-  // Draw histograms by event category
+   // Draw histograms by event category
 
-  // Signal first
-  Hists_ByProc["Signal"]->SetFillColor(8);
-  //Hists_ByProc["Signal"]->SetLineWidth(0.5);
-  //Hists_ByProc["Signal"]->SetLineColor(1);
-  hs_Proc->Add(Hists_ByProc["Signal"],"HIST");
-  if(fHasData) l->AddEntry(Hists_ByProc["Signal"],("Signal = "+ to_string_with_precision(Hists_ByProc["Signal"]->Integral(),1)).c_str(),"F");
-  else l->AddEntry(Hists_ByProc["Signal"],"Signal","F");
+   // Signal first
+   Hists_ByProc["Signal"]->SetFillColor(8);
+   hs_Proc->Add(Hists_ByProc["Signal"],"HIST");
+   if(fHasData) l->AddEntry(Hists_ByProc["Signal"],("Signal = "+ to_string_with_precision(Hists_ByProc["Signal"]->Integral(),1)).c_str(),"F");
+   else l->AddEntry(Hists_ByProc["Signal"],"Signal","F");
 
-  Hists_ByProc["OtherHYP"]->SetFillColor(46);
-  //Hists_ByProc["OtherHYP"]->SetLineWidth(0.5);
-  //Hists_ByProc["OtherHYP"]->SetLineColor(1);
-  hs_Proc->Add(Hists_ByProc["OtherHYP"],"HIST");
- if(fHasData) l->AddEntry(Hists_ByProc["OtherHYP"],("Other HYP = "+ to_string_with_precision(Hists_ByProc["OtherHYP"]->Integral(),1)).c_str(),"F");
- else l->AddEntry(Hists_ByProc["OtherHYP"],"Other Hyperon","F");
+   Hists_ByProc["OtherHYP"]->SetFillColor(46);
+   hs_Proc->Add(Hists_ByProc["OtherHYP"],"HIST");
+   if(fHasData) l->AddEntry(Hists_ByProc["OtherHYP"],("Other HYP = "+ to_string_with_precision(Hists_ByProc["OtherHYP"]->Integral(),1)).c_str(),"F");
+   else l->AddEntry(Hists_ByProc["OtherHYP"],"Other Hyperon","F");
 
-  // Add the remaining channels
+   // Add the remaining channels
 
-  int i_color=2;
+   int i_color=2;
 
-  for(size_t i_proc=0;i_proc<Procs.size();i_proc++){
+   for(size_t i_proc=0;i_proc<Procs.size();i_proc++){
 
-     std::string thisProc = Procs.at(i_proc);
+      std::string thisProc = Procs.at(i_proc);
 
-     if(thisProc == "Signal" || thisProc == "OtherHYP" || thisProc == "Dirt" || thisProc == "EXT" || thisProc == "Data") continue;
+      if(thisProc == "Signal" || thisProc == "OtherHYP" || thisProc == "Dirt" || thisProc == "EXT" || thisProc == "Data") continue;
 
-     Hists_ByProc[thisProc]->SetFillColor(i_color);
-     Hists_ByProc[thisProc]->SetFillStyle(3104);
-     
-     hs_Proc->Add(Hists_ByProc[thisProc],"HIST");
-     if(fHasData) l->AddEntry(Hists_ByProc[thisProc],(thisProc + " = " + to_string_with_precision(Hists_ByProc[thisProc]->Integral(),1)).c_str(),"F");
-     else  l->AddEntry(Hists_ByProc[thisProc],thisProc.c_str(),"F");   
+      Hists_ByProc[thisProc]->SetFillColor(i_color);
+      Hists_ByProc[thisProc]->SetFillStyle(3104);
 
-     i_color++;
+      hs_Proc->Add(Hists_ByProc[thisProc],"HIST");
+      if(fHasData) l->AddEntry(Hists_ByProc[thisProc],(thisProc + " = " + to_string_with_precision(Hists_ByProc[thisProc]->Integral(),1)).c_str(),"F");
+      else  l->AddEntry(Hists_ByProc[thisProc],thisProc.c_str(),"F");   
 
-     if(i_color == 10) i_color++;
+      i_color++;
 
-  }
+      if(i_color == 10) i_color++;
+
+   }
 
 
-Hists_ByProc["Dirt"]->SetFillColor(30);
-hs_Proc->Add(Hists_ByProc["Dirt"],"HIST");
-if(fHasData) l->AddEntry(Hists_ByProc["Dirt"],("Dirt = "+ to_string_with_precision(Hists_ByProc["Dirt"]->Integral(),1)).c_str(),"F");
-else l->AddEntry(Hists_ByProc["Dirt"],"Dirt","F");
+   Hists_ByProc["Dirt"]->SetFillColor(30);
+   hs_Proc->Add(Hists_ByProc["Dirt"],"HIST");
+   if(fHasData) l->AddEntry(Hists_ByProc["Dirt"],("Dirt = "+ to_string_with_precision(Hists_ByProc["Dirt"]->Integral(),1)).c_str(),"F");
+   else l->AddEntry(Hists_ByProc["Dirt"],"Dirt","F");
 
 
-Hists_ByProc["EXT"]->SetFillColor(15);
-//Hists_ByProc["Signal"]->SetLineWidth(0.5);
-//Hists_ByProc["Signal"]->SetLineColor(1);
-hs_Proc->Add(Hists_ByProc["EXT"],"HIST");
-if(fHasData) l->AddEntry(Hists_ByProc["EXT"],("EXT = "+ to_string_with_precision(Hists_ByProc["EXT"]->Integral(),1)).c_str(),"F");
-else l->AddEntry(Hists_ByProc["EXT"],"EXT","F");
+   Hists_ByProc["EXT"]->SetFillColor(15);
+   hs_Proc->Add(Hists_ByProc["EXT"],"HIST");
+   if(fHasData) l->AddEntry(Hists_ByProc["EXT"],("EXT = "+ to_string_with_precision(Hists_ByProc["EXT"]->Integral(),1)).c_str(),"F");
+   else l->AddEntry(Hists_ByProc["EXT"],"EXT","F");
 
 
-if(fHasData){
+   if(fHasData){
 
-   Hists_ByProc["Data"]->SetLineWidth(1);
-   Hists_ByProc["Data"]->SetLineColor(1);
-   Hists_ByProc["Data"]->SetMarkerStyle(20);
-   Hists_ByProc["Data"]->SetMarkerColor(1);
-   l->AddEntry(Hists_ByProc["Data"],("Data = "+ to_string_with_precision(Hists_ByProc["Data"]->Integral(),1)).c_str(),"P");
+      Hists_ByProc["Data"]->SetLineWidth(1);
+      Hists_ByProc["Data"]->SetLineColor(1);
+      Hists_ByProc["Data"]->SetMarkerStyle(20);
+      Hists_ByProc["Data"]->SetMarkerColor(1);
+      l->AddEntry(Hists_ByProc["Data"],("Data = "+ to_string_with_precision(Hists_ByProc["Data"]->Integral(),1)).c_str(),"P");
 
-}
+   }
 
-
-std::cout << "Hists set up" << std::endl;
 
    p_legend3->Draw();
    p_legend3->cd();
@@ -792,8 +815,10 @@ std::cout << "Hists set up" << std::endl;
    if(fHasData)   Hists_ByProc["Data"]->Draw("E0 P0 same");
 
    l_POT->Draw();
+   l_Watermark->Draw();
+   if(SignalScale != 1.0) l_Scale->Draw();
    if(fHasData)   l_DataMCRatio->Draw();
-   if(y_limit != -1){ hs_Proc->SetMaximum(y_limit); gPad->Update(); }
+   if(y_limit != -1){ h_errors->SetMaximum(y_limit); gPad->Update(); }
 
    c->cd();
 
@@ -801,22 +826,22 @@ std::cout << "Hists set up" << std::endl;
    c->Print(("Plots/" + label + "_By_Proc.pdf").c_str());
    c->Print(("Plots/" + label + "_By_Proc.C").c_str());
 
-  c->Clear();
+   c->Clear();
 
    if(fHasData) {
 
-        std::cout << std::endl << "Performing Chi2 test" << std::endl;
+      std::cout << std::endl << "Performing Chi2 test" << std::endl;
 
-        double p = Hists_ByProc["Data"]->Chi2Test(h_errors,"UWP");
-   
-        std::cout << "Chi2 test p value = " << p << std::endl << std::endl;
+      double p = Hists_ByProc["Data"]->Chi2Test(h_errors,"UWP");
+
+      //std::cout << "Chi2 test p value = " << p << std::endl << std::endl;
 
       TH1D * DataMCRatioPlot2 = MakeRatioPlot(Hists_ByType,h_errors);
 
       c->Clear();
       c->SetCanvasSize(800,750);
 
-       // Setup split canvas
+      // Setup split canvas
       TPad *p_plot4 = new TPad("p_plot4","p_plot4",0,0.25,1,0.9);
       TPad *p_legend4 = new TPad("p_plot4","p_plot4",0,0.9,1,1);
       TPad *p_ratio2 = new TPad("p_ratio2","p_ratio2",0,0.0,1,0.25);
@@ -826,55 +851,50 @@ std::cout << "Hists set up" << std::endl;
       p_ratio2->SetTopMargin(0.01);
       p_plot4->SetTopMargin(0.01);
       p_ratio2->SetGrid(0,1);
-        
-        p_plot4->Draw();
-        p_plot4->cd();
-        h_errors->Draw("E2");
-        hs_Proc->Draw("HIST same");
-        h_errors->Draw("E2 same");
-        h_errors->GetYaxis()->SetRangeUser(0.0,std::max(GetHistMax(h_errors),GetHistMax(Hists_ByProc["Data"]))*1.20);
-        h_errors->SetStats(0);
-        Hists_ByProc["Data"]->Draw("E0 P0 same");
 
-        l_POT->Draw();
-        l_DataMCRatio->Draw();
-        if(y_limit != -1){ hs_Proc->SetMaximum(y_limit); gPad->Update(); }
-     
-        c->cd();
-        p_legend4->Draw();
-        p_legend4->cd();
-                
-        l->Draw(); 
+      p_plot4->Draw();
+      p_plot4->cd();
+      h_errors->Draw("E2");
+      hs_Proc->Draw("HIST same");
+      h_errors->Draw("E2 same");
+      h_errors->GetYaxis()->SetRangeUser(0.0,std::max(GetHistMax(h_errors),GetHistMax(Hists_ByProc["Data"]))*1.20);
+      h_errors->SetStats(0);
+      Hists_ByProc["Data"]->Draw("E0 P0 same");
 
-        c->cd();
-        
-        p_ratio2->Draw();
-        p_ratio2->cd();
-        DataMCRatioPlot2->Draw("E0 P0");
-        DataMCRatioPlot2->SetStats(0);
+      l_POT->Draw();
+      l_Watermark->Draw();
+      l_DataMCRatio->Draw();
+      if(y_limit != -1){ h_errors->SetMaximum(y_limit); gPad->Update(); }
 
-        DataMCRatioPlot2->GetYaxis()->SetTitle("Data/MC");
-        DataMCRatioPlot2->GetYaxis()->SetTitleSize(0.08);
-        DataMCRatioPlot2->GetYaxis()->SetTitleOffset(0.45);
-        DataMCRatioPlot2->GetXaxis()->SetLabelSize(0.09);
-        DataMCRatioPlot2->GetYaxis()->SetLabelSize(0.09);
+      c->cd();
+      p_legend4->Draw();
+      p_legend4->cd();
 
-        c->cd();
-        c->Print(("Plots/" + label + "_By_Proc_Combined.png").c_str());
-        c->Print(("Plots/" + label + "_By_Proc_Combined.pdf").c_str());
-        c->Print(("Plots/" + label + "_By_Proc_Combined.C").c_str());
-        c->Clear();    
-    
+      l->Draw(); 
+
+      c->cd();
+
+      p_ratio2->Draw();
+      p_ratio2->cd();
+      DataMCRatioPlot2->Draw("E0 P0");
+      DataMCRatioPlot2->SetStats(0);
+
+      DataMCRatioPlot2->GetYaxis()->SetTitle("Data/MC");
+      DataMCRatioPlot2->GetYaxis()->SetTitleSize(0.08);
+      DataMCRatioPlot2->GetYaxis()->SetTitleOffset(0.45);
+      DataMCRatioPlot2->GetXaxis()->SetLabelSize(0.09);
+      DataMCRatioPlot2->GetYaxis()->SetLabelSize(0.09);
+
+      c->cd();
+      c->Print(("Plots/" + label + "_By_Proc_Combined.png").c_str());
+      c->Print(("Plots/" + label + "_By_Proc_Combined.pdf").c_str());
+      c->Print(("Plots/" + label + "_By_Proc_Combined.C").c_str());
+      c->Clear();    
+
    }
 
 
-
-
-
-
-
-
-      c->Close();
+   c->Close();
 
 }
 

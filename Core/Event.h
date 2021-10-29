@@ -1,10 +1,14 @@
 #ifndef _Event_h_
 #define _Event_h_
 
+#include <vector>
+
 #include "TVector3.h"
 
 #include "SimParticle.h"
 #include "RecoParticle.h"
+
+using std::vector;
 
 struct Event {
 
@@ -62,33 +66,25 @@ struct Event {
 	Float_t SelectorBDTScore;
 	Float_t AnalysisBDTScore;
 
-/*
-	Double_t ProtonPionSep;	
-	
-	TLorentzVector RecoLambda4Momentum;
-	TLorentzVector RecoMuon4Momentum;
+        vector<vector<int> > *ConnSeedIndexes_Plane0=0;
+        vector<vector<int> > *ConnOutputIndexes_Plane0=0;
+        vector<vector<int> > *ConnOutputSizes_Plane0=0;
+        vector<vector<int> > *ConnSeedChannels_Plane0=0;
+        vector<vector<int> > *ConnSeedTicks_Plane0=0;
+        vector<vector<int> > *ConnSeedIndexes_Plane1=0;
+        vector<vector<int> > *ConnOutputIndexes_Plane1=0;
+        vector<vector<int> > *ConnOutputSizes_Plane1=0;
+        vector<vector<int> > *ConnSeedChannels_Plane1=0;
+        vector<vector<int> > *ConnSeedTicks_Plane1=0;
+        vector<vector<int> > *ConnSeedIndexes_Plane2=0;
+        vector<vector<int> > *ConnOutputIndexes_Plane2=0;
+        vector<vector<int> > *ConnOutputSizes_Plane2=0;
+        vector<vector<int> > *ConnSeedChannels_Plane2=0;
+        vector<vector<int> > *ConnSeedTicks_Plane2=0;
+    
+        std::vector<std::string> *SysDials=nullptr;
+        std::vector<std::vector<double>> *SysWeights=nullptr;
 
-	double Reco_W;
-	double Reco_Gap;
-	double Reco_Angle;	
-	double Reco_LambdaImpactParameter;	
-	double Reco_ProtonImpactParameter;	
-	double Reco_PionImpactParameter;
-	
-	double LambdaTransverseFraction;
-
-	Float_t Analysis_BDT_Score;
-
-//	Decay_V FittedV;
-        double FittedV_Quality;
-        double MuonProtonV_Quality;
-        double MuonPionV_Quality;
-
-
-        double FittedV_Quality_R;
-	TVector3 RecoDecayVertex;
-	TVector3 RecoGapVector;
-*/   
         void Print(){ std::cout << run << "  " << subrun << "  " << event << std::endl; }
 
 };

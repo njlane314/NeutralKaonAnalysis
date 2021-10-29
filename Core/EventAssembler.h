@@ -1,6 +1,8 @@
 #ifndef _EventAssembler_h_
 #define _EventAssembler_h_
 
+#include <vector>
+
 #include "TFile.h"
 #include "TTree.h"
 #include "TLorentzVector.h"
@@ -11,6 +13,8 @@
 #include "RecoParticle.h"
 
 #include "Event.h"
+
+using std::vector;
 
 class EventAssembler {
 
@@ -321,7 +325,23 @@ class EventAssembler {
 		Double_t        ShowerlikePrimaryDaughters_TrackEdepPurity[kMaxShowerlikePrimaryDaughters];   //[ShowerlikePrimaryDaughters_]
 		Int_t           MuonIndex;
 
-
+                vector<vector<int> > *ConnSeedIndexes_Plane0=0;
+                vector<vector<int> > *ConnOutputIndexes_Plane0=0;
+                vector<vector<int> > *ConnOutputSizes_Plane0=0;
+                vector<vector<int> > *ConnSeedChannels_Plane0=0;
+                vector<vector<int> > *ConnSeedTicks_Plane0=0;
+                vector<vector<int> > *ConnSeedIndexes_Plane1=0;
+                vector<vector<int> > *ConnOutputIndexes_Plane1=0;
+                vector<vector<int> > *ConnOutputSizes_Plane1=0;
+                vector<vector<int> > *ConnSeedChannels_Plane1=0;
+                vector<vector<int> > *ConnSeedTicks_Plane1=0;
+                vector<vector<int> > *ConnSeedIndexes_Plane2=0;
+                vector<vector<int> > *ConnOutputIndexes_Plane2=0;
+                vector<vector<int> > *ConnOutputSizes_Plane2=0;
+                vector<vector<int> > *ConnSeedChannels_Plane2=0;
+                vector<vector<int> > *ConnSeedTicks_Plane2=0;
+                vector<std::string> *SysDials=0;
+                vector<vector<double>> *SysWeights=0;
 
 		Int_t           TrueMuonIndex;
 		Int_t           TrueDecayProtonIndex;

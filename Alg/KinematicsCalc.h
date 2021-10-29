@@ -6,16 +6,16 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-double PionMomentum(double TrackLength){ return 0.25798 + 0.0024088*TrackLength - 0.18828*pow(TrackLength,-0.11687); }
+inline double PionMomentum(double TrackLength){ return 0.25798 + 0.0024088*TrackLength - 0.18828*pow(TrackLength,-0.11687); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-double ProtonMomentum(double TrackLength){ return 14.96 + 0.0043489*TrackLength - 14.688*pow(TrackLength,-0.0053518); }
+inline double ProtonMomentum(double TrackLength){ return 14.96 + 0.0043489*TrackLength - 14.688*pow(TrackLength,-0.0053518); }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-TLorentzVector ProtonPion4Momentum(RecoParticle Proton,RecoParticle Pion){
+inline TLorentzVector ProtonPion4Momentum(RecoParticle Proton,RecoParticle Pion){
 
    double momentum_proton = Proton.ProtonMomentum;
    double momentum_pion = PionMomentum(Pion.TrackLength);
@@ -32,11 +32,21 @@ TLorentzVector ProtonPion4Momentum(RecoParticle Proton,RecoParticle Pion){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-double ProtonPionInvariantMass(RecoParticle Proton,RecoParticle Pion){
+inline double ProtonPionInvariantMass(RecoParticle Proton,RecoParticle Pion){
 
     TLorentzVector P = ProtonPion4Momentum(Proton,Pion); 
 
    return sqrt(P*P);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+inline double LambdaMomentum(RecoParticle Proton,RecoParticle Pion){
+
+TLorentzVector P = ProtonPion4Momentum(Proton,Pion);
+
+return sqrt(P.X()*P.X()+P.Y()*P.Y()+P.Z()*P.Z());
 
 }
 

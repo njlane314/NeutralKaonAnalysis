@@ -172,13 +172,13 @@ void SelectorBDTManager::SetupSelectorBDT(std::string WeightsDir){
 
    assert(fMode == "Test");
 
-      if(WeightsDir == ""){ 
-         std::cout << "No weights directory given, assuming default location" << std::endl;
-         fWeightsDir = "/home/lar/cthorpe/uboone/HyperonSelection/TMVA/SelectorMVA/v1/dataset/weights";
-      }
-     else fWeightsDir = WeightsDir;  
+   if(WeightsDir == ""){ 
+      std::cout << "No weights directory given, assuming default location" << std::endl;
+      fWeightsDir = "/home/lar/cthorpe/uboone/HyperonSelection/TMVA/SelectorMVA/v1/dataset/weights";
+   }
+   else fWeightsDir = WeightsDir;  
 
- 
+
    TMVA::Tools::Instance();
    reader = new TMVA::Reader( "!Color:!Silent" );
 
@@ -194,7 +194,7 @@ void SelectorBDTManager::SetupSelectorBDT(std::string WeightsDir){
    Use["BDT"] = 1;
    Use["BDTG"] = 1;
 
-  TString prefix = "TMVAClassification";
+   TString prefix = "TMVAClassification";
 
    for (std::map<std::string,int>::iterator it = Use.begin(); it != Use.end(); it++) {
       if (it->second) {
@@ -239,10 +239,38 @@ std::pair<int,int> SelectorBDTManager::NominateTracks(Event &e){
       }
    }
 
-  e.SelectorBDTScore = BDT_Best;
+   e.SelectorBDTScore = BDT_Best;
 
-  return std::make_pair(i_proton_candidate,i_pion_candidate);
+   return std::make_pair(i_proton_candidate,i_pion_candidate);
 
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
+
+   // Use truth information to choose the proton/pion candidates
+
+   if(!e.GoodReco) return {-1,-1};
+
+   int i_proton_candidate=-1;
+   int i_pion_candidate=-1;
+
+   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
+      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayProtonIndex) i_proton_candidate = i_tr;
+      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionIndex) i_pion_candidate = i_tr;
+   }
+
+   if(i_proton_candidate == -1 || i_pion_candidate == -1) return {-1,-1};
+
+   if(!SetVariables(e.TracklikePrimaryDaughters.at(i_proton_candidate),e.TracklikePrimaryDaughters.at(i_pion_candidate))) return {-1,-1};
+
+   e.SelectorBDTScore = reader->EvaluateMVA("BDT method"); 
+
+   return std::make_pair(i_proton_candidate,i_pion_candidate);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif

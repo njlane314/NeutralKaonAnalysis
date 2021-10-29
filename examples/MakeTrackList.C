@@ -1,5 +1,4 @@
-R__LOAD_LIBRARY($HYP_TOP/lib/libAlg.so)
-R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
+R__LOAD_LIBRARY($HYP_TOP/lib/libHyperon.so)
 
 #include "SelectionManager.h"
 #include "EventAssembler.h"
@@ -21,7 +20,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
       double POT = 1e21; // POT to scale samples to
 
       BuildTunes();
-      ImportSamples(sEverythingRHCFiltered);
+      ImportSamples(sNuWroFullFHC);
 
       SelectionParameters P = P_FHC_Tune_325;
       P.p_AnalysisBDT_Cut = 0.0;
@@ -33,8 +32,6 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
 
       // Import the BDT weights
       M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
-      M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
-
 
       // Setup some text files to store the run/sub/event numbers of the selected events
       gSystem->Exec("mkdir -p TrackLists");
@@ -67,21 +64,16 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
 
             Event e = E.GetEvent(i);
 
-            if((SampleTypes.at(i_s) == "Background" || SampleTypes.at(i_s) == "Hyperon") && e.NMCTruths > 1) continue;
-            if(SampleTypes.at(i_s) == "Background" && e.Mode == "HYP") continue;
-            if(SampleTypes.at(i_s) == "Hyperon" && e.Mode != "HYP") continue;
-
             M.SetSignal(e);                
+
             M.AddEvent(e);
 
-
-            // Apply all of the cuts in the selection
             if(!M.FiducialVolumeCut(e)) continue;
             if(!M.TrackCut(e)) continue;
             if(!M.ShowerCut(e)) continue;
             if(!M.ChooseMuonCandidate(e)) continue;
             if(!M.ChooseProtonPionCandidates(e)) continue;
-            if(!M.AnalysisBDTCut(e)) continue; 
+
    
             int MuonIndex = e.MuonCandidate.Index;
             int DecayProtonIndex = e.DecayProtonCandidate.Index;
@@ -89,6 +81,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
 
             out <<  MuonIndex  << " " << DecayProtonIndex << " " << DecayPionIndex  << std::endl;
 
+            //e.Print();        
             
          }
 

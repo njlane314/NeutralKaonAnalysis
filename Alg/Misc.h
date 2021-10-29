@@ -3,6 +3,8 @@
 
 #include "TMatrixD.h"
 #include <sstream>
+#include "TH1D.h"
+#include "TEfficiency.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,6 +137,96 @@ inline double PurityError_High(double Signal,double Background,double SignalErro
 
 return (Signal+SignalError)/(Signal+SignalError+Background-BackgroundError);
 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Obtain posterior PDF histogram from TEfficiency Object
+
+inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name=""){
+
+      double conf = 0.9999;
+      double inc = 0.0001;
+
+      // Get an initial pair of limits for the histogram
+       
+      E->SetStatisticOption(TEfficiency::kBUniform);  
+      E->SetConfidenceLevel(conf);
+     
+      // Get total events     
+      TH1D *h_Total = (TH1D*)E->GetTotalHistogram();
+        
+      double TotalEvents =  h_Total->GetBinContent(bin);
+
+      double Efficiency = E->GetEfficiency(bin);
+      double Efficiency_Low = E->GetEfficiency(bin) - E->GetEfficiencyErrorLow(bin);
+      double Efficiency_High = E->GetEfficiency(bin) + E->GetEfficiencyErrorUp(bin);
+       
+      TH1D *h_Posterior = new TH1D(("h_Expected"+name).c_str(),";Events;PDF",1000000,Efficiency_Low*TotalEvents,Efficiency_High*TotalEvents);
+
+
+      while(conf > 0.0){
+
+        E->SetConfidenceLevel(conf);
+
+         double old_low = TotalEvents*(E->GetEfficiency(bin) - E->GetEfficiencyErrorLow(bin));
+         double old_high = TotalEvents*(E->GetEfficiency(bin) + E->GetEfficiencyErrorUp(bin));
+
+         E->SetConfidenceLevel(conf-inc);
+
+         double new_low = TotalEvents*(E->GetEfficiency(bin) - E->GetEfficiencyErrorLow(bin));
+         double new_high = TotalEvents*(E->GetEfficiency(bin) + E->GetEfficiencyErrorUp(bin)); 
+
+         int old_low_bin = h_Posterior->GetXaxis()->FindBin(old_low);
+         int old_high_bin = h_Posterior->GetXaxis()->FindBin(old_high);
+
+         int new_low_bin = h_Posterior->GetXaxis()->FindBin(new_low);
+         int new_high_bin = h_Posterior->GetXaxis()->FindBin(new_high);
+
+         int nbins_low = new_low_bin - old_low_bin;
+         int nbins_high = old_high_bin - new_high_bin;
+
+         double content_low = inc/2/nbins_low;
+         double content_high = inc/2/nbins_high;
+
+         for(int i=0;i<nbins_low;i++){
+
+            h_Posterior->AddBinContent(old_low_bin+i,content_low);
+
+         }
+
+
+         for(int i=0;i<nbins_high;i++){
+
+            h_Posterior->AddBinContent(new_high_bin+i,content_high);
+
+         }
+
+         conf -= inc;
+
+      }
+
+
+h_Posterior->Rebin(1000);
+
+h_Posterior->Scale(1.0/h_Posterior->GetBinWidth(1));
+
+return h_Posterior;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+inline std::pair<double,double> MeanSD(std::vector<double> V){
+
+   double Mean = 0.0;
+   for(size_t i=0;i<V.size();i++) Mean += V.at(i);
+   Mean /= V.size(); 
+
+   double Dev = 0.0;
+   for(size_t i=0;i<V.size();i++) Dev += pow(Mean-V.at(i),2);
+   double SD = sqrt(Dev/(V.size()-1));
+
+   return {Mean,SD};
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

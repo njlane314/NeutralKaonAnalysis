@@ -11,8 +11,6 @@
 #include "TMVA/Tools.h"
 #include "TMVA/TMVAGui.h"
 
-
-
 void TrainSelectorBDT(){
 
    //get input trees
@@ -37,7 +35,6 @@ void TrainSelectorBDT(){
 
    std::cout << "Training Analyser BDT with " << nSignal << " signal and " << nBackground << " background" << std::endl;
 
-
    std::map<std::string,int> Use;
    Use["LD"]              = 1;
    Use["BDT"] = 1;
@@ -47,9 +44,6 @@ void TrainSelectorBDT(){
    Use["MLPBNN"] = 1;
 
    TMVA::Tools::Instance();
-
-
-
 
    //setup factory
    TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification", outputFile,

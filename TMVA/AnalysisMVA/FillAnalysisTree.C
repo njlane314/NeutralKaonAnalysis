@@ -1,5 +1,4 @@
-R__LOAD_LIBRARY($HYP_TOP/lib/libAlg.so)
-R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
+R__LOAD_LIBRARY($HYP_TOP/lib/libHyperon.so)
 
 #include "SelectionManager.h"
 #include "EventAssembler.h"
@@ -20,7 +19,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
       double POT = 1.0e21;
 
       // Set the parameters you want to use
-      SelectionParameters P = P_FHC_Tune_325;
+      SelectionParameters P = P_FHC_Tune_test;
 
       SelectionManager M(P);
       M.SetPOT(POT);
@@ -36,6 +35,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
          ImportSamples(sGENIEFullFHC_Train);
       }
       else { std::cout << "Select \"Signal\" or \"Background\" Modes" << std::endl; return; }
+
 
       // Setup Selector BDT Manager Object
       AnalysisBDTManager BDTManager("Train");
@@ -59,9 +59,11 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
 
             if(!M.FiducialVolumeCut(e)) continue;
             if(!M.TrackCut(e)) continue;
-            if(!M.ShowerCut(e)) continue;
+            //if(!M.ShowerCut(e)) continue;
             if(!M.ChooseMuonCandidate(e)) continue;
             if(!M.ChooseProtonPionCandidates(e)) continue;
+
+           // if(!M.ConnectednessTest(e)) continue;
 
             BDTManager.FillTree(e);
 

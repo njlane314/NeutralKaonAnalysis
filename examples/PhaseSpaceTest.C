@@ -1,5 +1,4 @@
-R__LOAD_LIBRARY($HYP_TOP/lib/libAlg.so)
-R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
+R__LOAD_LIBRARY($HYP_TOP/lib/libHyperon.so)
 
 #include "SelectionManager.h"
 #include "EventAssembler.h"
@@ -21,9 +20,10 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
       BuildTunes();
       ImportSamples(sNuWroFullFHC);
 
-      std::string label = "test";
+      std::string label = "NuWro_FHC";
 
       double POT = 1e21; // POT to scale samples to
+      std::string Mode = "FHC";
 
       SelectionParameters P = P_FHC_Tune_325;
 
@@ -1169,150 +1169,150 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libCore.so)
       }
 
       // Entire Selection
-      DrawEfficiencyPlot(h_Q2_All,h_SelectedQ2_All,Efficiency_Q2_All,";True Q^{2} (GeV^{2});Events",label + "_Q2_All");
-      DrawEfficiencyPlot(h_NuE_All,h_SelectedNuE_All,Efficiency_NuE_All,";True E_{#nu} (GeV);Events",label + "_NuE_All");
-      DrawEfficiencyPlot(h_MuonKE_All,h_SelectedMuonKE_All,Efficiency_MuonKE_All,";True Muon E_{k} (GeV);Events",label + "_MuonKE_All");
-      DrawEfficiencyPlot(h_MuonTrueTheta_All,h_SelectedMuonTrueTheta_All,Efficiency_MuonTrueTheta_All,";True Muon #theta;Events",label + "_MuonTrueTheta_All");
-      DrawEfficiencyPlot(h_MuonDetectorTheta_All,h_SelectedMuonDetectorTheta_All,Efficiency_MuonDetectorTheta_All,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_All");
-      DrawEfficiencyPlot(h_MuonDetectorPhi_All,h_SelectedMuonDetectorPhi_All,Efficiency_MuonDetectorPhi_All,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_All");
-      DrawEfficiencyPlot(h_MuonBeamTheta_All,h_SelectedMuonBeamTheta_All,Efficiency_MuonBeamTheta_All,";Beam Muon #theta;Events",label + "_MuonBeamTheta_All");
-      DrawEfficiencyPlot(h_MuonBeamPhi_All,h_SelectedMuonBeamPhi_All,Efficiency_MuonBeamPhi_All,";Beam Muon #phi;Events",label + "_MuonBeamPhi_All");
-      DrawEfficiencyPlot(h_LambdaMomentum_All,h_SelectedLambdaMomentum_All,Efficiency_LambdaMomentum_All,";True #Lambda Momentum (GeV/c);Events",label + "_LambdaMomentum_All");
-      DrawEfficiencyPlot(h_DecayProtonMomentum_All,h_SelectedDecayProtonMomentum_All,Efficiency_DecayProtonMomentum_All,";True Decay Proton Momentum (GeV/c);Events",label + "_DecayProtonMomentum_All");
-      DrawEfficiencyPlot(h_DecayPionMomentum_All,h_SelectedDecayPionMomentum_All,Efficiency_DecayPionMomentum_All,";True Decay #pi^{-} Momentum (GeV/c);Events",label + "_DecayPionMomentum_All");
-      DrawEfficiencyPlot(h_OpeningAngle_All,h_SelectedOpeningAngle_All,Efficiency_OpeningAngle_All,";True Opening Angle (deg);Events",label + "_OpeningAngle_All");
-      DrawEfficiencyPlot(h_LambdaRange_All,h_SelectedLambdaRange_All,Efficiency_LambdaRange_All,";True #Lambda Range (cm);Events",label + "_LambdaRange_All");
-      DrawEfficiencyPlot(h_All,h_Selected_All,Efficiency_All,";;Events",label + "_All");
+      DrawEfficiencyPlot(h_Q2_All,h_SelectedQ2_All,Efficiency_Q2_All,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_All",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_All,h_SelectedNuE_All,Efficiency_NuE_All,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_All",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_All,h_SelectedMuonKE_All,Efficiency_MuonKE_All,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_All",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_All,h_SelectedMuonTrueTheta_All,Efficiency_MuonTrueTheta_All,";True Muon #theta;Events",label + "_MuonTrueTheta_All",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_All,h_SelectedMuonDetectorTheta_All,Efficiency_MuonDetectorTheta_All,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_All",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_All,h_SelectedMuonDetectorPhi_All,Efficiency_MuonDetectorPhi_All,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_All",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_All,h_SelectedMuonBeamTheta_All,Efficiency_MuonBeamTheta_All,";Beam Muon #theta;Events",label + "_MuonBeamTheta_All",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_All,h_SelectedMuonBeamPhi_All,Efficiency_MuonBeamPhi_All,";Beam Muon #phi;Events",label + "_MuonBeamPhi_All",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_All,h_SelectedLambdaMomentum_All,Efficiency_LambdaMomentum_All,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_All",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_All,h_SelectedDecayProtonMomentum_All,Efficiency_DecayProtonMomentum_All,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_All",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_All,h_SelectedDecayPionMomentum_All,Efficiency_DecayPionMomentum_All,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_All",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_All,h_SelectedOpeningAngle_All,Efficiency_OpeningAngle_All,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_All",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_All,h_SelectedLambdaRange_All,Efficiency_LambdaRange_All,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_All",Mode,POT);
+      DrawEfficiencyPlot(h_All,h_Selected_All,Efficiency_All,";;Events",label + "_All",Mode,POT);
 
       // Fiducial Volume Cut
-      DrawEfficiencyPlot(h_Q2_FV,h_SelectedQ2_FV,Efficiency_Q2_FV,";True Q^{2} (GeV^{2});Events",label + "_Q2_FV");
-      DrawEfficiencyPlot(h_NuE_FV,h_SelectedNuE_FV,Efficiency_NuE_FV,";True E_{#nu} (GeV);Events",label + "_NuE_FV");
-      DrawEfficiencyPlot(h_MuonKE_FV,h_SelectedMuonKE_FV,Efficiency_MuonKE_FV,";True Muon E_{k} (GeV);Events",label + "_MuonKE_FV");
-      DrawEfficiencyPlot(h_MuonTrueTheta_FV,h_SelectedMuonTrueTheta_FV,Efficiency_MuonTrueTheta_FV,";True Muon #theta;Events",label + "_MuonTrueTheta_FV");
-      DrawEfficiencyPlot(h_MuonDetectorTheta_FV,h_SelectedMuonDetectorTheta_FV,Efficiency_MuonDetectorTheta_FV,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_FV");
-      DrawEfficiencyPlot(h_MuonDetectorPhi_FV,h_SelectedMuonDetectorPhi_FV,Efficiency_MuonDetectorPhi_FV,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_FV");
-      DrawEfficiencyPlot(h_MuonBeamTheta_FV,h_SelectedMuonBeamTheta_FV,Efficiency_MuonBeamTheta_FV,";Beam Muon #theta;Events",label + "_MuonBeamTheta_FV");
-      DrawEfficiencyPlot(h_MuonBeamPhi_FV,h_SelectedMuonBeamPhi_FV,Efficiency_MuonBeamPhi_FV,";Beam Muon #phi;Events",label + "_MuonBeamPhi_FV");
-      DrawEfficiencyPlot(h_LambdaMomentum_FV,h_SelectedLambdaMomentum_FV,Efficiency_LambdaMomentum_FV,";True #Lambda Momentum (GeV/c);Events",label + "_LambdaMomentum_FV");
-      DrawEfficiencyPlot(h_DecayProtonMomentum_FV,h_SelectedDecayProtonMomentum_FV,Efficiency_DecayProtonMomentum_FV,";True Decay Proton Momentum (GeV/c);Events",label + "_DecayProtonMomentum_FV");
-      DrawEfficiencyPlot(h_DecayPionMomentum_FV,h_SelectedDecayPionMomentum_FV,Efficiency_DecayPionMomentum_FV,";True Decay #pi^{-} Momentum (GeV/c);Events",label + "_DecayPionMomentum_FV");
-      DrawEfficiencyPlot(h_OpeningAngle_FV,h_SelectedOpeningAngle_FV,Efficiency_OpeningAngle_FV,";True Opening Angle (deg);Events",label + "_OpeningAngle_FV");
-      DrawEfficiencyPlot(h_LambdaRange_FV,h_SelectedLambdaRange_FV,Efficiency_LambdaRange_FV,";True #Lambda Range (cm);Events",label + "_LambdaRange_FV");
-      DrawEfficiencyPlot(h_FV,h_Selected_FV,Efficiency_FV,";;Events",label + "_FV");
+      DrawEfficiencyPlot(h_Q2_FV,h_SelectedQ2_FV,Efficiency_Q2_FV,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_FV",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_FV,h_SelectedNuE_FV,Efficiency_NuE_FV,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_FV",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_FV,h_SelectedMuonKE_FV,Efficiency_MuonKE_FV,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_FV",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_FV,h_SelectedMuonTrueTheta_FV,Efficiency_MuonTrueTheta_FV,";True Muon #theta;Events",label + "_MuonTrueTheta_FV",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_FV,h_SelectedMuonDetectorTheta_FV,Efficiency_MuonDetectorTheta_FV,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_FV",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_FV,h_SelectedMuonDetectorPhi_FV,Efficiency_MuonDetectorPhi_FV,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_FV",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_FV,h_SelectedMuonBeamTheta_FV,Efficiency_MuonBeamTheta_FV,";Beam Muon #theta;Events",label + "_MuonBeamTheta_FV",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_FV,h_SelectedMuonBeamPhi_FV,Efficiency_MuonBeamPhi_FV,";Beam Muon #phi;Events",label + "_MuonBeamPhi_FV",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_FV,h_SelectedLambdaMomentum_FV,Efficiency_LambdaMomentum_FV,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_FV",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_FV,h_SelectedDecayProtonMomentum_FV,Efficiency_DecayProtonMomentum_FV,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_FV",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_FV,h_SelectedDecayPionMomentum_FV,Efficiency_DecayPionMomentum_FV,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_FV",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_FV,h_SelectedOpeningAngle_FV,Efficiency_OpeningAngle_FV,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_FV",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_FV,h_SelectedLambdaRange_FV,Efficiency_LambdaRange_FV,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_FV",Mode,POT);
+      DrawEfficiencyPlot(h_FV,h_Selected_FV,Efficiency_FV,";;Events",label + "_FV",Mode,POT);
 
 
       // Track Cut
-      DrawEfficiencyPlot(h_Q2_Tracks,h_SelectedQ2_Tracks,Efficiency_Q2_Tracks,";True Q^{2} (GeV^{2});Events",label + "_Q2_Tracks");
-      DrawEfficiencyPlot(h_NuE_Tracks,h_SelectedNuE_Tracks,Efficiency_NuE_Tracks,";True E_{#nu} (GeV);Events",label + "_NuE_Tracks");
-      DrawEfficiencyPlot(h_MuonKE_Tracks,h_SelectedMuonKE_Tracks,Efficiency_MuonKE_Tracks,";True Muon E_{k} (GeV);Events",label + "_MuonKE_Tracks");
-      DrawEfficiencyPlot(h_MuonTrueTheta_Tracks,h_SelectedMuonTrueTheta_Tracks,Efficiency_MuonTrueTheta_Tracks,";True Muon #theta;Events",label + "_MuonTrueTheta_Tracks");
-      DrawEfficiencyPlot(h_MuonDetectorTheta_Tracks,h_SelectedMuonDetectorTheta_Tracks,Efficiency_MuonDetectorTheta_Tracks,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Tracks");
-      DrawEfficiencyPlot(h_MuonDetectorPhi_Tracks,h_SelectedMuonDetectorPhi_Tracks,Efficiency_MuonDetectorPhi_Tracks,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Tracks");
-      DrawEfficiencyPlot(h_MuonBeamTheta_Tracks,h_SelectedMuonBeamTheta_Tracks,Efficiency_MuonBeamTheta_Tracks,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Tracks");
-      DrawEfficiencyPlot(h_MuonBeamPhi_Tracks,h_SelectedMuonBeamPhi_Tracks,Efficiency_MuonBeamPhi_Tracks,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Tracks");
-      DrawEfficiencyPlot(h_LambdaMomentum_Tracks,h_SelectedLambdaMomentum_Tracks,Efficiency_LambdaMomentum_Tracks,";True #Lambda Momentum (GeV/c);Events",label + "_LambdaMomentum_Tracks");
-      DrawEfficiencyPlot(h_DecayProtonMomentum_Tracks,h_SelectedDecayProtonMomentum_Tracks,Efficiency_DecayProtonMomentum_Tracks,";True Decay Proton Momentum (GeV/c);Events",label + "_DecayProtonMomentum_Tracks");
-      DrawEfficiencyPlot(h_DecayPionMomentum_Tracks,h_SelectedDecayPionMomentum_Tracks,Efficiency_DecayPionMomentum_Tracks,";True Decay #pi^{-} Momentum (GeV/c);Events",label + "_DecayPionMomentum_Tracks");
-      DrawEfficiencyPlot(h_OpeningAngle_Tracks,h_SelectedOpeningAngle_Tracks,Efficiency_OpeningAngle_Tracks,";True Opening Angle (deg);Events",label + "_OpeningAngle_Tracks");
-      DrawEfficiencyPlot(h_LambdaRange_Tracks,h_SelectedLambdaRange_Tracks,Efficiency_LambdaRange_Tracks,";True #Lambda Range (cm);Events",label + "_LambdaRange_Tracks");
-      DrawEfficiencyPlot(h_Tracks,h_Selected_Tracks,Efficiency_Tracks,";;Events",label + "_Tracks");
+      DrawEfficiencyPlot(h_Q2_Tracks,h_SelectedQ2_Tracks,Efficiency_Q2_Tracks,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_Tracks,h_SelectedNuE_Tracks,Efficiency_NuE_Tracks,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_Tracks,h_SelectedMuonKE_Tracks,Efficiency_MuonKE_Tracks,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_Tracks,h_SelectedMuonTrueTheta_Tracks,Efficiency_MuonTrueTheta_Tracks,";True Muon #theta;Events",label + "_MuonTrueTheta_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_Tracks,h_SelectedMuonDetectorTheta_Tracks,Efficiency_MuonDetectorTheta_Tracks,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_Tracks,h_SelectedMuonDetectorPhi_Tracks,Efficiency_MuonDetectorPhi_Tracks,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_Tracks,h_SelectedMuonBeamTheta_Tracks,Efficiency_MuonBeamTheta_Tracks,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_Tracks,h_SelectedMuonBeamPhi_Tracks,Efficiency_MuonBeamPhi_Tracks,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_Tracks,h_SelectedLambdaMomentum_Tracks,Efficiency_LambdaMomentum_Tracks,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_Tracks,h_SelectedDecayProtonMomentum_Tracks,Efficiency_DecayProtonMomentum_Tracks,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_Tracks,h_SelectedDecayPionMomentum_Tracks,Efficiency_DecayPionMomentum_Tracks,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_Tracks,h_SelectedOpeningAngle_Tracks,Efficiency_OpeningAngle_Tracks,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_Tracks,h_SelectedLambdaRange_Tracks,Efficiency_LambdaRange_Tracks,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_Tracks",Mode,POT);
+      DrawEfficiencyPlot(h_Tracks,h_Selected_Tracks,Efficiency_Tracks,";;Events",label + "_Tracks",Mode,POT);
 
       // Shower Cut
-      DrawEfficiencyPlot(h_Q2_Showers,h_SelectedQ2_Showers,Efficiency_Q2_Showers,";True Q^{2} (GeV^{2});Events",label + "_Q2_Showers");
-      DrawEfficiencyPlot(h_NuE_Showers,h_SelectedNuE_Showers,Efficiency_NuE_Showers,";True E_{#nu} (GeV);Events",label + "_NuE_Showers");
-      DrawEfficiencyPlot(h_MuonKE_Showers,h_SelectedMuonKE_Showers,Efficiency_MuonKE_Showers,";True Muon E_{k} (GeV);Events",label + "_MuonKE_Showers");
-      DrawEfficiencyPlot(h_MuonTrueTheta_Showers,h_SelectedMuonTrueTheta_Showers,Efficiency_MuonTrueTheta_Showers,";True Muon #theta;Events",label + "_MuonTrueTheta_Showers");
-      DrawEfficiencyPlot(h_MuonDetectorTheta_Showers,h_SelectedMuonDetectorTheta_Showers,Efficiency_MuonDetectorTheta_Showers,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Showers");
-      DrawEfficiencyPlot(h_MuonDetectorPhi_Showers,h_SelectedMuonDetectorPhi_Showers,Efficiency_MuonDetectorPhi_Showers,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Showers");
-      DrawEfficiencyPlot(h_MuonBeamTheta_Showers,h_SelectedMuonBeamTheta_Showers,Efficiency_MuonBeamTheta_Showers,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Showers");
-      DrawEfficiencyPlot(h_MuonBeamPhi_Showers,h_SelectedMuonBeamPhi_Showers,Efficiency_MuonBeamPhi_Showers,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Showers");
-      DrawEfficiencyPlot(h_LambdaMomentum_Showers,h_SelectedLambdaMomentum_Showers,Efficiency_LambdaMomentum_Showers,";True #Lambda Momentum (GeV/c);Events",label + "_LambdaMomentum_Showers");
-      DrawEfficiencyPlot(h_DecayProtonMomentum_Showers,h_SelectedDecayProtonMomentum_Showers,Efficiency_DecayProtonMomentum_Showers,";True Decay Proton Momentum (GeV/c);Events",label + "_DecayProtonMomentum_Showers");
-      DrawEfficiencyPlot(h_DecayPionMomentum_Showers,h_SelectedDecayPionMomentum_Showers,Efficiency_DecayPionMomentum_Showers,";True Decay #pi^{-} Momentum (GeV/c);Events",label + "_DecayPionMomentum_Showers");
-      DrawEfficiencyPlot(h_OpeningAngle_Showers,h_SelectedOpeningAngle_Showers,Efficiency_OpeningAngle_Showers,";True Opening Angle (deg);Events",label + "_OpeningAngle_Showers");
-      DrawEfficiencyPlot(h_LambdaRange_Showers,h_SelectedLambdaRange_Showers,Efficiency_LambdaRange_Showers,";True #Lambda Range (cm);Events",label + "_LambdaRange_Showers");
-      DrawEfficiencyPlot(h_Showers,h_Selected_Showers,Efficiency_Showers,";;Events",label + "_Showers");
+      DrawEfficiencyPlot(h_Q2_Showers,h_SelectedQ2_Showers,Efficiency_Q2_Showers,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_Showers,h_SelectedNuE_Showers,Efficiency_NuE_Showers,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_Showers,h_SelectedMuonKE_Showers,Efficiency_MuonKE_Showers,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_Showers,h_SelectedMuonTrueTheta_Showers,Efficiency_MuonTrueTheta_Showers,";True Muon #theta;Events",label + "_MuonTrueTheta_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_Showers,h_SelectedMuonDetectorTheta_Showers,Efficiency_MuonDetectorTheta_Showers,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_Showers,h_SelectedMuonDetectorPhi_Showers,Efficiency_MuonDetectorPhi_Showers,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_Showers,h_SelectedMuonBeamTheta_Showers,Efficiency_MuonBeamTheta_Showers,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_Showers,h_SelectedMuonBeamPhi_Showers,Efficiency_MuonBeamPhi_Showers,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_Showers,h_SelectedLambdaMomentum_Showers,Efficiency_LambdaMomentum_Showers,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_Showers,h_SelectedDecayProtonMomentum_Showers,Efficiency_DecayProtonMomentum_Showers,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_Showers,h_SelectedDecayPionMomentum_Showers,Efficiency_DecayPionMomentum_Showers,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_Showers,h_SelectedOpeningAngle_Showers,Efficiency_OpeningAngle_Showers,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_Showers,h_SelectedLambdaRange_Showers,Efficiency_LambdaRange_Showers,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_Showers",Mode,POT);
+      DrawEfficiencyPlot(h_Showers,h_Selected_Showers,Efficiency_Showers,";;Events",label + "_Showers",Mode,POT);
 
       // Muon ID
-      DrawEfficiencyPlot(h_Q2_MuonID,h_SelectedQ2_MuonID,Efficiency_Q2_MuonID,";True Q^{2} (GeV^{2});Events",label + "_Q2_MuonID");
-      DrawEfficiencyPlot(h_NuE_MuonID,h_SelectedNuE_MuonID,Efficiency_NuE_MuonID,";True E_{#nu} (GeV);Events",label + "_NuE_MuonID");
-      DrawEfficiencyPlot(h_MuonKE_MuonID,h_SelectedMuonKE_MuonID,Efficiency_MuonKE_MuonID,";True Muon E_{k} (GeV);Events",label + "_MuonKE_MuonID");
-      DrawEfficiencyPlot(h_MuonTrueTheta_MuonID,h_SelectedMuonTrueTheta_MuonID,Efficiency_MuonTrueTheta_MuonID,";True Muon #theta;Events",label + "_MuonTrueTheta_MuonID");
-      DrawEfficiencyPlot(h_MuonDetectorTheta_MuonID,h_SelectedMuonDetectorTheta_MuonID,Efficiency_MuonDetectorTheta_MuonID,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_MuonID");
-      DrawEfficiencyPlot(h_MuonDetectorPhi_MuonID,h_SelectedMuonDetectorPhi_MuonID,Efficiency_MuonDetectorPhi_MuonID,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_MuonID");
-      DrawEfficiencyPlot(h_MuonBeamTheta_MuonID,h_SelectedMuonBeamTheta_MuonID,Efficiency_MuonBeamTheta_MuonID,";Beam Muon #theta;Events",label + "_MuonBeamTheta_MuonID");
-      DrawEfficiencyPlot(h_MuonBeamPhi_MuonID,h_SelectedMuonBeamPhi_MuonID,Efficiency_MuonBeamPhi_MuonID,";Beam Muon #phi;Events",label + "_MuonBeamPhi_MuonID");
-      DrawEfficiencyPlot(h_LambdaMomentum_MuonID,h_SelectedLambdaMomentum_MuonID,Efficiency_LambdaMomentum_MuonID,";True #Lambda Momentum (GeV/c);Events",label + "_LambdaMomentum_MuonID");
-      DrawEfficiencyPlot(h_DecayProtonMomentum_MuonID,h_SelectedDecayProtonMomentum_MuonID,Efficiency_DecayProtonMomentum_MuonID,";True Decay Proton Momentum (GeV/c);Events",label + "_DecayProtonMomentum_MuonID");
-      DrawEfficiencyPlot(h_DecayPionMomentum_MuonID,h_SelectedDecayPionMomentum_MuonID,Efficiency_DecayPionMomentum_MuonID,";True Decay #pi^{-} Momentum (GeV/c);Events",label + "_DecayPionMomentum_MuonID");
-      DrawEfficiencyPlot(h_OpeningAngle_MuonID,h_SelectedOpeningAngle_MuonID,Efficiency_OpeningAngle_MuonID,";True Opening Angle (deg);Events",label + "_OpeningAngle_MuonID");
-      DrawEfficiencyPlot(h_LambdaRange_MuonID,h_SelectedLambdaRange_MuonID,Efficiency_LambdaRange_MuonID,";True #Lambda Range (cm);Events",label + "_LambdaRange_MuonID");
-      DrawEfficiencyPlot(h_MuonID,h_Selected_MuonID,Efficiency_MuonID,";;Events",label + "_MuonID");
+      DrawEfficiencyPlot(h_Q2_MuonID,h_SelectedQ2_MuonID,Efficiency_Q2_MuonID,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_MuonID,h_SelectedNuE_MuonID,Efficiency_NuE_MuonID,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_MuonID,h_SelectedMuonKE_MuonID,Efficiency_MuonKE_MuonID,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_MuonID,h_SelectedMuonTrueTheta_MuonID,Efficiency_MuonTrueTheta_MuonID,";True Muon #theta;Events",label + "_MuonTrueTheta_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_MuonID,h_SelectedMuonDetectorTheta_MuonID,Efficiency_MuonDetectorTheta_MuonID,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_MuonID,h_SelectedMuonDetectorPhi_MuonID,Efficiency_MuonDetectorPhi_MuonID,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_MuonID,h_SelectedMuonBeamTheta_MuonID,Efficiency_MuonBeamTheta_MuonID,";Beam Muon #theta;Events",label + "_MuonBeamTheta_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_MuonID,h_SelectedMuonBeamPhi_MuonID,Efficiency_MuonBeamPhi_MuonID,";Beam Muon #phi;Events",label + "_MuonBeamPhi_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_MuonID,h_SelectedLambdaMomentum_MuonID,Efficiency_LambdaMomentum_MuonID,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_MuonID,h_SelectedDecayProtonMomentum_MuonID,Efficiency_DecayProtonMomentum_MuonID,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_MuonID,h_SelectedDecayPionMomentum_MuonID,Efficiency_DecayPionMomentum_MuonID,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_MuonID,h_SelectedOpeningAngle_MuonID,Efficiency_OpeningAngle_MuonID,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_MuonID,h_SelectedLambdaRange_MuonID,Efficiency_LambdaRange_MuonID,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_MuonID",Mode,POT);
+      DrawEfficiencyPlot(h_MuonID,h_Selected_MuonID,Efficiency_MuonID,";;Events",label + "_MuonID",Mode,POT);
 
       // Subleading Track Lengths
-      DrawEfficiencyPlot(h_Q2_TrackLengths,h_SelectedQ2_TrackLengths,Efficiency_Q2_TrackLengths,";True Q^{2} (GeV^{2});Events",label + "_Q2_TrackLengths");
-      DrawEfficiencyPlot(h_NuE_TrackLengths,h_SelectedNuE_TrackLengths,Efficiency_NuE_TrackLengths,";True E_{#nu} (GeV);Events",label + "_NuE_TrackLengths");
-      DrawEfficiencyPlot(h_MuonKE_TrackLengths,h_SelectedMuonKE_TrackLengths,Efficiency_MuonKE_TrackLengths,";True Muon E_{k} (GeV);Events",label + "_MuonKE_TrackLengths");
-      DrawEfficiencyPlot(h_MuonTrueTheta_TrackLengths,h_SelectedMuonTrueTheta_TrackLengths,Efficiency_MuonTrueTheta_TrackLengths,";True Muon #theta;Events",label + "_MuonTrueTheta_TrackLengths");
-      DrawEfficiencyPlot(h_MuonDetectorTheta_TrackLengths,h_SelectedMuonDetectorTheta_TrackLengths,Efficiency_MuonDetectorTheta_TrackLengths,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_TrackLengths");
-      DrawEfficiencyPlot(h_MuonDetectorPhi_TrackLengths,h_SelectedMuonDetectorPhi_TrackLengths,Efficiency_MuonDetectorPhi_TrackLengths,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_TrackLengths");
-      DrawEfficiencyPlot(h_MuonBeamTheta_TrackLengths,h_SelectedMuonBeamTheta_TrackLengths,Efficiency_MuonBeamTheta_TrackLengths,";Beam Muon #theta;Events",label + "_MuonBeamTheta_TrackLengths");
-      DrawEfficiencyPlot(h_MuonBeamPhi_TrackLengths,h_SelectedMuonBeamPhi_TrackLengths,Efficiency_MuonBeamPhi_TrackLengths,";Beam Muon #phi;Events",label + "_MuonBeamPhi_TrackLengths");
-      DrawEfficiencyPlot(h_LambdaMomentum_TrackLengths,h_SelectedLambdaMomentum_TrackLengths,Efficiency_LambdaMomentum_TrackLengths,";True #Lambda Momentum (GeV/c);Events",label + "_LambdaMomentum_TrackLengths");
-      DrawEfficiencyPlot(h_DecayProtonMomentum_TrackLengths,h_SelectedDecayProtonMomentum_TrackLengths,Efficiency_DecayProtonMomentum_TrackLengths,";True Decay Proton Momentum (GeV/c);Events",label + "_DecayProtonMomentum_TrackLengths");
-      DrawEfficiencyPlot(h_DecayPionMomentum_TrackLengths,h_SelectedDecayPionMomentum_TrackLengths,Efficiency_DecayPionMomentum_TrackLengths,";True Decay #pi^{-} Momentum (GeV/c);Events",label + "_DecayPionMomentum_TrackLengths");
-      DrawEfficiencyPlot(h_OpeningAngle_TrackLengths,h_SelectedOpeningAngle_TrackLengths,Efficiency_OpeningAngle_TrackLengths,";True Opening Angle (deg);Events",label + "_OpeningAngle_TrackLengths");
-      DrawEfficiencyPlot(h_LambdaRange_TrackLengths,h_SelectedLambdaRange_TrackLengths,Efficiency_LambdaRange_TrackLengths,";True #Lambda Range (cm);Events",label + "_LambdaRange_TrackLengths");
-      DrawEfficiencyPlot(h_TrackLengths,h_Selected_TrackLengths,Efficiency_TrackLengths,";;Events",label + "_TrackLengths");
+      DrawEfficiencyPlot(h_Q2_TrackLengths,h_SelectedQ2_TrackLengths,Efficiency_Q2_TrackLengths,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_TrackLengths,h_SelectedNuE_TrackLengths,Efficiency_NuE_TrackLengths,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_TrackLengths,h_SelectedMuonKE_TrackLengths,Efficiency_MuonKE_TrackLengths,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_TrackLengths,h_SelectedMuonTrueTheta_TrackLengths,Efficiency_MuonTrueTheta_TrackLengths,";True Muon #theta;Events",label + "_MuonTrueTheta_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_TrackLengths,h_SelectedMuonDetectorTheta_TrackLengths,Efficiency_MuonDetectorTheta_TrackLengths,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_TrackLengths,h_SelectedMuonDetectorPhi_TrackLengths,Efficiency_MuonDetectorPhi_TrackLengths,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_TrackLengths,h_SelectedMuonBeamTheta_TrackLengths,Efficiency_MuonBeamTheta_TrackLengths,";Beam Muon #theta;Events",label + "_MuonBeamTheta_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_TrackLengths,h_SelectedMuonBeamPhi_TrackLengths,Efficiency_MuonBeamPhi_TrackLengths,";Beam Muon #phi;Events",label + "_MuonBeamPhi_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_TrackLengths,h_SelectedLambdaMomentum_TrackLengths,Efficiency_LambdaMomentum_TrackLengths,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_TrackLengths,h_SelectedDecayProtonMomentum_TrackLengths,Efficiency_DecayProtonMomentum_TrackLengths,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_TrackLengths,h_SelectedDecayPionMomentum_TrackLengths,Efficiency_DecayPionMomentum_TrackLengths,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_TrackLengths,h_SelectedOpeningAngle_TrackLengths,Efficiency_OpeningAngle_TrackLengths,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_TrackLengths,h_SelectedLambdaRange_TrackLengths,Efficiency_LambdaRange_TrackLengths,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_TrackLengths",Mode,POT);
+      DrawEfficiencyPlot(h_TrackLengths,h_Selected_TrackLengths,Efficiency_TrackLengths,";;Events",label + "_TrackLengths",Mode,POT);
 
       // Track Selector BDT
-      DrawEfficiencyPlot(h_Q2_Selector,h_SelectedQ2_Selector,Efficiency_Q2_Selector,";True Q^{2} (GeV^{2});Events",label + "_Q2_Selector");
-      DrawEfficiencyPlot(h_NuE_Selector,h_SelectedNuE_Selector,Efficiency_NuE_Selector,";True E_{#nu} (GeV);Events",label + "_NuE_Selector");
-      DrawEfficiencyPlot(h_MuonKE_Selector,h_SelectedMuonKE_Selector,Efficiency_MuonKE_Selector,";True Muon E_{k} (GeV);Events",label + "_MuonKE_Selector");
-      DrawEfficiencyPlot(h_MuonTrueTheta_Selector,h_SelectedMuonTrueTheta_Selector,Efficiency_MuonTrueTheta_Selector,";True Muon #theta;Events",label + "_MuonTrueTheta_Selector");
-      DrawEfficiencyPlot(h_MuonDetectorTheta_Selector,h_SelectedMuonDetectorTheta_Selector,Efficiency_MuonDetectorTheta_Selector,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Selector");
-      DrawEfficiencyPlot(h_MuonDetectorPhi_Selector,h_SelectedMuonDetectorPhi_Selector,Efficiency_MuonDetectorPhi_Selector,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Selector");
-      DrawEfficiencyPlot(h_MuonBeamTheta_Selector,h_SelectedMuonBeamTheta_Selector,Efficiency_MuonBeamTheta_Selector,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Selector");
-      DrawEfficiencyPlot(h_MuonBeamPhi_Selector,h_SelectedMuonBeamPhi_Selector,Efficiency_MuonBeamPhi_Selector,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Selector");
-      DrawEfficiencyPlot(h_LambdaMomentum_Selector,h_SelectedLambdaMomentum_Selector,Efficiency_LambdaMomentum_Selector,";True #Lambda Momentum (GeV/c);Events",label + "_LambdaMomentum_Selector");
-      DrawEfficiencyPlot(h_DecayProtonMomentum_Selector,h_SelectedDecayProtonMomentum_Selector,Efficiency_DecayProtonMomentum_Selector,";True Decay Proton Momentum (GeV/c);Events",label + "_DecayProtonMomentum_Selector");
-      DrawEfficiencyPlot(h_DecayPionMomentum_Selector,h_SelectedDecayPionMomentum_Selector,Efficiency_DecayPionMomentum_Selector,";True Decay #pi^{-} Momentum (GeV/c);Events",label + "_DecayPionMomentum_Selector");
-      DrawEfficiencyPlot(h_OpeningAngle_Selector,h_SelectedOpeningAngle_Selector,Efficiency_OpeningAngle_Selector,";True Opening Angle (deg);Events",label + "_OpeningAngle_Selector");
-      DrawEfficiencyPlot(h_LambdaRange_Selector,h_SelectedLambdaRange_Selector,Efficiency_LambdaRange_Selector,";True #Lambda Range (cm);Events",label + "_LambdaRange_Selector");
-      DrawEfficiencyPlot(h_Selector,h_Selected_Selector,Efficiency_Selector,";;Events",label + "_Selector");
+      DrawEfficiencyPlot(h_Q2_Selector,h_SelectedQ2_Selector,Efficiency_Q2_Selector,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_Selector,h_SelectedNuE_Selector,Efficiency_NuE_Selector,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_Selector,h_SelectedMuonKE_Selector,Efficiency_MuonKE_Selector,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_Selector,h_SelectedMuonTrueTheta_Selector,Efficiency_MuonTrueTheta_Selector,";True Muon #theta;Events",label + "_MuonTrueTheta_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_Selector,h_SelectedMuonDetectorTheta_Selector,Efficiency_MuonDetectorTheta_Selector,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_Selector,h_SelectedMuonDetectorPhi_Selector,Efficiency_MuonDetectorPhi_Selector,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_Selector,h_SelectedMuonBeamTheta_Selector,Efficiency_MuonBeamTheta_Selector,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_Selector,h_SelectedMuonBeamPhi_Selector,Efficiency_MuonBeamPhi_Selector,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_Selector,h_SelectedLambdaMomentum_Selector,Efficiency_LambdaMomentum_Selector,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_Selector,h_SelectedDecayProtonMomentum_Selector,Efficiency_DecayProtonMomentum_Selector,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_Selector,h_SelectedDecayPionMomentum_Selector,Efficiency_DecayPionMomentum_Selector,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_Selector,h_SelectedOpeningAngle_Selector,Efficiency_OpeningAngle_Selector,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_Selector,h_SelectedLambdaRange_Selector,Efficiency_LambdaRange_Selector,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_Selector",Mode,POT);
+      DrawEfficiencyPlot(h_Selector,h_Selected_Selector,Efficiency_Selector,";;Events",label + "_Selector",Mode,POT);
 
 
       // Analysis BDT
-      DrawEfficiencyPlot(h_Q2_Analysis,h_SelectedQ2_Analysis,Efficiency_Q2_Analysis,";True Q^{2} (GeV^{2});Events",label + "_Q2_Analysis");
-      DrawEfficiencyPlot(h_NuE_Analysis,h_SelectedNuE_Analysis,Efficiency_NuE_Analysis,";True E_{#nu} (GeV);Events",label + "_NuE_Analysis");
-      DrawEfficiencyPlot(h_MuonKE_Analysis,h_SelectedMuonKE_Analysis,Efficiency_MuonKE_Analysis,";True Muon E_{k} (GeV);Events",label + "_MuonKE_Analysis");
-      DrawEfficiencyPlot(h_MuonTrueTheta_Analysis,h_SelectedMuonTrueTheta_Analysis,Efficiency_MuonTrueTheta_Analysis,";True Muon #theta;Events",label + "_MuonTrueTheta_Analysis");
-      DrawEfficiencyPlot(h_MuonDetectorTheta_Analysis,h_SelectedMuonDetectorTheta_Analysis,Efficiency_MuonDetectorTheta_Analysis,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Analysis");
-      DrawEfficiencyPlot(h_MuonDetectorPhi_Analysis,h_SelectedMuonDetectorPhi_Analysis,Efficiency_MuonDetectorPhi_Analysis,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Analysis");
-      DrawEfficiencyPlot(h_MuonBeamTheta_Analysis,h_SelectedMuonBeamTheta_Analysis,Efficiency_MuonBeamTheta_Analysis,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Analysis");
-      DrawEfficiencyPlot(h_MuonBeamPhi_Analysis,h_SelectedMuonBeamPhi_Analysis,Efficiency_MuonBeamPhi_Analysis,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Analysis");
-      DrawEfficiencyPlot(h_LambdaMomentum_Analysis,h_SelectedLambdaMomentum_Analysis,Efficiency_LambdaMomentum_Analysis,";True #Lambda Momentum (GeV/c);Events",label + "_LambdaMomentum_Analysis");
-      DrawEfficiencyPlot(h_DecayProtonMomentum_Analysis,h_SelectedDecayProtonMomentum_Analysis,Efficiency_DecayProtonMomentum_Analysis,";True Decay Proton Momentum (GeV/c);Events",label + "_DecayProtonMomentum_Analysis");
-      DrawEfficiencyPlot(h_DecayPionMomentum_Analysis,h_SelectedDecayPionMomentum_Analysis,Efficiency_DecayPionMomentum_Analysis,";True Decay #pi^{-} Momentum (GeV/c);Events",label + "_DecayPionMomentum_Analysis");
-      DrawEfficiencyPlot(h_OpeningAngle_Analysis,h_SelectedOpeningAngle_Analysis,Efficiency_OpeningAngle_Analysis,";True Opening Angle (deg);Events",label + "_OpeningAngle_Analysis");
-      DrawEfficiencyPlot(h_LambdaRange_Analysis,h_SelectedLambdaRange_Analysis,Efficiency_LambdaRange_Analysis,";True #Lambda Range (cm);Events",label + "_LambdaRange_Analysis");
-      DrawEfficiencyPlot(h_Analysis,h_Selected_Analysis,Efficiency_Analysis,";;Events",label + "_Analysis");
+      DrawEfficiencyPlot(h_Q2_Analysis,h_SelectedQ2_Analysis,Efficiency_Q2_Analysis,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_Analysis,h_SelectedNuE_Analysis,Efficiency_NuE_Analysis,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_Analysis,h_SelectedMuonKE_Analysis,Efficiency_MuonKE_Analysis,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_Analysis,h_SelectedMuonTrueTheta_Analysis,Efficiency_MuonTrueTheta_Analysis,";True Muon #theta;Events",label + "_MuonTrueTheta_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_Analysis,h_SelectedMuonDetectorTheta_Analysis,Efficiency_MuonDetectorTheta_Analysis,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_Analysis,h_SelectedMuonDetectorPhi_Analysis,Efficiency_MuonDetectorPhi_Analysis,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_Analysis,h_SelectedMuonBeamTheta_Analysis,Efficiency_MuonBeamTheta_Analysis,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_Analysis,h_SelectedMuonBeamPhi_Analysis,Efficiency_MuonBeamPhi_Analysis,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_Analysis,h_SelectedLambdaMomentum_Analysis,Efficiency_LambdaMomentum_Analysis,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_Analysis,h_SelectedDecayProtonMomentum_Analysis,Efficiency_DecayProtonMomentum_Analysis,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_Analysis,h_SelectedDecayPionMomentum_Analysis,Efficiency_DecayPionMomentum_Analysis,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_Analysis,h_SelectedOpeningAngle_Analysis,Efficiency_OpeningAngle_Analysis,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_Analysis,h_SelectedLambdaRange_Analysis,Efficiency_LambdaRange_Analysis,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_Analysis",Mode,POT);
+      DrawEfficiencyPlot(h_Analysis,h_Selected_Analysis,Efficiency_Analysis,";;Events",label + "_Analysis",Mode,POT);
 
       // Connectedness
-      DrawEfficiencyPlot(h_Q2_Connectedness,h_SelectedQ2_Connectedness,Efficiency_Q2_Connectedness,";True Q^{2} (GeV^{2});Events",label + "_Q2_Connectedness");
-      DrawEfficiencyPlot(h_NuE_Connectedness,h_SelectedNuE_Connectedness,Efficiency_NuE_Connectedness,";True E_{#nu} (GeV);Events",label + "_NuE_Connectedness");
-      DrawEfficiencyPlot(h_MuonKE_Connectedness,h_SelectedMuonKE_Connectedness,Efficiency_MuonKE_Connectedness,";True Muon E_{k} (GeV);Events",label + "_MuonKE_Connectedness");
-      DrawEfficiencyPlot(h_MuonTrueTheta_Connectedness,h_SelectedMuonTrueTheta_Connectedness,Efficiency_MuonTrueTheta_Connectedness,";True Muon #theta;Events",label + "_MuonTrueTheta_Connectedness");
-      DrawEfficiencyPlot(h_MuonDetectorTheta_Connectedness,h_SelectedMuonDetectorTheta_Connectedness,Efficiency_MuonDetectorTheta_Connectedness,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Connectedness");
-      DrawEfficiencyPlot(h_MuonDetectorPhi_Connectedness,h_SelectedMuonDetectorPhi_Connectedness,Efficiency_MuonDetectorPhi_Connectedness,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Connectedness");
-      DrawEfficiencyPlot(h_MuonBeamTheta_Connectedness,h_SelectedMuonBeamTheta_Connectedness,Efficiency_MuonBeamTheta_Connectedness,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Connectedness");
-      DrawEfficiencyPlot(h_MuonBeamPhi_Connectedness,h_SelectedMuonBeamPhi_Connectedness,Efficiency_MuonBeamPhi_Connectedness,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Connectedness");
-      DrawEfficiencyPlot(h_LambdaMomentum_Connectedness,h_SelectedLambdaMomentum_Connectedness,Efficiency_LambdaMomentum_Connectedness,";True #Lambda Momentum (GeV/c);Events",label + "_LambdaMomentum_Connectedness");
-      DrawEfficiencyPlot(h_DecayProtonMomentum_Connectedness,h_SelectedDecayProtonMomentum_Connectedness,Efficiency_DecayProtonMomentum_Connectedness,";True Decay Proton Momentum (GeV/c);Events",label + "_DecayProtonMomentum_Connectedness");
-      DrawEfficiencyPlot(h_DecayPionMomentum_Connectedness,h_SelectedDecayPionMomentum_Connectedness,Efficiency_DecayPionMomentum_Connectedness,";True Decay #pi^{-} Momentum (GeV/c);Events",label + "_DecayPionMomentum_Connectedness");
-      DrawEfficiencyPlot(h_OpeningAngle_Connectedness,h_SelectedOpeningAngle_Connectedness,Efficiency_OpeningAngle_Connectedness,";True Opening Angle (deg);Events",label + "_OpeningAngle_Connectedness");
-      DrawEfficiencyPlot(h_LambdaRange_Connectedness,h_SelectedLambdaRange_Connectedness,Efficiency_LambdaRange_Connectedness,";True #Lambda Range (cm);Events",label + "_LambdaRange_Connectedness");
-      DrawEfficiencyPlot(h_Connectedness,h_Selected_Connectedness,Efficiency_Connectedness,";;Events",label + "_Connectedness");
+      DrawEfficiencyPlot(h_Q2_Connectedness,h_SelectedQ2_Connectedness,Efficiency_Q2_Connectedness,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_Connectedness,h_SelectedNuE_Connectedness,Efficiency_NuE_Connectedness,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_Connectedness,h_SelectedMuonKE_Connectedness,Efficiency_MuonKE_Connectedness,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_Connectedness,h_SelectedMuonTrueTheta_Connectedness,Efficiency_MuonTrueTheta_Connectedness,";True Muon #theta;Events",label + "_MuonTrueTheta_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_Connectedness,h_SelectedMuonDetectorTheta_Connectedness,Efficiency_MuonDetectorTheta_Connectedness,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_Connectedness,h_SelectedMuonDetectorPhi_Connectedness,Efficiency_MuonDetectorPhi_Connectedness,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_Connectedness,h_SelectedMuonBeamTheta_Connectedness,Efficiency_MuonBeamTheta_Connectedness,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_Connectedness,h_SelectedMuonBeamPhi_Connectedness,Efficiency_MuonBeamPhi_Connectedness,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_Connectedness,h_SelectedLambdaMomentum_Connectedness,Efficiency_LambdaMomentum_Connectedness,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_Connectedness,h_SelectedDecayProtonMomentum_Connectedness,Efficiency_DecayProtonMomentum_Connectedness,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_Connectedness,h_SelectedDecayPionMomentum_Connectedness,Efficiency_DecayPionMomentum_Connectedness,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_Connectedness,h_SelectedOpeningAngle_Connectedness,Efficiency_OpeningAngle_Connectedness,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_Connectedness,h_SelectedLambdaRange_Connectedness,Efficiency_LambdaRange_Connectedness,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_Connectedness",Mode,POT);
+      DrawEfficiencyPlot(h_Connectedness,h_Selected_Connectedness,Efficiency_Connectedness,";;Events",label + "_Connectedness",Mode,POT);
 
    }
 
