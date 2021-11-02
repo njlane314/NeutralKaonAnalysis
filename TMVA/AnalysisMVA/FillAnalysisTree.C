@@ -1,4 +1,5 @@
 R__LOAD_LIBRARY($HYP_TOP/lib/libHyperon.so)
+R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
 #include "SelectionManager.h"
 #include "EventAssembler.h"
