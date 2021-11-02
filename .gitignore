@@ -32,3 +32,4 @@ sites
 *.app
 
 *.root
+lib/*

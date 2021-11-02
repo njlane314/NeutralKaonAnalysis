@@ -45,8 +45,8 @@ class GenG4WeightHandler {
       void OrganiseWeights();
 
       std::vector<std::string> *theDials;
-      std::vector<std::vector<double>> *theWeights;
-      std::map<std::string,std::vector<double>> theWeightMap;
+      std::vector<std::vector<std::vector<double>>> *theWeights;
+      std::vector<std::map<std::string,std::vector<double>>> theWeightMap;
      
 };
 

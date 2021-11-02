@@ -1,4 +1,5 @@
 R__LOAD_LIBRARY($HYP_TOP/lib/libHyperon.so)
+R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
 #include "SelectionManager.h"
 #include "EventAssembler.h"
@@ -16,7 +17,11 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libHyperon.so)
       double POT = 1.0e21; // POT to scale samples to
 
       BuildTunes();
-      ImportSamples(sNuWroFullFHC);
+      //ImportSamples(sNuWroFullFHC);
+
+      SampleNames.push_back("GENIE Background");
+      SampleTypes.push_back("Background");
+      SampleFiles.push_back("HyperonTrees_Sys.root");
 
       SelectionParameters P = P_FHC_Tune_325;
       P.p_AnalysisBDT_Cut = 0.0;

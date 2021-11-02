@@ -112,11 +112,21 @@ double FluxWeighter::GetFluxWeight(Event e){
 
    if(!e.Neutrino.size()) return 1.0;
 
-   double nu_e = e.Neutrino.at(0).E;
-   double nu_angle = GetNuMIAngle(e.Neutrino.at(0).Px,e.Neutrino.at(0).Py,e.Neutrino.at(0).Pz);
-   int nu_pdg = e.Neutrino.at(0).PDG;
+   double weight = 1.0;
 
-   return GetFluxWeight(nu_e,nu_angle,nu_pdg);
+   // Get weight for each neutrino and multiply together
+   for(size_t i_n=0;i_n<e.Neutrino.size();i_n++){
+
+   double nu_e = e.Neutrino.at(i_n).E;
+   double nu_angle = GetNuMIAngle(e.Neutrino.at(i_n).Px,e.Neutrino.at(i_n).Py,e.Neutrino.at(i_n).Pz);
+   int nu_pdg = e.Neutrino.at(i_n).PDG;
+
+   weight *= GetFluxWeight(nu_e,nu_angle,nu_pdg);
+
+   }
+
+   //return GetFluxWeight(nu_e,nu_angle,nu_pdg);
+   return weight;
 
 }
 
@@ -202,18 +212,27 @@ std::vector<double> FluxWeighter::GetSysWeightV(double nu_e,double nu_angle,int 
 
 std::vector<double> FluxWeighter::GetSysWeightV(Event e,int mode){
 
-   if(!e.Neutrino.size()){
-      std::vector<double> weights;
-      if(mode == 1)for(size_t i_univ=0;i_univ<HP_Universes;i_univ++) weights.push_back(1.0);
-      else if(mode == 2)for(size_t i_univ=0;i_univ<Beamline_Universes;i_univ++) weights.push_back(1.0);        
-      return weights;
+   std::vector<double> weights;
+   if(mode == 1)for(size_t i_univ=0;i_univ<HP_Universes;i_univ++) weights.push_back(1.0);
+   else if(mode == 2)for(size_t i_univ=0;i_univ<Beamline_Universes;i_univ++) weights.push_back(1.0);        
+
+
+   // If no neutrinos simulated, return vector of 1's
+   if(!e.Neutrino.size()) return weights;
+
+   for(size_t i_tr=0;i_tr<e.Neutrino.size();i_tr++){ 
+
+      double nu_e = e.Neutrino.at(0).E;
+      double nu_angle = GetNuMIAngle(e.Neutrino.at(0).Px,e.Neutrino.at(0).Py,e.Neutrino.at(0).Pz);
+      int nu_pdg = e.Neutrino.at(0).PDG;
+
+      std::vector<double> weights_thistruth = GetSysWeightV(nu_e,nu_angle,nu_pdg,mode);
+
+      for(size_t i_w=0;i_w<weights.size();i_w++) weights.at(i_w) *= weights_thistruth.at(i_w); 
+
    }
 
-   double nu_e = e.Neutrino.at(0).E;
-   double nu_angle = GetNuMIAngle(e.Neutrino.at(0).Px,e.Neutrino.at(0).Py,e.Neutrino.at(0).Pz);
-   int nu_pdg = e.Neutrino.at(0).PDG;
-
-   return GetSysWeightV(nu_e,nu_angle,nu_pdg,mode);
+   return weights;
 
 }
 

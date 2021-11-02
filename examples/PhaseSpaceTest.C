@@ -1,4 +1,5 @@
 R__LOAD_LIBRARY($HYP_TOP/lib/libHyperon.so)
+R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
 #include "SelectionManager.h"
 #include "EventAssembler.h"
@@ -18,7 +19,11 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libHyperon.so)
    void PhaseSpaceTest(){
 
       BuildTunes();
-      ImportSamples(sNuWroFullFHC);
+      //ImportSamples(sNuWroFullFHC);
+
+      SampleNames.push_back("GENIE Background");
+      SampleTypes.push_back("Background");
+      SampleFiles.push_back("HyperonTrees_Sys.root");
 
       std::string label = "NuWro_FHC";
 

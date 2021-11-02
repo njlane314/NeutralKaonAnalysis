@@ -100,18 +100,19 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
 
 void SelectionManager::AddEvent(Event &e){
 
-
    // Sample Orthogonality
-   if(((thisSampleType == "Background" || thisSampleType == "Hyperon") && e.NMCTruths > 1) ||
+   //if(thisSampleType == "Hyperon" && !e.EventHasHyperon){ e.Weight = 0.0; return; }
+   //if(thisSampleType == "Background" && e.EventHasHyperon){ e.Weight = 0.0; return; }
+
+/*
+   if((thisSampleType == "Background" || thisSampleType == "Hyperon") ||
          (thisSampleType == "Background" && e.Mode == "HYP") ||
          (thisSampleType == "Hyperon" && e.Mode != "HYP")){ e.Weight = 0.0; return; }
-
+*/
 
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
-
-      e.Weight *= a_FluxWeightCalc.GetFluxWeight(e);
-        
+      e.Weight *= a_FluxWeightCalc.GetFluxWeight(e);        
       a_GenG4WeightCalc.LoadEvent(e);
       e.Weight *= a_GenG4WeightCalc.GetCVWeight();
    }
@@ -120,15 +121,13 @@ void SelectionManager::AddEvent(Event &e){
    if(thisSampleType != "Data") e.Weight *= thisSampleWeight;
 
    for(size_t i_c=0;i_c<Cuts.size();i_c++){
-
       Cuts[i_c].fTotalEvents += e.Weight;    
-      if(e.IsSignal) Cuts[i_c].fSignalEvents += e.Weight;
+      if(e.EventIsSignal) Cuts[i_c].fSignalEvents += e.Weight;
       if(e.GoodReco) Cuts[i_c].fGoodRecoEvents += e.Weight;
 
       Cuts[i_c].fTotalEventsVar += e.Weight*e.Weight;    
-      if(e.IsSignal) Cuts[i_c].fSignalEventsVar += e.Weight*e.Weight;
+      if(e.EventIsSignal) Cuts[i_c].fSignalEventsVar += e.Weight*e.Weight;
       if(e.GoodReco) Cuts[i_c].fGoodRecoEventsVar += e.Weight*e.Weight;
-
    }
 
 }
@@ -137,41 +136,53 @@ void SelectionManager::AddEvent(Event &e){
 
 void SelectionManager::SetSignal(Event &e){
 
-   e.IsSignal = false;
+   e.EventIsSignal = false;
    e.GoodReco = false;
 
-   e.InActiveTPC = a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex);
+   std::vector<bool> IsSignal_tmp = e.IsSignal;
 
-   if( e.Mode == "HYP" && e.IsLambdaCharged && e.InActiveTPC && e.Neutrino.size() == 1 && e.Neutrino.at(0).PDG == -14 ){
+   for(size_t i_tr=0;i_tr<e.NMCTruths;i_tr++){
 
-      e.IsSignal = true;
+      IsSignal_tmp.at(i_tr) = false;
 
-      
+      e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex.at(i_tr)); 
+
+      if(e.IsSignal.at(i_tr)){
+
+         bool found_proton=false,found_pion=false;
+
+         for(size_t i_d=0;i_d<e.Decay.size();i_d++){
+
+            if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == 2212 && e.Decay.at(i_d).ModMomentum > 0.3) 
+               found_proton = true;
+
+            if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == -211 && e.Decay.at(i_d).ModMomentum > 0.1) 
+               found_pion = true;
+
+         }                   
+ 
+         IsSignal_tmp.at(i_tr) = found_proton && found_pion && e.InActiveTPC.at(i_tr);
+
+      }
+   }
+
+  e.IsSignal = IsSignal_tmp;
+
+  e.EventIsSignal = std::find(e.IsSignal.begin(),e.IsSignal.end(), true) != e.IsSignal.end();
 
       // Search the list of reco'd tracks for the proton and pion
       bool found_proton=false,found_pion=false;
 
+        // TODO: Add MCTruth Matching
       for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
 
-         if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 2212 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2) found_proton = true;
-         if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2) found_pion = true;
+          if(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex < 0) continue;
 
+         if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 2212 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2 && e.IsSignal.at(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex)) found_proton = true;
+         if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2 && e.IsSignal.at(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex)) found_pion = true;
       }
 
-      if(found_proton && found_pion) e.GoodReco = true;
-
-   }
-   else return;
-
-
-   //get Lambda decay products
-   for(size_t i_d=0;i_d<e.Decay.size();i_d++){
-
-      if( e.Decay.at(i_d).PDG == 2212 && e.Decay.at(i_d).ModMomentum < 0.3 ) { e.IsSignal = false; e.GoodReco = false; return; }
-      if( e.Decay.at(i_d).PDG == -211 && e.Decay.at(i_d).ModMomentum < 0.1 ) { e.IsSignal = false; e.GoodReco = false; return; }
-
-   }
-
+      e.GoodReco = e.EventIsSignal && found_proton && found_pion; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,21 +207,21 @@ void SelectionManager::UpdateCut(Event e,bool Passed,std::string CutName){
       if(Cuts.at(i_c).fName == CutName) {
 
          Cuts[i_c].fEventsIn += e.Weight;
-         if(e.IsSignal) Cuts[i_c].fSignalEventsIn += e.Weight;
+         if(e.EventIsSignal) Cuts[i_c].fSignalEventsIn += e.Weight;
          if(e.GoodReco) Cuts[i_c].fGoodRecoEventsIn += e.Weight;
 
          Cuts[i_c].fEventsInVar += e.Weight*e.Weight;
-         if(e.IsSignal) Cuts[i_c].fSignalEventsInVar += e.Weight*e.Weight;
+         if(e.EventIsSignal) Cuts[i_c].fSignalEventsInVar += e.Weight*e.Weight;
          if(e.GoodReco) Cuts[i_c].fGoodRecoEventsInVar += e.Weight*e.Weight;
 
          if(Passed){
 
             Cuts[i_c].fEventsOut += e.Weight;
-            if(e.IsSignal) Cuts[i_c].fSignalEventsOut += e.Weight;
+            if(e.EventIsSignal) Cuts[i_c].fSignalEventsOut += e.Weight;
             if(e.GoodReco) Cuts[i_c].fGoodRecoEventsOut += e.Weight;
 
             Cuts[i_c].fEventsOutVar += e.Weight*e.Weight;
-            if(e.IsSignal) Cuts[i_c].fSignalEventsOutVar += e.Weight*e.Weight;
+            if(e.EventIsSignal) Cuts[i_c].fSignalEventsOutVar += e.Weight*e.Weight;
             if(e.GoodReco) Cuts[i_c].fGoodRecoEventsOutVar += e.Weight*e.Weight;
 
          }       
@@ -403,9 +414,9 @@ bool SelectionManager::ConnectednessTest(Event e){
    int proton_index = e.DecayProtonCandidate.Index;
    int pion_index = e.DecayPionCandidate.Index;
 
-   a_CTTest_Plane0.LoadInfo(*e.ConnSeedIndexes_Plane0,*e.ConnOutputIndexes_Plane0,*e.ConnOutputSizes_Plane0,*e.ConnSeedChannels_Plane0);
-   a_CTTest_Plane1.LoadInfo(*e.ConnSeedIndexes_Plane1,*e.ConnOutputIndexes_Plane1,*e.ConnOutputSizes_Plane1,*e.ConnSeedChannels_Plane1);
-   a_CTTest_Plane2.LoadInfo(*e.ConnSeedIndexes_Plane2,*e.ConnOutputIndexes_Plane2,*e.ConnOutputSizes_Plane2,*e.ConnSeedChannels_Plane2);
+   a_CTTest_Plane0.LoadInfo(e.ConnSeedIndexes_Plane0,e.ConnOutputIndexes_Plane0,e.ConnOutputSizes_Plane0,e.ConnSeedChannels_Plane0);
+   a_CTTest_Plane1.LoadInfo(e.ConnSeedIndexes_Plane1,e.ConnOutputIndexes_Plane1,e.ConnOutputSizes_Plane1,e.ConnSeedChannels_Plane1);
+   a_CTTest_Plane2.LoadInfo(e.ConnSeedIndexes_Plane2,e.ConnOutputIndexes_Plane2,e.ConnOutputSizes_Plane2,e.ConnSeedChannels_Plane2);
 
            bool passed = a_CTTest_Plane0.DoTest(muon_index,proton_index,pion_index) 
                       || a_CTTest_Plane1.DoTest(muon_index,proton_index,pion_index) 
@@ -450,11 +461,11 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
    bool isNuBackground = false;
 
    if( thisSampleType == "Data" ) mode = "Data";
-   else  if( e.IsSignal ) mode = "Signal";
-   else if( e.Mode == "HYP") mode = "OtherHYP";
+   else  if( e.EventIsSignal ) mode = "Signal";
+   else if( e.Mode.at(0) == "HYP") mode = "OtherHYP";
    else if( thisSampleType == "EXT" ) mode = "EXT";
    else if( thisSampleType == "Dirt" ) mode = "Dirt";
-   else { mode = e.Mode; isNuBackground = true; }
+   else { mode = e.Mode.at(0); isNuBackground = true; }
 
    if(!isNuBackground){
       Hists_ByType[ mode ]->Fill(variable,weight*e.Weight);
@@ -466,7 +477,7 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
 
 
       if(mode != "ElectronScattering" && mode != "Diffractive" && mode != "Other"){
-         if(e.CCNC == "CC"){
+         if(e.CCNC.at(0) == "CC"){
             Hists_ByProc[ "CC"+mode ]->Fill(variable,weight*e.Weight);
          }
          else Hists_ByProc[ "NC" ]->Fill(variable,weight*e.Weight);
