@@ -2,7 +2,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libHyperon.so)
 R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
 #include "SelectionManager.h"
-#include "EventAssembler2.h"
+#include "EventAssembler.h"
 #include "Cut.h"
 #include "SelectionParameters.h"
 
@@ -17,14 +17,14 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       SelectionParameters P = P_FHC_Tune_325;
 
-      std::string label = "GENIE_FHC";
+      std::string label = "test";
 
       SampleNames.push_back("GENIE Background");
       SampleTypes.push_back("Background");
       SampleFiles.push_back("HyperonTrees_Sys.root");
      
       // Setup selection manager. Set POT to scale sample to, import the BDT weights
-      EventAssembler2 E;
+      EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
       M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
@@ -44,7 +44,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          // Event Loop
          for(int i=0;i<E.GetNEvents();i++){
 
-            Event2 e = E.GetEvent(i);
+            Event e = E.GetEvent(i);
 
             M.SetSignal(e);                
             M.AddEvent(e);       
