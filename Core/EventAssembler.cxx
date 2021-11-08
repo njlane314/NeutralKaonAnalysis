@@ -193,6 +193,10 @@ Event EventAssembler::GetEvent(int i){
 
    t_in->GetEntry(i);
 
+   e.run = run;
+   e.subrun = subrun;
+   e.event = event;
+
    e.Weight = Weight;
    e.Mode = *Mode;
    e.CCNC = *CCNC;

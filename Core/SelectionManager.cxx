@@ -101,14 +101,14 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
 void SelectionManager::AddEvent(Event &e){
 
    // Sample Orthogonality
-   //if(thisSampleType == "Hyperon" && !e.EventHasHyperon){ e.Weight = 0.0; return; }
-   //if(thisSampleType == "Background" && e.EventHasHyperon){ e.Weight = 0.0; return; }
+   if(thisSampleType == "Hyperon" && !e.EventHasHyperon){ e.Weight = 0.0; return; }
+   if(thisSampleType == "Background" && e.EventHasHyperon){ e.Weight = 0.0; return; }
 
-
+/*
    if((thisSampleType == "Background" || thisSampleType == "Hyperon") ||
          (thisSampleType == "Background" && e.Mode == "HYP") ||
          (thisSampleType == "Hyperon" && e.Mode != "HYP")){ e.Weight = 0.0; return; }
-
+*/
 
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
