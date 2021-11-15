@@ -104,11 +104,11 @@ void SelectionManager::AddEvent(Event &e){
    if(thisSampleType == "Hyperon" && !e.EventHasHyperon){ e.Weight = 0.0; return; }
    if(thisSampleType == "Background" && e.EventHasHyperon){ e.Weight = 0.0; return; }
 
-/*
-   if((thisSampleType == "Background" || thisSampleType == "Hyperon") ||
-         (thisSampleType == "Background" && e.Mode == "HYP") ||
-         (thisSampleType == "Hyperon" && e.Mode != "HYP")){ e.Weight = 0.0; return; }
-*/
+   /*
+      if((thisSampleType == "Background" || thisSampleType == "Hyperon") ||
+      (thisSampleType == "Background" && e.Mode == "HYP") ||
+      (thisSampleType == "Hyperon" && e.Mode != "HYP")){ e.Weight = 0.0; return; }
+      */
 
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
@@ -160,29 +160,29 @@ void SelectionManager::SetSignal(Event &e){
                found_pion = true;
 
          }                   
- 
+
          IsSignal_tmp.at(i_tr) = found_proton && found_pion && e.InActiveTPC.at(i_tr);
 
       }
    }
 
-  e.IsSignal = IsSignal_tmp;
+   e.IsSignal = IsSignal_tmp;
 
-  e.EventIsSignal = std::find(e.IsSignal.begin(),e.IsSignal.end(), true) != e.IsSignal.end();
+   e.EventIsSignal = std::find(e.IsSignal.begin(),e.IsSignal.end(), true) != e.IsSignal.end();
 
-      // Search the list of reco'd tracks for the proton and pion
-      bool found_proton=false,found_pion=false;
+   // Search the list of reco'd tracks for the proton and pion
+   bool found_proton=false,found_pion=false;
 
-        // TODO: Add MCTruth Matching
-      for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
+   // TODO: Add MCTruth Matching
+   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
 
-          if(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex < 0) continue;
+      if(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex < 0) continue;
 
-         if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 2212 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2 && e.IsSignal.at(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex)) found_proton = true;
-         if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2 && e.IsSignal.at(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex)) found_pion = true;
-      }
+      if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 2212 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2 && e.IsSignal.at(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex)) found_proton = true;
+      if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2 && e.IsSignal.at(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex)) found_pion = true;
+   }
 
-      e.GoodReco = e.EventIsSignal && found_proton && found_pion; 
+   e.GoodReco = e.EventIsSignal && found_proton && found_pion; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -418,9 +418,9 @@ bool SelectionManager::ConnectednessTest(Event e){
    a_CTTest_Plane1.LoadInfo(e.ConnSeedIndexes_Plane1,e.ConnOutputIndexes_Plane1,e.ConnOutputSizes_Plane1,e.ConnSeedChannels_Plane1);
    a_CTTest_Plane2.LoadInfo(e.ConnSeedIndexes_Plane2,e.ConnOutputIndexes_Plane2,e.ConnOutputSizes_Plane2,e.ConnSeedChannels_Plane2);
 
-           bool passed = a_CTTest_Plane0.DoTest(muon_index,proton_index,pion_index) 
-                      || a_CTTest_Plane1.DoTest(muon_index,proton_index,pion_index) 
-                      || a_CTTest_Plane2.DoTest(muon_index,proton_index,pion_index);
+   bool passed = a_CTTest_Plane0.DoTest(muon_index,proton_index,pion_index) 
+      || a_CTTest_Plane1.DoTest(muon_index,proton_index,pion_index) 
+      || a_CTTest_Plane2.DoTest(muon_index,proton_index,pion_index);
 
    UpdateCut(e,passed,"Connectedness");
 
@@ -430,26 +430,57 @@ bool SelectionManager::ConnectednessTest(Event e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void SelectionManager::SetupHistograms(int n,double low,double high,std::string title){
+void SelectionManager::SetupHistograms(int n,double low,double high,std::string title,int multisim_universes,int single_unisim_universes,int dual_unisim_universes){
 
    fTitle = title;
+   fHistNBins = n;
+   fHistLow = low;
+   fHistHigh = high;
 
    for(size_t i_proc=0;i_proc<Procs.size();i_proc++){
-
       std::string histname = "h_" + Procs.at(i_proc);
-
       Hists_ByProc[Procs.at(i_proc)] = new TH1D(histname.c_str(),fTitle.c_str(),n,low,high);
-
    }
 
    for(size_t i_type=0;i_type<Types.size();i_type++){
-
       std::string histname = "h_ByType_" + Types.at(i_type);
-
       Hists_ByType[Types.at(i_type)] = new TH1D(histname.c_str(),fTitle.c_str(),n,low,high);
-
    }
 
+   /*
+   // Systematic histogram storage
+
+   Multisim_Sys_Hists.resize(1);
+   Multisim_Sys_Hists.at(0).resize(multisim_universes);
+
+   for(size_t i=0;i<Multisim_Sys_Hists.size();i++){
+   std::string histname = "h_multisim_universe_" + std::to_string(i);
+   Multisim_Sys_Hists.at(0).at(i) = new TH1D(histname.c_str(),fTitle.c_str(),n,low,high);
+   }
+   */
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void SelectionManager::AddSystematic(int type,int universes,std::string name){
+
+   if(type == kMultisim){
+      Multisim_Sys_Hists[name].resize(universes);
+      for(size_t i=0;i<universes;i++) 
+         Multisim_Sys_Hists[name].at(i) = new TH1D(("h_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+   }
+
+   else if(type == kSingleUnisim){
+      SingleUnisim_Sys_Hists[name].resize(2);
+      for(size_t i=0;i<2;i++) 
+         SingleUnisim_Sys_Hists[name].at(i) = new TH1D(("h_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+   }
+
+   else if(type == kDualUnisim){
+      DualUnisim_Sys_Hists[name].resize(2);
+      for(size_t i=0;i<2;i++) 
+         DualUnisim_Sys_Hists[name].at(i) = new TH1D(("h_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -492,6 +523,46 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+void SelectionManager::FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights){
+
+   if (Multisim_Sys_Hists.find(name) != Multisim_Sys_Hists.end()){
+
+      if(weights.size() != Multisim_Sys_Hists[name].size()){
+         std::cout << "Event has " << weights.size() << " weights, expecting " << Multisim_Sys_Hists[name].size() << " for systematic " << name << std::endl;
+      }
+
+      for(size_t i=0;i<weights.size();i++)
+         Multisim_Sys_Hists[name].at(i)->Fill(variable,weights.at(i)*e.Weight);
+   }
+
+
+
+   if (SingleUnisim_Sys_Hists.find(name) != SingleUnisim_Sys_Hists.end()){
+
+      if(weights.size() != SingleUnisim_Sys_Hists[name].size()){
+         std::cout << "Event has " << weights.size() << " weights, expecting " << SingleUnisim_Sys_Hists[name].size() << " for systematic " << name << std::endl;
+      }
+
+      for(size_t i=0;i<weights.size();i++)
+         SingleUnisim_Sys_Hists[name].at(i)->Fill(variable,weights.at(i)*e.Weight);
+   }
+
+
+
+   if (DualUnisim_Sys_Hists.find(name) != DualUnisim_Sys_Hists.end()){
+
+      if(weights.size() != DualUnisim_Sys_Hists[name].size()){
+         std::cout << "Event has " << weights.size() << " weights, expecting " << DualUnisim_Sys_Hists[name].size() << " for systematic " << name << std::endl;
+      }
+
+      for(size_t i=0;i<weights.size();i++)
+         DualUnisim_Sys_Hists[name].at(i)->Fill(variable,weights.at(i)*e.Weight);
+   }
+
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 void SelectionManager::DrawHistograms(std::string label,double Scale,double SignalScale){
 
@@ -907,6 +978,98 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 
    c->Close();
 
+}
+
+void SelectionManager::DrawHistogramsSys(std::string name,std::string label){
+
+   system("mkdir -p Plots");
+   system("mkdir -p rootfiles");
+
+   std::vector<TH1D*> ToDraw;
+
+   if (Multisim_Sys_Hists.find(name) != Multisim_Sys_Hists.end()) ToDraw = Multisim_Sys_Hists[name];
+   else if (SingleUnisim_Sys_Hists.find(name) != SingleUnisim_Sys_Hists.end()) ToDraw = SingleUnisim_Sys_Hists[name];
+   else if (DualUnisim_Sys_Hists.find(name) != DualUnisim_Sys_Hists.end()) ToDraw = DualUnisim_Sys_Hists[name];
+
+   THStack *hs = new THStack("hs",fTitle.c_str());
+
+   for(size_t i=0;i<ToDraw.size();i++){
+      ToDraw.at(i)->SetLineColor(kGreen);
+      hs->Add(ToDraw.at(i));
+   }
+
+   TCanvas *c = new TCanvas("c","c");
+
+   hs->Draw("HIST nostack");
+
+   c->Print(("Plots/" + label + "_Sys_" + name + ".png").c_str());
+   c->Print(("Plots/" + label + "_Sys_" + name + ".pdf").c_str());
+   c->Print(("Plots/" + label + "_Sys_" + name + ".C").c_str());
+
+   c->Close();
+}
+
+TMatrixD SelectionManager::GetCovarianceMatrix(std::string name,int type,std::string label){
+
+   std::cout << "Getting Covariance Matrix" << std::endl;
+
+   std::vector<TH1D*> ToUse;
+
+   if (Multisim_Sys_Hists.find(name) != Multisim_Sys_Hists.end()) ToUse = Multisim_Sys_Hists[name];
+   else if (SingleUnisim_Sys_Hists.find(name) != SingleUnisim_Sys_Hists.end()) ToUse = SingleUnisim_Sys_Hists[name];
+   else if (DualUnisim_Sys_Hists.find(name) != DualUnisim_Sys_Hists.end()) ToUse = DualUnisim_Sys_Hists[name];
+
+   TMatrixD Cov(fHistNBins,fHistNBins);
+   TH2D *h_Cov = new TH2D("h_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
+
+   TMatrixD frac_Cov(fHistNBins,fHistNBins);
+   TH2D *h_frac_Cov = new TH2D("h_frac_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
+
+   for(int i_b=1;i_b<fHistNBins+1;i_b++){
+      for(int j_b=1;j_b<fHistNBins+1;j_b++){
+
+         double Cov_ij = 0.0;
+         double Mean_i = 0.0;
+         double Mean_j = 0.0;
+
+         if(type == kMultisim){
+            for(size_t i_u=0;i_u<ToUse.size();i_u++) Mean_i += ToUse.at(i_u)->GetBinContent(i_b)/ToUse.size();
+            for(size_t i_u=0;i_u<ToUse.size();i_u++) Mean_j += ToUse.at(i_u)->GetBinContent(j_b)/ToUse.size();
+            for(size_t i_u=0;i_u<ToUse.size();i_u++) Cov_ij += (ToUse.at(i_u)->GetBinContent(i_b) - Mean_i)*(ToUse.at(i_u)->GetBinContent(j_b) - Mean_j)/(ToUse.size()-1);
+            Cov[i_b-1][j_b-1] = Cov_ij;
+            frac_Cov[i_b-1][j_b-1] = Cov_ij/Mean_i/Mean_j; 
+            //std::cout << i_b << " " << j_b << " " << Cov_ij << std::endl;
+            h_Cov->SetBinContent(i_b,j_b,Cov_ij);
+            h_frac_Cov->SetBinContent(i_b,j_b,Cov_ij/Mean_i/Mean_j);
+         }
+
+      }
+
+   }
+
+   //Cov.Print();
+
+   TCanvas *c = new TCanvas("c","c");
+
+   h_Cov->SetContour(100);
+   h_Cov->Draw("colz");
+   h_Cov->SetStats(0);
+   c->Print(("Plots/CovMatrix_" + label + "_Sys_" + name + ".png").c_str());
+   c->Print(("Plots/CovMatrix_" + label + "_Sys_" + name + ".pdf").c_str());
+   c->Print(("Plots/CovMatrix_" + label + "_Sys_" + name + ".C").c_str());
+   c->Clear();
+
+   h_frac_Cov->SetContour(100);
+   h_frac_Cov->Draw("colz");
+   h_frac_Cov->SetStats(0);
+   c->Print(("Plots/frac_CovMatrix_" + label + "_Sys_" + name + ".png").c_str());
+   c->Print(("Plots/frac_CovMatrix_" + label + "_Sys_" + name + ".pdf").c_str());
+   c->Print(("Plots/frac_CovMatrix_" + label + "_Sys_" + name + ".C").c_str());
+   c->Clear();
+
+   c->Close();
+
+   return Cov;
 }
 
 #endif

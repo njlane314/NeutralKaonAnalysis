@@ -14,6 +14,7 @@
 #include "TGraph.h"
 #include <TROOT.h>
 #include <TStyle.h>
+#include "TMatrix.h"
 
 // Local includes
 #include "FluxWeight.h"
@@ -34,6 +35,7 @@
 #include "CTTest.h"
 
 enum Generators {kGENIE,kNuWro};
+enum Systemtic_Types {kMultisim,kSingleUnisim,kDualUnisim};
 
 class SelectionManager {
 
@@ -125,19 +127,34 @@ class SelectionManager {
     private:
 
       std::string fTitle;
+      int fHistNBins;
+      int fHistLow;
+      int fHistHigh;
+
       bool fHasData=false;
 
       std::map< std::string , TH1D* > Hists_ByProc;
       std::map< std::string , TH1D* > Hists_ByType;
+
+      std::map<std::string,std::vector<TH1D*>> Multisim_Sys_Hists; // histogram in different multisim universes
+      std::map<std::string,std::vector<TH1D*>> SingleUnisim_Sys_Hists; // histogram in different single univese unisims
+      std::map<std::string,std::vector<TH1D*>> DualUnisim_Sys_Hists;  // histogram in different two universe multisims
 
       const std::vector<std::string> Types = { "Signal","OtherHYP","OtherNu","EXT","Dirt","Data" };
       const std::vector<std::string> Procs = { "Signal","OtherHYP","EXT","Dirt","Data","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","ElectronScattering","Diffractive","Other" };
 
   public:
 
-      void SetupHistograms(int n=20,double low=0.0,double high=1.0,std::string title="");
+     
+      void AddSystematic(int type,int universes,std::string name);
+      void FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights);
+      void DrawHistogramsSys(std::string name,std::string label="Hists");
+      TMatrixD GetCovarianceMatrix(std::string name,int type,std::string label="Hists");
+
+      void SetupHistograms(int n,double low,double high,std::string title="",int multisim_universes=0,int single_unisim_universes=0,int dual_unisim_universes=0);
       void FillHistograms(Event e,double variable,double weight=1.0);
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
+   
 
 };
 
