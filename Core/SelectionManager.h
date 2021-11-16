@@ -128,8 +128,8 @@ class SelectionManager {
 
       std::string fTitle;
       int fHistNBins;
-      int fHistLow;
-      int fHistHigh;
+      double fHistLow;
+      double fHistHigh;
 
       bool fHasData=false;
 
@@ -140,21 +140,22 @@ class SelectionManager {
       std::map<std::string,std::vector<TH1D*>> SingleUnisim_Sys_Hists; // histogram in different single univese unisims
       std::map<std::string,std::vector<TH1D*>> DualUnisim_Sys_Hists;  // histogram in different two universe multisims
 
-      const std::vector<std::string> Types = { "Signal","OtherHYP","OtherNu","EXT","Dirt","Data" };
-      const std::vector<std::string> Procs = { "Signal","OtherHYP","EXT","Dirt","Data","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","ElectronScattering","Diffractive","Other" };
+      const std::vector<std::string> Types = { "Signal","OtherHYP","OtherNu","EXT","Dirt","All","Data" };
+      const std::vector<std::string> Procs = { "Signal","OtherHYP","EXT","Dirt","Data","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","ElectronScattering","Diffractive","Other","All" };
 
   public:
 
      
       void AddSystematic(int type,int universes,std::string name);
       void FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights);
-      void DrawHistogramsSys(std::string name,std::string label="Hists");
+      void DrawHistogramsSys(std::string name,int type,std::string label="Hists");
       TMatrixD GetCovarianceMatrix(std::string name,int type,std::string label="Hists");
 
       void SetupHistograms(int n,double low,double high,std::string title="",int multisim_universes=0,int single_unisim_universes=0,int dual_unisim_universes=0);
       void FillHistograms(Event e,double variable,double weight=1.0);
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
    
+      double GetPrediction(int bin);
 
 };
 

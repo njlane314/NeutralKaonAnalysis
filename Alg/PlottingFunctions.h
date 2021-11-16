@@ -22,7 +22,7 @@ TH1D * MakeErrorBand(std::map<std::string,TH1D*> hists){
 
       for (it = hists.begin(); it != hists.end(); it++)
       {
-         if(it->first == "Data") continue;
+         if(it->first == "Data" || it->first == "All") continue;
          events += it->second->GetBinContent(i_b);
          variance += it->second->GetBinError(i_b)*it->second->GetBinError(i_b);
       }

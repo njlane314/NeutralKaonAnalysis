@@ -35,6 +35,8 @@ enum beamline_vars { bv_HCU,  // HC +2kA
 
  inline std::string beamline_dials[MAX_beamline_vars/2] = {"Horn Current","Horn 1 X Position","Horn 1 Y Position","Beam Spot Size","Horn 2 X Position","Horn 2 Y Position","Horn Water","Beam Shift X","Beam Shift Y","Target Position Z"}; 
 
+inline std::string beamline_labels[MAX_beamline_vars/2] = {"HC","H1X","H1Y","BSS","H2X","H2Y","HW","BSX","BSY","TPZ"};
+
 class FluxWeighter {
 
    public:
