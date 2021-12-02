@@ -18,7 +18,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       SampleNames.push_back("GENIE Background");
       SampleTypes.push_back("Background");
-      SampleFiles.push_back("HyperonTrees_Sys.root");
+      SampleFiles.push_back("HyperonTrees.root");
 
       SelectionParameters P = P_FHC_Tune_325;
 

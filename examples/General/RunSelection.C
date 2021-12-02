@@ -21,7 +21,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       SampleNames.push_back("GENIE Background");
       SampleTypes.push_back("Background");
-      SampleFiles.push_back("HyperonTrees_Sys.root");
+      SampleFiles.push_back("HyperonTreesroot");
 
       // Setup selection manager. Set POT to scale sample to, import the BDT weights
       EventAssembler E;

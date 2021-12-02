@@ -20,7 +20,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       SampleNames.push_back("GENIE Background");
       SampleTypes.push_back("Background");
-      SampleFiles.push_back("HyperonTrees_Sys.root");
+      SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Background_prodgenie_numi_uboone_overlay_fhc_mcc9_run1_v28_sample2.root");
 
       SelectionParameters P = P_FHC_Tune_325;
 
@@ -66,36 +66,29 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          // Event Loop
          for(int i=0;i<E.GetNEvents();i++){
 
-            std::cout << "Processing event " << i << std::endl;
-
             Event e = E.GetEvent(i);
-
 
             M.SetSignal(e);                
             M.AddEvent(e);
 
-            std::cout << "Added event" << std::endl;
-
             //////////// Put your selection here //////////////
 
-            //if(!M.FiducialVolumeCut(e)) continue;
-            //if(!M.TrackCut(e)) continue;
-            //if(!M.ShowerCut(e)) continue;
-            //if(!M.ChooseMuonCandidate(e)) continue;
-            //if(!M.ChooseProtonPionCandidates(e)) continue;
-            //if(!M.AnalysisBDTCut(e)) continue;       
+            if(!M.FiducialVolumeCut(e)) continue;
+            if(!M.TrackCut(e)) continue;
+            if(!M.ShowerCut(e)) continue;
+            if(!M.ChooseMuonCandidate(e)) continue;
+            if(!M.ChooseProtonPionCandidates(e)) continue;
+            if(!M.AnalysisBDTCut(e)) continue;       
             //if(!M.EventListCut(e)) continue;
 
             ///////////////////////////////////////////////////
 
             G.LoadEvent(e);
 
-            std::cout << "Loaded event" << std::endl;
-
-            double TunedCentralValue = G.GetWeights("TunedCentralValue_UBGenie").at(0);             
+            double TunedCentralValue = G.GetWeights("TunedCentralValue_UBGenie").at(0);            
 
             if(!(TunedCentralValue > 0)) continue;
-
+            
             // Multisim weights
             std::vector<double> weights_Gen_Multisim = G.GetWeights("All_UBGenie");
 

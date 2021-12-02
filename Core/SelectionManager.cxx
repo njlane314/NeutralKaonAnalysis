@@ -113,6 +113,7 @@ void SelectionManager::AddEvent(Event &e){
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
       e.Weight *= a_FluxWeightCalc.GetFluxWeight(e);        
+      //std::cout << "SelectionManager: Loading event in Gen/G4 weight calc" << std::endl;
       a_GenG4WeightCalc.LoadEvent(e);
       e.Weight *= a_GenG4WeightCalc.GetCVWeight();
    }
@@ -460,7 +461,7 @@ void SelectionManager::AddSystematic(int type,int universes,std::string name){
    }
 
    else if(type == kSingleUnisim){
-      SingleUnisim_Sys_Hists[name].resize(2);
+      SingleUnisim_Sys_Hists[name].resize(1);
       for(size_t i=0;i<1;i++) 
          SingleUnisim_Sys_Hists[name].at(i) = new TH1D(("h_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
    }
@@ -826,7 +827,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 
       std::string thisProc = Procs.at(i_proc);
 
-      if(thisProc == "Signal" || thisProc == "OtherHYP" || thisProc == "Dirt" || thisProc == "EXT" || thisProc == "Data") continue;
+      if(thisProc == "Signal" || thisProc == "OtherHYP" || thisProc == "Dirt" || thisProc == "EXT" || thisProc == "Data" || thisProc == "All") continue;
 
       Hists_ByProc[thisProc]->SetFillColor(i_color);
       Hists_ByProc[thisProc]->SetFillStyle(3104);
@@ -1012,7 +1013,7 @@ void SelectionManager::DrawHistogramsSys(std::string name,int type,std::string l
 
 TMatrixD SelectionManager::GetCovarianceMatrix(std::string name,int type,std::string label){
 
-   std::cout << "Getting Covariance Matrix" << std::endl;
+   std::cout << "Getting Covariance Matrix for " << name << std::endl;
 
    std::vector<TH1D*> ToUse;
 
@@ -1037,10 +1038,6 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string name,int type,std::st
             for(size_t i_u=0;i_u<ToUse.size();i_u++) Mean_i += ToUse.at(i_u)->GetBinContent(i_b)/ToUse.size();
             for(size_t i_u=0;i_u<ToUse.size();i_u++) Mean_j += ToUse.at(i_u)->GetBinContent(j_b)/ToUse.size();
             for(size_t i_u=0;i_u<ToUse.size();i_u++) Cov_ij += (ToUse.at(i_u)->GetBinContent(i_b) - Mean_i)*(ToUse.at(i_u)->GetBinContent(j_b) - Mean_j)/(ToUse.size()-1);
-            Cov[i_b-1][j_b-1] = Cov_ij;
-            frac_Cov[i_b-1][j_b-1] = Cov_ij/Mean_i/Mean_j; 
-            h_Cov->SetBinContent(i_b,j_b,Cov_ij);
-            h_frac_Cov->SetBinContent(i_b,j_b,Cov_ij/Mean_i/Mean_j);
          }
 
          if(type == kSingleUnisim){
@@ -1050,9 +1047,15 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string name,int type,std::st
          } 
 
          if(type == kDualUnisim){
+            Mean_i = Hists_ByType["All"]->GetBinContent(i_b);
+            Mean_j = Hists_ByType["All"]->GetBinContent(j_b);
             Cov_ij = (ToUse.at(1)->GetBinContent(i_b) - ToUse.at(0)->GetBinContent(i_b))*(ToUse.at(1)->GetBinContent(j_b) - ToUse.at(0)->GetBinContent(j_b))/4;
          } 
 
+            Cov[i_b-1][j_b-1] = Cov_ij;
+            frac_Cov[i_b-1][j_b-1] = Cov_ij/Mean_i/Mean_j; 
+            h_Cov->SetBinContent(i_b,j_b,Cov_ij);
+            h_frac_Cov->SetBinContent(i_b,j_b,Cov_ij/Mean_i/Mean_j);
       }
    }
 

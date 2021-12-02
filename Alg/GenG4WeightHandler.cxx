@@ -18,7 +18,6 @@ void GenG4WeightHandler::LoadEvent(Event e){
    theDials = &e.SysDials;
    theWeights = &e.SysWeights;   
 
-
    // Check weight calculators were run
    if(theDials == nullptr || theWeights == nullptr){
       std::cout << "No weight products found, not loading Gen/G4 weights" << std::endl;
@@ -59,8 +58,10 @@ void GenG4WeightHandler::OrganiseWeights(){
 
    }
    */
-
+/*
    for(size_t i_tr=0;i_tr<theWeights->size();i_tr++){
+
+        std::cout << "Getting weights for truth " << i_tr << std::endl;
 
       // Collate the weights
       for(size_t i=0;i<theDials->size();i++){
@@ -93,10 +94,25 @@ void GenG4WeightHandler::OrganiseWeights(){
       }
 
    }
+   */
+
+   // remove unphysical weights
+   for(size_t i_d=0;i_d<theDials->size();i_d++){
+      for(size_t i_tr=0;i_tr<theWeights->size();i_tr++){
+         for(size_t i_u=0;i_u<theWeights->at(i_tr).at(i_d).size();i_u++){
+
+            if (std::isinf(theWeights->at(i_tr).at(i_d).at(i_u))) theWeights->at(i_tr).at(i_d).at(i_u) = 1.0; 
+            if (std::isnan(theWeights->at(i_tr).at(i_d).at(i_u)) == 1) theWeights->at(i_tr).at(i_d).at(i_u) = 1.0;
+            if (theWeights->at(i_tr).at(i_d).at(i_u) > 100) theWeights->at(i_tr).at(i_d).at(i_u) = 1.0;
+
+
+         }
+      }
+   }
 
    // Replace original list of weights with collated list
-   *theDials = Dials_tmp;
-   *theWeights = Weights_tmp;
+   //*theDials = Dials_tmp;
+   //*theWeights = Weights_tmp;
 
 }
 

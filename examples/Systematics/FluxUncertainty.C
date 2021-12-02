@@ -24,11 +24,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       SampleNames.push_back("GENIE Background");
       SampleTypes.push_back("Background");
-      SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Background_Test.root");
-
-      SampleNames.push_back("GENIE Hyperon");
-      SampleTypes.push_back("Hyperon");
-      SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Hyperon_cthorpe_prod_numi_uboone_overlay_fhc_mcc9_run1_v51_GENIE_hyperon_real_GENIE_reco2_reco2.root");
+      SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Background_prodgenie_numi_uboone_overlay_fhc_mcc9_run1_v28_sample2.root");
 
       SelectionParameters P = P_FHC_Tune_325;
 

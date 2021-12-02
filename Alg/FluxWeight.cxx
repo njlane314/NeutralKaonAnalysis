@@ -147,13 +147,10 @@ FluxWeighter::~FluxWeighter(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void FluxWeighter::PrepareSysUniv(int nuniv){
+void FluxWeighter::PrepareHPUniv(int nuniv){
 
    std::cout << "Loading Flux HP_Universes" << std::endl;
 
-   // Load the hadron production universes   
-
-   std::cout << "Loading hadron production universes" << std::endl;
 
    hist_sys_ratio.resize(flav_str.size());
    
@@ -175,23 +172,27 @@ void FluxWeighter::PrepareSysUniv(int nuniv){
 
    HP_Universes = nuniv;
 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void FluxWeighter::PrepareBeamlineUniv(){
+
    // Load the beamline variations
 
    std::cout << "Loading beamline variation universes" << std::endl;
   
-   //f_beamline_vars.resize(MAX_beamline_vars);  
+   //f_beamline_vars.resize(Beamline_Universes);  
    f_beamline_vars = TFile::Open("/home/lar/cthorpe/uboone/HyperonSelection/Fluxes/NuMI_Beamline_Variations_to_CV_Ratios.root");
    hist_beamline_vars_ratio.resize(flav_str.size());
 
    for (unsigned int f = 0; f < flav_str.size(); f++){       
-      hist_beamline_vars_ratio.at(f).resize(MAX_beamline_vars);  
-      for(unsigned int bv=0;bv<MAX_beamline_vars;bv++){
+      hist_beamline_vars_ratio.at(f).resize(Beamline_Universes);  
+      for(unsigned int bv=0;bv<Beamline_Universes;bv++){
          std::string histname = "EnergyTheta2D/ratio_run" + std::to_string(bv+1) + "_" + fRunModeCaps + "_" + flav_str.at(f) + "_CV_AV_TPC_2D"; 
          hist_beamline_vars_ratio.at(f).at(bv) = (TH2D*) f_beamline_vars->Get(histname.c_str());
       }
    }
-
-   Beamline_Universes = MAX_beamline_vars;
 
 }
 
