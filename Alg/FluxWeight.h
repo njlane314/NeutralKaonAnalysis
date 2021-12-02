@@ -62,6 +62,8 @@ class FluxWeighter {
 
    private:
 
+      std::string FLUX_DIR;
+
       int fRunPeriod;
       std::string fRunMode;
       std::string fRunModeCaps;

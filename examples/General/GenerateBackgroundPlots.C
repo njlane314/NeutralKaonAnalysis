@@ -18,7 +18,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       SampleNames.push_back("GENIE Background");
       SampleTypes.push_back("Background");
-      SampleFiles.push_back("HyperonTrees.root");
+      SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Background_Test.root");
 
       SelectionParameters P = P_FHC_Tune_325;
 
@@ -28,9 +28,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
-      M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
+      //M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
 
-      M.SetupHistograms(100,1.05,1.5,";Invariant Mass (GeV/c^{2});Events");
+      M.SetupHistograms(100,0.0,5.0,";Neutrino Energy (GeV);Events");
 
       // Sample Loop
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
@@ -43,6 +43,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          // Event Loop
          for(int i=0;i<E.GetNEvents();i++){
 
+            if(i % 1000 == 0) std::cout << i << "/" << E.GetNEvents() << std::endl;
+
             Event e = E.GetEvent(i);
 
             M.SetSignal(e);                
@@ -52,11 +54,13 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             if(!M.TrackCut(e)) continue;
             if(!M.ShowerCut(e)) continue;
             if(!M.ChooseMuonCandidate(e)) continue;
-            if(!M.ChooseProtonPionCandidates(e)) continue;
+            //if(!M.ChooseProtonPionCandidates(e)) continue;
 
-            double W = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate);
+           double E = e.Neutrino.at(0).E;
 
-            M.FillHistograms(e,W);                
+           // double W = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate);
+
+            M.FillHistograms(e,E);                
 
          }
 
