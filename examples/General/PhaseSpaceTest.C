@@ -21,11 +21,11 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       BuildTunes();
       //ImportSamples(sNuWroFullFHC);
 
-      SampleNames.push_back("GENIE Background");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("HyperonTrees_Sys.root");
+      SampleNames.push_back("GENIE Hyperon");
+      SampleTypes.push_back("Hyperon");
+      SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Hyperon_cthorpe_prod_numi_uboone_overlay_fhc_mcc9_run1_v51_GENIE_hyperon_real_GENIE_reco2_reco2.root");
 
-      std::string label = "NuWro_FHC";
+      std::string label = "test";
 
       double POT = 1e21; // POT to scale samples to
       std::string Mode = "FHC";
@@ -36,8 +36,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
-      M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
-      M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
+      //M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
+      //M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -570,22 +570,18 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
 
          E.SetFile(SampleFiles.at(i_s));
-         if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT(),EventLists.at(i_s));
-         else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT,EventLists.at(i_s));
-         else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),EXT_POT,EventLists.at(i_s));
+         if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
+         else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT);
+         else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),EXT_POT);
 
          for(int i=0;i<E.GetNEvents();i++){
 
             //get an event
             Event e = E.GetEvent(i);
 
-            if((SampleTypes.at(i_s) == "Background" || SampleTypes.at(i_s) == "Hyperon") && e.NMCTruths > 1) continue;
-            if(SampleTypes.at(i_s) == "Background" && e.Mode == "HYP") continue;
-            if(SampleTypes.at(i_s) == "Hyperon" && e.Mode != "HYP") continue;
-
             M.SetSignal(e);
 
-            if(!e.IsSignal) continue;
+            if(!e.EventIsSignal) continue;
 
             //update metadata
             M.AddEvent(e);
@@ -648,10 +644,10 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             if(passed_Tracks) passed_Showers = M.ShowerCut(e);
             if(passed_Showers) passed_MuonID = M.ChooseMuonCandidate(e);
             if(passed_MuonID) passed_TrackLengths = M.TrackLengthCut(e);
-            if(passed_TrackLengths) passed_Selector = M.ChooseProtonPionCandidates(e); 
-            if(passed_Selector) passed_Analysis = M.AnalysisBDTCut(e);
-            if(passed_Analysis) passed_Connectedness = M.EventListCut(e);
-            if(passed_Connectedness) passed_All = true;
+            //if(passed_TrackLengths) passed_Selector = M.ChooseProtonPionCandidates(e); 
+            //if(passed_Selector) passed_Analysis = M.AnalysisBDTCut(e);
+            //if(passed_Analysis) passed_Connectedness = M.EventListCut(e);
+            //if(passed_Connectedness) passed_All = true;
 
             // Entire Selection         
             h_Q2_All->Fill(Q2,e.Weight);
