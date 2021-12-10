@@ -28,10 +28,10 @@ void GenG4WeightHandler::LoadEvent(Event e){
 
    theWeightMap.resize(theWeights->size());
 
-   for(size_t i_tr=0;i_tr<theWeights->size();i_tr++){
+   for(size_t i_tr=0;i_tr<theWeights->size();i_tr++)        
+      for(size_t i=0;i<theDials->size();i++)
+         theWeightMap.at(i_tr)[theDials->at(i)] = theWeights->at(i_tr).at(i);
 
-      for(size_t i=0;i<theDials->size();i++) theWeightMap.at(i_tr)[theDials->at(i)] = theWeights->at(i_tr).at(i);
-   }
 
 }
 
@@ -148,6 +148,9 @@ double GenG4WeightHandler::GetCVWeight(){
       // return product of the three CV weights
       weight *= thisweight;
    }
+
+   std::cout << weight << std::endl;
+
    return weight;
 }
 

@@ -22,10 +22,10 @@ inline std::string GenUnisim_dials[MAX_GenUnisims-1] = {"CCQE Axial FF Shape","M
 inline std::string GenUnisim_names[MAX_GenUnisims-1] = {"AxFFCCQEshape_UBGenie","DecayAngMEC_UBGenie","NormCCCOH_UBGenie","NormNCCOH_UBGenie","ThetaDelta2NRad_UBGenie","Theta_Delta2Npi_UBGenie","VecFFCCQEshape_UBGenie","XSecShape_CCMEC_UBGenie","RPA_CCQE_UBGenie"};
 
 
-enum G4Multisims { g4v_Proton,g4v_PiPlus,g4p_PiMinus,MAX_G4Multisims };
+enum G4Multisims { g4v_Proton,g4v_PiPlus,g4v_PiMinus,g4v_Neutron,g4v_Lambda,MAX_G4Multisims };
 
-inline std::string G4Multisim_dials[MAX_G4Multisims] = {"Proton Reinteractions","PiPlus Reinteractions","PiMinus Reinteractions"};
-inline std::string G4Multisim_names[MAX_G4Multisims] = {"reinteractions_proton_Geant4","reinteractions_piplus_Geant4","reinteractions_piminus_Geant4"};
+inline std::string G4Multisim_dials[MAX_G4Multisims] = {"Proton Reinteractions","PiPlus Reinteractions","PiMinus Reinteractions","Neutron Reinteractions","Lambda Reinteractions"};
+inline std::string G4Multisim_names[MAX_G4Multisims] = {"reinteractions_proton_Geant4","reinteractions_piplus_Geant4","reinteractions_piminus_Geant4","reinteractions_neutron_Geant4","reinteractions_Lambda_Geant4"};
 
 class GenG4WeightHandler {
 

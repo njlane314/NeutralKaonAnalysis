@@ -143,6 +143,9 @@ class SelectionManager {
       const std::vector<std::string> Types = { "Signal","OtherHYP","OtherNu","EXT","Dirt","All","Data" };
       const std::vector<std::string> Procs = { "Signal","OtherHYP","EXT","Dirt","Data","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","ElectronScattering","Diffractive","Other","All" };
 
+      TFile *f_Hists = nullptr;
+      void OpenHistFile(std::string label="Hists");
+
   public:
 
      
@@ -155,7 +158,7 @@ class SelectionManager {
       void FillHistograms(Event e,double variable,double weight=1.0);
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
    
-      double GetPrediction(int bin);
+      double GetPrediction(int bin,std::string type="");
 
 };
 

@@ -19,9 +19,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       std::string label = "test";
 
-      SampleNames.push_back("GENIE Background");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("HyperonTreesroot");
+      SampleNames.push_back("GENIE Dirt");
+      SampleTypes.push_back("Dirt");
+      SampleFiles.push_back("analysisOutputFHC_Overlay_GENIE_Dirt_CV_prodgenie_numi_uboone_overlay_dirt_fhc_mcc9_run1_v28_sample1.root");
 
       // Setup selection manager. Set POT to scale sample to, import the BDT weights
       EventAssembler E;

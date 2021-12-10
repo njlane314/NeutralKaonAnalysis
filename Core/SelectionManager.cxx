@@ -101,8 +101,8 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
 void SelectionManager::AddEvent(Event &e){
 
    // Sample Orthogonality
-   if(thisSampleType == "Hyperon" && !e.EventHasHyperon){ e.Weight = 0.0; return; }
-   if(thisSampleType == "Background" && e.EventHasHyperon){ e.Weight = 0.0; return; }
+   //if(thisSampleType == "Hyperon" && !e.EventHasHyperon){ e.Weight = 0.0; return; }
+   //if(thisSampleType == "Background" && e.EventHasHyperon){ e.Weight = 0.0; return; }
 
    /*
       if((thisSampleType == "Background" || thisSampleType == "Hyperon") ||
@@ -482,10 +482,10 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
    bool isNuBackground = false;
 
    if( thisSampleType == "Data" ) mode = "Data";
-   else  if( e.EventIsSignal ) mode = "Signal";
-   else if( e.Mode.at(0) == "HYP") mode = "OtherHYP";
    else if( thisSampleType == "EXT" ) mode = "EXT";
    else if( thisSampleType == "Dirt" ) mode = "Dirt";
+   else  if( e.EventIsSignal ) mode = "Signal";
+   else if( e.Mode.at(0) == "HYP") mode = "OtherHYP";
    else { mode = e.Mode.at(0); isNuBackground = true; }
 
    if(!isNuBackground){
@@ -559,10 +559,11 @@ void SelectionManager::FillHistogramsSys(Event e,double variable,std::string nam
 
 void SelectionManager::DrawHistograms(std::string label,double Scale,double SignalScale){
 
+   OpenHistFile(label);
+
    double y_limit = -1;
 
    system("mkdir -p Plots");
-   system("mkdir -p rootfiles");
 
    // Create weight sums
 
@@ -627,6 +628,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    l->SetNColumns(3);
 
    TH1D *h_errors = MakeErrorBand(Hists_ByType);
+   h_errors->Write("ErrorBand");
    h_errors->SetTitle(hs_Type->GetTitle());
    h_errors->SetFillStyle(3253);
    h_errors->SetFillColor(1);
@@ -640,6 +642,17 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    h_errors->GetXaxis()->SetLabelSize(0.045);
    h_errors->GetYaxis()->SetLabelSize(0.045);
 
+   // Make stat error covariance matrix
+   TH2D *h_Stat_Cov = new TH2D("h_Stat_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
+   TH2D *h_Stat_FCov = new TH2D("h_Stat_FCov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
+   
+   for(int i_b=1;i_b<fHistNBins+1;i_b++){
+      h_Stat_Cov->SetBinContent(i_b,i_b,h_errors->GetBinError(i_b));
+      h_Stat_FCov->SetBinContent(i_b,i_b,h_errors->GetBinError(i_b)/h_errors->GetBinContent(i_b));
+   }
+
+   h_Stat_Cov->Write("Cov_Stat");
+   h_Stat_FCov->Write("FCov_Stat");
 
    // Draw histograms by event category
 
@@ -649,26 +662,31 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    if(fHasData) l->AddEntry(Hists_ByType["Signal"],("Signal = "+ to_string_with_precision(Hists_ByType["Signal"]->Integral(),1)).c_str(),"F");
    else if(SignalScale != 1.0) l->AddEntry(Hists_ByType["Signal"],("Signal #times " + to_string_with_precision(SignalScale,0)).c_str() ,"F");
    else l->AddEntry(Hists_ByType["Signal"],"Signal","F");
+   Hists_ByType["Signal"]->Write("Signal");
 
    Hists_ByType["OtherHYP"]->SetFillColor(46);
    hs_Type->Add(Hists_ByType["OtherHYP"],"HIST");
    if(fHasData) l->AddEntry(Hists_ByType["OtherHYP"],("Other HYP = "+ to_string_with_precision(Hists_ByType["OtherHYP"]->Integral(),1)).c_str(),"F");
    else l->AddEntry(Hists_ByType["OtherHYP"],"Other Hyperon","F");
+    Hists_ByType["OtherHYP"]->Write("OtherHYP");
 
    Hists_ByType["OtherNu"]->SetFillColor(38);
    hs_Type->Add(Hists_ByType["OtherNu"],"HIST");
    if(fHasData) l->AddEntry(Hists_ByType["OtherNu"],("Other #nu = "+ to_string_with_precision(Hists_ByType["OtherNu"]->Integral(),1)).c_str(),"F");
    else l->AddEntry(Hists_ByType["OtherNu"],"Other #nu","F");
+   Hists_ByType["OtherNu"]->Write("OtherNu");
 
    Hists_ByType["Dirt"]->SetFillColor(30);
    hs_Type->Add(Hists_ByType["Dirt"],"HIST");
    if(fHasData) l->AddEntry(Hists_ByType["Dirt"],("Dirt = "+ to_string_with_precision(Hists_ByType["Dirt"]->Integral(),1)).c_str(),"F");
    else l->AddEntry(Hists_ByType["Dirt"],"Dirt","F");
+   Hists_ByType["Dirt"]->Write("Dirt");
 
    Hists_ByType["EXT"]->SetFillColor(15);
    hs_Type->Add(Hists_ByType["EXT"],"HIST");
    if(fHasData) l->AddEntry(Hists_ByType["EXT"],("EXT = "+ to_string_with_precision(Hists_ByType["EXT"]->Integral(),1)).c_str(),"F");
    else l->AddEntry(Hists_ByType["EXT"],"EXT","F");
+   Hists_ByType["EXT"]->Write("EXT");
 
    if(fHasData){
 
@@ -677,6 +695,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
       Hists_ByType["Data"]->SetMarkerStyle(20);
       Hists_ByType["Data"]->SetMarkerColor(1);
       l->AddEntry(Hists_ByType["Data"],("Data = "+ to_string_with_precision(Hists_ByType["Data"]->Integral(),1)).c_str(),"P");
+      Hists_ByType["Data"]->Write("Data");
 
    }
 
@@ -1005,7 +1024,7 @@ void SelectionManager::DrawHistogramsSys(std::string name,int type,std::string l
    c->Print(("Plots/" + label + "_Sys_" + name + ".png").c_str());
    c->Print(("Plots/" + label + "_Sys_" + name + ".pdf").c_str());
    c->Print(("Plots/" + label + "_Sys_" + name + ".C").c_str());
-
+   
    c->Close();
 }
 
@@ -1014,6 +1033,8 @@ void SelectionManager::DrawHistogramsSys(std::string name,int type,std::string l
 TMatrixD SelectionManager::GetCovarianceMatrix(std::string name,int type,std::string label){
 
    std::cout << "Getting Covariance Matrix for " << name << std::endl;
+
+   OpenHistFile(label);
 
    std::vector<TH1D*> ToUse;
 
@@ -1066,17 +1087,19 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string name,int type,std::st
    h_Cov->SetContour(100);
    h_Cov->Draw("colz");
    h_Cov->SetStats(0);
-   c->Print(("Plots/CovMatrix_" + label + "_Sys_" + name + ".png").c_str());
-   c->Print(("Plots/CovMatrix_" + label + "_Sys_" + name + ".pdf").c_str());
-   c->Print(("Plots/CovMatrix_" + label + "_Sys_" + name + ".C").c_str());
+   h_Cov->Write(("Cov_" + name).c_str());
+   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + name + ".png").c_str());
+   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + name + ".C").c_str());
+   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + name + ".pdf").c_str());
    c->Clear();
 
    h_frac_Cov->SetContour(100);
    h_frac_Cov->Draw("colz");
    h_frac_Cov->SetStats(0);
-   c->Print(("Plots/frac_CovMatrix_" + label + "_Sys_" + name + ".png").c_str());
-   c->Print(("Plots/frac_CovMatrix_" + label + "_Sys_" + name + ".pdf").c_str());
-   c->Print(("Plots/frac_CovMatrix_" + label + "_Sys_" + name + ".C").c_str());
+   h_frac_Cov->Write(("FCov_" + name).c_str());
+   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + name + ".png").c_str());
+   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + name + ".C").c_str());
+   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + name + ".pdf").c_str());
    c->Clear();
 
    c->Close();
@@ -1086,8 +1109,28 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string name,int type,std::st
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-double SelectionManager::GetPrediction(int bin){
-return Hists_ByType["All"]->GetBinContent(bin);
+double SelectionManager::GetPrediction(int bin,std::string type){
+
+   if(type=="") return Hists_ByType["All"]->GetBinContent(bin);
+   else if(Hists_ByType.find(type) != Hists_ByType.end()) return Hists_ByType[type]->GetBinContent(bin);
+   else if(Hists_ByProc.find(type) != Hists_ByProc.end()) return Hists_ByProc[type]->GetBinContent(bin);
+
+   std::cout << "Type/Proc " << type << " not found, returning -1" << std::endl;
+   return -1;
+
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void SelectionManager::OpenHistFile(std::string label){
+
+   if(f_Hists == nullptr){
+      system("mkdir -p rootfiles");
+      f_Hists = TFile::Open(("rootfiles/" + label + "_Histograms.root").c_str(),"RECREATE");
+   }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif
