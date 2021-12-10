@@ -7,6 +7,8 @@
 
 FluxWeighter::FluxWeighter(int RunPeriod){
 
+   FLUX_DIR = std::string(std::getenv("HYP_TOP")) + "Fluxes/";
+
    // Presently only have weights for run 1 and 3
    if(RunPeriod != 1 && RunPeriod != 3){
       std::cout << "Requesting flux weights for unknown run period, setting all flux weights to 1" << std::endl;
@@ -20,9 +22,9 @@ FluxWeighter::FluxWeighter(int RunPeriod){
       else if(RunPeriod == 3){ fRunMode = "rhc"; fRunModeCaps = "RHC"; }
 
    if (fRunPeriod == 1)
-        f_flux = TFile::Open("/home/lar/cthorpe/uboone/HyperonSelection/Fluxes/output_uboone_fhc_run0_merged.root", "READ");               
+        f_flux = TFile::Open((FLUX_DIR + "output_uboone_fhc_run0_merged.root").c_str(), "READ");               
    else if (fRunPeriod == 3)
-        f_flux = TFile::Open("/home/lar/cthorpe/uboone/HyperonSelection/Fluxes/output_uboone_rhc_run0_merged.root", "READ");
+        f_flux = TFile::Open((FLUX_DIR + "output_uboone_rhc_run0_merged.root").c_str(), "READ");               
    else
       return;
 
@@ -183,7 +185,7 @@ void FluxWeighter::PrepareBeamlineUniv(){
    std::cout << "Loading beamline variation universes" << std::endl;
   
    //f_beamline_vars.resize(Beamline_Universes);  
-   f_beamline_vars = TFile::Open("/home/lar/cthorpe/uboone/HyperonSelection/Fluxes/NuMI_Beamline_Variations_to_CV_Ratios.root");
+   f_beamline_vars = TFile::Open((FLUX_DIR + "NuMI_Beamline_Variations_to_CV_Ratios.root").c_str());
    hist_beamline_vars_ratio.resize(flav_str.size());
 
    for (unsigned int f = 0; f < flav_str.size(); f++){       

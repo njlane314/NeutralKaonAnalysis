@@ -27,7 +27,11 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       SampleNames.push_back("GENIE Background");
       SampleTypes.push_back("Background");
-      SampleFiles.push_back("HyperonTrees_Sys.root");
+      SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Background_Test.root");
+
+      SampleNames.push_back("GENIE Hyperon");
+      SampleTypes.push_back("Hyperon");
+      SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Hyperon_cthorpe_prod_numi_uboone_overlay_fhc_mcc9_run1_v51_GENIE_hyperon_real_GENIE_reco2_reco2.root");
 
       SelectionParameters P = P_FHC_Tune_325;
 
@@ -37,8 +41,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
-      M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
-      M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
+      //M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
+      //M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
 
       TEfficiency* Eff = new TEfficiency("Eff","",8,-0.5,7.5);
       TEfficiency* Background_Acceptance = new TEfficiency("Background_Acceptance","",8,-0.5,7.5);     
@@ -56,10 +60,6 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
             Event e = E.GetEvent(i);
 
-            if((SampleTypes.at(i_s) == "Background" || SampleTypes.at(i_s) == "Hyperon") && e.NMCTruths > 1) continue;
-            if(SampleTypes.at(i_s) == "Background" && e.Mode == "HYP") continue;
-            if(SampleTypes.at(i_s) == "Hyperon" && e.Mode != "HYP") continue;
-
             M.SetSignal(e);                
 
             M.AddEvent(e);
@@ -70,12 +70,12 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             if(passed_FV) passed_Tracks = M.TrackCut(e);
             if(passed_Tracks) passed_Showers = M.ShowerCut(e);
             if(passed_Showers) passed_MuonID = M.ChooseMuonCandidate(e);
-            if(passed_MuonID) passed_Selector = M.ChooseProtonPionCandidates(e); 
-            if(passed_Selector) passed_Analysis = M.AnalysisBDTCut(e);
-            if(passed_Analysis) passed_Connectedness = M.EventListCut(e);
+            //if(passed_MuonID) passed_Selector = M.ChooseProtonPionCandidates(e); 
+            //if(passed_Selector) passed_Analysis = M.AnalysisBDTCut(e);
+            //if(passed_Analysis) passed_Connectedness = M.EventListCut(e);
 
 
-            if(e.IsSignal){
+            if(e.EventIsSignal){
                Eff->FillWeighted(true,e.Weight,0);
                Eff->FillWeighted(passed_FV,e.Weight,1);
                Eff->FillWeighted(passed_Tracks,e.Weight,2);
