@@ -80,8 +80,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             if(!M.ShowerCut(e)) continue;
             if(!M.ChooseMuonCandidate(e)) continue;
             if(!M.ChooseProtonPionCandidates(e)) continue;
-            if(!M.AnalysisBDTCut(e)) continue;       
-            if(!M.ConnectednessTest(e)) continue;
+            //if(!M.AnalysisBDTCut(e)) continue;       
+            //if(!M.ConnectednessTest(e)) continue;
 
             // Flux systematics //
 
@@ -122,11 +122,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             weights_DualUnisims.push_back(G.GetWeights("RPA_CCQE_UBGenie").at(0)/TunedCentralValue);
             weights_DualUnisims.push_back(G.GetWeights("RPA_CCQE_UBGenie").at(1)/TunedCentralValue);
 
-
             ////////////////////////////
 
             double W = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate);
-
 
             M.FillHistograms(e,W);                
             M.FillHistogramsSys(e,W,"Flux_HP",fluxweights_HP);
@@ -145,7 +143,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
 
             M.FillHistogramsSys(e,W,"RPA_CCQE_UBGenie",weights_DualUnisims);
-         }
+        
+       }
 
          E.Close();
 
@@ -155,15 +154,15 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       // Flux systematics     
 
-      M.DrawHistogramsSys("Flux_HP",kMultisim,label);
-
-      TMatrixD Cov_Flux_HP = M.GetCovarianceMatrix("Flux_HP",kMultisim);
+      M.DrawHistogramsSys(label,"Flux_HP");
+      TMatrixD Cov_Flux_HP = M.GetCovarianceMatrix(label,"Flux_HP");
 
       for(int i_d=0;i_d<Beamline_Universes/2;i_d++){
-         M.DrawHistogramsSys(beamline_labels[i_d],kDualUnisim,label);
-         Cov_Flux_HP += M.GetCovarianceMatrix(beamline_labels[i_d],kDualUnisim);
+         M.DrawHistogramsSys(label,beamline_labels[i_d]);
+         Cov_Flux_HP += M.GetCovarianceMatrix(label,beamline_labels[i_d]);
       }
 
+/*
       TMatrixD Cov_Flux_POT = Cov_Flux_HP;
 
       for(int i=0;i<Cov_Flux_POT.GetNcols();i++)
@@ -177,17 +176,17 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       // Generator systematics
 
-      M.DrawHistogramsSys("All_UBGenie",kMultisim,label);
-      TMatrixD Cov_Gen = M.GetCovarianceMatrix("AllUBGENIE",kMultisim);
+      M.DrawHistogramsSys(label,"All_UBGenie");
+      TMatrixD Cov_Gen = M.GetCovarianceMatrix(label,"AllUBGENIE");
 
       for(int i_d=0;i_d<MAX_GenUnisims-2;i_d++){
-         M.DrawHistogramsSys(GenUnisim_names[i_d],kSingleUnisim,label);
-         Cov_Gen += M.GetCovarianceMatrix(GenUnisim_names[i_d],kSingleUnisim);
+         M.DrawHistogramsSys(label,GenUnisim_names[i_d]);
+         Cov_Gen += M.GetCovarianceMatrix(label,GenUnisim_names[i_d]);
       }
 
 
-      M.DrawHistogramsSys("RPA_CCQE_UBGenie",kDualUnisim,label);
-      Cov_Gen +=  M.GetCovarianceMatrix("RPA_CCQE_UBGenie",kDualUnisim);
+      M.DrawHistogramsSys(label,"RPA_CCQE_UBGenie");
+      Cov_Gen +=  M.GetCovarianceMatrix(label,"RPA_CCQE_UBGenie");
 
       std::cout << "Generator covariance matrix" << std::endl;
       Cov_Gen.Print();
@@ -201,5 +200,5 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       std::cout << "Bin by Bin Uncertainties" << std::endl;
       for(int i=0;i<Cov_All.GetNcols();i++) std::cout << sqrt(Cov_All[i][i]) << std::endl;    
-
+*/
    }

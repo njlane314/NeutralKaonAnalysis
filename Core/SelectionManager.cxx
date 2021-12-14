@@ -52,6 +52,14 @@ SelectionManager::SelectionManager(SelectionParameters p) :
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+void SelectionManager::Close(){
+
+   if(f_Hists != nullptr) f_Hists->Close();
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 void SelectionManager::SetPOT(double POT){
 
    fPOT = POT;
@@ -452,25 +460,55 @@ void SelectionManager::SetupHistograms(int n,double low,double high,std::string 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void SelectionManager::AddSystematic(int type,int universes,std::string name){
- 
-   if(type == kMultisim){
-      Multisim_Sys_Hists[name].resize(universes);
-      for(size_t i=0;i<universes;i++) 
-         Multisim_Sys_Hists[name].at(i) = new TH1D(("h_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
-   }
+void SelectionManager::AddSystematic(int systype,int universes,std::string name){
 
-   else if(type == kSingleUnisim){
-      SingleUnisim_Sys_Hists[name].resize(1);
-      for(size_t i=0;i<1;i++) 
-         SingleUnisim_Sys_Hists[name].at(i) = new TH1D(("h_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
-   }
+   std::cout << "Setting up systematic " << name << std::endl;
 
-   else if(type == kDualUnisim){
-      DualUnisim_Sys_Hists[name].resize(2);
-      for(size_t i=0;i<2;i++) 
-         DualUnisim_Sys_Hists[name].at(i) = new TH1D(("h_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+   if(systype == kMultisim){
+      for(size_t i_type=0;i_type<Types.size();i_type++){
+         Multisim_Sys_Hists[Types.at(i_type)][name].resize(universes);
+
+         for(size_t i=0;i<universes;i++) 
+            Multisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+
+      }
    }
+   else if(systype == kSingleUnisim){
+      for(size_t i_type=0;i_type<Types.size();i_type++){
+         SingleUnisim_Sys_Hists[Types.at(i_type)][name].resize(1);
+
+         for(size_t i=0;i<1;i++){
+            SingleUnisim_Sys_Hists[Types.at(i_type)][name][i] = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+         }
+
+      }
+   }
+   else if(systype == kDualUnisim){
+      for(size_t i_type=0;i_type<Types.size();i_type++){
+         DualUnisim_Sys_Hists[Types.at(i_type)][name].resize(2);
+
+         for(size_t i=0;i<2;i++) 
+            DualUnisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+
+      }
+   }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+std::string SelectionManager::GetMode(Event e){
+
+   std::string mode;
+
+   if( thisSampleType == "Data" ) mode = "Data";
+   else if( thisSampleType == "EXT" ) mode = "EXT";
+   else if( thisSampleType == "Dirt" ) mode = "Dirt";
+   else  if( e.EventIsSignal ) mode = "Signal";
+   else if( e.Mode.at(0) == "HYP") mode = "OtherHYP";
+   else { mode = "OtherNu"; }
+
+   return mode;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -516,42 +554,46 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+void SelectionManager::FillHistogramsSys(Event e,double variable,std::string name,int universe,double weight){
+
+   if (Multisim_Sys_Hists[GetMode(e)].find(name) != Multisim_Sys_Hists[GetMode(e)].end()){
+      Multisim_Sys_Hists[GetMode(e)][name].at(universe)->Fill(variable,weight*e.Weight);
+      Multisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
+      return;
+   }
+
+   else if (SingleUnisim_Sys_Hists[GetMode(e)].find(name) != SingleUnisim_Sys_Hists[GetMode(e)].end()){
+      SingleUnisim_Sys_Hists[GetMode(e)][name].at(universe)->Fill(variable,weight*e.Weight);
+      SingleUnisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
+      return;
+   }
+
+   else if (DualUnisim_Sys_Hists[GetMode(e)].find(name) != DualUnisim_Sys_Hists[GetMode(e)].end()){
+      DualUnisim_Sys_Hists[GetMode(e)][name].at(universe)->Fill(variable,weight*e.Weight);
+      DualUnisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
+      return;
+   }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
 void SelectionManager::FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights){
 
-   if (Multisim_Sys_Hists.find(name) != Multisim_Sys_Hists.end()){
+/*
+   if (Multisim_Sys_Hists[GetMode(e)].find(name) != Multisim_Sys_Hists[GetMode(e)].end()){
 
-      if(weights.size() != Multisim_Sys_Hists[name].size()){
+      if(weights.size() != Multisim_Sys_Hists[GetMode(e)][name].size()){
          std::cout << "Event has " << weights.size() << " weights, expecting " << Multisim_Sys_Hists[name].size() << " for systematic " << name << std::endl;
       }
 
       for(size_t i=0;i<weights.size();i++)
-         Multisim_Sys_Hists[name].at(i)->Fill(variable,weights.at(i)*e.Weight);
+         FillHistogramsSys(e,variable,name,i,weights.at(i)); 
    }
-
-
-
-   if (SingleUnisim_Sys_Hists.find(name) != SingleUnisim_Sys_Hists.end()){
-
-      if(weights.size() != SingleUnisim_Sys_Hists[name].size()){
-         std::cout << "Event has " << weights.size() << " weights, expecting " << SingleUnisim_Sys_Hists[name].size() << " for systematic " << name << std::endl;
-      }
+*/
 
       for(size_t i=0;i<weights.size();i++)
-         SingleUnisim_Sys_Hists[name].at(i)->Fill(variable,weights.at(i)*e.Weight);
-   }
-
-
-
-   if (DualUnisim_Sys_Hists.find(name) != DualUnisim_Sys_Hists.end()){
-
-      if(weights.size() != DualUnisim_Sys_Hists[name].size()){
-         std::cout << "Event has " << weights.size() << " weights, expecting " << DualUnisim_Sys_Hists[name].size() << " for systematic " << name << std::endl;
-      }
-
-      for(size_t i=0;i<weights.size();i++)
-         DualUnisim_Sys_Hists[name].at(i)->Fill(variable,weights.at(i)*e.Weight);
-   }
-
+         FillHistogramsSys(e,variable,name,i,weights.at(i)); 
 
 }
 
@@ -645,7 +687,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    // Make stat error covariance matrix
    TH2D *h_Stat_Cov = new TH2D("h_Stat_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
    TH2D *h_Stat_FCov = new TH2D("h_Stat_FCov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
-   
+
    for(int i_b=1;i_b<fHistNBins+1;i_b++){
       h_Stat_Cov->SetBinContent(i_b,i_b,h_errors->GetBinError(i_b));
       h_Stat_FCov->SetBinContent(i_b,i_b,h_errors->GetBinError(i_b)/h_errors->GetBinContent(i_b));
@@ -668,7 +710,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    hs_Type->Add(Hists_ByType["OtherHYP"],"HIST");
    if(fHasData) l->AddEntry(Hists_ByType["OtherHYP"],("Other HYP = "+ to_string_with_precision(Hists_ByType["OtherHYP"]->Integral(),1)).c_str(),"F");
    else l->AddEntry(Hists_ByType["OtherHYP"],"Other Hyperon","F");
-    Hists_ByType["OtherHYP"]->Write("OtherHYP");
+   Hists_ByType["OtherHYP"]->Write("OtherHYP");
 
    Hists_ByType["OtherNu"]->SetFillColor(38);
    hs_Type->Add(Hists_ByType["OtherNu"],"HIST");
@@ -988,49 +1030,121 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void SelectionManager::DrawHistogramsSys(std::string name,int type,std::string label){
+void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std::string type){
+
+   std::cout << "Drawing sys histograms label=" << label << "  name=" << name << "  type=" << type << std::endl;
 
    system("mkdir -p Plots");
    system("mkdir -p rootfiles");
 
+   int systype=-1;
    std::vector<TH1D*> ToDraw;
 
-   if (Multisim_Sys_Hists.find(name) != Multisim_Sys_Hists.end()) ToDraw = Multisim_Sys_Hists[name];
-   else if (SingleUnisim_Sys_Hists.find(name) != SingleUnisim_Sys_Hists.end()) ToDraw = SingleUnisim_Sys_Hists[name];
-   else if (DualUnisim_Sys_Hists.find(name) != DualUnisim_Sys_Hists.end()) ToDraw = DualUnisim_Sys_Hists[name];
+
+   if (Multisim_Sys_Hists[type].find(name) != Multisim_Sys_Hists[type].end()){
+      ToDraw = Multisim_Sys_Hists[type][name]; 
+      systype = kMultisim;
+   }
+
+   else if (SingleUnisim_Sys_Hists[type].find(name) != SingleUnisim_Sys_Hists[type].end()){
+      ToDraw = SingleUnisim_Sys_Hists[type][name];
+      systype = kSingleUnisim;
+   }
+   else if (DualUnisim_Sys_Hists[type].find(name) != DualUnisim_Sys_Hists[type].end()){
+      ToDraw = DualUnisim_Sys_Hists[type][name];
+      systype = kDualUnisim;
+   }
 
    THStack *hs = new THStack("hs",fTitle.c_str());
 
+   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
+   l->SetBorderSize(0);
+   l->SetNColumns(2);
+
+   l->AddEntry(Hists_ByType[type],"Central Value","L");
+
    for(size_t i=0;i<ToDraw.size();i++){
 
-      if(type == kMultisim)  ToDraw.at(i)->SetLineColor(kGreen);
-      else if(type == kSingleUnisim) ToDraw.at(i)->SetLineColor(kRed);
-      else if(type == kDualUnisim && i == 0) ToDraw.at(i)->SetLineColor(kRed);
-      else if(type == kDualUnisim && i == 1) ToDraw.at(i)->SetLineColor(kBlue); 
+      if(systype == kMultisim){
+         ToDraw.at(i)->SetLineColor(kGreen);
+         if(i == 0) l->AddEntry(ToDraw.at(0),"Variations","L");
+      }
+      else if(systype == kSingleUnisim){
+         ToDraw.at(i)->SetLineColor(kRed);
+         l->AddEntry(ToDraw.at(0),"Alternative Model","L");
+      }
+      else if(systype == kDualUnisim && i == 0){
+         ToDraw.at(i)->SetLineColor(kRed);
+         l->AddEntry(ToDraw.at(i),"+ 1 #sigma","L");
+      }
+      else if(systype == kDualUnisim && i == 1){
+         ToDraw.at(i)->SetLineColor(kBlue); 
+         l->AddEntry(ToDraw.at(i),"- 1 #sigma","L");
+      }
 
       hs->Add(ToDraw.at(i));
    }
 
-   Hists_ByType["All"]->SetLineColor(1);
-   Hists_ByType["All"]->SetLineWidth(2);
-   Hists_ByType["All"]->SetFillColor(0);
 
-   hs->Add(Hists_ByType["All"]);
+   Hists_ByType[type]->SetLineColor(1);
+   Hists_ByType[type]->SetLineWidth(2);
+   Hists_ByType[type]->SetFillColor(0);
 
-   TCanvas *c = new TCanvas("c","c");
+   hs->Add(Hists_ByType[type]);
+
+   TCanvas *c = new TCanvas("c","c",800,600);
+
+   TPad *p_plot = new TPad("pad1","pad1",0,0,1,0.85);
+   TPad *p_legend = new TPad("pad2","pad2",0,0.85,1,1);
+
+   p_legend->SetBottomMargin(0);
+   p_legend->SetTopMargin(0.1);
+   p_plot->SetTopMargin(0.01);
+
+
+   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
+   l_Watermark->SetBorderSize(0);
+   l_Watermark->SetMargin(0.005);
+   l_Watermark->SetTextAlign(32);
+
+   l_Watermark->SetTextFont(62);
+
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+
+   TLegend *l_POT = new TLegend(0.55,0.820,0.89,0.900);
+   l_POT->SetBorderSize(0);
+   l_POT->SetMargin(0.005);
+   l_POT->SetTextAlign(32);
+
+   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
+   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
+
+   p_legend->Draw();
+   p_legend->cd();
+   l->Draw();
+   c->cd();
+   p_plot->Draw();
+   p_plot->cd();
 
    hs->Draw("HIST nostack");
 
-   c->Print(("Plots/" + label + "_Sys_" + name + ".png").c_str());
-   c->Print(("Plots/" + label + "_Sys_" + name + ".pdf").c_str());
-   c->Print(("Plots/" + label + "_Sys_" + name + ".C").c_str());
-   
+   l_POT->Draw();
+   l_Watermark->Draw();
+
+   c->Print(("Plots/" + label + "_Sys_" + type + "_" +  name + ".png").c_str());
+   c->Print(("Plots/" + label + "_Sys_" + type + "_" +  name + ".pdf").c_str());
+   c->Print(("Plots/" + label + "_Sys_" + type + "_" +  name + ".C").c_str());
+
    c->Close();
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-TMatrixD SelectionManager::GetCovarianceMatrix(std::string name,int type,std::string label){
+TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string name,std::string type){
+
+   int systype=-1;
 
    std::cout << "Getting Covariance Matrix for " << name << std::endl;
 
@@ -1038,9 +1152,20 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string name,int type,std::st
 
    std::vector<TH1D*> ToUse;
 
-   if (Multisim_Sys_Hists.find(name) != Multisim_Sys_Hists.end()) ToUse = Multisim_Sys_Hists[name];
-   else if (SingleUnisim_Sys_Hists.find(name) != SingleUnisim_Sys_Hists.end()) ToUse = SingleUnisim_Sys_Hists[name];
-   else if (DualUnisim_Sys_Hists.find(name) != DualUnisim_Sys_Hists.end()) ToUse = DualUnisim_Sys_Hists[name];
+   if (Multisim_Sys_Hists[type].find(name) != Multisim_Sys_Hists[type].end()){
+
+      std::cout << "Calculating covariance matrix for multisim systematic" << std::endl;
+      ToUse = Multisim_Sys_Hists[type][name];
+      systype = kMultisim;
+   }
+   else if (SingleUnisim_Sys_Hists[type].find(name) != SingleUnisim_Sys_Hists[type].end()){
+      ToUse = SingleUnisim_Sys_Hists[type][name];
+      systype = kSingleUnisim;
+   }
+   else if (DualUnisim_Sys_Hists[type].find(name) != DualUnisim_Sys_Hists[type].end()){
+      ToUse = DualUnisim_Sys_Hists[type][name];
+      systype = kDualUnisim;
+   }
 
    TMatrixD Cov(fHistNBins,fHistNBins);
    TH2D *h_Cov = new TH2D("h_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
@@ -1051,32 +1176,38 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string name,int type,std::st
    for(int i_b=1;i_b<fHistNBins+1;i_b++){
       for(int j_b=1;j_b<fHistNBins+1;j_b++){
 
+         if(!(Hists_ByType[type]->GetBinContent(i_b) > 0 && Hists_ByType[type]->GetBinContent(j_b) > 0)) continue;
+
+         Cov[i_b-1][j_b-1] = 0.0;        
+         frac_Cov[i_b-1][j_b-1] = 0.0; 
+
          double Cov_ij = 0.0;
          double Mean_i = 0.0;
          double Mean_j = 0.0;
 
-         if(type == kMultisim){
+         if(systype == kMultisim){
             for(size_t i_u=0;i_u<ToUse.size();i_u++) Mean_i += ToUse.at(i_u)->GetBinContent(i_b)/ToUse.size();
             for(size_t i_u=0;i_u<ToUse.size();i_u++) Mean_j += ToUse.at(i_u)->GetBinContent(j_b)/ToUse.size();
             for(size_t i_u=0;i_u<ToUse.size();i_u++) Cov_ij += (ToUse.at(i_u)->GetBinContent(i_b) - Mean_i)*(ToUse.at(i_u)->GetBinContent(j_b) - Mean_j)/(ToUse.size()-1);
          }
 
-         if(type == kSingleUnisim){
-            Mean_i = Hists_ByType["All"]->GetBinContent(i_b);
-            Mean_j = Hists_ByType["All"]->GetBinContent(j_b);
+         if(systype == kSingleUnisim){
+            Mean_i = Hists_ByType[type]->GetBinContent(i_b);
+            Mean_j = Hists_ByType[type]->GetBinContent(j_b);
             Cov_ij = (ToUse.at(0)->GetBinContent(i_b) - Mean_i)*(ToUse.at(0)->GetBinContent(j_b) - Mean_j);
          } 
 
-         if(type == kDualUnisim){
-            Mean_i = Hists_ByType["All"]->GetBinContent(i_b);
-            Mean_j = Hists_ByType["All"]->GetBinContent(j_b);
+         if(systype == kDualUnisim){
+            Mean_i = Hists_ByType[type]->GetBinContent(i_b);
+            Mean_j = Hists_ByType[type]->GetBinContent(j_b);
             Cov_ij = (ToUse.at(1)->GetBinContent(i_b) - ToUse.at(0)->GetBinContent(i_b))*(ToUse.at(1)->GetBinContent(j_b) - ToUse.at(0)->GetBinContent(j_b))/4;
          } 
 
-            Cov[i_b-1][j_b-1] = Cov_ij;
-            frac_Cov[i_b-1][j_b-1] = Cov_ij/Mean_i/Mean_j; 
-            h_Cov->SetBinContent(i_b,j_b,Cov_ij);
-            h_frac_Cov->SetBinContent(i_b,j_b,Cov_ij/Mean_i/Mean_j);
+         frac_Cov[i_b-1][j_b-1] = Cov_ij/Mean_i/Mean_j; 
+         Cov[i_b-1][j_b-1] = Cov_ij;
+         h_Cov->SetBinContent(i_b,j_b,Cov_ij);
+         h_frac_Cov->SetBinContent(i_b,j_b,Cov_ij/Mean_i/Mean_j);
+
       }
    }
 
@@ -1084,22 +1215,33 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string name,int type,std::st
 
    TCanvas *c = new TCanvas("c","c");
 
+   TLegend *l_Watermark = new TLegend(0.45,0.91,0.915,0.99);
+   l_Watermark->SetBorderSize(0);
+   l_Watermark->SetMargin(0.001);
+   l_Watermark->SetTextAlign(32);
+   l_Watermark->SetTextFont(62);
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+
    h_Cov->SetContour(100);
    h_Cov->Draw("colz");
    h_Cov->SetStats(0);
-   h_Cov->Write(("Cov_" + name).c_str());
-   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + name + ".png").c_str());
-   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + name + ".C").c_str());
-   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + name + ".pdf").c_str());
+   l_Watermark->Draw();
+   h_Cov->Write(("Cov_" + type + "_" + name).c_str());
+
+   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + type + "_" + name + ".png").c_str());
+   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + type + "_" + name + ".pdf").c_str());
+   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + type + "_" + name + ".C").c_str());
    c->Clear();
 
    h_frac_Cov->SetContour(100);
    h_frac_Cov->Draw("colz");
+   l_Watermark->Draw();
    h_frac_Cov->SetStats(0);
-   h_frac_Cov->Write(("FCov_" + name).c_str());
-   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + name + ".png").c_str());
-   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + name + ".C").c_str());
-   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + name + ".pdf").c_str());
+   h_frac_Cov->Write(("FCov_" + type + "_" + name).c_str());
+
+   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + type + "_" + name + ".png").c_str());
+   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + type + "_" + name + ".pdf").c_str());
+   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + type + "_" + name + ".C").c_str());
    c->Clear();
 
    c->Close();

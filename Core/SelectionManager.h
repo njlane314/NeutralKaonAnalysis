@@ -48,6 +48,8 @@ class SelectionManager {
       ~SelectionManager();
       SelectionManager(SelectionParameters p);
 
+      void Close();
+
       // Start processing a sample
       void AddSample(std::string Name,std::string Type,double SamplePOT,std::string EventList="");
 
@@ -136,9 +138,9 @@ class SelectionManager {
       std::map< std::string , TH1D* > Hists_ByProc;
       std::map< std::string , TH1D* > Hists_ByType;
 
-      std::map<std::string,std::vector<TH1D*>> Multisim_Sys_Hists; // histogram in different multisim universes
-      std::map<std::string,std::vector<TH1D*>> SingleUnisim_Sys_Hists; // histogram in different single univese unisims
-      std::map<std::string,std::vector<TH1D*>> DualUnisim_Sys_Hists;  // histogram in different two universe multisims
+      std::map<std::string,std::map<std::string,std::vector<TH1D*>>> Multisim_Sys_Hists; // histogram in different multisim universes
+      std::map<std::string,std::map<std::string,std::vector<TH1D*>>> SingleUnisim_Sys_Hists; // histogram in different single univese unisims
+      std::map<std::string,std::map<std::string,std::vector<TH1D*>>> DualUnisim_Sys_Hists;  // histogram in different two universe multisims
 
       const std::vector<std::string> Types = { "Signal","OtherHYP","OtherNu","EXT","Dirt","All","Data" };
       const std::vector<std::string> Procs = { "Signal","OtherHYP","EXT","Dirt","Data","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","ElectronScattering","Diffractive","Other","All" };
@@ -148,11 +150,13 @@ class SelectionManager {
 
   public:
 
+      std::string GetMode(Event e);
      
-      void AddSystematic(int type,int universes,std::string name);
+      void AddSystematic(int systype,int universes,std::string name);
       void FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights);
-      void DrawHistogramsSys(std::string name,int type,std::string label="Hists");
-      TMatrixD GetCovarianceMatrix(std::string name,int type,std::string label="Hists");
+      void FillHistogramsSys(Event e,double variable,std::string name,int universe,double weight);
+      void DrawHistogramsSys(std::string label,std::string name,std::string type="All");
+      TMatrixD GetCovarianceMatrix(std::string label,std::string name,std::string type="All");
 
       void SetupHistograms(int n,double low,double high,std::string title="",int multisim_universes=0,int single_unisim_universes=0,int dual_unisim_universes=0);
       void FillHistograms(Event e,double variable,double weight=1.0);

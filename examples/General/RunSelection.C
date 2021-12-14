@@ -63,6 +63,6 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       Cut C_CT = M.GetCut("Connectedness");
 
-         std::cout << "Selected Signal = " << C_CT.PredictedSignal() << " +/- " << C_CT.PredictedSignalError() << "  Selected Background = " <<  C_CT.PredictedBackground() << " +/- " << C_CT.PredictedBackgroundError() << std::endl;
+      std::cout << "Selected Signal = " << C_CT.PredictedSignal() << " +/- " << C_CT.PredictedSignalError() << "  Selected Background = " <<  C_CT.PredictedBackground() << " +/- " << C_CT.PredictedBackgroundError() << std::endl;
 
    }

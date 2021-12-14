@@ -149,8 +149,6 @@ double GenG4WeightHandler::GetCVWeight(){
       weight *= thisweight;
    }
 
-   std::cout << weight << std::endl;
-
    return weight;
 }
 
