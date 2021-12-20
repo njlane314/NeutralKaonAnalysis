@@ -99,6 +99,19 @@ class SelectionManager {
       CTTest a_CTTest_Plane1;
       CTTest a_CTTest_Plane2;
 
+     // Misc settings/methods //
+     private:
+
+      bool fUseFluxWeight = true;
+      bool fUseGenWeight = true;
+
+     public:
+        
+      void UseFluxWeight(bool usefluxweight);
+      void UseGenWeight(bool usegenweight); 
+
+    private:
+
       // Cut Data Management //
       std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" };
       void DeclareCuts();

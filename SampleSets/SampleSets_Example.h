@@ -7,6 +7,12 @@ std::vector<std::string> SampleNames,SampleTypes,SampleFiles,EventLists;
 double EXT_POT=0.0;
 double Data_POT=0.0;
 
+int fhc_run_range[2];
+int rhc_run_range[2];
+
+std::string GoodRunList="";
+std::vector<int> GoodRuns;
+
 void ImportSamples(int Setting){
 
    if(Setting == sNuWroFullFHCvsData){
@@ -52,6 +58,15 @@ void ImportSamples(int Setting){
 
 */
 
+   if(GoodRunList != ""){
+      std::ifstream input_GoodRunList(GoodRunList);
+      while(!input_GoodRunList.eof()){
+         int run;
+         input_GoodRunList >> run;
+          //std::cout << run << std::endl;
+         GoodRuns.push_back(run);
+      }
+   }
 }
 
 

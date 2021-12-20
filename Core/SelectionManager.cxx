@@ -43,6 +43,7 @@ SelectionManager::SelectionManager(SelectionParameters p) :
    a_CTTest_Plane1(1) ,
    a_CTTest_Plane2(2) 
 {
+   std::cout << "Building SelectionManager" << std::endl;
    // Set the selection parameters
    TheParams = p;
    DeclareCuts();
@@ -120,12 +121,13 @@ void SelectionManager::AddEvent(Event &e){
 
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
-      e.Weight *= a_FluxWeightCalc.GetFluxWeight(e);        
+      if(fUseFluxWeight) e.Weight *= a_FluxWeightCalc.GetFluxWeight(e);        
+      if(fUseGenWeight) {
       //std::cout << "SelectionManager: Loading event in Gen/G4 weight calc" << std::endl;
-      a_GenG4WeightCalc.LoadEvent(e);
-      e.Weight *= a_GenG4WeightCalc.GetCVWeight();
+         a_GenG4WeightCalc.LoadEvent(e);
+         e.Weight *= a_GenG4WeightCalc.GetCVWeight();
+      }
    }
-
 
    if(thisSampleType != "Data") e.Weight *= thisSampleWeight;
 
@@ -140,6 +142,18 @@ void SelectionManager::AddEvent(Event &e){
    }
 
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void SelectionManager::UseFluxWeight(bool usefluxweight){
+   fUseFluxWeight = usefluxweight;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void SelectionManager::UseGenWeight(bool usegenweight){
+   fUseGenWeight = usegenweight;
+} 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -292,7 +306,6 @@ void SelectionManager::ImportAnalysisBDTWeights(std::string WeightDir){
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 bool SelectionManager::FiducialVolumeCut(Event e){
-
    bool passed = a_FiducialVolume.InFiducialVolume(e.RecoPrimaryVertex);
 
    UpdateCut(e,passed,"FV");

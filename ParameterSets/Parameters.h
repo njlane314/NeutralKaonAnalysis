@@ -1,3 +1,6 @@
+#ifndef _Parameters_h_
+#define _Parameters_h_
+
 #include "SelectionParameters.h"
 
 // Pre-defined settings for the selection
@@ -111,3 +114,4 @@ P_FHC_Tune_1000.p_AnalysisBDT_Cut=0.15;
 
 }
 
+#endif
