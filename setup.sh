@@ -9,5 +9,6 @@ setup uboonecode v08_30_02 -q e17:prof
 export HYP_TOP=$PWD/
 
 export ROOT_INCLUDE_PATH=$ROOT_INCLUDE_PATH:$PWD/Core:$PWD/Alg:$PWD/ParameterSets:$PWD/SampleSets
-export DATA_DIR=$PWD/data/
+#export DATA_DIR=$PWD/data/
+export DATA_DIR=$PWD/data/ntuples_Nov_2021/
 

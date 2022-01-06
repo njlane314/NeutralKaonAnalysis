@@ -618,7 +618,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 
    double y_limit = -1;
 
-   system("mkdir -p Plots");
+   system(("mkdir -p " + PlotDir).c_str());
 
    // Create weight sums
 
@@ -790,9 +790,9 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 
    c->cd();
 
-   c->Print(("Plots/" + label + "_By_Type.png").c_str());
-   c->Print(("Plots/" + label + "_By_Type.pdf").c_str());
-   c->Print(("Plots/" + label + "_By_Type.C").c_str());
+   c->Print((PlotDir + label + "_By_Type.png").c_str());
+   c->Print((PlotDir + label + "_By_Type.pdf").c_str());
+   c->Print((PlotDir + label + "_By_Type.C").c_str());
 
    c->Clear();
 
@@ -803,7 +803,6 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
       TH1D * DataMCRatioPlot = MakeRatioPlot(Hists_ByType,h_errors);
 
       DataMCRatioPlot->Draw("E0 P0");
-      //c->Print("Plots/Hists_By_Type_Ratio.pdf");
 
       c->Clear();
       c->SetCanvasSize(800,750);
@@ -855,9 +854,9 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
       DataMCRatioPlot->GetYaxis()->SetLabelSize(0.09);
 
       c->cd();
-      c->Print(("Plots/" + label + "_By_Type_Combined.png").c_str());
-      c->Print(("Plots/" + label + "_By_Type_Combined.pdf").c_str());
-      c->Print(("Plots/" + label + "_By_Type_Combined.C").c_str());
+      c->Print((PlotDir + label + "_By_Type_Combined.png").c_str());
+      c->Print((PlotDir + label + "_By_Type_Combined.pdf").c_str());
+      c->Print((PlotDir + label + "_By_Type_Combined.C").c_str());
       c->Clear();    
 
    }
@@ -965,9 +964,9 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 
    c->cd();
 
-   c->Print(("Plots/" + label + "_By_Proc.png").c_str());
-   c->Print(("Plots/" + label + "_By_Proc.pdf").c_str());
-   c->Print(("Plots/" + label + "_By_Proc.C").c_str());
+   c->Print((PlotDir + label + "_By_Proc.png").c_str());
+   c->Print((PlotDir + label + "_By_Proc.pdf").c_str());
+   c->Print((PlotDir + label + "_By_Proc.C").c_str());
 
    c->Clear();
 
@@ -1029,9 +1028,9 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
       DataMCRatioPlot2->GetYaxis()->SetLabelSize(0.09);
 
       c->cd();
-      c->Print(("Plots/" + label + "_By_Proc_Combined.png").c_str());
-      c->Print(("Plots/" + label + "_By_Proc_Combined.pdf").c_str());
-      c->Print(("Plots/" + label + "_By_Proc_Combined.C").c_str());
+      c->Print((PlotDir + label + "_By_Proc_Combined.png").c_str());
+      c->Print((PlotDir + label + "_By_Proc_Combined.pdf").c_str());
+      c->Print((PlotDir + label + "_By_Proc_Combined.C").c_str());
       c->Clear();    
 
    }
@@ -1047,8 +1046,8 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
 
    std::cout << "Drawing sys histograms label=" << label << "  name=" << name << "  type=" << type << std::endl;
 
-   system("mkdir -p Plots");
-   system("mkdir -p rootfiles");
+   system(("mkdir -p " + PlotDir).c_str());
+   system(("mkdir -p " + RootfileDir).c_str());
 
    int systype=-1;
    std::vector<TH1D*> ToDraw;
@@ -1144,9 +1143,9 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    l_POT->Draw();
    l_Watermark->Draw();
 
-   c->Print(("Plots/" + label + "_Sys_" + type + "_" +  name + ".png").c_str());
-   c->Print(("Plots/" + label + "_Sys_" + type + "_" +  name + ".pdf").c_str());
-   c->Print(("Plots/" + label + "_Sys_" + type + "_" +  name + ".C").c_str());
+   c->Print((PlotDir + label + "_Sys_" + type + "_" +  name + ".png").c_str());
+   c->Print((PlotDir + label + "_Sys_" + type + "_" +  name + ".pdf").c_str());
+   c->Print((PlotDir + label + "_Sys_" + type + "_" +  name + ".C").c_str());
 
    c->Close();
 
@@ -1156,6 +1155,8 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string name,std::string type){
+
+   system(("mkdir -p " + PlotDir).c_str());
 
    int systype=-1;
 
@@ -1241,9 +1242,9 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
    l_Watermark->Draw();
    h_Cov->Write(("Cov_" + type + "_" + name).c_str());
 
-   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + type + "_" + name + ".png").c_str());
-   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + type + "_" + name + ".pdf").c_str());
-   c->Print(("Plots/" + label + "_CovMatrix_Sys_" + type + "_" + name + ".C").c_str());
+   c->Print((PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name + ".png").c_str());
+   c->Print((PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name + ".pdf").c_str());
+   c->Print((PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name + ".C").c_str());
    c->Clear();
 
    h_frac_Cov->SetContour(100);
@@ -1252,9 +1253,9 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
    h_frac_Cov->SetStats(0);
    h_frac_Cov->Write(("FCov_" + type + "_" + name).c_str());
 
-   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + type + "_" + name + ".png").c_str());
-   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + type + "_" + name + ".pdf").c_str());
-   c->Print(("Plots/" + label + "_FCovMatrix_Sys_" + type + "_" + name + ".C").c_str());
+   c->Print((PlotDir + label + "_FCovMatrix_Sys_" + type + "_" + name + ".png").c_str());
+   c->Print((PlotDir + label + "_FCovMatrix_Sys_" + type + "_" + name + ".pdf").c_str());
+   c->Print((PlotDir + label + "_FCovMatrix_Sys_" + type + "_" + name + ".C").c_str());
    c->Clear();
 
    c->Close();
@@ -1280,8 +1281,8 @@ double SelectionManager::GetPrediction(int bin,std::string type){
 void SelectionManager::OpenHistFile(std::string label){
 
    if(f_Hists == nullptr){
-      system("mkdir -p rootfiles");
-      f_Hists = TFile::Open(("rootfiles/" + label + "_Histograms.root").c_str(),"RECREATE");
+      system(("mkdir -p " +  RootfileDir).c_str());
+      f_Hists = TFile::Open((RootfileDir + label + "_Histograms.root").c_str(),"RECREATE");
    }
 
 }

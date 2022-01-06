@@ -161,6 +161,7 @@ class SelectionManager {
       TFile *f_Hists = nullptr;
       void OpenHistFile(std::string label="Hists");
 
+
   public:
 
       std::string GetMode(Event e);
@@ -177,6 +178,8 @@ class SelectionManager {
    
       double GetPrediction(int bin,std::string type="");
 
+      std::string PlotDir="Plots/";
+      std::string RootfileDir="rootfiles/";
 };
 
 

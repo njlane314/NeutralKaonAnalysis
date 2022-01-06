@@ -32,7 +32,6 @@ class EventAssembler {
 
       TString DataDir;
 
-
    public:
 
       //setters and getters
@@ -114,10 +113,9 @@ class EventAssembler {
       vector<vector<int>>* ConnSeedChannels_Plane2=0;
       vector<vector<int>>* ConnSeedTicks_Plane2=0;
 
+      // Systematics
       vector<string>* SysDials=0;
       vector<vector<vector<double>>>* SysWeights=0;
-
-
 
 
 };
