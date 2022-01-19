@@ -273,4 +273,13 @@ std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+double SelectorBDTManager::GetScore(RecoParticle DecayProtonCandidate,RecoParticle DecayPionCandidate){
+
+         if(!SetVariables(DecayProtonCandidate,DecayPionCandidate)) return -1000;
+
+         return reader->EvaluateMVA("BDT method");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 #endif

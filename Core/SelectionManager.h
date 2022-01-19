@@ -67,6 +67,8 @@ class SelectionManager {
       void ImportSelectorBDTWeights(std::string WeightDir="");
       void ImportAnalysisBDTWeights(std::string WeightDir="");
 
+      SelectionParameters GetParams();
+
    private: 
 
       // Stores the parameters controlling the selection
@@ -145,6 +147,7 @@ class SelectionManager {
       int fHistNBins;
       double fHistLow;
       double fHistHigh;
+      std::vector<double> fHistBoundaries;
 
       bool fHasData=false;
 
@@ -161,6 +164,7 @@ class SelectionManager {
       TFile *f_Hists = nullptr;
       void OpenHistFile(std::string label="Hists");
 
+      std::vector<std::string> BinLabels;
 
   public:
 
@@ -172,7 +176,8 @@ class SelectionManager {
       void DrawHistogramsSys(std::string label,std::string name,std::string type="All");
       TMatrixD GetCovarianceMatrix(std::string label,std::string name,std::string type="All");
 
-      void SetupHistograms(int n,double low,double high,std::string title="",int multisim_universes=0,int single_unisim_universes=0,int dual_unisim_universes=0);
+      void SetupHistograms(int n,double low,double high,std::string title="");
+      void SetupHistograms(std::vector<double> boundaries,std::string title="");
       void FillHistograms(Event e,double variable,double weight=1.0);
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
    
@@ -180,6 +185,11 @@ class SelectionManager {
 
       std::string PlotDir="Plots/";
       std::string RootfileDir="rootfiles/";
+  
+      void SetBinLabels(std::vector<std::string> binlabels);
+      std::vector<double> GetBinBoundaries();
+
+      void WidthScaleHistograms();
 };
 
 

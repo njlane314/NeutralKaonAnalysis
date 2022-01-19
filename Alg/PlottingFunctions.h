@@ -85,20 +85,43 @@ TH1D * MakeRatioPlot(std::map<std::string,TH1D*> hists,TH1D* h_MCError){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+double GetHistMaxError(TH1D *h){
+
+   double max = -1e10;
+
+   for(int i_b=1;i_b<h->GetNbinsX()+1;i_b++){
+      if(h->GetBinContent(i_b)+h->GetBinError(i_b) > max){
+         max = h->GetBinContent(i_b)+h->GetBinError(i_b);
+      }
+   }
+   return max;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 double GetHistMax(TH1D *h){
 
    double max = -1e10;
 
    for(int i_b=1;i_b<h->GetNbinsX()+1;i_b++){
-
-      if(h->GetBinContent(i_b)+h->GetBinError(i_b) > max) max = h->GetBinContent(i_b)+h->GetBinError(i_b);
-
+      if(h->GetBinContent(i_b) > max){
+         max = h->GetBinContent(i_b);
+         //std::cout << "BinContent=" << h->GetBinContent(i_b) << "  max=" << max << std::endl;
+      }
    }
 
    return max;
-
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+/*
+TH2D* Make2DHist(TH1D* h){
+
+// Make a vector with th
+
+
+}
+*/
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif

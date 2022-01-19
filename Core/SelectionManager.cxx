@@ -79,6 +79,12 @@ void SelectionManager::SetBeamMode(std::string Mode){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+SelectionParameters SelectionManager::GetParams(){
+return TheParams;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 void SelectionManager::AddSample(std::string Name,std::string Type,double SamplePOT,std::string EventList){
 
    std::cout << "Processing Sample " << Name << " of type " << Type << " and POT " << SamplePOT <<  std::endl;
@@ -112,6 +118,9 @@ void SelectionManager::AddEvent(Event &e){
    // Sample Orthogonality
    //if(thisSampleType == "Hyperon" && !e.EventHasHyperon){ e.Weight = 0.0; return; }
    //if(thisSampleType == "Background" && e.EventHasHyperon){ e.Weight = 0.0; return; }
+
+   //if(thisSampleType == "Neutron" && !e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
+   //if(thisSampleType != "Neutron" && e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
 
    /*
       if((thisSampleType == "Background" || thisSampleType == "Hyperon") ||
@@ -452,7 +461,38 @@ bool SelectionManager::ConnectednessTest(Event e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void SelectionManager::SetupHistograms(int n,double low,double high,std::string title,int multisim_universes,int single_unisim_universes,int dual_unisim_universes){
+void SelectionManager::SetupHistograms(std::vector<double> boundaries,std::string title){
+
+   if(boundaries.size() < 2)
+      throw std::invalid_argument("Require at least 2 bin boundaries"); 
+
+   fTitle = title;
+   fHistNBins = boundaries.size()-1;
+
+   fHistLow = boundaries.front();
+   fHistHigh = boundaries.back();
+
+   fHistBoundaries = boundaries;
+
+   const int arr_n = boundaries.size();
+   Double_t arr_boundaries[arr_n];
+   for(size_t i=0;i<arr_n;i++) arr_boundaries[i] = boundaries.at(i);
+
+   for(size_t i_proc=0;i_proc<Procs.size();i_proc++){
+      std::string histname = "h_" + Procs.at(i_proc);
+      Hists_ByProc[Procs.at(i_proc)] = new TH1D(histname.c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
+   }
+
+   for(size_t i_type=0;i_type<Types.size();i_type++){
+      std::string histname = "h_ByType_" + Types.at(i_type);
+      Hists_ByType[Types.at(i_type)] = new TH1D(histname.c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
+   }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void SelectionManager::SetupHistograms(int n,double low,double high,std::string title){
 
    fTitle = title;
    fHistNBins = n;
@@ -469,6 +509,10 @@ void SelectionManager::SetupHistograms(int n,double low,double high,std::string 
       Hists_ByType[Types.at(i_type)] = new TH1D(histname.c_str(),fTitle.c_str(),n,low,high);
    }
 
+   double width = (high-low)/n;
+   for(int i=0;i<n+1;i++) fHistBoundaries.push_back(low+width*i); 
+  
+  
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,12 +521,18 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
 
    std::cout << "Setting up systematic " << name << std::endl;
 
+   const int arr_n = fHistBoundaries.size();
+   Double_t arr_boundaries[arr_n];
+   for(size_t i=0;i<arr_n;i++) arr_boundaries[i] = fHistBoundaries.at(i);
+
    if(systype == kMultisim){
       for(size_t i_type=0;i_type<Types.size();i_type++){
          Multisim_Sys_Hists[Types.at(i_type)][name].resize(universes);
 
          for(size_t i=0;i<universes;i++) 
-            Multisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+            //Multisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+            Multisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,arr_boundaries);
+
 
       }
    }
@@ -491,7 +541,8 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
          SingleUnisim_Sys_Hists[Types.at(i_type)][name].resize(1);
 
          for(size_t i=0;i<1;i++){
-            SingleUnisim_Sys_Hists[Types.at(i_type)][name][i] = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+            //SingleUnisim_Sys_Hists[Types.at(i_type)][name][i] = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+            SingleUnisim_Sys_Hists[Types.at(i_type)][name][i] = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,arr_boundaries);
          }
 
       }
@@ -501,7 +552,8 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
          DualUnisim_Sys_Hists[Types.at(i_type)][name].resize(2);
 
          for(size_t i=0;i<2;i++) 
-            DualUnisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+            //DualUnisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
+            DualUnisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,arr_boundaries);
 
       }
    }
@@ -560,8 +612,10 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
 
    }
 
-   Hists_ByType["All"]->Fill(variable,weight*e.Weight);
-   Hists_ByProc["All"]->Fill(variable,weight*e.Weight);
+   if(mode != "Data"){
+      Hists_ByType["All"]->Fill(variable,weight*e.Weight);
+      Hists_ByProc["All"]->Fill(variable,weight*e.Weight);
+   }
 
 }
 
@@ -656,7 +710,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    l_Watermark->SetBorderSize(0);
    l_Watermark->SetMargin(0.005);
    l_Watermark->SetTextAlign(32);
-
+   l_Watermark->SetTextSize(0.05);
    l_Watermark->SetTextFont(62);
 
    l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
@@ -665,9 +719,11 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    l_POT->SetBorderSize(0);
    l_POT->SetMargin(0.005);
    l_POT->SetTextAlign(32);
+   l_POT->SetTextSize(0.05);
 
-   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
-   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
+
+   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
 
    //if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
    //if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
@@ -682,7 +738,8 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 
    l->SetNColumns(3);
 
-   TH1D *h_errors = MakeErrorBand(Hists_ByType);
+   //TH1D *h_errors = MakeErrorBand(Hists_ByType);
+   TH1D* h_errors = (TH1D*)Hists_ByType["All"]->Clone("h_errors");
    h_errors->Write("ErrorBand");
    h_errors->SetTitle(hs_Type->GetTitle());
    h_errors->SetFillStyle(3253);
@@ -698,8 +755,16 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    h_errors->GetYaxis()->SetLabelSize(0.045);
 
    // Make stat error covariance matrix
-   TH2D *h_Stat_Cov = new TH2D("h_Stat_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
-   TH2D *h_Stat_FCov = new TH2D("h_Stat_FCov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
+   //TH2D *h_Stat_Cov = new TH2D("h_Stat_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
+   //TH2D *h_Stat_FCov = new TH2D("h_Stat_FCov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
+   std::string title = ";" + std::string(Hists_ByType["All"]->GetXaxis()->GetTitle()) + ";" + std::string(Hists_ByType["All"]->GetXaxis()->GetTitle());
+
+   const int arr_n = fHistBoundaries.size();
+   Double_t arr_boundaries[arr_n];
+   for(size_t i=0;i<arr_n;i++) arr_boundaries[i] = fHistBoundaries.at(i);
+
+   TH2D *h_Stat_Cov = new TH2D("h_Stat_Cov",title.c_str(),fHistNBins,arr_boundaries,fHistNBins,arr_boundaries);
+   TH2D *h_Stat_FCov = new TH2D("h_Stat_FCov",title.c_str(),fHistNBins,arr_boundaries,fHistNBins,arr_boundaries);
 
    for(int i_b=1;i_b<fHistNBins+1;i_b++){
       h_Stat_Cov->SetBinContent(i_b,i_b,h_errors->GetBinError(i_b));
@@ -764,6 +829,10 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 
    l_DataMCRatio->SetHeader(("Data/MC = " + to_string_with_precision(Data/MC,2)).c_str());
 
+   if(BinLabels.size()){
+      for(int i=1;i<fHistNBins+1;i++) h_errors->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+      h_errors->GetXaxis()->SetLabelSize(0.08);
+   }
 
    p_legend->Draw();
    p_legend->cd();
@@ -777,7 +846,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    h_errors->Draw("E2");
    hs_Type->Draw("HIST same");
    h_errors->Draw("E2 same");
-   h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMax(h_errors)*1.2);
+   h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.25);
    h_errors->SetStats(0);
    if(fHasData)   Hists_ByType["Data"]->Draw("E0 P0 same");
 
@@ -786,7 +855,6 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    //if(SignalScale != 1.0) l_Scale->Draw();
    if(fHasData)   l_DataMCRatio->Draw();
    if(y_limit != -1){ h_errors->SetMaximum(y_limit); gPad->Update(); }
-
 
    c->cd();
 
@@ -824,7 +892,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
       h_errors->Draw("E2");
       hs_Type->Draw("HIST same");
       h_errors->Draw("E2 same");
-      h_errors->GetYaxis()->SetRangeUser(0.0,std::max(GetHistMax(h_errors),GetHistMax(Hists_ByType["Data"]))*1.20);
+      h_errors->GetYaxis()->SetRangeUser(0.0,std::max(GetHistMaxError(h_errors),GetHistMaxError(Hists_ByType["Data"]))*1.23);
       h_errors->SetStats(0);
       Hists_ByType["Data"]->Draw("E0 P0 same");
 
@@ -952,7 +1020,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    h_errors->Draw("E2");
    hs_Proc->Draw("HIST same");
    h_errors->Draw("E2 same");
-   h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMax(h_errors)*1.2);
+   h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.2);
    h_errors->SetStats(0);
    if(fHasData)   Hists_ByProc["Data"]->Draw("E0 P0 same");
 
@@ -999,7 +1067,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
       h_errors->Draw("E2");
       hs_Proc->Draw("HIST same");
       h_errors->Draw("E2 same");
-      h_errors->GetYaxis()->SetRangeUser(0.0,std::max(GetHistMax(h_errors),GetHistMax(Hists_ByProc["Data"]))*1.20);
+      h_errors->GetYaxis()->SetRangeUser(0.0,std::max(GetHistMaxError(h_errors),GetHistMaxError(Hists_ByProc["Data"]))*1.23);
       h_errors->SetStats(0);
       Hists_ByProc["Data"]->Draw("E0 P0 same");
 
@@ -1052,7 +1120,6 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    int systype=-1;
    std::vector<TH1D*> ToDraw;
 
-
    if (Multisim_Sys_Hists[type].find(name) != Multisim_Sys_Hists[type].end()){
       ToDraw = Multisim_Sys_Hists[type][name]; 
       systype = kMultisim;
@@ -1075,6 +1142,9 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
 
    l->AddEntry(Hists_ByType[type],"Central Value","L");
 
+   // Get the maximum of all the histograms
+   double maximum = 0.0;
+
    for(size_t i=0;i<ToDraw.size();i++){
 
       if(systype == kMultisim){
@@ -1095,12 +1165,19 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
       }
 
       hs->Add(ToDraw.at(i));
+    
+     if(GetHistMax(ToDraw.at(i)) > maximum) maximum = GetHistMax(ToDraw.at(i));
+   
    }
 
+   if(GetHistMax(Hists_ByType[type]) > maximum) maximum = GetHistMax(Hists_ByType[type]);
 
    Hists_ByType[type]->SetLineColor(1);
    Hists_ByType[type]->SetLineWidth(2);
    Hists_ByType[type]->SetFillColor(0);
+
+   Hists_ByType[type]->SetMaximum(maximum*1.25);
+
 
    hs->Add(Hists_ByType[type]);
 
@@ -1118,7 +1195,7 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    l_Watermark->SetBorderSize(0);
    l_Watermark->SetMargin(0.005);
    l_Watermark->SetTextAlign(32);
-
+   l_Watermark->SetTextSize(0.05);
    l_Watermark->SetTextFont(62);
 
    l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
@@ -1127,9 +1204,12 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    l_POT->SetBorderSize(0);
    l_POT->SetMargin(0.005);
    l_POT->SetTextAlign(32);
+     l_POT->SetTextSize(0.05);
 
-   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
-   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e21,1) + " #times 10^{21} POT").c_str());
+
+   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
+
 
    p_legend->Draw();
    p_legend->cd();
@@ -1138,7 +1218,27 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    p_plot->Draw();
    p_plot->cd();
 
+   //Hists_ByType[type]->Draw("HIST");
+   //Hists_ByType[type]->SetStats(0);
    hs->Draw("HIST nostack");
+
+   hs->GetXaxis()->SetTitleSize(0.05);
+   hs->GetYaxis()->SetTitleSize(0.05);
+
+   hs->GetXaxis()->SetTitleOffset(0.9);
+   hs->GetYaxis()->SetTitleOffset(0.9);
+
+   hs->GetXaxis()->SetLabelSize(0.045);
+   hs->GetYaxis()->SetLabelSize(0.045);
+
+   Hists_ByType[type]->Draw("HIST same");
+
+   if(BinLabels.size()){
+      for(int i=1;i<fHistNBins+1;i++) hs->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+      hs->GetXaxis()->SetLabelSize(0.07);
+   }
+
+   p_plot->Update(); 
 
    l_POT->Draw();
    l_Watermark->Draw();
@@ -1181,11 +1281,35 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
       systype = kDualUnisim;
    }
 
-   TMatrixD Cov(fHistNBins,fHistNBins);
-   TH2D *h_Cov = new TH2D("h_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
+   const int arr_n = fHistBoundaries.size();
+   Double_t arr_boundaries[arr_n];
+   for(size_t i=0;i<arr_n;i++) arr_boundaries[i] = fHistBoundaries.at(i);
 
+   std::string title = ";" + std::string(Hists_ByType["All"]->GetXaxis()->GetTitle()) + ";" + std::string(Hists_ByType["All"]->GetXaxis()->GetTitle());
+
+   TMatrixD Cov(fHistNBins,fHistNBins);
+   //TH2D *h_Cov = new TH2D("h_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
+   TH2D *h_Cov = new TH2D("h_Cov",title.c_str(),fHistNBins,arr_boundaries,fHistNBins,arr_boundaries);
+ 
    TMatrixD frac_Cov(fHistNBins,fHistNBins);
-   TH2D *h_frac_Cov = new TH2D("h_frac_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
+   //TH2D *h_frac_Cov = new TH2D("h_frac_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
+   TH2D *h_frac_Cov = new TH2D("h_frac_Cov",title.c_str(),fHistNBins,arr_boundaries,fHistNBins,arr_boundaries);
+
+   if(BinLabels.size()){
+      for(int i=1;i<fHistNBins+1;i++){
+         h_Cov->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+         h_Cov->GetYaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+         h_frac_Cov->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+         h_frac_Cov->GetYaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+      }
+
+      h_Cov->GetXaxis()->SetLabelSize(0.07);
+      h_Cov->GetYaxis()->SetLabelSize(0.07);
+      h_frac_Cov->GetXaxis()->SetLabelSize(0.07);
+      h_frac_Cov->GetYaxis()->SetLabelSize(0.07);
+ 
+  }
+   
 
    for(int i_b=1;i_b<fHistNBins+1;i_b++){
       for(int j_b=1;j_b<fHistNBins+1;j_b++){
@@ -1227,13 +1351,23 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
 
    //Cov.Print();
 
-   TCanvas *c = new TCanvas("c","c");
+   TCanvas *c = new TCanvas("c","c",800,600);
+   //TCanvas *c = new TCanvas("c","c",696,600);
+
+   c->SetRightMargin(0.13);
+   //c->SetRightMargin(0.5);
+
+   //TPad *p_plot = new TPad("pad1","pad1",0,0,0.9,1.0);
+   //p_plot->SetRightMargin(0.2);
+
 
    TLegend *l_Watermark = new TLegend(0.45,0.91,0.915,0.99);
    l_Watermark->SetBorderSize(0);
    l_Watermark->SetMargin(0.001);
    l_Watermark->SetTextAlign(32);
    l_Watermark->SetTextFont(62);
+   l_Watermark->SetTextSize(0.05);
+
    l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
 
    h_Cov->SetContour(100);
@@ -1246,6 +1380,7 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
    c->Print((PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name + ".pdf").c_str());
    c->Print((PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name + ".C").c_str());
    c->Clear();
+   //p_plot->Clear();
 
    h_frac_Cov->SetContour(100);
    h_frac_Cov->Draw("colz");
@@ -1285,6 +1420,85 @@ void SelectionManager::OpenHistFile(std::string label){
       f_Hists = TFile::Open((RootfileDir + label + "_Histograms.root").c_str(),"RECREATE");
    }
 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void SelectionManager::SetBinLabels(std::vector<std::string> binlabels){
+
+   if(binlabels.size() != fHistNBins) 
+      throw std::invalid_argument("Set of bin labels does not match number of bins!"); 
+
+   BinLabels = binlabels;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Divide bins by bin widths
+
+void SelectionManager::WidthScaleHistograms(){
+
+   std::map<std::string,TH1D*>::iterator it1;
+
+   for (it1=Hists_ByType.begin();it1!=Hists_ByType.end();it1++){
+      for(size_t i_b=1;i_b<it1->second->GetNbinsX()+1;i_b++){        
+         it1->second->SetBinContent(i_b,it1->second->GetBinContent(i_b)/it1->second->GetBinWidth(i_b));
+         it1->second->SetBinError(i_b,it1->second->GetBinError(i_b)/it1->second->GetBinWidth(i_b));
+      }
+   }
+
+   for (it1=Hists_ByProc.begin();it1!=Hists_ByProc.end();it1++){
+      for(size_t i_b=1;i_b<it1->second->GetNbinsX()+1;i_b++){
+         it1->second->SetBinContent(i_b,it1->second->GetBinContent(i_b)/it1->second->GetBinWidth(i_b));
+         it1->second->SetBinError(i_b,it1->second->GetBinError(i_b)/it1->second->GetBinWidth(i_b));
+      }
+   }
+
+   std::map<std::string,std::map<std::string,std::vector<TH1D*>>>::iterator it2;
+
+   for (it2=Multisim_Sys_Hists.begin();it2!=Multisim_Sys_Hists.end();it2++){
+      std::map<std::string,std::vector<TH1D*>>::iterator it22;
+      for (it22=it2->second.begin();it22!=it2->second.end();it22++){
+         for(size_t i=0;i<it22->second.size();i++){
+            for(size_t i_b=1;i_b<it22->second.at(i)->GetNbinsX()+1;i_b++){        
+               it22->second.at(i)->SetBinContent(i_b,it22->second.at(i)->GetBinContent(i_b)/it22->second.at(i)->GetBinWidth(i_b));
+               it22->second.at(i)->SetBinError(i_b,it22->second.at(i)->GetBinError(i_b)/it22->second.at(i)->GetBinWidth(i_b));
+            }
+         }
+      }
+   }
+
+
+   for (it2=SingleUnisim_Sys_Hists.begin();it2!=SingleUnisim_Sys_Hists.end();it2++){
+      std::map<std::string,std::vector<TH1D*>>::iterator it22;
+      for (it22=it2->second.begin();it22!=it2->second.end();it22++){
+         for(size_t i=0;i<it22->second.size();i++){
+            for(size_t i_b=1;i_b<it22->second.at(i)->GetNbinsX()+1;i_b++){        
+               it22->second.at(i)->SetBinContent(i_b,it22->second.at(i)->GetBinContent(i_b)/it22->second.at(i)->GetBinWidth(i_b));
+               it22->second.at(i)->SetBinError(i_b,it22->second.at(i)->GetBinError(i_b)/it22->second.at(i)->GetBinWidth(i_b));
+            }
+         }
+      }
+   }
+
+   for (it2=DualUnisim_Sys_Hists.begin();it2!=DualUnisim_Sys_Hists.end();it2++){
+      std::map<std::string,std::vector<TH1D*>>::iterator it22;
+      for (it22=it2->second.begin();it22!=it2->second.end();it22++){
+         for(size_t i=0;i<it22->second.size();i++){
+            for(size_t i_b=1;i_b<it22->second.at(i)->GetNbinsX()+1;i_b++){        
+               it22->second.at(i)->SetBinContent(i_b,it22->second.at(i)->GetBinContent(i_b)/it22->second.at(i)->GetBinWidth(i_b));
+               it22->second.at(i)->SetBinError(i_b,it22->second.at(i)->GetBinError(i_b)/it22->second.at(i)->GetBinWidth(i_b));
+            }
+         }
+      }
+   }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+std::vector<double> SelectionManager::GetBinBoundaries(){
+   return fHistBoundaries; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

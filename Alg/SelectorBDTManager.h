@@ -72,6 +72,7 @@ class SelectorBDTManager {
       void SetupSelectorBDT(std::string WeightsDir="");
       std::pair<int,int> NominateTracks(Event &e);      
       std::pair<int,int> NominateTracksCheat(Event &e);
+      double GetScore(RecoParticle DecayProtonCandidate,RecoParticle DecayPionCandidate);
 
 };
 
