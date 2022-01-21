@@ -6,8 +6,19 @@
 
 namespace FV {
 
-
    enum FV_Versions{ kOldFV , kWholeTPC , kWirecell , kWholeTPCPadded , kWirecellPadded };
+
+   // Edges of TPC
+   const double TPCxmin = -1.55;
+   const double TPCxmax = 254.8;
+   const double TPCymin = -115.53;
+   const double TPCymax = 117.47;
+   const double TPCzmin = 0.1;
+   const double TPCzmax = 1036.9;
+
+   //dead region to be cut - used in all FV versions
+   const double deadzmin = 675.1;
+   const double deadzmax = 775.1;
 
    // Fiducial volume class //
 
@@ -17,21 +28,6 @@ namespace FV {
 
 
       private:
-
-         // Various constants required
-
-         // Edges of TPC
-         const double TPCxmin = -1.55;
-         const double TPCxmax = 254.8;
-         const double TPCymin = -115.53;
-         const double TPCymax = 117.47;
-         const double TPCzmin = 0.1;
-         const double TPCzmax = 1036.9;
-
-         //dead region to be cut - used in all FV versions
-         const double deadzmin = 675.1;
-         const double deadzmax = 775.1;
-
 
          // MCC8 Inclusive FV
          const double FV_v1_xmin = 12.0;
@@ -77,6 +73,7 @@ namespace FV {
          const double m_bottom = -116;
          const double m_upstream = 0;
          const double m_downstream = 1037;
+
       public:
 
          FiducialVolume();

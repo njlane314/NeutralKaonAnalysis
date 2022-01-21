@@ -140,7 +140,7 @@ return (Signal+SignalError)/(Signal+SignalError+Background-BackgroundError);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 // Obtain posterior PDF histogram from TEfficiency Object
 
 inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name=""){
@@ -213,7 +213,7 @@ h_Posterior->Scale(1.0/h_Posterior->GetBinWidth(1));
 
 return h_Posterior;
 }
-
+*/
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 inline std::pair<double,double> MeanSD(std::vector<double> V){

@@ -5,9 +5,9 @@ CFLAGS=`${ROOTSYS}/bin/root-config --cflags` -fPIC
 INC=-I${HYP_TOP}/Core  -I${HYP_TOP}/Alg
 
 all: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight.o Muon_ID.o\
-	TrackLengthCutManager.o SelectorBDTManager.o AnalysisBDTManager.o\
+	TrackLengthCutManager.o SelectorBDTManager.o AnalysisBDTManager.o StatisticsManager.o\
 	EventListFilter.o ForwardFolder.o ForwardFolder2.o GenG4WeightHandler.o\
-	SecondaryVertexFitter.o SelectionManager.o EventAssembler.o libParticleDict.rootmap\
+	SecondaryVertexFitter.o SelectionManager.o EventAssembler.o MultiVariateRNG.o libParticleDict.rootmap\
 	libParticleDict.so libHyperon.so) 
 
 
@@ -62,6 +62,11 @@ lib/SelectionManager.o: Core/SelectionManager.cxx
 lib/EventAssembler.o: Core/EventAssembler.cxx
 	g++ $(CFLAGS) -c $(INC)  $< -o $@	
 	
+lib/MultiVariateRNG.o: Alg/MultiVariateRNG.cxx
+	g++ $(CFLAGS) -c $(INC)  $< -o $@	
+
+lib/StatisticsManager.o: Alg/StatisticsManager.cxx
+	g++ $(CFLAGS) -c $(INC)  $< -o $@	
 	
-lib/libHyperon.so: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight.o Muon_ID.o TrackLengthCutManager.o SelectorBDTManager.o SecondaryVertexFitter.o EventListFilter.o ForwardFolder.o ForwardFolder2.o GenG4WeightHandler.o EventAssembler.o SelectionManager.o)
-	g++ -shared `${ROOTSYS}/bin/root-config --libs` lib/FiducialVolume.o lib/FluxWeight.o lib/Muon_ID.o lib/TrackLengthCutManager.o lib/SelectorBDTManager.o lib/SecondaryVertexFitter.o lib/AnalysisBDTManager.o lib/EventListFilter.o lib/ForwardFolder.o lib/ForwardFolder2.o lib/CTTest.o lib/GenG4WeightHandler.o lib/EventAssembler.o lib/SelectionManager.o -o lib/libHyperon.so
+lib/libHyperon.so: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight.o Muon_ID.o TrackLengthCutManager.o SelectorBDTManager.o SecondaryVertexFitter.o EventListFilter.o ForwardFolder.o ForwardFolder2.o GenG4WeightHandler.o EventAssembler.o SelectionManager.o MultiVariateRNG.o StatisticsManager.o)
+	g++ -shared `${ROOTSYS}/bin/root-config --libs` lib/FiducialVolume.o lib/FluxWeight.o lib/Muon_ID.o lib/TrackLengthCutManager.o lib/SelectorBDTManager.o lib/SecondaryVertexFitter.o lib/AnalysisBDTManager.o lib/EventListFilter.o lib/ForwardFolder.o lib/ForwardFolder2.o lib/CTTest.o lib/GenG4WeightHandler.o lib/EventAssembler.o lib/SelectionManager.o lib/MultiVariateRNG.o lib/StatisticsManager.o -o lib/libHyperon.so
