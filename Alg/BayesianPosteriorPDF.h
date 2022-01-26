@@ -1,7 +1,7 @@
 #ifndef _BayesianPosteriorPDF_h_
 #define _BayesianPosteriorPDF_h_
 
-inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name=""){
+inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name="",double scale=1.0){
 
    double conf = 0.9999;
    double inc = 0.0001;
@@ -14,7 +14,7 @@ inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name=""){
    // Get total events     
    TH1D *h_Total = (TH1D*)E->GetTotalHistogram();
 
-   double TotalEvents =  h_Total->GetBinContent(bin);
+   double TotalEvents =  h_Total->GetBinContent(bin)*scale;
 
    double Efficiency = E->GetEfficiency(bin);
    double Efficiency_Low = E->GetEfficiency(bin) - E->GetEfficiencyErrorLow(bin);
@@ -46,26 +46,17 @@ inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name=""){
       double content_low = inc/2/nbins_low;
       double content_high = inc/2/nbins_high;
 
-      for(int i=0;i<nbins_low;i++){
-
+      for(int i=0;i<nbins_low;i++)
          h_Posterior->AddBinContent(old_low_bin+i,content_low);
 
-      }
-
-
-      for(int i=0;i<nbins_high;i++){
-
+      for(int i=0;i<nbins_high;i++)
          h_Posterior->AddBinContent(new_high_bin+i,content_high);
 
-      }
-
       conf -= inc;
-
    }
 
 
    h_Posterior->Rebin(1000);
-
    h_Posterior->Scale(1.0/h_Posterior->GetBinWidth(1));
 
    return h_Posterior;

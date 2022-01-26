@@ -1252,6 +1252,8 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
 
 }
 
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string name,std::string type){
@@ -1371,7 +1373,13 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
    l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
 
    h_Cov->SetContour(100);
-   h_Cov->Draw("colz");
+
+   if(fUseText){
+      h_Cov->SetMarkerSize(3.0);
+      h_Cov->Draw("colz text");
+   }
+   else h_Cov->Draw("colz");
+
    h_Cov->SetStats(0);
    l_Watermark->Draw();
    h_Cov->Write(("Cov_" + type + "_" + name).c_str());
@@ -1383,7 +1391,13 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
    //p_plot->Clear();
 
    h_frac_Cov->SetContour(100);
-   h_frac_Cov->Draw("colz");
+
+   if(fUseText){
+      h_frac_Cov->SetMarkerSize(3.0);
+      h_frac_Cov->Draw("colz text");
+   }
+   else h_frac_Cov->Draw("colz");
+
    l_Watermark->Draw();
    h_frac_Cov->SetStats(0);
    h_frac_Cov->Write(("FCov_" + type + "_" + name).c_str());

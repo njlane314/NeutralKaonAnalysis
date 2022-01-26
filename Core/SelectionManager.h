@@ -101,18 +101,18 @@ class SelectionManager {
       CTTest a_CTTest_Plane1;
       CTTest a_CTTest_Plane2;
 
-     // Misc settings/methods //
-     private:
+      // Misc settings/methods //
+   private:
 
       bool fUseFluxWeight = true;
       bool fUseGenWeight = true;
 
-     public:
-        
+   public:
+
       void UseFluxWeight(bool usefluxweight);
       void UseGenWeight(bool usegenweight); 
 
-    private:
+   private:
 
       // Cut Data Management //
       std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" };
@@ -141,7 +141,7 @@ class SelectionManager {
 
       // Histogram Functions //
 
-    private:
+   private:
 
       std::string fTitle;
       int fHistNBins;
@@ -150,6 +150,8 @@ class SelectionManager {
       std::vector<double> fHistBoundaries;
 
       bool fHasData=false;
+
+      bool fUseText=false;
 
       std::map< std::string , TH1D* > Hists_ByProc;
       std::map< std::string , TH1D* > Hists_ByType;
@@ -166,10 +168,10 @@ class SelectionManager {
 
       std::vector<std::string> BinLabels;
 
-  public:
+   public:
 
       std::string GetMode(Event e);
-     
+
       void AddSystematic(int systype,int universes,std::string name);
       void FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights);
       void FillHistogramsSys(Event e,double variable,std::string name,int universe,double weight);
@@ -180,16 +182,18 @@ class SelectionManager {
       void SetupHistograms(std::vector<double> boundaries,std::string title="");
       void FillHistograms(Event e,double variable,double weight=1.0);
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
-   
+
       double GetPrediction(int bin,std::string type="");
 
       std::string PlotDir="Plots/";
       std::string RootfileDir="rootfiles/";
-  
+
       void SetBinLabels(std::vector<std::string> binlabels);
       std::vector<double> GetBinBoundaries();
 
       void WidthScaleHistograms();
+
+      void UseText(){ fUseText = true; }
 };
 
 
