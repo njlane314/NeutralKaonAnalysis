@@ -3,6 +3,13 @@
 
 inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name="",double scale=1.0){
 
+   // if scale is zero, posterior PDF is a delta function at x=0 
+   if(!(scale > 0.0)){
+      TH1D* h_Posterior = new TH1D(("h_Expected"+name).c_str(),";Events;PDF",1,0.0,1e-10);
+      h_Posterior->SetBinContent(1,1.0/h_Posterior->GetBinWidth(1));
+      return h_Posterior;
+   } 
+
    double conf = 0.9999;
    double inc = 0.0001;
 

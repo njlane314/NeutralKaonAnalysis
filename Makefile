@@ -56,7 +56,7 @@ lib/GenG4WeightHandler.o: Alg/GenG4WeightHandler.cxx
 lib/SecondaryVertexFitter.o: Alg/SecondaryVertexFitter.cxx
 	g++ $(CFLAGS) -c $(INC)  $< -o $@	
 
-lib/SelectionManager.o: Core/SelectionManager.cxx
+lib/SelectionManager.o: Core/SelectionManager.cxx Alg/PlottingFunctions.h
 	g++ $(CFLAGS) -c $(INC)  $< -o $@	
 
 lib/EventAssembler.o: Core/EventAssembler.cxx
@@ -65,7 +65,7 @@ lib/EventAssembler.o: Core/EventAssembler.cxx
 lib/MultiVariateRNG.o: Alg/MultiVariateRNG.cxx
 	g++ $(CFLAGS) -c $(INC)  $< -o $@	
 
-lib/StatisticsManager.o: Alg/StatisticsManager.cxx
+lib/StatisticsManager.o: Alg/StatisticsManager.cxx Alg/BayesianPosteriorPDF.h
 	g++ $(CFLAGS) -c $(INC)  $< -o $@	
 	
 lib/libHyperon.so: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight.o Muon_ID.o TrackLengthCutManager.o SelectorBDTManager.o SecondaryVertexFitter.o EventListFilter.o ForwardFolder.o ForwardFolder2.o GenG4WeightHandler.o EventAssembler.o SelectionManager.o MultiVariateRNG.o StatisticsManager.o)

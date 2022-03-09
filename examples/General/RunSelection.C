@@ -14,14 +14,15 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       double POT = 1.0e21; // POT to scale samples to
 
       BuildTunes();
+      //ImportSamples(sNuWroFullFHC);
+
+      SampleNames.push_back("GENIE Background");
+      SampleTypes.push_back("Background");
+      SampleFiles.push_back("run1_FHC/analysisOutputFHC_GENIE_Overlay_Background_Test.root");
 
       SelectionParameters P = P_FHC_Tune_325;
 
       std::string label = "test";
-
-      SampleNames.push_back("GENIE Dirt");
-      SampleTypes.push_back("Dirt");
-      SampleFiles.push_back("analysisOutputFHC_Overlay_GENIE_Dirt_CV_prodgenie_numi_uboone_overlay_dirt_fhc_mcc9_run1_v28_sample1.root");
 
       // Setup selection manager. Set POT to scale sample to, import the BDT weights
       EventAssembler E;
@@ -29,6 +30,11 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       M.SetPOT(POT);
       M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
       M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
+
+      double Signal = 0.0;
+      double BG = 0.0;
+      double Sel_Signal = 0.0;
+      double Sel_BG = 0.0;
 
       // Sample Loop
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
@@ -41,10 +47,15 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          // Event Loop
          for(int i=0;i<E.GetNEvents();i++){
 
+            if(i % 1000 == 0) std::cout << i << "/" << E.GetNEvents() << std::endl;
+
             Event e = E.GetEvent(i);
 
             M.SetSignal(e);                
-            M.AddEvent(e);       
+            M.AddEvent(e);
+
+            if(e.EventIsSignal) Signal += e.Weight;
+            else BG += e.Weight;
 
             if(!M.FiducialVolumeCut(e)) continue;
             if(!M.TrackCut(e)) continue;
@@ -52,7 +63,12 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             if(!M.ChooseMuonCandidate(e)) continue;
             if(!M.ChooseProtonPionCandidates(e)) continue;
             if(!M.AnalysisBDTCut(e)) continue;       
-            if(!M.ConnectednessTest(e)) continue;
+            if(!M.ConnectednessTest(e)) continue;           
+
+           
+            if(e.EventIsSignal) Sel_Signal += e.Weight;
+            else Sel_BG += e.Weight;
+
 
          }
 
@@ -60,9 +76,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       }
 
-
-      Cut C_CT = M.GetCut("Connectedness");
-
-      std::cout << "Selected Signal = " << C_CT.PredictedSignal() << " +/- " << C_CT.PredictedSignalError() << "  Selected Background = " <<  C_CT.PredictedBackground() << " +/- " << C_CT.PredictedBackgroundError() << std::endl;
+        std::cout << "Signal = " << Signal << "  Selected = " << Sel_Signal << std::endl;
+        std::cout << "BG = " << BG << "  Selected = " << Sel_BG << std::endl;
 
    }

@@ -55,16 +55,6 @@ std::vector<double> MultiVariateRNG::GetParameterSet() const {
       // at this point in the parameter space
 
       double PD = EvalGauss(vals);
- /*
-      double exp_arg=0.0;
-
-      for(Int_t i=0;i<fCov.GetNcols();i++)
-         for(Int_t j=0;j<fCov.GetNcols();j++)
-            exp_arg += (vals.at(i) - fCV.at(i))*fCovInv(i,j)*(vals.at(j) - fCV.at(j));
-
-      double denominator = sqrt(pow(2*3.1416 , fCov.GetNcols())*fDeterminant);
-      double PD = exp(-0.5*exp_arg)/denominator;
-     */
       double denominator = sqrt( pow(2*3.1416,fCov.GetNcols())*fDeterminant );
       double value = R->Uniform(0,1.0/denominator);
 
@@ -74,7 +64,6 @@ std::vector<double> MultiVariateRNG::GetParameterSet() const {
    }
  
     throw std::runtime_error("MultiVariateRNG::GetParameterSet : Call limit of " + std::to_string(MAX_CALLS) + " reached");
-   //throw cet::exception("MultiVariateRNG") << "Call limit of " << MAX_CALLS << " reached" << std::endl;
 
    return {};
 }

@@ -225,6 +225,7 @@ Event EventAssembler::GetEvent(int i){
    e.Hyperon = *Hyperon;
    e.PrimaryNucleon = *PrimaryNucleon;
    e.PrimaryPion = *PrimaryPion;
+   e.PrimaryKaon = *PrimaryKaon;
    e.Decay = *Decay;
    e.SigmaZeroDecayLambda = *SigmaZeroDecayLambda;
    e.SigmaZeroDecayPhoton = *SigmaZeroDecayPhoton;

@@ -119,8 +119,10 @@ void SelectionManager::AddEvent(Event &e){
    //if(thisSampleType == "Hyperon" && !e.EventHasHyperon){ e.Weight = 0.0; return; }
    //if(thisSampleType == "Background" && e.EventHasHyperon){ e.Weight = 0.0; return; }
 
-   //if(thisSampleType == "Neutron" && !e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
-   //if(thisSampleType != "Neutron" && e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
+   if(thisSampleType == "Neutron" && !e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
+   if(thisSampleType != "Neutron" && e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
+   if(thisSampleType != "Hyperon" &&  e.EventHasHyperon){ e.Weight = 0.0; return; }
+   if(thisSampleType == "Hyperon" &&  !e.EventHasHyperon){ e.Weight = 0.0; return; }
 
    /*
       if((thisSampleType == "Background" || thisSampleType == "Hyperon") ||
@@ -468,10 +470,8 @@ void SelectionManager::SetupHistograms(std::vector<double> boundaries,std::strin
 
    fTitle = title;
    fHistNBins = boundaries.size()-1;
-
    fHistLow = boundaries.front();
    fHistHigh = boundaries.back();
-
    fHistBoundaries = boundaries;
 
    const int arr_n = boundaries.size();
@@ -486,6 +486,11 @@ void SelectionManager::SetupHistograms(std::vector<double> boundaries,std::strin
    for(size_t i_type=0;i_type<Types.size();i_type++){
       std::string histname = "h_ByType_" + Types.at(i_type);
       Hists_ByType[Types.at(i_type)] = new TH1D(histname.c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
+   }
+
+   for(size_t i_type=0;i_type<Types2.size();i_type++){
+      std::string histname = "h_ByType2_" + Types2.at(i_type);
+      Hists_ByType2[Types2.at(i_type)] = new TH1D(histname.c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
    }
 
 }
@@ -509,10 +514,14 @@ void SelectionManager::SetupHistograms(int n,double low,double high,std::string 
       Hists_ByType[Types.at(i_type)] = new TH1D(histname.c_str(),fTitle.c_str(),n,low,high);
    }
 
+   for(size_t i_type=0;i_type<Types2.size();i_type++){
+      std::string histname = "h_ByType2_" + Types2.at(i_type);
+      Hists_ByType2[Types2.at(i_type)] = new TH1D(histname.c_str(),fTitle.c_str(),n,low,high);
+   }
+
    double width = (high-low)/n;
    for(int i=0;i<n+1;i++) fHistBoundaries.push_back(low+width*i); 
-  
-  
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -528,52 +537,80 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
    if(systype == kMultisim){
       for(size_t i_type=0;i_type<Types.size();i_type++){
          Multisim_Sys_Hists[Types.at(i_type)][name].resize(universes);
-
          for(size_t i=0;i<universes;i++) 
-            //Multisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
-            Multisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,arr_boundaries);
-
-
+            Multisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,arr_boundaries);      
+      }
+      for(size_t i_type=0;i_type<Types2.size()-4;i_type++){
+         Multisim_Sys_Hists[Types2.at(i_type)][name].resize(universes);
+         for(size_t i=0;i<universes;i++) 
+            Multisim_Sys_Hists[Types2.at(i_type)][name].at(i) = new TH1D(("h_" + Types2.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,arr_boundaries);   
       }
    }
    else if(systype == kSingleUnisim){
       for(size_t i_type=0;i_type<Types.size();i_type++){
          SingleUnisim_Sys_Hists[Types.at(i_type)][name].resize(1);
-
-         for(size_t i=0;i<1;i++){
-            //SingleUnisim_Sys_Hists[Types.at(i_type)][name][i] = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
-            SingleUnisim_Sys_Hists[Types.at(i_type)][name][i] = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,arr_boundaries);
-         }
-
+         for(size_t i=0;i<1;i++)
+            SingleUnisim_Sys_Hists[Types.at(i_type)][name][i] = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,arr_boundaries);    
+      }
+      for(size_t i_type=0;i_type<Types2.size()-4;i_type++){
+         SingleUnisim_Sys_Hists[Types2.at(i_type)][name].resize(1);
+         for(size_t i=0;i<1;i++)
+            SingleUnisim_Sys_Hists[Types2.at(i_type)][name][i] = new TH1D(("h_" + Types2.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,arr_boundaries);  
       }
    }
    else if(systype == kDualUnisim){
       for(size_t i_type=0;i_type<Types.size();i_type++){
          DualUnisim_Sys_Hists[Types.at(i_type)][name].resize(2);
-
          for(size_t i=0;i<2;i++) 
-            //DualUnisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,fHistLow,fHistHigh);
             DualUnisim_Sys_Hists[Types.at(i_type)][name].at(i) = new TH1D(("h_" + Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,arr_boundaries);
-
+      }
+      for(size_t i_type=0;i_type<Types2.size()-4;i_type++){
+         DualUnisim_Sys_Hists[Types2.at(i_type)][name].resize(2);
+         for(size_t i=0;i<2;i++) 
+            DualUnisim_Sys_Hists[Types2.at(i_type)][name].at(i) = new TH1D(("h_" + Types2.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),"",fHistNBins,arr_boundaries);
       }
    }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
 std::string SelectionManager::GetMode(Event e){
 
    std::string mode;
-
    if( thisSampleType == "Data" ) mode = "Data";
    else if( thisSampleType == "EXT" ) mode = "EXT";
    else if( thisSampleType == "Dirt" ) mode = "Dirt";
-   else  if( e.EventIsSignal ) mode = "Signal";
+   else if( e.EventIsSignal ) mode = "Signal";
    else if( e.Mode.at(0) == "HYP") mode = "OtherHYP";
-   else { mode = "OtherNu"; }
+   else  mode = "OtherNu";
 
    return mode;
+}
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+std::string SelectionManager::GetMode2(Event e){
+
+   std::string mode;
+
+   if( thisSampleType == "Data" ) return "Data";
+   else if( thisSampleType == "EXT" ) return "EXT";
+   else if (thisSampleType == "Dirt" ) return "Dirt";
+
+  bool islambdacharged =  std::find(e.IsLambdaCharged.begin(),e.IsLambdaCharged.end(), true) != e.IsLambdaCharged.end();
+  bool ishyperon = e.Hyperon.size(); 
+
+  if(e.EventIsSignal) return "DirectLambda";
+  else if(e.Mode.at(0) == "HYP") return "DirectHYP"; 
+  else if(e.Mode.at(0) == "RES" && islambdacharged) return "RESLambda";
+  else if(e.Mode.at(0) == "RES" && e.Hyperon.size()) return "RESHYP"; 
+  else if(e.Mode.at(0) == "DIS" && islambdacharged) return "DISLambda";
+  else if(e.Mode.at(0) == "DIS" && e.Hyperon.size()) return "DISHYP"; 
+  else if(e.EventHasNeutronScatter) return "Neutron";
+  else return "Other";
+
+   return mode;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -599,7 +636,6 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
 
       Hists_ByType[ "OtherNu" ]->Fill(variable,weight*e.Weight);
 
-
       if(mode != "ElectronScattering" && mode != "Diffractive" && mode != "Other"){
          if(e.CCNC.at(0) == "CC"){
             Hists_ByProc[ "CC"+mode ]->Fill(variable,weight*e.Weight);
@@ -617,27 +653,43 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
       Hists_ByProc["All"]->Fill(variable,weight*e.Weight);
    }
 
+
+   std::string mode2 = GetMode2(e);
+   Hists_ByType2[mode2]->Fill(variable,weight*e.Weight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 void SelectionManager::FillHistogramsSys(Event e,double variable,std::string name,int universe,double weight){
 
-   if (Multisim_Sys_Hists[GetMode(e)].find(name) != Multisim_Sys_Hists[GetMode(e)].end()){
-      Multisim_Sys_Hists[GetMode(e)][name].at(universe)->Fill(variable,weight*e.Weight);
+   if(thisSampleType == "Data") return;
+
+   if(std::isnan(e.Weight) || std::isnan(weight)){
+      std::cout << "Nan weight detected for event " << e.run << " " << e.subrun << " " << e.event << " skipping" << std::endl;
+      return;
+   }
+
+   std::string mode = GetMode(e);
+   std::string mode2 = GetMode2(e);
+
+   if (Multisim_Sys_Hists[mode].find(name) != Multisim_Sys_Hists[mode].end()){
+      Multisim_Sys_Hists[mode][name].at(universe)->Fill(variable,weight*e.Weight);
       Multisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
+      if(mode2 != "Dirt" && mode2 != "EXT" && mode2 != "Data") Multisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
       return;
    }
 
-   else if (SingleUnisim_Sys_Hists[GetMode(e)].find(name) != SingleUnisim_Sys_Hists[GetMode(e)].end()){
-      SingleUnisim_Sys_Hists[GetMode(e)][name].at(universe)->Fill(variable,weight*e.Weight);
+   else if (SingleUnisim_Sys_Hists[mode].find(name) != SingleUnisim_Sys_Hists[mode].end()){
+      SingleUnisim_Sys_Hists[mode][name].at(universe)->Fill(variable,weight*e.Weight);
       SingleUnisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
+      if(mode2 != "Dirt" && mode2 != "EXT" && mode2 != "Data") SingleUnisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
       return;
    }
 
-   else if (DualUnisim_Sys_Hists[GetMode(e)].find(name) != DualUnisim_Sys_Hists[GetMode(e)].end()){
-      DualUnisim_Sys_Hists[GetMode(e)][name].at(universe)->Fill(variable,weight*e.Weight);
+   else if (DualUnisim_Sys_Hists[mode].find(name) != DualUnisim_Sys_Hists[mode].end()){
+      DualUnisim_Sys_Hists[mode][name].at(universe)->Fill(variable,weight*e.Weight);
       DualUnisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
+      if(mode2 != "Dirt" && mode2 != "EXT" && mode2 != "Data") DualUnisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
       return;
    }
 }
@@ -646,18 +698,6 @@ void SelectionManager::FillHistogramsSys(Event e,double variable,std::string nam
 
 
 void SelectionManager::FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights){
-
-/*
-   if (Multisim_Sys_Hists[GetMode(e)].find(name) != Multisim_Sys_Hists[GetMode(e)].end()){
-
-      if(weights.size() != Multisim_Sys_Hists[GetMode(e)][name].size()){
-         std::cout << "Event has " << weights.size() << " weights, expecting " << Multisim_Sys_Hists[name].size() << " for systematic " << name << std::endl;
-      }
-
-      for(size_t i=0;i<weights.size();i++)
-         FillHistogramsSys(e,variable,name,i,weights.at(i)); 
-   }
-*/
 
       for(size_t i=0;i<weights.size();i++)
          FillHistogramsSys(e,variable,name,i,weights.at(i)); 
@@ -671,6 +711,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    OpenHistFile(label);
 
    double y_limit = -1;
+   if(y_limit != -1) gStyle->SetHistTopMargin(0);
 
    system(("mkdir -p " + PlotDir).c_str());
 
@@ -679,7 +720,6 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    for(size_t i_proc=0;i_proc<Procs.size();i_proc++){
       Hists_ByProc[Procs.at(i_proc)]->Scale(Scale);
       Hists_ByProc[Procs.at(i_proc)]->Sumw2();
-
    }
 
    for(size_t i_type=0;i_type<Types.size();i_type++){
@@ -687,424 +727,66 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
       Hists_ByType[Types.at(i_type)]->Sumw2();
    }
 
+   for(size_t i_type=0;i_type<Types2.size();i_type++){
+      Hists_ByType2[Types2.at(i_type)]->Scale(Scale);
+      Hists_ByType2[Types2.at(i_type)]->Sumw2();
+   }
+
+
    Hists_ByProc["Signal"]->Scale(SignalScale);
    Hists_ByType["Signal"]->Scale(SignalScale);
 
-   if(y_limit != -1) gStyle->SetHistTopMargin(0);
-
-   TCanvas *c = new TCanvas("c","c",800,600);
-
-   TPad *p_plot = new TPad("pad1","pad1",0,0,1,0.85);
-   TPad *p_legend = new TPad("pad2","pad2",0,0.85,1,1);
-
-   p_legend->SetBottomMargin(0);
-   p_legend->SetTopMargin(0.1);
-   p_plot->SetTopMargin(0.01);
-
-   THStack *hs_Type = new THStack("hs_Type",fTitle.c_str());
-
-   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
-   l->SetBorderSize(0);
-
-   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
-   l_Watermark->SetBorderSize(0);
-   l_Watermark->SetMargin(0.005);
-   l_Watermark->SetTextAlign(32);
-   l_Watermark->SetTextSize(0.05);
-   l_Watermark->SetTextFont(62);
-
-   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-
-   TLegend *l_POT = new TLegend(0.55,0.820,0.89,0.900);
-   l_POT->SetBorderSize(0);
-   l_POT->SetMargin(0.005);
-   l_POT->SetTextAlign(32);
-   l_POT->SetTextSize(0.05);
-
-
-   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
-   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
-
-   //if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
-   //if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
-
-
-   TLegend *l_Scale = new TLegend(0.65,0.745,0.89,0.805);
-   l_Scale->SetHeader(("Signal #times " + to_string_with_precision(SignalScale,0)).c_str());
-   l_Scale->SetBorderSize(0);
-   l_Scale->SetMargin(0.005);
-   l_Scale->SetTextAlign(32);
-
-
-   l->SetNColumns(3);
-
-   //TH1D *h_errors = MakeErrorBand(Hists_ByType);
    TH1D* h_errors = (TH1D*)Hists_ByType["All"]->Clone("h_errors");
-   h_errors->Write("ErrorBand");
-   h_errors->SetTitle(hs_Type->GetTitle());
-   h_errors->SetFillStyle(3253);
-   h_errors->SetFillColor(1);
-
-   h_errors->GetXaxis()->SetTitleSize(0.05);
-   h_errors->GetYaxis()->SetTitleSize(0.05);
-
-   h_errors->GetXaxis()->SetTitleOffset(0.9);
-   h_errors->GetYaxis()->SetTitleOffset(0.9);
-
-   h_errors->GetXaxis()->SetLabelSize(0.045);
-   h_errors->GetYaxis()->SetLabelSize(0.045);
-
-   // Make stat error covariance matrix
-   //TH2D *h_Stat_Cov = new TH2D("h_Stat_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
-   //TH2D *h_Stat_FCov = new TH2D("h_Stat_FCov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
-   std::string title = ";" + std::string(Hists_ByType["All"]->GetXaxis()->GetTitle()) + ";" + std::string(Hists_ByType["All"]->GetXaxis()->GetTitle());
-
-   const int arr_n = fHistBoundaries.size();
-   Double_t arr_boundaries[arr_n];
-   for(size_t i=0;i<arr_n;i++) arr_boundaries[i] = fHistBoundaries.at(i);
-
-   TH2D *h_Stat_Cov = new TH2D("h_Stat_Cov",title.c_str(),fHistNBins,arr_boundaries,fHistNBins,arr_boundaries);
-   TH2D *h_Stat_FCov = new TH2D("h_Stat_FCov",title.c_str(),fHistNBins,arr_boundaries,fHistNBins,arr_boundaries);
-
-   for(int i_b=1;i_b<fHistNBins+1;i_b++){
-      h_Stat_Cov->SetBinContent(i_b,i_b,h_errors->GetBinError(i_b));
-      h_Stat_FCov->SetBinContent(i_b,i_b,h_errors->GetBinError(i_b)/h_errors->GetBinContent(i_b));
-   }
-
-   h_Stat_Cov->Write("Cov_Stat");
-   h_Stat_FCov->Write("FCov_Stat");
-
-   // Draw histograms by event category
-
-   // Signal first
-   Hists_ByType["Signal"]->SetFillColor(8);
-   hs_Type->Add(Hists_ByType["Signal"],"HIST");
-   if(fHasData) l->AddEntry(Hists_ByType["Signal"],("Signal = "+ to_string_with_precision(Hists_ByType["Signal"]->Integral(),1)).c_str(),"F");
-   else if(SignalScale != 1.0) l->AddEntry(Hists_ByType["Signal"],("Signal #times " + to_string_with_precision(SignalScale,0)).c_str() ,"F");
-   else l->AddEntry(Hists_ByType["Signal"],"Signal","F");
-   Hists_ByType["Signal"]->Write("Signal");
-
-   Hists_ByType["OtherHYP"]->SetFillColor(46);
-   hs_Type->Add(Hists_ByType["OtherHYP"],"HIST");
-   if(fHasData) l->AddEntry(Hists_ByType["OtherHYP"],("Other HYP = "+ to_string_with_precision(Hists_ByType["OtherHYP"]->Integral(),1)).c_str(),"F");
-   else l->AddEntry(Hists_ByType["OtherHYP"],"Other Hyperon","F");
-   Hists_ByType["OtherHYP"]->Write("OtherHYP");
-
-   Hists_ByType["OtherNu"]->SetFillColor(38);
-   hs_Type->Add(Hists_ByType["OtherNu"],"HIST");
-   if(fHasData) l->AddEntry(Hists_ByType["OtherNu"],("Other #nu = "+ to_string_with_precision(Hists_ByType["OtherNu"]->Integral(),1)).c_str(),"F");
-   else l->AddEntry(Hists_ByType["OtherNu"],"Other #nu","F");
-   Hists_ByType["OtherNu"]->Write("OtherNu");
-
-   Hists_ByType["Dirt"]->SetFillColor(30);
-   hs_Type->Add(Hists_ByType["Dirt"],"HIST");
-   if(fHasData) l->AddEntry(Hists_ByType["Dirt"],("Dirt = "+ to_string_with_precision(Hists_ByType["Dirt"]->Integral(),1)).c_str(),"F");
-   else l->AddEntry(Hists_ByType["Dirt"],"Dirt","F");
-   Hists_ByType["Dirt"]->Write("Dirt");
-
-   Hists_ByType["EXT"]->SetFillColor(15);
-   hs_Type->Add(Hists_ByType["EXT"],"HIST");
-   if(fHasData) l->AddEntry(Hists_ByType["EXT"],("EXT = "+ to_string_with_precision(Hists_ByType["EXT"]->Integral(),1)).c_str(),"F");
-   else l->AddEntry(Hists_ByType["EXT"],"EXT","F");
-   Hists_ByType["EXT"]->Write("EXT");
-
-   if(fHasData){
-
-      Hists_ByType["Data"]->SetLineWidth(1);
-      Hists_ByType["Data"]->SetLineColor(1);
-      Hists_ByType["Data"]->SetMarkerStyle(20);
-      Hists_ByType["Data"]->SetMarkerColor(1);
-      l->AddEntry(Hists_ByType["Data"],("Data = "+ to_string_with_precision(Hists_ByType["Data"]->Integral(),1)).c_str(),"P");
-      Hists_ByType["Data"]->Write("Data");
-
-   }
-
-   TLegend *l_DataMCRatio = new TLegend(0.12,0.905,0.46,0.985);
-   l_DataMCRatio->SetBorderSize(0);
-   l_DataMCRatio->SetMargin(0.005);
-
-   double Data = Hists_ByType["Data"]->Integral();
-   double MC = Hists_ByType["Signal"]->Integral() + Hists_ByType["OtherHYP"]->Integral() + Hists_ByType["OtherNu"]->Integral() + Hists_ByType["Dirt"]->Integral() + Hists_ByType["EXT"]->Integral();
-
-
-   l_DataMCRatio->SetHeader(("Data/MC = " + to_string_with_precision(Data/MC,2)).c_str());
-
+/*
    if(BinLabels.size()){
-      for(int i=1;i<fHistNBins+1;i++) h_errors->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+      for(int i=1;i<fHistNBins+1;i++){
+         h_errors->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+         Hists_ByType["Signal"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+         Hists_ByType["OtherHYP"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+         Hists_ByType["OtherNu"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+         Hists_ByType["Dirt"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+         Hists_ByType["EXT"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+         if(fHasData) Hists_ByType["Data"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+      }
       h_errors->GetXaxis()->SetLabelSize(0.08);
+      Hists_ByType["Signal"]->GetXaxis()->SetLabelSize(0.08);
+      Hists_ByType["OtherHYP"]->GetXaxis()->SetLabelSize(0.08);
+      Hists_ByType["OtherNu"]->GetXaxis()->SetLabelSize(0.08);
+      Hists_ByType["Dirt"]->GetXaxis()->SetLabelSize(0.08);
+      Hists_ByType["EXT"]->GetXaxis()->SetLabelSize(0.08);
+      if(fHasData) Hists_ByType["Data"]->GetXaxis()->SetLabelSize(0.08);
    }
+*/
 
-   p_legend->Draw();
-   p_legend->cd();
-   l->Draw();
-   c->cd();
-   p_plot->Draw();
-   p_plot->cd();
 
-   hs_Type->Draw();
+    
+   std::vector<std::string> captions = {"Signal","Other HYP","Other #nu","Dirt","EXT","Data"};
+   std::vector<int> colors = {8,46,38,30,15,0};
+   std::vector<TH1D*> Hists_ByType_v = {Hists_ByType["Signal"],Hists_ByType["OtherHYP"],Hists_ByType["OtherNu"],Hists_ByType["Dirt"],Hists_ByType["EXT"],Hists_ByType["Data"]};
+   DrawHistogram(Hists_ByType_v,h_errors,captions,PlotDir,label+"_ByType",BeamMode,fPOT,SignalScale,fHasData,colors,BinLabels,std::make_pair(0,0));
 
-   h_errors->Draw("E2");
-   hs_Type->Draw("HIST same");
-   h_errors->Draw("E2 same");
-   h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.25);
-   h_errors->SetStats(0);
-   if(fHasData)   Hists_ByType["Data"]->Draw("E0 P0 same");
+   std::vector<std::string> captions2 = {"Direct #Lambda","Direct Hyp","Neutron","Dirt","RES #Lambda","RES Hyp","Other #nu","EXT","DIS #Lambda","DIS Hyp","Data"};
+   std::vector<int> colors2 = {8,kBlue-7,kRed-7,kCyan+3,kGreen+3,kBlue-10,kRed-10,kMagenta-7,30,15,0};
 
-   l_POT->Draw();
-   l_Watermark->Draw();
-   //if(SignalScale != 1.0) l_Scale->Draw();
-   if(fHasData)   l_DataMCRatio->Draw();
-   if(y_limit != -1){ h_errors->SetMaximum(y_limit); gPad->Update(); }
+   std::vector<TH1D*> Hists_ByType_v2 = {Hists_ByType2["DirectLambda"],Hists_ByType2["DirectHYP"],Hists_ByType2["Neutron"],Hists_ByType2["Dirt"],Hists_ByType2["RESLambda"],Hists_ByType2["RESHYP"],Hists_ByType2["Other"],Hists_ByType2["EXT"],Hists_ByType2["DISLambda"],Hists_ByType2["DISHYP"],Hists_ByType2["Data"]};
 
-   c->cd();
+   //std::vector<TH1D*> Hists_ByType_v2 = {Hists_ByType2["DirectLambda"],Hists_ByType2["RESLambda"],Hists_ByType2["DISLambda"],Hists_ByType2["DirHYP"],Hists_ByType2["RESHYP"],Hists_ByType2["DISHYP"],Hists_ByType2["Neutron"],Hists_ByType2["Other"],Hists_ByType2["Dirt"],Hists_ByType2["EXT"],Hists_ByType2["Data"]};
+   DrawHistogram(Hists_ByType_v2,h_errors,captions2,PlotDir,label+"_ByType2",BeamMode,fPOT,SignalScale,fHasData,colors2,BinLabels,std::make_pair(0,0));
 
-   c->Print((PlotDir + label + "_By_Type.png").c_str());
-   c->Print((PlotDir + label + "_By_Type.pdf").c_str());
-   c->Print((PlotDir + label + "_By_Type.C").c_str());
+   std::vector<std::string> captions3 = {"Signal","Other HYP","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","ElectronScattering","Diffractive","Other","Dirt","EXT","Data"};
+   std::vector<int> colors3 = {8,46,2,3,4,5,6,7,9,11,12,30,15,0};
+   std::vector<TH1D*> Hists_ByProc_v = {Hists_ByProc["Signal"],Hists_ByProc["OtherHYP"],Hists_ByProc["CCQEL"],Hists_ByProc["CCRES"],Hists_ByProc["CCDIS"],Hists_ByProc["CCMEC"],Hists_ByProc["CCCOH"],Hists_ByProc["NC"],Hists_ByProc["ElectronScattering"],Hists_ByProc["Diffractive"],Hists_ByProc["Other"],Hists_ByProc["EXT"],Hists_ByProc["Dirt"],Hists_ByProc["Data"]};
+   DrawHistogram(Hists_ByProc_v,h_errors,captions3,PlotDir,label+"_ByProc",BeamMode,fPOT,SignalScale,fHasData,colors3,BinLabels,std::make_pair(0,0));
 
-   c->Clear();
+  std::map<std::string,TH1D*>::iterator it;
+  for (it = Hists_ByType.begin(); it != Hists_ByType.end(); it++)
+        it->second->Write(it->first.c_str());
+  for (it = Hists_ByType2.begin(); it != Hists_ByType2.end(); it++){
+        if(it->first == "Data" || it->first == "All" || it->first == "EXT" || it->first == "Dirt") continue;
+        it->second->Write(it->first.c_str());
+}
 
-   if(fHasData) {
-
-      double p = Hists_ByType["Data"]->Chi2Test(h_errors,"UWP");
-
-      TH1D * DataMCRatioPlot = MakeRatioPlot(Hists_ByType,h_errors);
-
-      DataMCRatioPlot->Draw("E0 P0");
-
-      c->Clear();
-      c->SetCanvasSize(800,750);
-
-      // Setup split canvas
-      TPad *p_plot2 = new TPad("p_plot2","p_plot2",0,0.25,1,0.9);
-      TPad *p_legend2 = new TPad("p_plot2","p_plot2",0,0.9,1,1);
-      TPad *p_ratio = new TPad("p_ratio","p_ratio",0,0.0,1,0.25);
-      p_legend2->SetBottomMargin(0);
-      p_legend2->SetTopMargin(0.1);
-      p_ratio->SetTopMargin(0.01);
-      p_plot2->SetTopMargin(0.01);
-      // p_plot2->SetBottomMargin(0.01);
-
-      p_ratio->SetGrid(0,1);
-
-      p_plot2->Draw();
-      p_plot2->cd();
-      h_errors->Draw("E2");
-      hs_Type->Draw("HIST same");
-      h_errors->Draw("E2 same");
-      h_errors->GetYaxis()->SetRangeUser(0.0,std::max(GetHistMaxError(h_errors),GetHistMaxError(Hists_ByType["Data"]))*1.23);
-      h_errors->SetStats(0);
-      Hists_ByType["Data"]->Draw("E0 P0 same");
-
-      l_POT->Draw();
-      l_Watermark->Draw();
-      l_DataMCRatio->Draw();
-
-      if(y_limit != -1){ h_errors->SetMaximum(y_limit); gPad->Update(); }
-
-      c->cd();
-      p_legend2->Draw();
-      p_legend2->cd();
-
-      l->Draw(); 
-
-      c->cd();
-
-      p_ratio->Draw();
-      p_ratio->cd();
-      DataMCRatioPlot->Draw("E0 P0");
-      DataMCRatioPlot->SetStats(0);
-
-      DataMCRatioPlot->GetYaxis()->SetTitle("Data/MC");
-      DataMCRatioPlot->GetYaxis()->SetTitleSize(0.08);
-      DataMCRatioPlot->GetYaxis()->SetTitleOffset(0.45);
-      DataMCRatioPlot->GetXaxis()->SetLabelSize(0.09);
-      DataMCRatioPlot->GetYaxis()->SetLabelSize(0.09);
-
-      c->cd();
-      c->Print((PlotDir + label + "_By_Type_Combined.png").c_str());
-      c->Print((PlotDir + label + "_By_Type_Combined.pdf").c_str());
-      c->Print((PlotDir + label + "_By_Type_Combined.C").c_str());
-      c->Clear();    
-
-   }
-
-
-   // Split neutrino backgrounds by channel
-
-   c->SetCanvasSize(800,600);
-   TPad *p_plot3 = new TPad("p_plot3","p_plot3",0,0,1,0.85);
-   TPad *p_legend3 = new TPad("p_legend3","p_legend3",0,0.85,1,1);
-
-   p_legend3->SetBottomMargin(0);
-   p_legend3->SetTopMargin(0.1);
-   p_plot3->SetTopMargin(0.01);
-
-   THStack *hs_Proc = new THStack("hs_Proc",fTitle.c_str());
-
-   l->Clear();
-   l->SetNColumns(7);
-
-   // reuse the error hist (errors on predicton should be the same) 
-
-   // Draw histograms by event category
-
-   // Signal first
-   Hists_ByProc["Signal"]->SetFillColor(8);
-   hs_Proc->Add(Hists_ByProc["Signal"],"HIST");
-   if(fHasData) l->AddEntry(Hists_ByProc["Signal"],("Signal = "+ to_string_with_precision(Hists_ByProc["Signal"]->Integral(),1)).c_str(),"F");
-   else l->AddEntry(Hists_ByProc["Signal"],"Signal","F");
-
-   Hists_ByProc["OtherHYP"]->SetFillColor(46);
-   hs_Proc->Add(Hists_ByProc["OtherHYP"],"HIST");
-   if(fHasData) l->AddEntry(Hists_ByProc["OtherHYP"],("Other HYP = "+ to_string_with_precision(Hists_ByProc["OtherHYP"]->Integral(),1)).c_str(),"F");
-   else l->AddEntry(Hists_ByProc["OtherHYP"],"Other Hyperon","F");
-
-   // Add the remaining channels
-
-   int i_color=2;
-
-   for(size_t i_proc=0;i_proc<Procs.size();i_proc++){
-
-      std::string thisProc = Procs.at(i_proc);
-
-      if(thisProc == "Signal" || thisProc == "OtherHYP" || thisProc == "Dirt" || thisProc == "EXT" || thisProc == "Data" || thisProc == "All") continue;
-
-      Hists_ByProc[thisProc]->SetFillColor(i_color);
-      Hists_ByProc[thisProc]->SetFillStyle(3104);
-
-      hs_Proc->Add(Hists_ByProc[thisProc],"HIST");
-      if(fHasData) l->AddEntry(Hists_ByProc[thisProc],(thisProc + " = " + to_string_with_precision(Hists_ByProc[thisProc]->Integral(),1)).c_str(),"F");
-      else  l->AddEntry(Hists_ByProc[thisProc],thisProc.c_str(),"F");   
-
-      i_color++;
-
-      if(i_color == 10) i_color++;
-
-   }
-
-
-   Hists_ByProc["Dirt"]->SetFillColor(30);
-   hs_Proc->Add(Hists_ByProc["Dirt"],"HIST");
-   if(fHasData) l->AddEntry(Hists_ByProc["Dirt"],("Dirt = "+ to_string_with_precision(Hists_ByProc["Dirt"]->Integral(),1)).c_str(),"F");
-   else l->AddEntry(Hists_ByProc["Dirt"],"Dirt","F");
-
-
-   Hists_ByProc["EXT"]->SetFillColor(15);
-   hs_Proc->Add(Hists_ByProc["EXT"],"HIST");
-   if(fHasData) l->AddEntry(Hists_ByProc["EXT"],("EXT = "+ to_string_with_precision(Hists_ByProc["EXT"]->Integral(),1)).c_str(),"F");
-   else l->AddEntry(Hists_ByProc["EXT"],"EXT","F");
-
-
-   if(fHasData){
-
-      Hists_ByProc["Data"]->SetLineWidth(1);
-      Hists_ByProc["Data"]->SetLineColor(1);
-      Hists_ByProc["Data"]->SetMarkerStyle(20);
-      Hists_ByProc["Data"]->SetMarkerColor(1);
-      l->AddEntry(Hists_ByProc["Data"],("Data = "+ to_string_with_precision(Hists_ByProc["Data"]->Integral(),1)).c_str(),"P");
-
-   }
-
-
-   p_legend3->Draw();
-   p_legend3->cd();
-   l->Draw();
-   c->cd();
-   p_plot3->Draw();
-   p_plot3->cd();
-
-   hs_Proc->Draw();
-
-
-   h_errors->Draw("E2");
-   hs_Proc->Draw("HIST same");
-   h_errors->Draw("E2 same");
-   h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.2);
-   h_errors->SetStats(0);
-   if(fHasData)   Hists_ByProc["Data"]->Draw("E0 P0 same");
-
-   l_POT->Draw();
-   l_Watermark->Draw();
-   if(SignalScale != 1.0) l_Scale->Draw();
-   if(fHasData)   l_DataMCRatio->Draw();
-   if(y_limit != -1){ h_errors->SetMaximum(y_limit); gPad->Update(); }
-
-   c->cd();
-
-   c->Print((PlotDir + label + "_By_Proc.png").c_str());
-   c->Print((PlotDir + label + "_By_Proc.pdf").c_str());
-   c->Print((PlotDir + label + "_By_Proc.C").c_str());
-
-   c->Clear();
-
-   if(fHasData) {
-
-      std::cout << std::endl << "Performing Chi2 test" << std::endl;
-
-      double p = Hists_ByProc["Data"]->Chi2Test(h_errors,"UWP");
-
-      //std::cout << "Chi2 test p value = " << p << std::endl << std::endl;
-
-      TH1D * DataMCRatioPlot2 = MakeRatioPlot(Hists_ByType,h_errors);
-
-      c->Clear();
-      c->SetCanvasSize(800,750);
-
-      // Setup split canvas
-      TPad *p_plot4 = new TPad("p_plot4","p_plot4",0,0.25,1,0.9);
-      TPad *p_legend4 = new TPad("p_plot4","p_plot4",0,0.9,1,1);
-      TPad *p_ratio2 = new TPad("p_ratio2","p_ratio2",0,0.0,1,0.25);
-
-      p_legend4->SetBottomMargin(0);
-      p_legend4->SetTopMargin(0.1);
-      p_ratio2->SetTopMargin(0.01);
-      p_plot4->SetTopMargin(0.01);
-      p_ratio2->SetGrid(0,1);
-
-      p_plot4->Draw();
-      p_plot4->cd();
-      h_errors->Draw("E2");
-      hs_Proc->Draw("HIST same");
-      h_errors->Draw("E2 same");
-      h_errors->GetYaxis()->SetRangeUser(0.0,std::max(GetHistMaxError(h_errors),GetHistMaxError(Hists_ByProc["Data"]))*1.23);
-      h_errors->SetStats(0);
-      Hists_ByProc["Data"]->Draw("E0 P0 same");
-
-      l_POT->Draw();
-      l_Watermark->Draw();
-      l_DataMCRatio->Draw();
-      if(y_limit != -1){ h_errors->SetMaximum(y_limit); gPad->Update(); }
-
-      c->cd();
-      p_legend4->Draw();
-      p_legend4->cd();
-
-      l->Draw(); 
-
-      c->cd();
-
-      p_ratio2->Draw();
-      p_ratio2->cd();
-      DataMCRatioPlot2->Draw("E0 P0");
-      DataMCRatioPlot2->SetStats(0);
-
-      DataMCRatioPlot2->GetYaxis()->SetTitle("Data/MC");
-      DataMCRatioPlot2->GetYaxis()->SetTitleSize(0.08);
-      DataMCRatioPlot2->GetYaxis()->SetTitleOffset(0.45);
-      DataMCRatioPlot2->GetXaxis()->SetLabelSize(0.09);
-      DataMCRatioPlot2->GetYaxis()->SetLabelSize(0.09);
-
-      c->cd();
-      c->Print((PlotDir + label + "_By_Proc_Combined.png").c_str());
-      c->Print((PlotDir + label + "_By_Proc_Combined.pdf").c_str());
-      c->Print((PlotDir + label + "_By_Proc_Combined.C").c_str());
-      c->Clear();    
-
-   }
-
-
-   c->Close();
+h_errors->Write("ErrorBand");
 
 }
 
@@ -1178,7 +860,6 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
 
    Hists_ByType[type]->SetMaximum(maximum*1.25);
 
-
    hs->Add(Hists_ByType[type]);
 
    TCanvas *c = new TCanvas("c","c",800,600);
@@ -1248,8 +929,6 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    c->Print((PlotDir + label + "_Sys_" + type + "_" +  name + ".C").c_str());
 
    c->Close();
-
-
 }
 
 
@@ -1352,62 +1031,13 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
    }
 
    //Cov.Print();
+   std::string plottitle = PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name;
+   DrawMatrix(Cov,h_Cov,plottitle,BinLabels.size(),fUseText);
+   plottitle = PlotDir + label + "_FCovMatrix_Sys_" + type + "_" + name;
+   DrawMatrix(frac_Cov,h_frac_Cov,plottitle,BinLabels.size(),fUseText);
 
-   TCanvas *c = new TCanvas("c","c",800,600);
-   //TCanvas *c = new TCanvas("c","c",696,600);
-
-   c->SetRightMargin(0.13);
-   //c->SetRightMargin(0.5);
-
-   //TPad *p_plot = new TPad("pad1","pad1",0,0,0.9,1.0);
-   //p_plot->SetRightMargin(0.2);
-
-
-   TLegend *l_Watermark = new TLegend(0.45,0.91,0.915,0.99);
-   l_Watermark->SetBorderSize(0);
-   l_Watermark->SetMargin(0.001);
-   l_Watermark->SetTextAlign(32);
-   l_Watermark->SetTextFont(62);
-   l_Watermark->SetTextSize(0.05);
-
-   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-
-   h_Cov->SetContour(100);
-
-   if(fUseText){
-      h_Cov->SetMarkerSize(3.0);
-      h_Cov->Draw("colz text");
-   }
-   else h_Cov->Draw("colz");
-
-   h_Cov->SetStats(0);
-   l_Watermark->Draw();
    h_Cov->Write(("Cov_" + type + "_" + name).c_str());
-
-   c->Print((PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name + ".png").c_str());
-   c->Print((PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name + ".pdf").c_str());
-   c->Print((PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name + ".C").c_str());
-   c->Clear();
-   //p_plot->Clear();
-
-   h_frac_Cov->SetContour(100);
-
-   if(fUseText){
-      h_frac_Cov->SetMarkerSize(3.0);
-      h_frac_Cov->Draw("colz text");
-   }
-   else h_frac_Cov->Draw("colz");
-
-   l_Watermark->Draw();
-   h_frac_Cov->SetStats(0);
    h_frac_Cov->Write(("FCov_" + type + "_" + name).c_str());
-
-   c->Print((PlotDir + label + "_FCovMatrix_Sys_" + type + "_" + name + ".png").c_str());
-   c->Print((PlotDir + label + "_FCovMatrix_Sys_" + type + "_" + name + ".pdf").c_str());
-   c->Print((PlotDir + label + "_FCovMatrix_Sys_" + type + "_" + name + ".C").c_str());
-   c->Clear();
-
-   c->Close();
 
    return Cov;
 }

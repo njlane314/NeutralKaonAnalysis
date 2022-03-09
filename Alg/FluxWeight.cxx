@@ -153,7 +153,6 @@ void FluxWeighter::PrepareHPUniv(int nuniv){
 
    std::cout << "Loading Flux HP_Universes" << std::endl;
 
-
    hist_sys_ratio.resize(flav_str.size());
    
    for (unsigned int f = 0; f < flav_str.size(); f++)

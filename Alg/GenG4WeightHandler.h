@@ -6,6 +6,9 @@
 
 #include "Event.h"
 
+   const int GENIE_Multisim_Universes = 600;
+   const int G4_Multisim_Universes = 1000; 
+
 enum GenUnisims { gv_AxFFCCQEshape,   // z expansion of axial form factor
                   gv_DecayAngMEC,     // non-isotropic MEC decay
                   gv_NormCCCOH,       // 2x CCCOH xsec

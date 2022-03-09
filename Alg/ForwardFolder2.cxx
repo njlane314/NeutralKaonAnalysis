@@ -65,29 +65,29 @@ TH2D* ForwardFolder2::GetResponseMatrix(){
 
    }
 
-/*
+   /*
       for(int i=1;i<h_Eff->GetNbinsX()+1;i++){
 
-         double numerator=0.;
-         double denominator=0.;            
+      double numerator=0.;
+      double denominator=0.;            
 
-         for(int j=1;j<h_Eff->GetNbinsX()+1;j++) numerator += h_Response->GetBinContent(i,j)*h_Reco->GetBinContent(j);
-         for(int j=1;j<h_Eff->GetNbinsX()+1;j++) denominator += h_Response->GetBinContent(i,j)*h_Gen->GetBinContent(j);
+      for(int j=1;j<h_Eff->GetNbinsX()+1;j++) numerator += h_Response->GetBinContent(i,j)*h_Reco->GetBinContent(j);
+      for(int j=1;j<h_Eff->GetNbinsX()+1;j++) denominator += h_Response->GetBinContent(i,j)*h_Gen->GetBinContent(j);
 
-         if(denominator > 0) h_Eff->SetBinContent(i,numerator/denominator);
-         else h_Eff->SetBinContent(i,0.);
+      if(denominator > 0) h_Eff->SetBinContent(i,numerator/denominator);
+      else h_Eff->SetBinContent(i,0.);
 
       }
-*/
+      */
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 double ForwardFolder2::SetFlux(double flux){
 
-std::cout << flux << std::endl;
+   std::cout << flux << std::endl;
 
-fFlux = flux;
+   fFlux = flux;
 
 }
 
@@ -95,7 +95,7 @@ fFlux = flux;
 
 double ForwardFolder2::SetTargets(double targets){
 
-fTargets = targets;
+   fTargets = targets;
 
 }
 
@@ -103,11 +103,11 @@ fTargets = targets;
 
 void ForwardFolder2::AddFluxHist(TH1D *h){
 
-// Calculate numubar/cm^2. Assumes h is nu/GeV/m^2
+   // Calculate numubar/cm^2. Assumes h is nu/GeV/m^2
 
-std::cout << h->Integral("width")/100/100 << std::endl;
+   std::cout << h->Integral("width")/100/100 << std::endl;
 
-fFlux = h->Integral("width")/100/100;
+   fFlux = h->Integral("width")/100/100;
 
 }
 
@@ -120,7 +120,7 @@ void ForwardFolder2::AddDifferentialCrossSection(TH1D *h){
 
    h_FoldedCrossSection = (TH1D*)h_Reco->Clone("h_FoldedCrossSection");
    h_FoldedCrossSection->SetTitle("Forward Folded Differential Cross Section");
-   
+
 
    for(int i=1;i<h_Reco->GetNbinsX()+1;i++){
 
@@ -137,31 +137,31 @@ void ForwardFolder2::AddDifferentialCrossSection(TH1D *h){
    }
 
 
-h_RecoCrossSection = (TH1D*)h_Reco->Clone();
-h_RecoCrossSection->SetTitle("Measured Differential Cross Section");
+   h_RecoCrossSection = (TH1D*)h_Reco->Clone();
+   h_RecoCrossSection->SetTitle("Measured Differential Cross Section");
 
 
-for(int i=1;i<h_Reco->GetNbinsX()+1;i++){
+   for(int i=1;i<h_Reco->GetNbinsX()+1;i++){
 
-double Content = h_Reco->GetBinContent(i)/fTargets/fFlux/h_Reco->GetBinWidth(i)/0.64;
+      double Content = h_Reco->GetBinContent(i)/fTargets/fFlux/h_Reco->GetBinWidth(i)/0.64;
 
-//if(h_Eff->GetBinContent(i) > 0) Content = h_Reco->GetBinContent(i)/h_Eff->GetBinContent(i)/fTargets/fFlux/h_Reco->GetBinWidth(i)/40/0.64;
+      //if(h_Eff->GetBinContent(i) > 0) Content = h_Reco->GetBinContent(i)/h_Eff->GetBinContent(i)/fTargets/fFlux/h_Reco->GetBinWidth(i)/40/0.64;
 
-h_RecoCrossSection->SetBinContent(i,Content);
+      h_RecoCrossSection->SetBinContent(i,Content);
 
-}
+   }
 
-h_GenCrossSection = (TH1D*)h_Gen->Clone();
+   h_GenCrossSection = (TH1D*)h_Gen->Clone();
 
-for(int i=1;i<h_Gen->GetNbinsX()+1;i++){
+   for(int i=1;i<h_Gen->GetNbinsX()+1;i++){
 
-double Content = h_Gen->GetBinContent(i)/fTargets/fFlux/h_Gen->GetBinWidth(i)/0.64;
-double Error = h_Gen->GetBinError(i)/fTargets/fFlux/h_Gen->GetBinWidth(i)/0.64;
+      double Content = h_Gen->GetBinContent(i)/fTargets/fFlux/h_Gen->GetBinWidth(i)/0.64;
+      double Error = h_Gen->GetBinError(i)/fTargets/fFlux/h_Gen->GetBinWidth(i)/0.64;
 
-h_GenCrossSection->SetBinContent(i,Content);
-h_GenCrossSection->SetBinError(i,Error);
+      h_GenCrossSection->SetBinContent(i,Content);
+      h_GenCrossSection->SetBinError(i,Error);
 
-}
+   }
 
 
 }
@@ -170,22 +170,22 @@ h_GenCrossSection->SetBinError(i,Error);
 
 void ForwardFolder2::Write(){
 
-system("mkdir -p rootfiles/");
+   system("mkdir -p rootfiles/");
 
-TFile *f = TFile::Open(("rootfiles/" + fLabel + "_ResponseMatrices.root").c_str(),"RECREATE");
+   TFile *f = TFile::Open(("rootfiles/" + fLabel + "_ResponseMatrices.root").c_str(),"RECREATE");
 
-h_Gen->Write("TrueDist");
-h_Reco->Write("RecoDist");
-h_Reco_Gen->Write("RecoVsTrueDist");
-h_Response->Write("ResponseMatrix");
-//h_Eff->Write("Efficiency");
-h_GenCrossSection->Write("GenDiffXsec");
-h_TrueCrossSection->Write("TrueDiffXsec");
-h_FoldedCrossSection->Write("FoldedDiffXsec");
-h_RecoCrossSection->Write("MeasuredDiffXsec");
+   h_Gen->Write("TrueDist");
+   h_Reco->Write("RecoDist");
+   h_Reco_Gen->Write("RecoVsTrueDist");
+   h_Response->Write("ResponseMatrix");
+   //h_Eff->Write("Efficiency");
+   h_GenCrossSection->Write("GenDiffXsec");
+   h_TrueCrossSection->Write("TrueDiffXsec");
+   h_FoldedCrossSection->Write("FoldedDiffXsec");
+   h_RecoCrossSection->Write("MeasuredDiffXsec");
 
 
-f->Close();
+   f->Close();
 
 }
 

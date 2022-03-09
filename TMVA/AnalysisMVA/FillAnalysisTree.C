@@ -8,7 +8,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 #include "SelectionParameters.h"
 
 #include "Parameters.h"
-#include "SampleSets.h"
+#include "SampleSets_Nov21.h"
 
    // Fills the trees for the analysis MVA training
 
@@ -20,7 +20,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       double POT = 1.0e21;
 
       // Set the parameters you want to use
-      SelectionParameters P = P_FHC_Tune_test;
+      SelectionParameters P = P_FHC_Tune_325;
 
       SelectionManager M(P);
       M.SetPOT(POT);
@@ -60,12 +60,13 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
             if(!M.FiducialVolumeCut(e)) continue;
             if(!M.TrackCut(e)) continue;
-            //if(!M.ShowerCut(e)) continue;
+            if(!M.ShowerCut(e)) continue;
             if(!M.ChooseMuonCandidate(e)) continue;
             if(!M.ChooseProtonPionCandidates(e)) continue;
 
            // if(!M.ConnectednessTest(e)) continue;
 
+            //if(e.EventIsSignal) std::cout << e.GoodReco << std::endl;
             BDTManager.FillTree(e);
 
          }

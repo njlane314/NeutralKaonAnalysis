@@ -10,11 +10,11 @@
 
 SelectionParameters P_FHC_Tune_325;
 SelectionParameters P_RHC_Tune_397;
-
 SelectionParameters P_FHC_Tune_test;
 SelectionParameters P_FHC_Tune_test2;
-
 SelectionParameters P_FHC_Tune_1000;
+
+SelectionParameters P_FHC_Tune_325_Alt;
 
 void BuildTunes(){
 
@@ -111,6 +111,23 @@ P_FHC_Tune_1000.p_VertexPull=5;
 P_FHC_Tune_1000.p_SelectorBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelection/TMVA/SelectorMVA/Tunes/FHC_Tune_1000/dataset/weights";
 P_FHC_Tune_1000.p_AnalysisBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelection/TMVA/AnalysisMVA/Tunes/FHC_Tune_1000/dataset/weights";
 P_FHC_Tune_1000.p_AnalysisBDT_Cut=0.15;
+
+//FHC Tune 325 without using selector BDT score in analysis BDT
+P_FHC_Tune_325_Alt.p_RunPeriod=1;
+P_FHC_Tune_325_Alt.p_FV=FV::kWirecellPadded;
+P_FHC_Tune_325_Alt.p_Padding=10;
+P_FHC_Tune_325_Alt.p_Minimum_MIP_Length=10;
+P_FHC_Tune_325_Alt.p_SecondaryTrackLengthCut=1000;
+P_FHC_Tune_325_Alt.p_TertiaryTrackLengthCut=1000;
+P_FHC_Tune_325_Alt.p_Max_Displacement=1;
+P_FHC_Tune_325_Alt.p_PID_Cut=0.6;
+P_FHC_Tune_325_Alt.p_Proton_PID_Cut = 0.1;
+P_FHC_Tune_325_Alt.p_Pion_PID_Cut = -0.1;
+P_FHC_Tune_325_Alt.p_Separation_Cut=3;
+P_FHC_Tune_325_Alt.p_VertexPull=5;
+P_FHC_Tune_325_Alt.p_SelectorBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelection/TMVA/SelectorMVA/Tunes/FHC_Tune_325/dataset/weights";
+P_FHC_Tune_325_Alt.p_AnalysisBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelection/TMVA/AnalysisMVA/Tunes/FHC_Tune_325_Alt/dataset/weights";
+P_FHC_Tune_325_Alt.p_AnalysisBDT_Cut=0.2;
 
 }
 

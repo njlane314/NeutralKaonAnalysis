@@ -94,10 +94,7 @@ void AnalysisBDTManager::FillTree(Event e){
 
    if(!SetVariables(e)) return;
 
-
-//    if(e.IsSignal) t_Signal->Fill();
-   if(e.GoodReco && e.DecayProtonCandidate.TrackTruePDG == 2212 && e.DecayPionCandidate.TrackTruePDG == -211 &&  e.DecayProtonCandidate.TrackTrueOrigin == 2 && e.DecayPionCandidate.TrackTrueOrigin == 2 ) t_Signal->Fill();
-//   if(e.GoodReco) t_Signal->Fill();
+    if(e.EventIsSignal) t_Signal->Fill();
    else t_Background->Fill();
 
 }

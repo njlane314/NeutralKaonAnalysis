@@ -150,17 +150,18 @@ class SelectionManager {
       std::vector<double> fHistBoundaries;
 
       bool fHasData=false;
-
       bool fUseText=false;
 
       std::map< std::string , TH1D* > Hists_ByProc;
       std::map< std::string , TH1D* > Hists_ByType;
+      std::map< std::string , TH1D* > Hists_ByType2;
 
       std::map<std::string,std::map<std::string,std::vector<TH1D*>>> Multisim_Sys_Hists; // histogram in different multisim universes
       std::map<std::string,std::map<std::string,std::vector<TH1D*>>> SingleUnisim_Sys_Hists; // histogram in different single univese unisims
       std::map<std::string,std::map<std::string,std::vector<TH1D*>>> DualUnisim_Sys_Hists;  // histogram in different two universe multisims
 
       const std::vector<std::string> Types = { "Signal","OtherHYP","OtherNu","EXT","Dirt","All","Data" };
+      const std::vector<std::string> Types2 = {"DirectLambda","RESLambda","DISLambda","DirectHYP","RESHYP","DISHYP","Neutron","Other","Dirt","EXT","Data","All"};
       const std::vector<std::string> Procs = { "Signal","OtherHYP","EXT","Dirt","Data","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","ElectronScattering","Diffractive","Other","All" };
 
       TFile *f_Hists = nullptr;
@@ -171,6 +172,7 @@ class SelectionManager {
    public:
 
       std::string GetMode(Event e);
+      std::string GetMode2(Event e);
 
       void AddSystematic(int systype,int universes,std::string name);
       void FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights);
