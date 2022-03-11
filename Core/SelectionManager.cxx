@@ -206,17 +206,22 @@ void SelectionManager::SetSignal(Event &e){
 
    // Search the list of reco'd tracks for the proton and pion
    bool found_proton=false,found_pion=false;
-
-   // TODO: Add MCTruth Matching
+   
+   if(!e.EventIsSignal) return;
+   
    for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
-
-      if(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex < 0) continue;
-
-      if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 2212 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2 && e.IsSignal.at(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex)) found_proton = true;
-      if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2 && e.IsSignal.at(e.TracklikePrimaryDaughters.at(i_tr).MCTruthIndex)) found_pion = true;
+      if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 2212 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2){ 
+         found_proton = true; 
+         e.TrueDecayProtonIndex = i_tr; 
+      }
+      if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2){
+         found_pion = true;
+         e.TrueDecayPionIndex = i_tr; 
+      }
    }
 
    e.GoodReco = e.EventIsSignal && found_proton && found_pion; 
+   //std::cout << e.GoodReco << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

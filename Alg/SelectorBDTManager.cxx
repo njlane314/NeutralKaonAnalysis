@@ -123,7 +123,6 @@ void SelectorBDTManager::FillTree(Event e){
          if(e.GoodReco && e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayProtonIndex && e.TracklikePrimaryDaughters.at(j_tr).Index == e.TrueDecayPionIndex) t_Signal->Fill();
          else t_Background->Fill();
 
-
       }
    }
 
@@ -143,8 +142,9 @@ bool SelectorBDTManager::SetVariables(RecoParticle thisProtonCandidate, RecoPart
 
    // Catch default dEdX fills
    if(thisProtonCandidate.MeandEdX_ThreePlane < 0 || thisPionCandidate.MeandEdX_ThreePlane < 0) return false;
-   if(thisProtonCandidate.MeandEdX_ThreePlane != thisProtonCandidate.MeandEdX_ThreePlane) return false;
-   if(thisPionCandidate.MeandEdX_ThreePlane != thisPionCandidate.MeandEdX_ThreePlane) return false;
+   if(std::isnan(thisProtonCandidate.MeandEdX_ThreePlane) || std::isnan(thisPionCandidate.MeandEdX_ThreePlane)) return false;
+   //if(thisProtonCandidate.MeandEdX_ThreePlane != thisProtonCandidate.MeandEdX_ThreePlane) return false;
+   //if(thisPionCandidate.MeandEdX_ThreePlane != thisPionCandidate.MeandEdX_ThreePlane) return false;
 
    v_proton_dEdX = Limit(thisProtonCandidate.MeandEdX_ThreePlane,dEdX_limits);
    v_pion_dEdX = Limit(thisPionCandidate.MeandEdX_ThreePlane,dEdX_limits);
