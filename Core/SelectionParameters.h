@@ -28,6 +28,10 @@ double p_VertexPull=5.0;
 
 double p_AnalysisBDT_Cut;
 
+double p_W_Max;
+double p_W_Min;
+double p_Alpha_Cut;
+
 // Selector BDT Weights file
 std::string p_SelectorBDT_WeightsDir="";
 
@@ -38,6 +42,7 @@ std::string p_AnalysisBDT_WeightsDir="";
 bool SelectionParametersAreSet=false;
 
 int p_RunPeriod;
+int p_BeamMode;
 
 };
 

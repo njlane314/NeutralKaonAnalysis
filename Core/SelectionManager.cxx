@@ -14,6 +14,7 @@ SelectionManager::SelectionManager() :
    a_SelectorBDTManager("Test") ,
    a_AnalysisBDTManager("Test") ,
    a_EventListFilter() ,
+   a_SecondaryVertexFitter(5) , 
    a_CTTest_Plane0(0) ,
    a_CTTest_Plane1(1) ,
    a_CTTest_Plane2(2) 
@@ -31,7 +32,7 @@ SelectionManager::~SelectionManager(){
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 SelectionManager::SelectionManager(SelectionParameters p) :
-   a_FluxWeightCalc(p.p_RunPeriod) ,
+   a_FluxWeightCalc(p.p_BeamMode) ,
    a_GenG4WeightCalc() ,
    a_FiducialVolume(p.p_FV,p.p_Padding) ,
    a_MuonID(p.p_PID_Cut,p.p_Minimum_MIP_Length,p.p_Max_Displacement) ,
@@ -39,6 +40,7 @@ SelectionManager::SelectionManager(SelectionParameters p) :
    a_SelectorBDTManager("Test") , 
    a_AnalysisBDTManager("Test") ,
    a_EventListFilter() ,
+   a_SecondaryVertexFitter(p.p_VertexPull) , 
    a_CTTest_Plane0(0) ,
    a_CTTest_Plane1(1) ,
    a_CTTest_Plane2(2) 
@@ -69,11 +71,11 @@ void SelectionManager::SetPOT(double POT){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void SelectionManager::SetBeamMode(std::string Mode){
+void SelectionManager::SetBeamMode(int mode){
 
-   assert(Mode == "FHC" || Mode == "RHC");
+   assert(mode == kFHC || mode == kRHC);
 
-   BeamMode = Mode;
+   BeamMode = mode;
 
 }
 
@@ -468,6 +470,32 @@ bool SelectionManager::ConnectednessTest(Event e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+bool SelectionManager::WCut(Event e){
+
+   double W = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate); 
+   bool passed = W > TheParams.p_W_Min && W < TheParams.p_W_Max;
+   UpdateCut(e,passed,"InvariantMass");
+   return passed;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+bool SelectionManager::AngleCut(Event e){
+
+   SecondaryVertex V = a_SecondaryVertexFitter.MakeVertex(e.DecayProtonCandidate,e.DecayPionCandidate);
+   TVector3 GapVector = V.Vertex - e.RecoPrimaryVertex;
+   double Reco_DecayLength = (V.Vertex - e.RecoPrimaryVertex).Mag();
+   TLorentzVector Lambda4Momentum = ProtonPion4Momentum(e.DecayProtonCandidate,e.DecayPionCandidate);
+   TVector3 LambdaDirection(Lambda4Momentum.X(),Lambda4Momentum.Y(),Lambda4Momentum.Z());
+   double alpha = (180/3.1415)*LambdaDirection.Angle(GapVector);
+
+   bool passed = alpha < TheParams.p_Alpha_Cut;
+   UpdateCut(e,passed,"AlphaAngle");
+   return passed;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 void SelectionManager::SetupHistograms(std::vector<double> boundaries,std::string title){
 
    if(boundaries.size() < 2)
@@ -670,7 +698,7 @@ void SelectionManager::FillHistogramsSys(Event e,double variable,std::string nam
    if(thisSampleType == "Data") return;
 
    if(std::isnan(e.Weight) || std::isnan(weight)){
-      std::cout << "Nan weight detected for event " << e.run << " " << e.subrun << " " << e.event << " skipping" << std::endl;
+     // std::cout << "Nan weight detected for event " << e.run << " " << e.subrun << " " << e.event << " skipping" << std::endl;
       return;
    }
 
@@ -768,7 +796,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    std::vector<std::string> captions = {"Signal","Other HYP","Other #nu","Dirt","EXT","Data"};
    std::vector<int> colors = {8,46,38,30,15,0};
    std::vector<TH1D*> Hists_ByType_v = {Hists_ByType["Signal"],Hists_ByType["OtherHYP"],Hists_ByType["OtherNu"],Hists_ByType["Dirt"],Hists_ByType["EXT"],Hists_ByType["Data"]};
-   DrawHistogram(Hists_ByType_v,h_errors,captions,PlotDir,label+"_ByType",BeamMode,fPOT,SignalScale,fHasData,colors,BinLabels,std::make_pair(0,0));
+   DrawHistogram(Hists_ByType_v,h_errors,captions,PlotDir,label+"_ByType",BeamMode,Run,fPOT,SignalScale,fHasData,colors,BinLabels,std::make_pair(0,0));
 
    std::vector<std::string> captions2 = {"Direct #Lambda","Direct Hyp","Neutron","Dirt","RES #Lambda","RES Hyp","Other #nu","EXT","DIS #Lambda","DIS Hyp","Data"};
    std::vector<int> colors2 = {8,kBlue-7,kRed-7,kCyan+3,kGreen+3,kBlue-10,kRed-10,kMagenta-7,30,15,0};
@@ -776,12 +804,12 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    std::vector<TH1D*> Hists_ByType_v2 = {Hists_ByType2["DirectLambda"],Hists_ByType2["DirectHYP"],Hists_ByType2["Neutron"],Hists_ByType2["Dirt"],Hists_ByType2["RESLambda"],Hists_ByType2["RESHYP"],Hists_ByType2["Other"],Hists_ByType2["EXT"],Hists_ByType2["DISLambda"],Hists_ByType2["DISHYP"],Hists_ByType2["Data"]};
 
    //std::vector<TH1D*> Hists_ByType_v2 = {Hists_ByType2["DirectLambda"],Hists_ByType2["RESLambda"],Hists_ByType2["DISLambda"],Hists_ByType2["DirHYP"],Hists_ByType2["RESHYP"],Hists_ByType2["DISHYP"],Hists_ByType2["Neutron"],Hists_ByType2["Other"],Hists_ByType2["Dirt"],Hists_ByType2["EXT"],Hists_ByType2["Data"]};
-   DrawHistogram(Hists_ByType_v2,h_errors,captions2,PlotDir,label+"_ByType2",BeamMode,fPOT,SignalScale,fHasData,colors2,BinLabels,std::make_pair(0,0));
+   DrawHistogram(Hists_ByType_v2,h_errors,captions2,PlotDir,label+"_ByType2",BeamMode,Run,fPOT,SignalScale,fHasData,colors2,BinLabels,std::make_pair(0,0));
 
    std::vector<std::string> captions3 = {"Signal","Other HYP","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","ElectronScattering","Diffractive","Other","Dirt","EXT","Data"};
    std::vector<int> colors3 = {8,46,2,3,4,5,6,7,9,11,12,30,15,0};
    std::vector<TH1D*> Hists_ByProc_v = {Hists_ByProc["Signal"],Hists_ByProc["OtherHYP"],Hists_ByProc["CCQEL"],Hists_ByProc["CCRES"],Hists_ByProc["CCDIS"],Hists_ByProc["CCMEC"],Hists_ByProc["CCCOH"],Hists_ByProc["NC"],Hists_ByProc["ElectronScattering"],Hists_ByProc["Diffractive"],Hists_ByProc["Other"],Hists_ByProc["EXT"],Hists_ByProc["Dirt"],Hists_ByProc["Data"]};
-   DrawHistogram(Hists_ByProc_v,h_errors,captions3,PlotDir,label+"_ByProc",BeamMode,fPOT,SignalScale,fHasData,colors3,BinLabels,std::make_pair(0,0));
+   DrawHistogram(Hists_ByProc_v,h_errors,captions3,PlotDir,label+"_ByProc",BeamMode,Run,fPOT,SignalScale,fHasData,colors3,BinLabels,std::make_pair(0,0));
 
   std::map<std::string,TH1D*>::iterator it;
   for (it = Hists_ByType.begin(); it != Hists_ByType.end(); it++)
@@ -884,7 +912,8 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    l_Watermark->SetTextSize(0.05);
    l_Watermark->SetTextFont(62);
 
-   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+   //l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+   l_Watermark->SetHeader("MicroBooNE Simulation In Progress","R");
 
    TLegend *l_POT = new TLegend(0.55,0.820,0.89,0.900);
    l_POT->SetBorderSize(0);
@@ -893,8 +922,8 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
      l_POT->SetTextSize(0.05);
 
 
-   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
-   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(BeamMode == kFHC)  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(BeamMode == kRHC)  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
 
 
    p_legend->Draw();
@@ -1090,6 +1119,13 @@ void SelectionManager::WidthScaleHistograms(){
    std::map<std::string,TH1D*>::iterator it1;
 
    for (it1=Hists_ByType.begin();it1!=Hists_ByType.end();it1++){
+      for(size_t i_b=1;i_b<it1->second->GetNbinsX()+1;i_b++){        
+         it1->second->SetBinContent(i_b,it1->second->GetBinContent(i_b)/it1->second->GetBinWidth(i_b));
+         it1->second->SetBinError(i_b,it1->second->GetBinError(i_b)/it1->second->GetBinWidth(i_b));
+      }
+   }
+
+   for (it1=Hists_ByType2.begin();it1!=Hists_ByType2.end();it1++){
       for(size_t i_b=1;i_b<it1->second->GetNbinsX()+1;i_b++){        
          it1->second->SetBinContent(i_b,it1->second->GetBinContent(i_b)/it1->second->GetBinWidth(i_b));
          it1->second->SetBinError(i_b,it1->second->GetBinError(i_b)/it1->second->GetBinWidth(i_b));

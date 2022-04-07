@@ -2,6 +2,7 @@
 #define _FluxWeight_h_
 
 #include <iostream>
+#include <map>
 
 #include "TFile.h"
 #include "TMatrixD.h"
@@ -12,6 +13,8 @@
 
 const int flux_HP_universes = 600;
 const int Beamline_Universes = 20;
+
+enum modes{kFHC,kRHC};
 
 // Beamline variations
 /*
@@ -47,7 +50,8 @@ class FluxWeighter {
       enum flav { k_numu, k_numubar, k_nue, k_nuebar, k_FLAV_MAX };
       std::vector<std::string> flav_str = {"numu","numubar","nue","nuebar"};       
 
-      FluxWeighter(int RunPeriod);
+      //FluxWeighter(int RunPeriod);
+      FluxWeighter(int mode);
       ~FluxWeighter();
 
       void PrepareHPUniv(int nuniv=600);
@@ -65,7 +69,8 @@ class FluxWeighter {
 
       std::string FLUX_DIR;
 
-      int fRunPeriod;
+      //int fRunPeriod;
+      int fMode;
       std::string fRunMode;
       std::string fRunModeCaps;
 
@@ -83,11 +88,18 @@ class FluxWeighter {
 
 };
 
-std::map<int,double> GetIntegratedFlux(int CV_HP_Beamline,double POT){
+inline std::map<int,double> GetIntegratedFlux(int mode, int CV_HP_Beamline,double POT){
 
+  assert(mode == kFHC || mode == kRHC);
+  
+  std::string BeamModeCaps = mode == kFHC ? "FHC" : "RHC";
+  std::string BeamMode = mode == kFHC ? "fhc" : "rhc";
+ 
+  std::cout << "BeamModeCaps = " << BeamModeCaps << std::endl;  
+ 
    // Get the flux histograms
    std::string FLUX_DIR = std::string(std::getenv("HYP_TOP")) + "Fluxes/";
-   TFile *f_flux = TFile::Open((FLUX_DIR + "output_uboone_fhc_run0_merged.root").c_str());
+   TFile *f_flux = TFile::Open((FLUX_DIR + "output_uboone_" + BeamMode + "_run0_merged.root").c_str());
 
    TH1D *h_numubar_flux;
 
@@ -118,7 +130,7 @@ std::map<int,double> GetIntegratedFlux(int CV_HP_Beamline,double POT){
       std::vector<TH1D*> h_numubar_flux_Beamline(20);
       std::vector<TH1D*> h_numubar_ratio_Beamline(20);       
       for(int i=0;i<20;i++){
-         f_Beamline->GetObject(("EnergyVarBin/ratio_run" + std::to_string(i+1) + "_FHC_numubar_CV_AV_TPC").c_str(),h_numubar_ratio_Beamline[i]);           
+         f_Beamline->GetObject(("EnergyVarBin/ratio_run" + std::to_string(i+1) + "_" + BeamModeCaps + "_numubar_CV_AV_TPC").c_str(),h_numubar_ratio_Beamline[i]);           
          h_numubar_flux_Beamline[i] = (TH1D*)h_numubar_flux->Clone(("h_numubar_flux_Beamline_" + std::to_string(i)).c_str());
          for(int i_b=1;i_b<h_numubar_flux->GetNbinsX()+1;i_b++) h_numubar_flux_Beamline.at(i)->SetBinContent(i_b,h_numubar_flux->GetBinContent(i_b)*h_numubar_ratio_Beamline.at(i)->GetBinContent(i_b));
          univ_flux[i] = h_numubar_flux_Beamline[i]->Integral("width")/100/100;

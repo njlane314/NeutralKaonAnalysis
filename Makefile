@@ -56,7 +56,7 @@ lib/GenG4WeightHandler.o: Alg/GenG4WeightHandler.cxx
 lib/SecondaryVertexFitter.o: Alg/SecondaryVertexFitter.cxx
 	g++ $(CFLAGS) -c $(INC)  $< -o $@	
 
-lib/SelectionManager.o: Core/SelectionManager.cxx Alg/PlottingFunctions.h
+lib/SelectionManager.o: Core/SelectionManager.cxx Alg/PlottingFunctions.h Alg/FluxWeight.h
 	g++ $(CFLAGS) -c $(INC)  $< -o $@	
 
 lib/EventAssembler.o: Core/EventAssembler.cxx

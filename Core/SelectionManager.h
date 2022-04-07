@@ -61,8 +61,11 @@ class SelectionManager {
       void SetPOT(double POT);
 
       // Beam Mode
-      std::string BeamMode = "FHC"; 
-      void SetBeamMode(std::string Mode);
+     // std::string BeamMode = "FHC"; 
+      int BeamMode = kFHC;
+      int Run = 1;
+      void SetBeamMode(int mode);
+      void SetRun(int run){ Run = run; }
 
       void ImportSelectorBDTWeights(std::string WeightDir="");
       void ImportAnalysisBDTWeights(std::string WeightDir="");
@@ -97,6 +100,7 @@ class SelectionManager {
       SelectorBDTManager a_SelectorBDTManager;
       AnalysisBDTManager a_AnalysisBDTManager;
       EventListFilter a_EventListFilter;
+      SecondaryVertexFitter a_SecondaryVertexFitter;
       CTTest a_CTTest_Plane0;
       CTTest a_CTTest_Plane1;
       CTTest a_CTTest_Plane2;
@@ -115,7 +119,7 @@ class SelectionManager {
    private:
 
       // Cut Data Management //
-      std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" };
+      std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" , "InvariantMass" , "AlphaAngle" };
       void DeclareCuts();
       std::vector<Cut> Cuts;
       void UpdateCut(Event e,bool Passed,std::string CutName);
@@ -138,6 +142,8 @@ class SelectionManager {
       bool AnalysisBDTCut(Event &e);
       bool EventListCut(Event e);
       bool ConnectednessTest(Event e);
+      bool WCut(Event e);
+      bool AngleCut(Event e);
 
       // Histogram Functions //
 

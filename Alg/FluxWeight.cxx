@@ -5,29 +5,26 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-FluxWeighter::FluxWeighter(int RunPeriod){
+FluxWeighter::FluxWeighter(int mode){
 
    FLUX_DIR = std::string(std::getenv("HYP_TOP")) + "Fluxes/";
 
+   std::cout << "mode = " << mode << std::endl;
+
    // Presently only have weights for run 1 and 3
-   if(RunPeriod != 1 && RunPeriod != 3){
-      std::cout << "Requesting flux weights for unknown run period, setting all flux weights to 1" << std::endl;
-      fRunPeriod = RunPeriod;
-      return;
-   }
+   if(mode != kFHC && mode != kRHC)
+      throw std::invalid_argument( "Requesting flux weights for unknown beam mode " + mode );      
 
-      fRunPeriod = RunPeriod;
-       
-      if(RunPeriod == 1){ fRunMode = "fhc"; fRunModeCaps = "FHC"; }
-      else if(RunPeriod == 3){ fRunMode = "rhc"; fRunModeCaps = "RHC"; }
+   //fRunPeriod = RunPeriod;
+   fMode = mode;
 
-   if (fRunPeriod == 1)
-        f_flux = TFile::Open((FLUX_DIR + "output_uboone_fhc_run0_merged.root").c_str(), "READ");               
-   else if (fRunPeriod == 3)
-        f_flux = TFile::Open((FLUX_DIR + "output_uboone_rhc_run0_merged.root").c_str(), "READ");               
+   if(fMode == kFHC){ fRunMode = "fhc"; fRunModeCaps = "FHC"; }
+   else { fRunMode = "rhc"; fRunModeCaps = "RHC"; }
+
+   if (fMode == kFHC)
+      f_flux = TFile::Open((FLUX_DIR + "output_uboone_fhc_run0_merged.root").c_str(), "READ");               
    else
-      return;
-
+      f_flux = TFile::Open((FLUX_DIR + "output_uboone_rhc_run0_merged.root").c_str(), "READ");               
 
    hist_ratio.resize(k_FLAV_MAX);
    hist_ratio_uw.resize(k_FLAV_MAX);
@@ -54,7 +51,7 @@ FluxWeighter::FluxWeighter(int RunPeriod){
 
 double FluxWeighter::GetFluxWeight(double nu_e,double nu_angle,int nu_pdg,int mode,int univ){
 
-   if(fRunPeriod != 1 && fRunPeriod != 3) return 1.0;
+   //if(fRunPeriod != 1 && fRunPeriod != 3) return 1.0;
 
    float weight = 1.0;
 
@@ -119,11 +116,11 @@ double FluxWeighter::GetFluxWeight(Event e){
    // Get weight for each neutrino and multiply together
    for(size_t i_n=0;i_n<e.Neutrino.size();i_n++){
 
-   double nu_e = e.Neutrino.at(i_n).E;
-   double nu_angle = GetNuMIAngle(e.Neutrino.at(i_n).Px,e.Neutrino.at(i_n).Py,e.Neutrino.at(i_n).Pz);
-   int nu_pdg = e.Neutrino.at(i_n).PDG;
+      double nu_e = e.Neutrino.at(i_n).E;
+      double nu_angle = GetNuMIAngle(e.Neutrino.at(i_n).Px,e.Neutrino.at(i_n).Py,e.Neutrino.at(i_n).Pz);
+      int nu_pdg = e.Neutrino.at(i_n).PDG;
 
-   weight *= GetFluxWeight(nu_e,nu_angle,nu_pdg);
+      weight *= GetFluxWeight(nu_e,nu_angle,nu_pdg);
 
    }
 
@@ -154,19 +151,18 @@ void FluxWeighter::PrepareHPUniv(int nuniv){
    std::cout << "Loading Flux HP_Universes" << std::endl;
 
    hist_sys_ratio.resize(flav_str.size());
-   
+
    for (unsigned int f = 0; f < flav_str.size(); f++)
       hist_sys_ratio.at(f).resize(nuniv);
 
    for (unsigned int f = 0; f < flav_str.size(); f++){
       for(size_t i_univ=0;i_univ<nuniv;i_univ++){
 
-        //std::cout << "Loading HP histogram for flavour " << flav_str.at(f) << " universe " << i_univ << std::endl;
+         //std::cout << "Loading HP histogram for flavour " << flav_str.at(f) << " universe " << i_univ << std::endl;
 
          hist_sys_ratio.at(f).at(i_univ) = (TH2D*) f_flux->Get(Form("%s/Multisims/%s_ppfx_ms_UBPPFX_Uni_%s_AV_TPC_2D", flav_str.at(f).c_str(), flav_str.at(f).c_str(),std::to_string(i_univ).c_str()));
 
-        
-      hist_sys_ratio.at(f).at(i_univ)->Divide(hist_ratio_uw.at(f));
+         hist_sys_ratio.at(f).at(i_univ)->Divide(hist_ratio_uw.at(f));
 
       }
    }
@@ -182,7 +178,7 @@ void FluxWeighter::PrepareBeamlineUniv(){
    // Load the beamline variations
 
    std::cout << "Loading beamline variation universes" << std::endl;
-  
+
    //f_beamline_vars.resize(Beamline_Universes);  
    f_beamline_vars = TFile::Open((FLUX_DIR + "NuMI_Beamline_Variations_to_CV_Ratios.root").c_str());
    hist_beamline_vars_ratio.resize(flav_str.size());

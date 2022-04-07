@@ -5,6 +5,7 @@
 #include "Misc.h"
 #include "TText.h"
 #include "TLatex.h"
+#include "FluxWeight.h"
 
 const double _EPSILON_ = 1e-5;
 
@@ -147,7 +148,8 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,std::string title,bool uselabels=fa
    l_Watermark->SetTextAlign(32);
    l_Watermark->SetTextFont(62);
    l_Watermark->SetTextSize(0.05);
-   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+   //l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+   l_Watermark->SetHeader("MicroBooNE Simulation, In Progress","R");
 
    h->SetContour(1000);
 
@@ -200,7 +202,9 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,std::string title,bool uselabels=fa
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::string> captions,std::string plotdir,std::string label,std::string mode,double POT,double signalscale,bool hasdata,std::vector<int> colors,std::vector<std::string> binlabels,std::pair<double,int> chi2ndof){
+void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::string> captions,std::string plotdir,std::string label,int mode,int run,double POT,double signalscale,bool hasdata,std::vector<int> colors,std::vector<std::string> binlabels,std::pair<double,int> chi2ndof){
+
+  assert(mode == kFHC || mode == kRHC);
 
    if(binlabels.size()){
       const int nbins = hist_v.at(0)->GetNbinsX();
@@ -232,7 +236,8 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
    l_Watermark->SetTextSize(0.05);
    l_Watermark->SetTextFont(62);
 
-   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+   //l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+   l_Watermark->SetHeader("MicroBooNE Simulation, In Progress","R");
 
    TLegend *l_POT = new TLegend(0.55,0.820,0.89,0.900);
    l_POT->SetBorderSize(0);
@@ -240,8 +245,8 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
    l_POT->SetTextAlign(32);
    l_POT->SetTextSize(0.05);
 
-   if(mode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
-   if(mode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(mode == kFHC)  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(mode == kRHC)  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
 
    //if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
    //if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
@@ -352,7 +357,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
 
       TLegend *l2 = new TLegend(0.1,0.0,0.9,1.0);
       l2->SetBorderSize(0);
-      l2->SetNColumns(3);
+      l2->SetNColumns(ncols);
 
       for(size_t i_h=0;i_h<hist_v.size();i_h++){
          if(captions.at(i_h) == "Data") l2->AddEntry(hist_v.at(i_data),("Data = "+ to_string_with_precision(hist_v.at(i_data)->Integral(),1)).c_str(),"P");
@@ -369,7 +374,9 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
       l_Watermark2->SetTextAlign(32);
       l_Watermark2->SetTextFont(62);
       l_Watermark2->SetTextSize(0.05);
-      l_Watermark2->SetHeader("MicroBooNE Run 1 Preliminary","R");
+      //l_Watermark2->SetHeader("MicroBooNE Run 1 Preliminary","R");
+      l_Watermark2->SetHeader(("MicroBooNE Run " + std::to_string(run) + " Preliminary").c_str(),"R");
+       
 
       TLegend *l_POT2 = new TLegend(0.55,0.820,0.89,0.900);
       l_POT2->SetBorderSize(0);
@@ -377,8 +384,8 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
       l_POT2->SetTextAlign(32);
       l_POT2->SetTextSize(0.05);
 
-      if(mode == "FHC")  l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
-      if(mode == "RHC")  l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
+      if(mode == kFHC)  l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
+      if(mode == kRHC)  l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
 
       if(POT > 0) h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.30);
       else h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.2);
@@ -393,13 +400,13 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
 
       h_errors->Draw("e2");
       
-         if(hasdata) hist_v.at(i_data)->Draw("e1 same");
-         hs->Draw("HIST same");    
-         h_errors->Draw("e2 same");
-         if(hasdata) hist_v.at(i_data)->Draw("e1 same");
+      if(hasdata) hist_v.at(i_data)->Draw("e1 same");
+      hs->Draw("HIST same");    
+      h_errors->Draw("e2 same");
+      if(hasdata) hist_v.at(i_data)->Draw("e1 same");
 
-         l_Watermark2->Draw();
-         if(POT > 0) l_POT2->Draw();
+      l_Watermark2->Draw();
+      if(POT > 0) l_POT2->Draw();
          
       //l_DataMCRatio->Draw();
       

@@ -16,132 +16,48 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
    void MakeCommonRSList(){
 
+      SampleNames.push_back("CV");
+      SampleTypes.push_back("Neutron");
+      SampleFiles.push_back("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_numi_rhc_run3b_detvar_reco2_CV_reco2.root");
+
+      SampleNames.push_back("LYAttenuation");
+      SampleTypes.push_back("Neutron");
+      SampleFiles.push_back("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_numi_rhc_run3b_detvar_reco2_LYAttenuation_reco2.root");
+
+      SampleNames.push_back("LYRayleigh");
+      SampleTypes.push_back("Neutron");
+      SampleFiles.push_back("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_numi_rhc_run3b_detvar_reco2_LYRayleigh_reco2.root");
+
+      SampleNames.push_back("LYDown");
+      SampleTypes.push_back("Neutron");
+      SampleFiles.push_back("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_numi_rhc_run3b_detvar_reco2_LYDown_reco2.root");
+
+      SampleNames.push_back("SCE");
+      SampleTypes.push_back("Neutron");
+      SampleFiles.push_back("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_numi_rhc_run3b_detvar_reco2_SCE_reco2.root");
+
+      SampleNames.push_back("Recomb2");
+      SampleTypes.push_back("Neutron");
+      SampleFiles.push_back("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_numi_rhc_run3b_detvar_reco2_Recomb2_reco2.root");
+
+      SampleNames.push_back("WireModX");
+      SampleTypes.push_back("Neutron");
+      SampleFiles.push_back("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_numi_rhc_run3b_detvar_reco2_WireModX_reco2.root");
+
+      SampleNames.push_back("WireModYZ");
+      SampleTypes.push_back("Neutron");
+      SampleFiles.push_back("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_numi_rhc_run3b_detvar_reco2_WireModYZ_reco2.root");
+
+      SampleNames.push_back("WireModThetaXZ");
+      SampleTypes.push_back("Neutron");
+      SampleFiles.push_back("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_numi_rhc_run3b_detvar_reco2_WireModThetaXZ_reco2.root");
+
+      SampleNames.push_back("WireModThetaYZ");
+      SampleTypes.push_back("Neutron");
+      SampleFiles.push_back("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_numi_rhc_run3b_detvar_reco2_WireModThetaYZ_reco2.root");
+
       // Setup selection manager. Set POT to scale sample to
       EventAssembler E;
-/*
-      // CV
-      SampleNames.push_back("CV");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_run1_detvar_CV_neutron_reco2_reco2.root"); 
-
-      // LYDown
-      SampleNames.push_back("LYDown");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_run1_detvar_LYDown_neutron_reco2_reco2.root"); 
-
-      // LYRayleigh
-      SampleNames.push_back("LYRayleigh");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_run1_detvar_LYRayleigh_neutron_reco2_reco2.root"); 
-
-      // LYAttenuation
-      SampleNames.push_back("LYAttenuation");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_run1_detvar_LYAttenuation_neutron_reco2_reco2.root"); 
-
-      // SCE
-      SampleNames.push_back("SCE");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_run1_detvar_SCE_neutron_reco2_reco2.root"); 
-
-      // Recomb2
-      SampleNames.push_back("Recomb2");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_run1_detvar_Recomb2_neutron_reco2_reco2.root"); 
-
-      // WireModX
-      SampleNames.push_back("WireModX");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_run1_detvar_WireModX_neutron_reco2_reco2.root"); 
-
-      // WireModYZ
-      SampleNames.push_back("WireModYZ");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_run1_detvar_WireModYZ_neutron_reco2_reco2.root"); 
-
-      // WireModThetaXZ
-      SampleNames.push_back("WireModThetaXZ");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_run1_detvar_WireModThetaXZ_neutron_reco2_reco2.root"); 
-
-      // WireModThetaYZ
-      SampleNames.push_back("WireModThetaYZ");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_run1_detvar_WireModThetaYZ_neutron_reco2_reco2.root"); 
-*/
-
-/*
-      // CV
-      SampleNames.push_back("CV");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Hyperon_Detvar_cthorpe_make_hyperon_events_run1_detvar_CV_hyperon_reco2_reco2.root"); 
-
-      // LYDown
-      SampleNames.push_back("LYDown");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Hyperon_Detvar_cthorpe_make_hyperon_events_run1_detvar_LYDown_hyperon_reco2_reco2.root"); 
-
-      // LYRayleigh
-      SampleNames.push_back("LYRayleigh");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Hyperon_Detvar_cthorpe_make_hyperon_events_run1_detvar_LYRayleigh_hyperon_reco2_reco2.root"); 
-
-      // LYAttenuation
-      SampleNames.push_back("LYAttenuation");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Hyperon_Detvar_cthorpe_make_hyperon_events_run1_detvar_LYAttenuation_hyperon_reco2_reco2.root"); 
-
-      // SCE
-      SampleNames.push_back("SCE");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Hyperon_Detvar_cthorpe_make_hyperon_events_run1_detvar_SCE_hyperon_reco2_reco2.root"); 
-
-      // Recomb2
-      SampleNames.push_back("Recomb2");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Hyperon_Detvar_cthorpe_make_hyperon_events_run1_detvar_Recomb2_hyperon_reco2_reco2.root"); 
-
-      // WireModX
-      SampleNames.push_back("WireModX");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Hyperon_Detvar_cthorpe_make_hyperon_events_run1_detvar_WireModX_hyperon_reco2_reco2.root"); 
-
-      // WireModYZ
-      SampleNames.push_back("WireModYZ");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Hyperon_Detvar_cthorpe_make_hyperon_events_run1_detvar_WireModYZ_hyperon_reco2_reco2.root"); 
-
-      // WireModThetaXZ
-      SampleNames.push_back("WireModThetaXZ");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Hyperon_Detvar_cthorpe_make_hyperon_events_run1_detvar_WireModThetaXZ_hyperon_reco2_reco2.root"); 
-
-      // WireModThetaYZ
-      SampleNames.push_back("WireModThetaYZ");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Hyperon_Detvar_cthorpe_make_hyperon_events_run1_detvar_WireModThetaYZ_hyperon_reco2_reco2.root"); 
-*/
-
-
-      SampleNames.push_back("GENIE BG CV");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Background_Detvar_prodgenie_numi_nu_overlay_v08_00_00_53_CV_300k_reco2_run1_reco2.root");
-
-      SampleNames.push_back("GENIE BG LYDown");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Background_Detvar_prodgenie_numi_nu_overlay_detvar_LYDown_run1_reco2_run1_reco2.root");
-
-      SampleNames.push_back("GENIE BG LYAttenuation");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Background_Detvar_prodgenie_numi_nu_overlay_detvar_LY_suppression75attenuation8m_run1_reco2_run1_reco2.root");
-
-      SampleNames.push_back("GENIE BG LYRayleigh");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Background_Detvar_prodgenie_numi_nu_overlay_detvar_LY_Rayleigh_run1_reco2_run1_reco2.root");
-
-      SampleNames.push_back("GENIE BG WireModX");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Background_Detvar_prodgenie_numi_nu_overlay_detvar_WireModX_run1_reco2_fixed_run1_reco2.root");
-
-      SampleNames.push_back("GENIE BG WireModYZ");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Background_Detvar_prodgenie_numi_nu_overlay_detvar_WireModYZ_run1_reco2_run1_reco2.root");
-
-      SampleNames.push_back("GENIE BG WireModThetaXZ");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Background_Detvar_prodgenie_numi_nu_overlay_v08_00_00_53_WireModThetaXZ_300k_reco2_run1_reco2.root");
-
-      SampleNames.push_back("GENIE BG WireModThetaYZ");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Background_Detvar_prodgenie_numi_nu_overlay_detvar_WireModThetaYZ_withSplines_run1_reco2_run1_reco2.root");
-
-      SampleNames.push_back("GENIE BG Recomb2");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Background_Detvar_prodgenie_numi_nu_overlay_detvar_Recomb2_run1_reco2_run1_reco2.root");
-
-      SampleNames.push_back("GENIE BG SCE");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("run1_FHC/detvar/analysisOutputFHC_Overlay_GENIE_Background_Detvar_prodgenie_numi_nu_overlay_v08_00_00_53_SCE_300k_reco2_run1_reco2.root");
 
       std::vector<std::vector<std::pair<int,int>>> rs_list_v(SampleNames.size());
 
