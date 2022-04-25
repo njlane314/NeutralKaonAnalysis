@@ -204,7 +204,7 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,std::string title,bool uselabels=fa
 
 void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::string> captions,std::string plotdir,std::string label,int mode,int run,double POT,double signalscale,bool hasdata,std::vector<int> colors,std::vector<std::string> binlabels,std::pair<double,int> chi2ndof){
 
-  assert(mode == kFHC || mode == kRHC);
+  assert(mode == kFHC || mode == kRHC || mode == kBNB);
 
    if(binlabels.size()){
       const int nbins = hist_v.at(0)->GetNbinsX();
@@ -247,6 +247,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
 
    if(mode == kFHC)  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
    if(mode == kRHC)  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(mode == kBNB)  l_POT->SetHeader(("BNB, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
 
    //if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
    //if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e19,1) + " #times 10^{19} POT").c_str());
@@ -386,8 +387,11 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
 
       if(mode == kFHC)  l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
       if(mode == kRHC)  l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
+      if(mode == kBNB)  l_POT2->SetHeader(("BNB, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
 
-      if(POT > 0) h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.30);
+
+      if(hasdata) h_errors->GetYaxis()->SetRangeUser(0.0,std::max(GetHistMaxError(h_errors),GetHistMaxError(hist_v.at(i_data)))*1.3);
+      else if(POT > 0) h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.30);
       else h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.2);
 
       p_legend2->Draw();
@@ -398,12 +402,12 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
       p_plot2->Draw();
       p_plot2->cd();
 
-      h_errors->Draw("e2");
+      h_errors->Draw("E2");
       
-      if(hasdata) hist_v.at(i_data)->Draw("e1 same");
+      if(hasdata) hist_v.at(i_data)->Draw("e0 same");
       hs->Draw("HIST same");    
-      h_errors->Draw("e2 same");
-      if(hasdata) hist_v.at(i_data)->Draw("e1 same");
+      h_errors->Draw("E2 same");
+      if(hasdata) hist_v.at(i_data)->Draw("e0 same");
 
       l_Watermark2->Draw();
       if(POT > 0) l_POT2->Draw();
@@ -446,7 +450,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
       p_ratio2->Draw();
 
       p_ratio2->cd();
-      h_errors_ratio->Draw("e2");
+      h_errors_ratio->Draw("E2");
       h_errors_ratio->GetYaxis()->SetRangeUser(0.9*ratio_range.first,1.1*ratio_range.second);
 
       h_errors_ratio->SetStats(0);
@@ -483,7 +487,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
 
          }
 
-         h_Data_ratio->Draw("e1 same");
+         h_Data_ratio->Draw("E0 same");
 
  
       // gSystem->Exec("mkdir -p Plots/");

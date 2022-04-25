@@ -73,7 +73,7 @@ void SelectionManager::SetPOT(double POT){
 
 void SelectionManager::SetBeamMode(int mode){
 
-   assert(mode == kFHC || mode == kRHC);
+   assert(mode == kFHC || mode == kRHC || mode == kBNB);
 
    BeamMode = mode;
 
@@ -120,12 +120,12 @@ void SelectionManager::AddEvent(Event &e){
    // Sample Orthogonality
    //if(thisSampleType == "Hyperon" && !e.EventHasHyperon){ e.Weight = 0.0; return; }
    //if(thisSampleType == "Background" && e.EventHasHyperon){ e.Weight = 0.0; return; }
-
+/*
    if(thisSampleType == "Neutron" && !e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
    if(thisSampleType != "Neutron" && e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
    if(thisSampleType != "Hyperon" &&  e.EventHasHyperon){ e.Weight = 0.0; return; }
    if(thisSampleType == "Hyperon" &&  !e.EventHasHyperon){ e.Weight = 0.0; return; }
-
+*/
    /*
       if((thisSampleType == "Background" || thisSampleType == "Hyperon") ||
       (thisSampleType == "Background" && e.Mode == "HYP") ||
@@ -919,12 +919,11 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    l_POT->SetBorderSize(0);
    l_POT->SetMargin(0.005);
    l_POT->SetTextAlign(32);
-     l_POT->SetTextSize(0.05);
+   l_POT->SetTextSize(0.05);
 
-
-   if(BeamMode == kFHC)  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
-   if(BeamMode == kRHC)  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
-
+   if(BeamMode == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(BeamMode == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(BeamMode == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
 
    p_legend->Draw();
    p_legend->cd();

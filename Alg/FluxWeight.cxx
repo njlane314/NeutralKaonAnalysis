@@ -9,14 +9,14 @@ FluxWeighter::FluxWeighter(int mode){
 
    FLUX_DIR = std::string(std::getenv("HYP_TOP")) + "Fluxes/";
 
-   std::cout << "mode = " << mode << std::endl;
-
    // Presently only have weights for run 1 and 3
-   if(mode != kFHC && mode != kRHC)
+   if(mode != kFHC && mode != kRHC && mode != kBNB)
       throw std::invalid_argument( "Requesting flux weights for unknown beam mode " + mode );      
 
    //fRunPeriod = RunPeriod;
    fMode = mode;
+
+   if(mode == kBNB) return;
 
    if(fMode == kFHC){ fRunMode = "fhc"; fRunModeCaps = "FHC"; }
    else { fRunMode = "rhc"; fRunModeCaps = "RHC"; }
@@ -50,6 +50,8 @@ FluxWeighter::FluxWeighter(int mode){
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 double FluxWeighter::GetFluxWeight(double nu_e,double nu_angle,int nu_pdg,int mode,int univ){
+
+   if(fMode == kBNB) return 1.0;
 
    //if(fRunPeriod != 1 && fRunPeriod != 3) return 1.0;
 

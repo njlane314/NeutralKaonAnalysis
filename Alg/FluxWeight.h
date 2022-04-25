@@ -14,7 +14,7 @@
 const int flux_HP_universes = 600;
 const int Beamline_Universes = 20;
 
-enum modes{kFHC,kRHC};
+enum modes{kFHC,kRHC,kBNB};
 
 // Beamline variations
 /*
