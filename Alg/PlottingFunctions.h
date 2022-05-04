@@ -140,7 +140,12 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,std::string title,bool uselabels=fa
    TCanvas *c = new TCanvas("c","c",800,600);
 
    c->SetRightMargin(0.13);
-   if(uselabels) c->SetLeftMargin(0.15);
+   if(uselabels){
+      c->SetLeftMargin(0.15);
+      h->GetXaxis()->SetLabelSize(0.07);
+      h->GetYaxis()->SetLabelSize(0.07);
+   }
+
 
    TLegend *l_Watermark = new TLegend(0.45,0.91,0.915,0.99);
    l_Watermark->SetBorderSize(0);
@@ -148,43 +153,31 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,std::string title,bool uselabels=fa
    l_Watermark->SetTextAlign(32);
    l_Watermark->SetTextFont(62);
    l_Watermark->SetTextSize(0.05);
-   //l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-   l_Watermark->SetHeader("MicroBooNE Simulation, In Progress","R");
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+   //l_Watermark->SetHeader("MicroBooNE Simulation, In Progress","R");
 
    h->SetContour(1000);
 
    if(usetext){
       c->SetRightMargin(0.05);
-      h->SetMarkerSize(3.0);
       h->Draw("col");
+      h->SetMarkerSize(3);
 
       for(int i=1;i<h->GetNbinsX()+1;i++){
          for(int j=1;j<h->GetNbinsX()+1;j++){
             double content = setsf(h->GetBinContent(i,j),3);            
             std::string text = std::to_string(content);        
             if(abs(content) < 1e-4 || abs(content) > 1e4){
-               // text = std::to_string(1e5*content) + 
                int OM = floor(log10(abs(content)));               
                text = to_string_with_precision(content*pow(10,-OM),2) + " #times 10^{" + OM + "}";
             }
             if(abs(content) < 1e-10) text = std::to_string(0);
-            //auto t = new TText(h->GetXaxis()->GetBinCenter(i),h->GetYaxis()->GetBinCenter(j),text.c_str());
             auto t = new TLatex(h->GetXaxis()->GetBinCenter(i),h->GetYaxis()->GetBinCenter(j),text.c_str());
             t->SetTextAlign(22);
             t->Draw();
+            t->SetTextSize(0.04);
          }
       }
-
-
-      /*
-         for(size_t i=1;i<h->GetNbinsX()+1;i++){
-         for(size_t j=1;j<h->GetNbinsX()+1;j++){
-         if(abs(h->GetBinContent(i,j)) < 1e-10) h->SetBinContent(i,j,0.0); 
-         h->SetBinContent(i,j,setsf(h->GetBinContent(i,j),3));
-         }
-         }
-         */
-      //gStyle->SetPaintTextFormat("4.1f");
    }
    else h->Draw("colz");
 
@@ -236,8 +229,8 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
    l_Watermark->SetTextSize(0.05);
    l_Watermark->SetTextFont(62);
 
-   //l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-   l_Watermark->SetHeader("MicroBooNE Simulation, In Progress","R");
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+   //l_Watermark->SetHeader("MicroBooNE Simulation, In Progress","R");
 
    TLegend *l_POT = new TLegend(0.55,0.820,0.89,0.900);
    l_POT->SetBorderSize(0);
@@ -323,7 +316,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
    }
 
    if(hasdata && i_data != -1) hist_v.at(i_data)->Draw("E0 P0 same");
-   l_POT->Draw();
+   if(POT > 0) l_POT->Draw();
    l_Watermark->Draw();
    if(signalscale != 1.0) l_Scale->Draw();
    if(hasdata) l_DataMCRatio->Draw();
@@ -377,7 +370,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
       l_Watermark2->SetTextSize(0.05);
       //l_Watermark2->SetHeader("MicroBooNE Run 1 Preliminary","R");
       l_Watermark2->SetHeader(("MicroBooNE Run " + std::to_string(run) + " Preliminary").c_str(),"R");
-       
+      if(run == 13) l_Watermark2->SetHeader("MicroBooNE Run 1 + 3 Preliminary","R"); 
 
       TLegend *l_POT2 = new TLegend(0.55,0.820,0.89,0.900);
       l_POT2->SetBorderSize(0);

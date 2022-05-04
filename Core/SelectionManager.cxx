@@ -120,12 +120,12 @@ void SelectionManager::AddEvent(Event &e){
    // Sample Orthogonality
    //if(thisSampleType == "Hyperon" && !e.EventHasHyperon){ e.Weight = 0.0; return; }
    //if(thisSampleType == "Background" && e.EventHasHyperon){ e.Weight = 0.0; return; }
-/*
+
    if(thisSampleType == "Neutron" && !e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
    if(thisSampleType != "Neutron" && e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
    if(thisSampleType != "Hyperon" &&  e.EventHasHyperon){ e.Weight = 0.0; return; }
    if(thisSampleType == "Hyperon" &&  !e.EventHasHyperon){ e.Weight = 0.0; return; }
-*/
+
    /*
       if((thisSampleType == "Background" || thisSampleType == "Hyperon") ||
       (thisSampleType == "Background" && e.Mode == "HYP") ||
@@ -173,17 +173,20 @@ void SelectionManager::UseGenWeight(bool usegenweight){
 void SelectionManager::SetSignal(Event &e){
 
    e.EventIsSignal = false;
+   e.EventIsSignalSigmaZero = false;
    e.GoodReco = false;
 
    std::vector<bool> IsSignal_tmp = e.IsSignal;
+   std::vector<bool> IsSignalSigmaZero_tmp = e.IsSignalSigmaZero;
 
    for(size_t i_tr=0;i_tr<e.NMCTruths;i_tr++){
 
       IsSignal_tmp.at(i_tr) = false;
+      IsSignalSigmaZero_tmp.at(i_tr) = false;
 
       e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex.at(i_tr)); 
 
-      if(e.IsSignal.at(i_tr)){
+      if(e.IsSignal.at(i_tr) || e.IsSignalSigmaZero.at(i_tr)){
 
          bool found_proton=false,found_pion=false;
 
@@ -197,14 +200,17 @@ void SelectionManager::SetSignal(Event &e){
 
          }                   
 
-         IsSignal_tmp.at(i_tr) = found_proton && found_pion && e.InActiveTPC.at(i_tr);
+         IsSignal_tmp.at(i_tr) = found_proton && found_pion && e.InActiveTPC.at(i_tr) && e.IsSignal.at(i_tr);
+         IsSignalSigmaZero_tmp.at(i_tr) = found_proton && found_pion && e.InActiveTPC.at(i_tr) && e.IsSignalSigmaZero.at(i_tr);
 
       }
    }
 
    e.IsSignal = IsSignal_tmp;
+   e.IsSignalSigmaZero = IsSignalSigmaZero_tmp;
 
    e.EventIsSignal = std::find(e.IsSignal.begin(),e.IsSignal.end(), true) != e.IsSignal.end();
+   e.EventIsSignalSigmaZero = std::find(e.IsSignalSigmaZero.begin(),e.IsSignalSigmaZero.end(), true) != e.IsSignalSigmaZero.end();
 
    // Search the list of reco'd tracks for the proton and pion
    bool found_proton=false,found_pion=false;
@@ -448,7 +454,7 @@ bool SelectionManager::EventListCut(Event e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-bool SelectionManager::ConnectednessTest(Event e){
+bool SelectionManager::ConnectednessTest(Event e, int nplanes){
 
    int muon_index = e.MuonCandidate.Index;
    int proton_index = e.DecayProtonCandidate.Index;
@@ -458,14 +464,17 @@ bool SelectionManager::ConnectednessTest(Event e){
    a_CTTest_Plane1.LoadInfo(e.ConnSeedIndexes_Plane1,e.ConnOutputIndexes_Plane1,e.ConnOutputSizes_Plane1,e.ConnSeedChannels_Plane1);
    a_CTTest_Plane2.LoadInfo(e.ConnSeedIndexes_Plane2,e.ConnOutputIndexes_Plane2,e.ConnOutputSizes_Plane2,e.ConnSeedChannels_Plane2);
 
-   bool passed = a_CTTest_Plane0.DoTest(muon_index,proton_index,pion_index) 
-      || a_CTTest_Plane1.DoTest(muon_index,proton_index,pion_index) 
-      || a_CTTest_Plane2.DoTest(muon_index,proton_index,pion_index);
+   int npassed = 0;
+   if(a_CTTest_Plane0.DoTest(muon_index,proton_index,pion_index)) npassed++;
+   if(a_CTTest_Plane1.DoTest(muon_index,proton_index,pion_index)) npassed++;
+   if(a_CTTest_Plane2.DoTest(muon_index,proton_index,pion_index)) npassed++;
+   
+
+   bool passed = npassed >= nplanes; 
 
    UpdateCut(e,passed,"Connectedness");
 
    return passed;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -912,8 +921,8 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    l_Watermark->SetTextSize(0.05);
    l_Watermark->SetTextFont(62);
 
-   //l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-   l_Watermark->SetHeader("MicroBooNE Simulation In Progress","R");
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+   //l_Watermark->SetHeader("MicroBooNE Simulation In Progress","R");
 
    TLegend *l_POT = new TLegend(0.55,0.820,0.89,0.900);
    l_POT->SetBorderSize(0);
@@ -954,7 +963,7 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
 
    p_plot->Update(); 
 
-   l_POT->Draw();
+   if(fPOT > 0) l_POT->Draw();
    l_Watermark->Draw();
 
    c->Print((PlotDir + label + "_Sys_" + type + "_" +  name + ".png").c_str());

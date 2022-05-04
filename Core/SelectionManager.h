@@ -141,7 +141,7 @@ class SelectionManager {
       bool ChooseProtonPionCandidates(Event &e, bool cheat=false);
       bool AnalysisBDTCut(Event &e);
       bool EventListCut(Event e);
-      bool ConnectednessTest(Event e);
+      bool ConnectednessTest(Event e, int nplanes=1);
       bool WCut(Event e);
       bool AngleCut(Event e);
 

@@ -25,6 +25,7 @@ struct Event {
         Bool_t EventIsSignal = false;
         Bool_t EventHasHyperon = false;
         Bool_t EventHasNeutronScatter = false;
+        Bool_t EventIsSignalSigmaZero = false;
 
         // Flags for each MCTruth
         vector<string> Mode;
