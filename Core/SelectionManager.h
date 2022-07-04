@@ -58,10 +58,9 @@ class SelectionManager {
       void SetSignal(Event &e);
 
       // Set POT
-      void SetPOT(double POT);
+      void SetPOT(double pot){ POT = pot; }
 
       // Beam Mode
-     // std::string BeamMode = "FHC"; 
       int BeamMode = kFHC;
       int Run = 1;
       void SetBeamMode(int mode);
@@ -78,7 +77,7 @@ class SelectionManager {
       SelectionParameters TheParams;
 
       // POT to scale samples to
-      double fPOT;
+      double POT;
 
       // List of allowed sample types
       std::vector<std::string> SampleTypes = { "Hyperon" , "Background" , "Dirt" , "EXT" , "Data" };

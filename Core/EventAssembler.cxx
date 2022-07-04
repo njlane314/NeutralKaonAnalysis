@@ -3,6 +3,10 @@
 
 #include "EventAssembler.h"
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Load a file containing ntuples
+
 void EventAssembler::SetFile(std::string infilename){
 
    DataDir = getenv("DATA_DIR");         
@@ -147,20 +151,21 @@ void EventAssembler::SetFile(std::string infilename){
    // Get the metadata tree
 
    f_in->GetObject("ana/MetaTree",t_meta);
-   //f_in->GetObject("HyperonNTuples/MetaTree",t_meta);
-
    t_meta->SetBranchAddress("POT",&POT);
-   //t_meta->GetEntry(0);
-
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Close the file
 
 void EventAssembler::Close(){
 
    if(f_in != nullptr) f_in->Close();
-
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Get the POT used to generate the current file
 
 double EventAssembler::GetPOT(){
 
@@ -176,16 +181,18 @@ double EventAssembler::GetPOT(){
    return TotalPOT;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Get the number of events in the current file
 
 Long64_t EventAssembler::GetNEvents(){
 
    return nEvents;
-
 }
 
-///////////////////////////////////////////////////
-//    Get Entry in the Tree and set variables    //
-///////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Load an event
 
 Event EventAssembler::GetEvent(int i){
 
@@ -264,7 +271,8 @@ Event EventAssembler::GetEvent(int i){
    e.SysWeights = *SysWeights;
 
    return e;
-
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif

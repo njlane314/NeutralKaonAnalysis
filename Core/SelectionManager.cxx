@@ -5,6 +5,8 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Default constructor
+
 SelectionManager::SelectionManager() : 
    a_FluxWeightCalc(0) ,
    a_GenG4WeightCalc() ,
@@ -24,12 +26,16 @@ SelectionManager::SelectionManager() :
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Destructor
+
 SelectionManager::~SelectionManager(){
 
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Constructor that loads selection parameters
 
 SelectionManager::SelectionManager(SelectionParameters p) :
    a_FluxWeightCalc(p.p_BeamMode) ,
@@ -46,6 +52,7 @@ SelectionManager::SelectionManager(SelectionParameters p) :
    a_CTTest_Plane2(2) 
 {
    std::cout << "Building SelectionManager" << std::endl;
+
    // Set the selection parameters
    TheParams = p;
    DeclareCuts();
@@ -55,31 +62,26 @@ SelectionManager::SelectionManager(SelectionParameters p) :
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Close selection manager
+
 void SelectionManager::Close(){
-
    if(f_Hists != nullptr) f_Hists->Close();
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void SelectionManager::SetPOT(double POT){
-
-   fPOT = POT;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
+// Set the beam being used
 
 void SelectionManager::SetBeamMode(int mode){
 
    assert(mode == kFHC || mode == kRHC || mode == kBNB);
 
    BeamMode = mode;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Return the selection parameters loaded
 
 SelectionParameters SelectionManager::GetParams(){
    return TheParams;
@@ -87,11 +89,14 @@ SelectionParameters SelectionManager::GetParams(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Load a sample of events, specify name, type and POT. Can also load list of selected events
+// if using the event list cut
+
 void SelectionManager::AddSample(std::string Name,std::string Type,double SamplePOT,std::string EventList){
 
    std::cout << "Processing Sample " << Name << " of type " << Type << " and POT " << SamplePOT <<  std::endl;
 
-   if(Type != "Data") thisSampleWeight = fPOT/SamplePOT;
+   if(Type != "Data") thisSampleWeight = POT/SamplePOT;
    else thisSampleWeight = 1.0;
 
    thisSampleName = Name;
@@ -117,6 +122,8 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Load an event, normalise its weight using the POT of the current sample
+
 void SelectionManager::AddEvent(Event &e){
 
    // Sample Orthogonality
@@ -127,12 +134,6 @@ void SelectionManager::AddEvent(Event &e){
    if(thisSampleType != "Neutron" && e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
    if(thisSampleType != "Hyperon" &&  e.EventHasHyperon){ e.Weight = 0.0; return; }
    if(thisSampleType == "Hyperon" &&  !e.EventHasHyperon){ e.Weight = 0.0; return; }
-
-   /*
-      if((thisSampleType == "Background" || thisSampleType == "Hyperon") ||
-      (thisSampleType == "Background" && e.Mode == "HYP") ||
-      (thisSampleType == "Hyperon" && e.Mode != "HYP")){ e.Weight = 0.0; return; }
-      */
 
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
@@ -154,7 +155,6 @@ void SelectionManager::AddEvent(Event &e){
       if(e.EventIsSignal) Cuts[i_c].fSignalEventsVar += e.Weight*e.Weight;
       if(e.GoodReco) Cuts[i_c].fGoodRecoEventsVar += e.Weight*e.Weight;
    }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,6 +170,8 @@ void SelectionManager::UseGenWeight(bool usegenweight){
 } 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Apply the signal definition
 
 void SelectionManager::SetSignal(Event &e){
 
@@ -228,10 +230,11 @@ void SelectionManager::SetSignal(Event &e){
    }
 
    e.GoodReco = e.EventIsSignal && found_proton && found_pion; 
-   //std::cout << e.GoodReco << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Load the list of cuts
 
 void SelectionManager::DeclareCuts(){
 
@@ -240,17 +243,17 @@ void SelectionManager::DeclareCuts(){
       c.fName = CutTypes.at(i_c);
       Cuts.push_back(c);
    }
-
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Add an event to a cut
 
 void SelectionManager::UpdateCut(Event e,bool Passed,std::string CutName){
 
    for(size_t i_c=0;i_c<Cuts.size();i_c++){
 
-      if(Cuts.at(i_c).fName == CutName) {
+      if(Cuts.at(i_c).fName == CutName){
 
          Cuts[i_c].fEventsIn += e.Weight;
          if(e.EventIsSignal) Cuts[i_c].fSignalEventsIn += e.Weight;
@@ -269,15 +272,14 @@ void SelectionManager::UpdateCut(Event e,bool Passed,std::string CutName){
             Cuts[i_c].fEventsOutVar += e.Weight*e.Weight;
             if(e.EventIsSignal) Cuts[i_c].fSignalEventsOutVar += e.Weight*e.Weight;
             if(e.GoodReco) Cuts[i_c].fGoodRecoEventsOutVar += e.Weight*e.Weight;
-
          }       
-
       }
    }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Retrieve the results from a cut
 
 Cut SelectionManager::GetCut(std::string CutName){
 
@@ -291,42 +293,39 @@ Cut SelectionManager::GetCut(std::string CutName){
 
    Cut c;
    return c;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Reset the data in the cuts
 
 void SelectionManager::Reset(){
-
-   for(size_t i_c=0;i_c<Cuts.size();i_c++){
-
-      Cuts[i_c].Reset();
-
-   }
-
+   for(size_t i_c=0;i_c<Cuts.size();i_c++) Cuts[i_c].Reset();  
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Load the track selector BDT weights
 
 void SelectionManager::ImportSelectorBDTWeights(std::string WeightDir){
 
    std::cout << "SelectionManager: Importing Selector BDT Weights from " << WeightDir << std::endl;
-
    a_SelectorBDTManager.SetupSelectorBDT(WeightDir);
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Load the analysis BDT weights
 
 void SelectionManager::ImportAnalysisBDTWeights(std::string WeightDir){
 
    std::cout << "SelectionManager: Importing Analysis BDT Weights from " << WeightDir << std::endl;
-
    a_AnalysisBDTManager.SetupAnalysisBDT(WeightDir);
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Apply the fiducial volume cut
 
 bool SelectionManager::FiducialVolumeCut(Event e){
    bool passed = a_FiducialVolume.InFiducialVolume(e.RecoPrimaryVertex);
@@ -337,6 +336,8 @@ bool SelectionManager::FiducialVolumeCut(Event e){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Apply the three track cut
 
 bool SelectionManager::TrackCut(Event e){
 
@@ -349,6 +350,8 @@ bool SelectionManager::TrackCut(Event e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Apply the zero shower cut
+
 bool SelectionManager::ShowerCut(Event e){
 
    bool passed = e.NPrimaryShowerDaughters < 1; 
@@ -359,6 +362,8 @@ bool SelectionManager::ShowerCut(Event e){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Select the muon candidate
 
 bool SelectionManager::ChooseMuonCandidate(Event &e){
 
@@ -380,6 +385,8 @@ bool SelectionManager::ChooseMuonCandidate(Event &e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Apply the secondary track length cut
+
 bool SelectionManager::TrackLengthCut(Event e){
 
    bool passed = a_TrackLengthCutManager.ApplyCut(e.TracklikePrimaryDaughters);
@@ -387,10 +394,11 @@ bool SelectionManager::TrackLengthCut(Event e){
    UpdateCut(e,passed,"SubleadingTracks");
 
    return passed;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Select proton and pion tracks. If cheat is selected uses truth information instead of BDT 
 
 bool SelectionManager::ChooseProtonPionCandidates(Event &e,bool cheat){
 
@@ -423,6 +431,8 @@ bool SelectionManager::ChooseProtonPionCandidates(Event &e,bool cheat){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Calculate decay analysis BDT score and apply cut
+
 bool SelectionManager::AnalysisBDTCut(Event &e){
 
    bool passed = a_AnalysisBDTManager.CalculateScore(e) > TheParams.p_AnalysisBDT_Cut; 
@@ -430,10 +440,11 @@ bool SelectionManager::AnalysisBDTCut(Event &e){
    UpdateCut(e,passed,"DecayAnalysis");
 
    return passed;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Select events in the list already loaded
 
 bool SelectionManager::EventListCut(Event e){
 
@@ -442,10 +453,11 @@ bool SelectionManager::EventListCut(Event e){
    UpdateCut(e,passed,"Connectedness");
 
    return passed;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Apply the connectedness test
 
 bool SelectionManager::ConnectednessTest(Event e, int nplanes){
 
@@ -472,6 +484,8 @@ bool SelectionManager::ConnectednessTest(Event e, int nplanes){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Apply the invariant mass cut
+
 bool SelectionManager::WCut(Event e){
 
    double W = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate); 
@@ -481,6 +495,8 @@ bool SelectionManager::WCut(Event e){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Apply the angle cut
 
 bool SelectionManager::AngleCut(Event e){
 
@@ -497,6 +513,9 @@ bool SelectionManager::AngleCut(Event e){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Setup histograms, vector with bin boundaries and string containing axis titles (same format
+// as Root TH1 titles).
 
 void SelectionManager::SetupHistograms(std::vector<double> boundaries,std::string title){
 
@@ -527,10 +546,12 @@ void SelectionManager::SetupHistograms(std::vector<double> boundaries,std::strin
       std::string histname = "h_ByType2_" + Types2.at(i_type);
       Hists_ByType2[Types2.at(i_type)] = new TH1D(histname.c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
    }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Setup histograms. Give bin boundaries and number of bins. String containing axis titles 
+// (same format as Root TH1 titles).
 
 void SelectionManager::SetupHistograms(int n,double low,double high,std::string title){
 
@@ -556,10 +577,12 @@ void SelectionManager::SetupHistograms(int n,double low,double high,std::string 
 
    double width = (high-low)/n;
    for(int i=0;i<n+1;i++) fHistBoundaries.push_back(low+width*i); 
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Setup histograms for a systematic. Give the type (multisim, single unisim or dual unisim),
+// the number of universes and name
 
 void SelectionManager::AddSystematic(int systype,int universes,std::string name){
 
@@ -568,7 +591,6 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
    const int arr_n = fHistBoundaries.size();
    Double_t arr_boundaries[arr_n];
    for(size_t i=0;i<arr_n;i++) arr_boundaries[i] = fHistBoundaries.at(i);
-
 
    if(systype == kMultisim){
       for(size_t i_type=0;i_type<Types.size();i_type++){
@@ -608,8 +630,9 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
    }
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Get the event category 
 
 std::string SelectionManager::GetMode(Event e){
 
@@ -625,6 +648,8 @@ std::string SelectionManager::GetMode(Event e){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Get the event category using different labelling convention
 
 std::string SelectionManager::GetMode2(Event e){
 
@@ -650,6 +675,8 @@ std::string SelectionManager::GetMode2(Event e){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Fill the histograms
 
 void SelectionManager::FillHistograms(Event e,double variable,double weight){
 
@@ -696,6 +723,8 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Fill systematics histogram for a single universe with a single weight
+
 void SelectionManager::FillHistogramsSys(Event e,double variable,std::string name,int universe,double weight){
 
    if(thisSampleType == "Data") return;
@@ -732,6 +761,8 @@ void SelectionManager::FillHistogramsSys(Event e,double variable,std::string nam
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Fill systematics histogram for all universes. Supply vector containing weights for different
+// universes
 
 void SelectionManager::FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights){
 
@@ -741,6 +772,8 @@ void SelectionManager::FillHistogramsSys(Event e,double variable,std::string nam
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Draw the histograms
 
 void SelectionManager::DrawHistograms(std::string label,double Scale,double SignalScale){
 
@@ -777,19 +810,19 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    std::vector<std::string> captions = {"Signal","Other HYP","Other #nu","Dirt","EXT","Data"};
    std::vector<int> colors = {8,46,38,30,15,0};
    std::vector<TH1D*> Hists_ByType_v = {Hists_ByType["Signal"],Hists_ByType["OtherHYP"],Hists_ByType["OtherNu"],Hists_ByType["Dirt"],Hists_ByType["EXT"],Hists_ByType["Data"]};
-   DrawHistogram(Hists_ByType_v,h_errors,captions,PlotDir,label+"_ByType",BeamMode,Run,fPOT,SignalScale,fHasData,colors,BinLabels,std::make_pair(0,0));
+   DrawHistogram(Hists_ByType_v,h_errors,captions,PlotDir,label+"_ByType",BeamMode,Run,POT,SignalScale,fHasData,colors,BinLabels,std::make_pair(0,0));
 
    std::vector<std::string> captions2 = {"Direct #Lambda","Direct Hyp","Neutron","Dirt","RES #Lambda","RES Hyp","Other #nu","EXT","DIS #Lambda","DIS Hyp","Data"};
    std::vector<int> colors2 = {8,kBlue-7,kRed-7,kCyan+3,kGreen+3,kBlue-10,kRed-10,kMagenta-7,30,15,0};
 
    std::vector<TH1D*> Hists_ByType_v2 = {Hists_ByType2["DirectLambda"],Hists_ByType2["DirectHYP"],Hists_ByType2["Neutron"],Hists_ByType2["Dirt"],Hists_ByType2["RESLambda"],Hists_ByType2["RESHYP"],Hists_ByType2["Other"],Hists_ByType2["EXT"],Hists_ByType2["DISLambda"],Hists_ByType2["DISHYP"],Hists_ByType2["Data"]};
 
-   DrawHistogram(Hists_ByType_v2,h_errors,captions2,PlotDir,label+"_ByType2",BeamMode,Run,fPOT,SignalScale,fHasData,colors2,BinLabels,std::make_pair(0,0));
+   DrawHistogram(Hists_ByType_v2,h_errors,captions2,PlotDir,label+"_ByType2",BeamMode,Run,POT,SignalScale,fHasData,colors2,BinLabels,std::make_pair(0,0));
 
    std::vector<std::string> captions3 = {"Signal","Other HYP","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","ElectronScattering","Diffractive","Other","Dirt","EXT","Data"};
    std::vector<int> colors3 = {8,46,2,3,4,5,6,7,9,11,12,30,15,0};
    std::vector<TH1D*> Hists_ByProc_v = {Hists_ByProc["Signal"],Hists_ByProc["OtherHYP"],Hists_ByProc["CCQEL"],Hists_ByProc["CCRES"],Hists_ByProc["CCDIS"],Hists_ByProc["CCMEC"],Hists_ByProc["CCCOH"],Hists_ByProc["NC"],Hists_ByProc["ElectronScattering"],Hists_ByProc["Diffractive"],Hists_ByProc["Other"],Hists_ByProc["EXT"],Hists_ByProc["Dirt"],Hists_ByProc["Data"]};
-   DrawHistogram(Hists_ByProc_v,h_errors,captions3,PlotDir,label+"_ByProc",BeamMode,Run,fPOT,SignalScale,fHasData,colors3,BinLabels,std::make_pair(0,0));
+   DrawHistogram(Hists_ByProc_v,h_errors,captions3,PlotDir,label+"_ByProc",BeamMode,Run,POT,SignalScale,fHasData,colors3,BinLabels,std::make_pair(0,0));
 
    std::map<std::string,TH1D*>::iterator it;
    for (it = Hists_ByType.begin(); it != Hists_ByType.end(); it++)
@@ -800,10 +833,11 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    }
 
    h_errors->Write("ErrorBand");
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Draw the systematics histograms
 
 void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std::string type){
 
@@ -889,7 +923,6 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
       return;
    }
 
-
    if(GetHistMax(h_CV) > maximum) maximum = GetHistMax(h_CV);
    h_CV->SetLineColor(1);
    h_CV->SetLineWidth(2);
@@ -920,9 +953,9 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    l_POT->SetMargin(0.005);
    l_POT->SetTextAlign(32);
    l_POT->SetTextSize(0.05);
-   if(BeamMode == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
-   if(BeamMode == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
-   if(BeamMode == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(BeamMode == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(BeamMode == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
+   if(BeamMode == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
 
    p_legend->Draw();
    p_legend->cd();
@@ -949,7 +982,7 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
 
    p_plot->Update(); 
 
-   if(fPOT > 0) l_POT->Draw();
+   if(POT > 0) l_POT->Draw();
    l_Watermark->Draw();
 
    c->Print((PlotDir + label + "_Sys_" + type + "_" +  name + ".png").c_str());
@@ -958,12 +991,12 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
 
    c->Close();
 
-   std::cout << "Done drawing systematic hists " << name << std::endl;
+   std::cout << "Done drawing systematic hists for dial " << name << std::endl;
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Get the covariace matrix for systematic dial
 
 TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string name,std::string type){
 
@@ -1065,6 +1098,8 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Get the predicted number of events in a bin for a given event category
+
 double SelectionManager::GetPrediction(int bin,std::string type){
 
    if(type=="") return Hists_ByType["All"]->GetBinContent(bin);
@@ -1073,10 +1108,11 @@ double SelectionManager::GetPrediction(int bin,std::string type){
 
    std::cout << "Type/Proc " << type << " not found, returning -1" << std::endl;
    return -1;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Reopen the file containing the histograms
 
 void SelectionManager::OpenHistFile(std::string label){
 
@@ -1084,10 +1120,11 @@ void SelectionManager::OpenHistFile(std::string label){
       system(("mkdir -p " +  RootfileDir).c_str());
       f_Hists = TFile::Open((RootfileDir + label + "_Histograms.root").c_str(),"RECREATE");
    }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Set the labels on the bins
 
 void SelectionManager::SetBinLabels(std::vector<std::string> binlabels){
 
@@ -1095,10 +1132,10 @@ void SelectionManager::SetBinLabels(std::vector<std::string> binlabels){
       throw std::invalid_argument("Set of bin labels does not match number of bins!"); 
 
    BinLabels = binlabels;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
 // Divide bins by bin widths
 
 void SelectionManager::WidthScaleHistograms(){
@@ -1168,6 +1205,8 @@ void SelectionManager::WidthScaleHistograms(){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Retrieve the vector containing bin boundaries
 
 std::vector<double> SelectionManager::GetBinBoundaries(){
    return fHistBoundaries; 

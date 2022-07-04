@@ -8,33 +8,34 @@
 #include "TLorentzVector.h"
 #include "TVector3.h"
 
-//local includes
 #include "SimParticle.h"
 #include "RecoParticle.h"
-
 #include "Event.h"
 
 using std::vector;
 using std::string;
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 class EventAssembler {
 
    private:
-      //input file and event tree
+
+      // Input file and event tree
       TFile * f_in=nullptr;
       TTree * t_in;
 
       TTree *t_meta;
       Double_t POT;
 
-      //number of events (entries in event tree)
+      // Number of events (entries in event tree)
       int nEvents;
 
       TString DataDir;
 
    public:
 
-      //setters and getters
+      // Setters and getters
       void SetFile(std::string infilename);
       void Close();
 
@@ -43,7 +44,6 @@ class EventAssembler {
       double GetPOT();		
 
    private:
-
 
       // General Info
       Bool_t          IsData;
@@ -116,8 +116,8 @@ class EventAssembler {
       // Systematics
       vector<string>* SysDials=0;
       vector<vector<vector<double>>>* SysWeights=0;
-
-
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif
