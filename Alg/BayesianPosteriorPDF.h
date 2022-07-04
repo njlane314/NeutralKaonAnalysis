@@ -13,16 +13,14 @@ inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name="",double sca
    double conf = 0.9999;
    double inc = 0.0001;
 
-   // Get an initial pair of limits for the histogram
-
    E->SetStatisticOption(TEfficiency::kBUniform);  
    E->SetConfidenceLevel(conf);
 
    // Get total events     
    TH1D *h_Total = (TH1D*)E->GetTotalHistogram();
-
    double TotalEvents =  h_Total->GetBinContent(bin)*scale;
 
+   // Get an initial pair of limits for the histogram
    double Efficiency = E->GetEfficiency(bin);
    double Efficiency_Low = E->GetEfficiency(bin) - E->GetEfficiencyErrorLow(bin);
    double Efficiency_High = E->GetEfficiency(bin) + E->GetEfficiencyErrorUp(bin);
@@ -61,7 +59,6 @@ inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name="",double sca
 
       conf -= inc;
    }
-
 
    h_Posterior->Rebin(1000);
    h_Posterior->Scale(1.0/h_Posterior->GetBinWidth(1));

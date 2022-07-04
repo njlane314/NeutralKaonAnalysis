@@ -1,14 +1,20 @@
 #ifndef _DrawEfficiencyPlot_h_
 #define _DrawEfficiencyPlot_h_
 
+#include <vector>
+#include <sstream>
+
 #include "TEfficiency.h"
 #include "TH1D.h"
 #include "TCanvas.h"
-#include <vector>
 
-#include <sstream>
+#include "FluxWeight2.h"
 
-void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,std::string title,std::string name,std::string BeamMode,double POT){
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Draw a plot of the selection efficiency against some interesting variable
+
+void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,std::string title,std::string name,int BeamMode,double POT){
 
    TCanvas *c1 = new TCanvas("c1","c1",800,600);
 
@@ -28,15 +34,14 @@ void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,st
    l_POT->SetMargin(0.005);
    l_POT->SetTextAlign(32);
 
-   if(BeamMode == "FHC")  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT/1e21,1) + " #times 10^{21} POT").c_str());
-   if(BeamMode == "RHC")  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT/1e21,1) + " #times 10^{21} POT").c_str());
+   if(BeamMode == kFHC)  l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT/1e21,1) + " #times 10^{21} POT").c_str());
+   if(BeamMode == kRHC)  l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT/1e21,1) + " #times 10^{21} POT").c_str());
+   if(BeamMode == kBNB)  l_POT->SetHeader(("BNB, " + to_string_with_precision(POT/1e21,1) + " #times 10^{21} POT").c_str());
 
    TLegend *l_Watermark = new TLegend(0.12,0.906,0.52,0.986);
    l_Watermark->SetBorderSize(0);
    l_Watermark->SetMargin(0.005);
-   // l_Watermark->SetTextAlign(32);
    l_Watermark->SetTextFont(62);
-
    l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary");
 
    THStack *hs = new THStack("hs",title.c_str());
@@ -87,10 +92,7 @@ void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,st
    std::vector<double> Efficiency_Low;
    std::vector<double> Efficiency_High;
 
-
-   // scale
    int binmax = h_Before->GetMaximumBin();
-
    Float_t rightmax = 1.15;
    double scale = p_plot->GetUymax()/rightmax;
 
@@ -102,9 +104,6 @@ void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,st
       Efficiency_CV.push_back(Efficiency->GetEfficiency(i)*scale);
       Efficiency_Low.push_back(Efficiency->GetEfficiencyErrorLow(i)*scale);
       Efficiency_High.push_back(Efficiency->GetEfficiencyErrorUp(i)*scale);
-
-      //    std::cout << h_Before->GetBinCenter(i) << "  " << Efficiency->GetEfficiency(i) << "  " << Efficiency->GetEfficiencyErrorLow(i) << "  " << Efficiency->GetEfficiencyErrorUp(i) << std::endl;
-
    }
 
    TGraphAsymmErrors *g_Efficiency = new  TGraphAsymmErrors(Efficiency_X.size(),&(Efficiency_X[0]),&(Efficiency_CV[0]),0,0,&(Efficiency_Low[0]),&(Efficiency_High[0]));
@@ -118,22 +117,13 @@ void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,st
    TGaxis *axis = new TGaxis(p_plot->GetUxmax(),p_plot->GetUymin(),
          p_plot->GetUxmax(), p_plot->GetUymax(),0,rightmax,510,"+L");
 
-
-
-   //   axis->SetLineColor(kRed);
    axis->SetTitleColor(kRed);
    axis->SetLabelColor(kRed);
-
-
    axis->SetTitleFont(42);
    axis->SetLabelFont(42);
-
    axis->SetTitleSize(0.05);
-
    axis->SetTitleOffset(0.9);
-
    axis->SetLabelSize(0.045);
-
    axis->SetTitle("Selected/All");
    axis->Draw();
 
@@ -141,22 +131,19 @@ void DrawEfficiencyPlot(TH1D *h_Before,TH1D *h_After,TEfficiency * Efficiency,st
    l->AddEntry(g_Efficiency,"Selected/All","P");
    l->AddEntry(h_After,"Selected","L");
 
-
    g_Efficiency->Draw("P same");
 
-   // Setup the legend
    c1->cd();
    p_legend->cd();
    l->Draw();
-
-
    c1->cd();
    p_plot->cd();
 
+   gSystem->Exec("mkdir -p Plots/");
    c1->Print(("Plots/" + name + "_Ratio.pdf").c_str());
    c1->Print(("Plots/" + name + "_Ratio.png").c_str());
-
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif

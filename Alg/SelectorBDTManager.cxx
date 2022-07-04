@@ -263,12 +263,11 @@ std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
 
    if(i_proton_candidate == -1 || i_pion_candidate == -1) return {-1,-1};
 
-   if(!SetVariables(e.TracklikePrimaryDaughters.at(i_proton_candidate),e.TracklikePrimaryDaughters.at(i_pion_candidate))) return {-1,-1};
+   //if(!SetVariables(e.TracklikePrimaryDaughters.at(i_proton_candidate),e.TracklikePrimaryDaughters.at(i_pion_candidate))) return {-1,-1};
 
    e.SelectorBDTScore = reader->EvaluateMVA("BDT method"); 
 
    return std::make_pair(i_proton_candidate,i_pion_candidate);
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

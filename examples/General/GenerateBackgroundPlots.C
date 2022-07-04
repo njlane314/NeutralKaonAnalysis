@@ -11,25 +11,27 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
    void GenerateBackgroundPlots(){
 
+      std::string label = "test";
       double POT = 1.0e21; // POT to scale samples to
 
       BuildTunes();
-      //ImportSamples(sNuWroFullFHC);
 
       SampleNames.push_back("GENIE Background");
       SampleTypes.push_back("Background");
-      SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Background_Test.root");
+      SampleFiles.push_back("run1_FHC/analysisOutputFHC_Overlay_GENIE_Background_All.root");
 
-      SelectionParameters P = P_FHC_Tune_325;
+      SampleNames.push_back("GENIE Hyperon");
+      SampleTypes.push_back("Hyperon");
+      SampleFiles.push_back("run1_FHC/analysisOutputFHC_Overlay_GENIE_Hyperon_All.root");
 
-      std::string label = "test";
+      SelectionParameters P = P_FHC_Tune_325_NoBDT;
 
-      // Setup selection manager. Set POT to scale sample to, import the BDT weights
       EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
-      //M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
+      M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
 
+      // Setup the histograms
       M.SetupHistograms(100,0.0,5.0,";Neutrino Energy (GeV);Events");
 
       // Sample Loop
@@ -43,7 +45,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          // Event Loop
          for(int i=0;i<E.GetNEvents();i++){
 
-            if(i % 1000 == 0) std::cout << i << "/" << E.GetNEvents() << std::endl;
+            if(i % 10000 == 0) std::cout << i << "/" << E.GetNEvents() << std::endl;
 
             Event e = E.GetEvent(i);
 
@@ -56,18 +58,12 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             if(!M.ChooseMuonCandidate(e)) continue;
             //if(!M.ChooseProtonPionCandidates(e)) continue;
 
-           double E = e.Neutrino.at(0).E;
-
-           // double W = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate);
+            double E = e.Neutrino.at(0).E;
 
             M.FillHistograms(e,E);                
-
          }
-
          E.Close();
-
       }
 
       M.DrawHistograms(label);
-
    }

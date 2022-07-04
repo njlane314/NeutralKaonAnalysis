@@ -7,20 +7,24 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 #include "SelectionParameters.h"
 
 #include "Parameters.h"
-   //#include "SampleSets_Nov21.h"
+
+   // After getting the list of RS values in all detector variations
+   // calculate the POT accross those runs/subruns
 
    void CalculateUseablePOT(){
 
       double POT = 1.0e21; // POT to scale samples to
 
       BuildTunes();
+      SelectionParameters P = P_FHC_Tune_325_NoBDT;
 
-      SelectionParameters P = P_FHC_Tune_325;
+      EventAssembler E;
+      E.SetFile("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Background_Detvar_numi_run3_standard_nu_overlay_cv_reco2_v08_00_00_54_run3_reco2.root");
 
-      std::vector<std::string> SampleFiles;
-      SampleFiles.push_back("run3b_RHC/detvar/analysisOutputRHC_Overlay_GENIE_Neutron_Detvar_cthorpe_make_neutron_events_numi_rhc_run3b_detvar_reco2_CV_reco2.root"); 
+      // Load the list of runs and subruns in all detector variations
       std::vector<std::pair<int,int>> RSList;
-      std::string RSList_str = (std::string)getenv("HYP_TOP") + "/SampleSets/CommonRS/" + "Run3bNeutronDetvar.list";
+      std::string RSList_str = (std::string)getenv("HYP_TOP") + "/SampleSets/CommonRS/" + "Run3bBackgroundDetvar.list"; 
+
       std::ifstream input(RSList_str);
       while(!input.eof()){
          int run,subrun;
@@ -28,26 +32,14 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          RSList.push_back({run,subrun});
       }
 
-      if(SampleFiles.size() > 1){
-         std::cout << "Sample vector size != 1, use only one sample with this script" << std::endl;
-         return;
-      }
-
-      std::string label = "test";
-
-      // Setup selection manager. Set POT to scale sample to, import the BDT weights
-      EventAssembler E;
-
-      E.SetFile(SampleFiles.at(0));
-
       std::cout << "Original POT = " << E.GetPOT() << std::endl;
 
-      double total = 0;
-      double useable = 0;
+      double total = 0.0;
+      double useable = 0.0;
 
       // Event Loop
       for(int i=0;i<E.GetNEvents();i++){
-         if(i % 5000 == 0) std::cout << i << "/" << E.GetNEvents() << std::endl;
+         if(i % 20000 == 0) std::cout << i << "/" << E.GetNEvents() << std::endl;
          Event e = E.GetEvent(i);
          total++;                         
          if(RSList.size() && !(std::find(RSList.begin(),RSList.end(),std::make_pair(e.run,e.subrun)) != RSList.end())) continue;
@@ -55,6 +47,5 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       }
 
       std::cout << "Useable POT = " << E.GetPOT() << " x " << useable/total << " = " << E.GetPOT()*useable/total << std::endl;     
-
       E.Close();
    }

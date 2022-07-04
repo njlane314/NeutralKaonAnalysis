@@ -4,6 +4,7 @@
 enum settings { sNuWroFullFHCvsData , sNuWroFullFHC };
 
 std::vector<std::string> SampleNames,SampleTypes,SampleFiles,EventLists;
+
 double EXT_POT=0.0;
 double Data_POT=0.0;
 
@@ -12,6 +13,12 @@ int rhc_run_range[2];
 
 std::string GoodRunList="";
 std::vector<int> GoodRuns;
+
+// Detector systematics
+std::vector<std::string> Detvar_Names;
+std::vector<std::vector<std::string>> SampleNames_Detvar,SampleTypes_Detvar,SampleFiles_Detvar,EventLists_Detvar;
+std::vector<std::string> CommonRSLists_Detvar;
+std::vector<std::vector<std::pair<int,int>>> CommonRSLists;
 
 void ImportSamples(int Setting){
 
@@ -23,9 +30,7 @@ void ImportSamples(int Setting){
 
       EXT_POT = 1.0421e20; 
       Data_POT = 1.385e19;
-
    }
-
 
 
    if(Setting == sNuWroFullFHC){
@@ -37,7 +42,6 @@ void ImportSamples(int Setting){
       EXT_POT = 1.0421e20; 
 
       EventLists = { "FHC_Tune_325/analysisOutputFHC_Overlay_NuWro_Background_kmistry_numi_run1_fhc_nuwro.root_Selected.txt" , "FHC_Tune_325/analysisOutputFHC_Overlay_NuWro_Hyperon_prod_numi_uboone_overlay_fhc_mcc9_run1_v51_nuwro_hyperon_nuwro_reco2_reco2.root_Selected.txt" ,  "FHC_Tune_325/analysisOutputFHC_GENIE_Overlay_Dirt_prodgenie_numi_uboone_overlay_dirt_fhc_mcc9_run1_v28_sample1.root_Selected.txt" , "FHC_Tune_325/analysisOutput_EXT_cthorpe_numi_uboone_run1_beamoff_offset1_mcc9_reco2_v08_00_00_28_sample2_sample3_all.root_Selected.txt" };
-
    }
 
 /*

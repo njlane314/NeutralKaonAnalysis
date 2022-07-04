@@ -5,7 +5,7 @@
 #include "Misc.h"
 #include "TText.h"
 #include "TLatex.h"
-#include "FluxWeight.h"
+#include "FluxWeight2.h"
 
 const double _EPSILON_ = 1e-5;
 
@@ -37,7 +37,6 @@ TH1D * MakeErrorBand(std::map<std::string,TH1D*> hists){
    }
 
    return h_errors;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

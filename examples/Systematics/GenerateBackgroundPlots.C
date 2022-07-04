@@ -9,55 +9,66 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 #include "Parameters.h"
 #include "SampleSets_Example.h"
 
-   const int flux_HP_universes = 600;
+#include "FluxWeight2.h"
+#include "GenG4WeightHandler2.h"
+#include "SystematicsHeader.h"
+
+   // Generate histogram with the full suite of systematics
+   // dials excluding the detector uncertainties
 
    void GenerateBackgroundPlots(){
 
       double POT = 1.0e21; // POT to scale samples to
-
-      BuildTunes();
-      //ImportSamples(sNuWroFullFHC);
+      std::string label = "test";
+      int Mode = kFHC;
 
       SampleNames.push_back("GENIE Background");
       SampleTypes.push_back("Background");
-      SampleFiles.push_back("HyperonTrees_Sys.root");
-/*
+      SampleFiles.push_back("run1_FHC/analysisOutputFHC_Overlay_GENIE_Background_All.root");
+
       SampleNames.push_back("GENIE Hyperon");
       SampleTypes.push_back("Hyperon");
-      SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Hyperon_cthorpe_prod_numi_uboone_overlay_fhc_mcc9_run1_v51_GENIE_hyperon_real_GENIE_reco2_reco2.root");
-*/
-      SelectionParameters P = P_FHC_Tune_325;
+      SampleFiles.push_back("run1_FHC/analysisOutputFHC_Overlay_GENIE_Hyperon_All.root");
 
-      std::string label = "test";
+      BuildTunes();
+      SelectionParameters P = P_FHC_Tune_325_NoBDT;
 
       // Setup selection manager. Set POT to scale sample to, import the BDT weights
       EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
+      M.SetBeamMode(Mode);
       M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
-      M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
+      //M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
 
       M.SetupHistograms(20,1.05,1.5,";Invariant Mass (GeV/c^{2});Events");
 
-      // Flux HP
-      M.AddSystematic(kMultisim,flux_HP_universes,"Flux_HP");
+      // Setup Systematics //
 
-      // Flux beamline geometry
-      for(int i_d=0;i_d<Beamline_Universes/2;i_d++)
-         M.AddSystematic(kDualUnisim,2,beamline_labels[i_d]);
+      std::vector<std::string> Sys_Dials;
+      for(int i_sys=0;i_sys<fuMAX;i_sys++){
+         M.AddSystematic(FluxU_SysTypes.at(i_sys),FluxU_Universes.at(i_sys),FluxU_Str.at(i_sys));
+         Sys_Dials.push_back(FluxU_Str.at(i_sys));
+      }
+      for(int i_sys=0;i_sys<guMAX;i_sys++){
+         M.AddSystematic(GeneratorU_SysTypes.at(i_sys),GeneratorU_Universes.at(i_sys),GeneratorU_Str.at(i_sys));
+         Sys_Dials.push_back(GeneratorU_Str.at(i_sys));
+      }
+      for(int i_sys=0;i_sys<g4uMAX;i_sys++){
+         M.AddSystematic(ReintU_SysTypes.at(i_sys),ReintU_Universes.at(i_sys),ReintU_Str.at(i_sys));
+         Sys_Dials.push_back(ReintU_Str.at(i_sys));
+      }
+      for(int i_sys=0;i_sys<muMAX;i_sys++){
+         M.AddSystematic(MiscU_SysTypes.at(i_sys),MiscU_Universes.at(i_sys),MiscU_Str.at(i_sys));
+         Sys_Dials.push_back(MiscU_Str.at(i_sys));
+      }
 
-      FluxWeighter FluxWeightCalc(1);
-      FluxWeightCalc.PrepareHPUniv(flux_HP_universes);
+      ///////////////////////
+
+      GW2::GenG4WeightHandler2 G;  
+      FluxWeighter FluxWeightCalc(Mode);
+      FluxWeightCalc.PrepareHPUniv();
       FluxWeightCalc.PrepareBeamlineUniv();
-
-      // GENIE systematics
-      M.AddSystematic(0,600,"All_UBGenie");
-      for(int i_d=0;i_d<MAX_GenUnisims-2;i_d++)
-         M.AddSystematic(kSingleUnisim,1,GenUnisim_names[i_d]);
-
-      M.AddSystematic(kDualUnisim,2,"RPA_CCQE_UBGenie");
-
-      GenG4WeightHandler G;  
 
       // Sample Loop
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
@@ -69,6 +80,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
          // Event Loop
          for(int i=0;i<E.GetNEvents();i++){
+
+            if(i % 20000 == 0) std::cout << i << "/" << E.GetNEvents() << std::endl;
 
             Event e = E.GetEvent(i);
 
@@ -83,122 +96,50 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             //if(!M.AnalysisBDTCut(e)) continue;       
             //if(!M.ConnectednessTest(e)) continue;
 
-            // Flux systematics //
+            G.LoadEvent(e); 
+            e.Weight *= FluxWeightCalc.GetFluxWeight(e)*G.GetCVWeight();               
 
-            double fluxweight = FluxWeightCalc.GetFluxWeight(e);
+            // Systematics Calculations //               
 
-            std::vector<double> fluxweights_HP = FluxWeightCalc.GetSysWeightV(e,1);
-            for(size_t i_w=0;i_w<fluxweights_HP.size();i_w++) fluxweights_HP.at(i_w)/=fluxweight;     
+            std::map<std::string,std::vector<double>> sys_weights;
+            for(int i_sys=0;i_sys<fuMAX;i_sys++) sys_weights[FluxU_Str.at(i_sys)] = std::vector<double>(FluxU_Universes.at(i_sys),1.0);
+            for(int i_sys=0;i_sys<guMAX;i_sys++) sys_weights[GeneratorU_Str.at(i_sys)] = std::vector<double>(GeneratorU_Universes.at(i_sys),1.0); 
+            for(int i_sys=0;i_sys<g4uMAX;i_sys++) sys_weights[ReintU_Str.at(i_sys)] = std::vector<double>(ReintU_Universes.at(i_sys),1.0);
+            for(int i_sys=0;i_sys<muMAX;i_sys++) sys_weights[MiscU_Str.at(i_sys)] = std::vector<double>(MiscU_Universes.at(i_sys),1.0);
 
-            std::vector<double> fluxweights_Beamline = FluxWeightCalc.GetSysWeightV(e,2);
-            std::vector<std::vector<double>> fluxweights_Beamline_Vars;
-            for(size_t i_var=0;i_var<fluxweights_Beamline.size()/2;i_var++)
-               fluxweights_Beamline_Vars.push_back({fluxweights_Beamline.at(2*i_var),fluxweights_Beamline.at(2*i_var+1)});
+            if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data" && SampleTypes.at(i_s) != "Dirt"){
 
-            // Generator systematics //
+               // Flux
+               for(int i_w=0;i_w<Flux_HP_Universes;i_w++) sys_weights["Flux_HP"] = FluxWeightCalc.GetSysWeightV(e,"Flux_HP");              
+               for(size_t i_d=0;i_d<Beamline_Dials.size();i_d++) sys_weights[Beamline_Dials.at(i_d)] = FluxWeightCalc.GetSysWeightV(e,Beamline_Dials.at(i_d)); 
+               sys_weights["POT"] = {0.98,1.02};
 
-            G.LoadEvent(e);
+               // Generator
+               //double TunedCentralValue = G.GetWeights("TunedCentralValue_UBGenie").at(0);
+               sys_weights["All_UBGenie"] = G.GetWeights("All_UBGenie");
+               for(size_t i_d=0;i_d<GW2::AltModel_Dials.size();i_d++) sys_weights[GW2::AltModel_Dials.at(i_d)] = G.GetWeights(GW2::AltModel_Dials.at(i_d));
+               sys_weights["RPA_CCQE_UBGenie"] = G.GetWeights("RPA_CCQE_UBGenie");
 
-            double TunedCentralValue = G.GetWeights("TunedCentralValue_UBGenie").at(0);
+               // Geant 4
+               for(int i_sys=0;i_sys<g4uMAX-1;i_sys++) sys_weights[ReintU_Str.at(i_sys)] = G.GetWeights(GW2::G4_Dials.at(i_sys));
+               if(e.EventHasNeutronScatter) sys_weights["G4_Neutron_Dual"] = {1.26,0.74};
+            }
 
-            if(!(TunedCentralValue > 0)) continue;
-
-            // Multisim weights
-            std::vector<double> weights_Gen_Multisim = G.GetWeights("All_UBGenie");
-            for(size_t i_w=0;i_w<weights_Gen_Multisim.size();i_w++) weights_Gen_Multisim.at(i_w) /= TunedCentralValue;
-
-            // Unisims
-            std::vector<std::vector<double>> weights_SingleUnisims(MAX_GenUnisims-2);
-
-
-            for(int i_uni=0;i_uni<MAX_GenUnisims-2;i_uni++) {
-               if(i_uni != gv_XSecShape_CCMEC) weights_SingleUnisims.at(i_uni).push_back(G.GetWeights(GenUnisim_names[i_uni]).at(0)/TunedCentralValue);
-               else weights_SingleUnisims.at(i_uni).push_back(G.GetWeights(GenUnisim_names[i_uni]).at(1)/TunedCentralValue);
-            }             
-
-
-            std::vector<double> weights_DualUnisims;
-
-            weights_DualUnisims.push_back(G.GetWeights("RPA_CCQE_UBGenie").at(0)/TunedCentralValue);
-            weights_DualUnisims.push_back(G.GetWeights("RPA_CCQE_UBGenie").at(1)/TunedCentralValue);
+            if(SampleTypes.at(i_s) == "Dirt") sys_weights["DirtScale"] = { 1.0-25.0/35.0 , 1.0+25.0/35.0 };
 
             ////////////////////////////
 
-            double W = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate);
-
-            M.FillHistograms(e,W);                
-            M.FillHistogramsSys(e,W,"Flux_HP",fluxweights_HP);
-
-            for(int i_d=0;i_d<Beamline_Universes/2;i_d++){
-               M.FillHistogramsSys(e,W,beamline_labels[i_d],fluxweights_Beamline_Vars.at(i_d));
-
-            }
-
-
-            M.FillHistogramsSys(e,W,"All_UBGenie",weights_Gen_Multisim);
-
-            for(int i_d=0;i_d<MAX_GenUnisims-2;i_d++){
-               M.FillHistogramsSys(e,W,GenUnisim_names[i_d],weights_SingleUnisims.at(i_d));
-            }        
-
-
-            M.FillHistogramsSys(e,W,"RPA_CCQE_UBGenie",weights_DualUnisims);
-        
-       }
+            double var = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate);
+            M.FillHistograms(e,var);                
+            for(size_t i_sys=0;i_sys<Sys_Dials.size();i_sys++) M.FillHistogramsSys(e,var,Sys_Dials.at(i_sys),sys_weights[Sys_Dials.at(i_sys)]);               
+         }
 
          E.Close();
-
       }
 
       M.DrawHistograms(label);
-
-      // Flux systematics     
-
-      M.DrawHistogramsSys(label,"Flux_HP");
-      TMatrixD Cov_Flux_HP = M.GetCovarianceMatrix(label,"Flux_HP");
-
-      for(int i_d=0;i_d<Beamline_Universes/2;i_d++){
-         M.DrawHistogramsSys(label,beamline_labels[i_d]);
-         Cov_Flux_HP += M.GetCovarianceMatrix(label,beamline_labels[i_d]);
-      }
-
-/*
-      TMatrixD Cov_Flux_POT = Cov_Flux_HP;
-
-      for(int i=0;i<Cov_Flux_POT.GetNcols();i++)
-         for(int j=0;j<Cov_Flux_POT.GetNcols();j++)
-            Cov_Flux_POT[i][j] = 0.02*0.02*M.GetPrediction(i+1)*M.GetPrediction(j+1);              
-
-      Cov_Flux_HP += Cov_Flux_POT;
-
-      std::cout << "Flux covariance matrix" << std::endl;
-      Cov_Flux_HP.Print();
-
-      // Generator systematics
-
-      M.DrawHistogramsSys(label,"All_UBGenie");
-      TMatrixD Cov_Gen = M.GetCovarianceMatrix(label,"AllUBGENIE");
-
-      for(int i_d=0;i_d<MAX_GenUnisims-2;i_d++){
-         M.DrawHistogramsSys(label,GenUnisim_names[i_d]);
-         Cov_Gen += M.GetCovarianceMatrix(label,GenUnisim_names[i_d]);
-      }
-
-
-      M.DrawHistogramsSys(label,"RPA_CCQE_UBGenie");
-      Cov_Gen +=  M.GetCovarianceMatrix(label,"RPA_CCQE_UBGenie");
-
-      std::cout << "Generator covariance matrix" << std::endl;
-      Cov_Gen.Print();
-
-      // Combine
-
-      TMatrixD Cov_All = Cov_Flux_HP + Cov_Gen; 
-
-      std::cout << "Flux + Generator covariance matrix" << std::endl;
-      Cov_All.Print();  
-
-      std::cout << "Bin by Bin Uncertainties" << std::endl;
-      for(int i=0;i<Cov_All.GetNcols();i++) std::cout << sqrt(Cov_All[i][i]) << std::endl;    
-*/
+      for(size_t i_sys=0;i_sys<Sys_Dials.size();i_sys++){
+         M.DrawHistogramsSys(label,Sys_Dials.at(i_sys));
+         M.GetCovarianceMatrix(label,Sys_Dials.at(i_sys));
+      }    
    }

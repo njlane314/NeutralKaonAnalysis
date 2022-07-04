@@ -6,8 +6,8 @@
 
 #include "Event.h"
 
-   const int GENIE_Multisim_Universes = 600;
-   const int G4_Multisim_Universes = 1000; 
+const int GENIE_Multisim_Universes = 600;
+const int G4_Multisim_Universes = 1000; 
 
 enum GenUnisims { gv_AxFFCCQEshape,   // z expansion of axial form factor
                   gv_DecayAngMEC,     // non-isotropic MEC decay
@@ -29,7 +29,7 @@ enum G4Multisims { g4v_Proton,g4v_PiPlus,g4v_PiMinus,g4v_Neutron,g4v_Lambda,MAX_
 
 inline std::string G4Multisim_dials[MAX_G4Multisims] = {"Proton Reinteractions","PiPlus Reinteractions","PiMinus Reinteractions","Neutron Reinteractions","Lambda Reinteractions"};
 inline std::string G4Multisim_names[MAX_G4Multisims] = {"reinteractions_proton_Geant4","reinteractions_piplus_Geant4","reinteractions_piminus_Geant4","reinteractions_neutron_Geant4","reinteractions_Lambda_Geant4"};
-
+ 
 class GenG4WeightHandler {
 
    public: 

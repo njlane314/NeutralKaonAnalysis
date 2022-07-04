@@ -9,6 +9,8 @@ EventListFilter::EventListFilter(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Load the list of events to select
+
 void EventListFilter::SetList(TString ineventlist){
 
    fEventsToUse.clear();
@@ -21,36 +23,26 @@ void EventListFilter::SetList(TString ineventlist){
    int r,s,e;
 
    while(!input.eof()){
-
       input >> r >> s >> e;
-
-      //std::cout << r << " " << s << " " << e << std::endl;
-
       rse theEvent;
       theEvent.run = r;
       theEvent.subrun = s;
       theEvent.event = e;
-
       fEventsToUse.push_back(theEvent);
-
    }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Search the rse list of this event
+
 bool EventListFilter::EventPassed(int run,int subrun,int event){
 
-   // Search the rse list of this event
 
-   for(size_t i=0;i<fEventsToUse.size();i++){
-
+   for(size_t i=0;i<fEventsToUse.size();i++)
       if(fEventsToUse.at(i).run == run && fEventsToUse.at(i).event == event && fEventsToUse.at(i).event == event) return true;
 
-   }
-
    return false;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

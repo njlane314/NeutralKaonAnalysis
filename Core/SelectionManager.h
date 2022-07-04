@@ -17,7 +17,7 @@
 #include "TMatrix.h"
 
 // Local includes
-#include "FluxWeight.h"
+#include "FluxWeight2.h"
 #include "GenG4WeightHandler.h"
 #include "FiducialVolume.h"
 #include "Muon_ID.h"
@@ -33,9 +33,9 @@
 #include "PlottingFunctions.h"
 #include "EventListFilter.h"
 #include "CTTest.h"
+#include "SystematicsHeader.h"
 
 enum Generators {kGENIE,kNuWro};
-enum Systemtic_Types {kMultisim,kSingleUnisim,kDualUnisim};
 
 class SelectionManager {
 

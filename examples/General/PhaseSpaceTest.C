@@ -19,24 +19,19 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
    void PhaseSpaceTest(){
 
       BuildTunes();
-      //ImportSamples(sNuWroFullFHC);
-
-      SampleNames.push_back("GENIE Hyperon");
-      SampleTypes.push_back("Hyperon");
-      SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Hyperon_cthorpe_prod_numi_uboone_overlay_fhc_mcc9_run1_v51_GENIE_hyperon_real_GENIE_reco2_reco2.root");
 
       std::string label = "test";
 
-      double POT = 1e21; // POT to scale samples to
-      std::string Mode = "FHC";
+      const double POT = 1e21; // POT to scale samples to
+      const int Mode = kFHC;
 
-      SelectionParameters P = P_FHC_Tune_325;
+      SelectionParameters P = P_FHC_Tune_325_NoBDT;
 
       // Setup selection manager. Set POT to scale sample to
       EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
-      //M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
+      M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
       //M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,64 +327,6 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_Selected_MuonID = new TH1D("h_Selected_MuonID","",1,0,1.0);
       TEfficiency* Efficiency_MuonID = new TEfficiency("eff_MuonID",";;Selected/All",1,0,1.0);
 
-      // Subleading Track Lengths //
-
-      TH1D *h_Q2_TrackLengths = new TH1D("h_Q2_TrackLengths","",60,0,3.0);
-      TH1D *h_SelectedQ2_TrackLengths = new TH1D("h_SelectedQ2_TrackLengths","",60,0,3.0);
-      TEfficiency* Efficiency_Q2_TrackLengths = new TEfficiency("Q2_eff_TrackLengths",";True Q^{2} (GeV^{2});Selected/All",60,0,3.0);
-
-      TH1D *h_NuE_TrackLengths = new TH1D("h_TrueNuE_TrackLengths","",60,0,4.0);
-      TH1D *h_SelectedNuE_TrackLengths = new TH1D("h_SelectedNuE_TrackLengths","",60,0,4.0);
-      TEfficiency* Efficiency_NuE_TrackLengths = new TEfficiency("NuE_eff_TrackLengths",";True E_{#nu} (GeV);Selected/All",60,0,4.0);
-
-      TH1D *h_MuonKE_TrackLengths = new TH1D("h_MuonKE_TrackLengths","",60,0,3.0);
-      TH1D *h_SelectedMuonKE_TrackLengths = new TH1D("h_SelectedMuonKE_TrackLengths","",60,0,3.0);
-      TEfficiency* Efficiency_MuonKE_TrackLengths = new TEfficiency("MuonKE_eff_TrackLengths",";True Muon KE (GeV);Selected/All",60,0,3.0);
-
-      TH1D *h_MuonTrueTheta_TrackLengths = new TH1D("h_MuonTrueTheta_TrackLengths","",60,0,3.1415);
-      TH1D *h_SelectedMuonTrueTheta_TrackLengths = new TH1D("h_SelectedMuonTrueTheta_TrackLengths","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonTrueTheta_TrackLengths = new TEfficiency("MuonTrueTheta_eff_TrackLengths",";Muon True #theta;Selected/All",60,0,3.1415);
-
-      TH1D *h_MuonDetectorTheta_TrackLengths = new TH1D("h_TrueMuonDetectorTheta_TrackLengths","",60,0,3.1415);
-      TH1D *h_SelectedMuonDetectorTheta_TrackLengths = new TH1D("h_SelectedMuonDetectorTheta_TrackLengths","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonDetectorTheta_TrackLengths = new TEfficiency("MuonDetectorTheta_eff",";Muon Detector #theta;Selected/All",60,0,3.1415);
-
-      TH1D *h_MuonDetectorPhi_TrackLengths = new TH1D("h_TrueMuonDetectorPhi_TrackLengths","",60,-3.1415,3.1415);
-      TH1D *h_SelectedMuonDetectorPhi_TrackLengths = new TH1D("h_SelectedMuonDetectorPhi_TrackLengths","",60,-3.1415,3.1415);
-      TEfficiency* Efficiency_MuonDetectorPhi_TrackLengths = new TEfficiency("MuonDetectorPhi_eff_TrackLengths",";Muon Detector #theta;Selected/All",60,-3.1415,3.1415);
-
-      TH1D *h_MuonBeamTheta_TrackLengths = new TH1D("h_TrueMuonBeamTheta_TrackLengths","",60,0,3.1415);
-      TH1D *h_SelectedMuonBeamTheta_TrackLengths = new TH1D("h_SelectedMuonBeamTheta_TrackLengths","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonBeamTheta_TrackLengths = new TEfficiency("MuonBeamTheta_eff_TrackLengths",";Muon Beam #theta;Selected/All",60,0,3.1415);
-
-      TH1D *h_MuonBeamPhi_TrackLengths = new TH1D("h_TrueMuonBeamPhi_TrackLengths","",60,-3.1415,3.1415);
-      TH1D *h_SelectedMuonBeamPhi_TrackLengths = new TH1D("h_SelectedMuonBeamPhi_TrackLengths","",60,-3.1415,3.1415);
-      TEfficiency* Efficiency_MuonBeamPhi_TrackLengths = new TEfficiency("MuonBeamPhi_eff_TrackLengths",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
-
-      TH1D *h_LambdaMomentum_TrackLengths = new TH1D("h_TrueLambdaMomentum_TrackLengths","",60,0.0,2.0);
-      TH1D *h_SelectedLambdaMomentum_TrackLengths = new TH1D("h_SelectedLambdaMomentum_TrackLengths","",60,0.0,2.0);
-      TEfficiency* Efficiency_LambdaMomentum_TrackLengths = new TEfficiency("LambdaMomentum_eff_TrackLengths",";True #Lambda Momentum (GeV/c);Selected/All",60,0.0,2.0);
-
-      TH1D *h_TrackLengths = new TH1D("h_TrackLengths","",1,0,1.0);
-      TH1D *h_Selected_TrackLengths = new TH1D("h_Selected_TrackLengths","",1,0,1.0);
-      TEfficiency* Efficiency_TrackLengths = new TEfficiency("eff_TrackLengths",";;Selected/All",1,0,1.0);
-
-      TH1D *h_DecayProtonMomentum_TrackLengths = new TH1D("h_TrueDecayProtonMomentum_TrackLengths","",60,0.3,1.5);
-      TH1D *h_SelectedDecayProtonMomentum_TrackLengths = new TH1D("h_SelectedDecayProtonMomentum_TrackLengths","",60,0.3,1.5);
-      TEfficiency* Efficiency_DecayProtonMomentum_TrackLengths = new TEfficiency("DecayProtonMomentum_eff_TrackLengths",";True Decay Proton Momentum (GeV/c);Selected/All",60,0.3,1.5);
-
-      TH1D *h_OpeningAngle_TrackLengths = new TH1D("h_OpeningAngle_TrackLengths","",60,0,100);
-      TH1D *h_SelectedOpeningAngle_TrackLengths = new TH1D("h_SelectedOpeningAngle_TrackLengths","",60,0,100);
-      TEfficiency* Efficiency_OpeningAngle_TrackLengths = new TEfficiency("OpeningAngle_eff_TrackLengths",";True Opening Angle (deg);Selected/All",60,0,100);
-
-      TH1D *h_LambdaRange_TrackLengths = new TH1D("h_LambdaRange_TrackLengths","",100,0,20.0);
-      TH1D *h_SelectedLambdaRange_TrackLengths = new TH1D("h_SelectedLambdaRange_TrackLengths","",100,0,20.0);
-      TEfficiency* Efficiency_LambdaRange_TrackLengths = new TEfficiency("LambdaRange_eff_TrackLengths",";True #Lambda Range (cm);Selected/All",100,0,20.0);
-
-      TH1D *h_DecayPionMomentum_TrackLengths = new TH1D("h_TrueDecayPionMomentum_TrackLengths","",60,0.1,0.8);
-      TH1D *h_SelectedDecayPionMomentum_TrackLengths = new TH1D("h_SelectedDecayPionMomentum_TrackLengths","",60,0.1,0.8);
-      TEfficiency* Efficiency_DecayPionMomentum_TrackLengths = new TEfficiency("DecayPionMomentum_eff_TrackLengths",";True Decay #pi^{-} Momentum (GeV/c);Selected/All",60,0.1,0.8);
-
       // Selector BDT //
 
       TH1D *h_Q2_Selector = new TH1D("h_Q2_Selector","",60,0,3.0);
@@ -448,726 +385,777 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       TH1D *h_Selected_Selector = new TH1D("h_Selected_Selector","",1,0,1.0);
       TEfficiency* Efficiency_Selector = new TEfficiency("eff_Selector",";;Selected/All",1,0,1.0);
 
-      // Analysis BDT //
+      // Connectedness //
 
-      TH1D *h_Q2_Analysis = new TH1D("h_Q2_Analysis","",60,0,3.0);
-      TH1D *h_SelectedQ2_Analysis = new TH1D("h_SelectedQ2_Analysis","",60,0,3.0);
-      TEfficiency* Efficiency_Q2_Analysis = new TEfficiency("Q2_eff_Analysis",";True Q^{2} (GeV^{2});Selected/All",60,0,3.0);
+      TH1D *h_Q2_CT = new TH1D("h_Q2_CT","",60,0,3.0);
+      TH1D *h_SelectedQ2_CT = new TH1D("h_SelectedQ2_CT","",60,0,3.0);
+      TEfficiency* Efficiency_Q2_CT = new TEfficiency("Q2_eff_CT",";True Q^{2} (GeV^{2});Selected/All",60,0,3.0);
 
-      TH1D *h_NuE_Analysis = new TH1D("h_TrueNuE_Analysis","",60,0,4.0);
-      TH1D *h_SelectedNuE_Analysis = new TH1D("h_SelectedNuE_Analysis","",60,0,4.0);
-      TEfficiency* Efficiency_NuE_Analysis = new TEfficiency("NuE_eff_Analysis",";True E_{#nu} (GeV);Selected/All",60,0,4.0);
+      TH1D *h_NuE_CT = new TH1D("h_TrueNuE_CT","",60,0,4.0);
+      TH1D *h_SelectedNuE_CT = new TH1D("h_SelectedNuE_CT","",60,0,4.0);
+      TEfficiency* Efficiency_NuE_CT = new TEfficiency("NuE_eff_CT",";True E_{#nu} (GeV);Selected/All",60,0,4.0);
 
-      TH1D *h_MuonKE_Analysis = new TH1D("h_MuonKE_Analysis","",60,0,3.0);
-      TH1D *h_SelectedMuonKE_Analysis = new TH1D("h_SelectedMuonKE_Analysis","",60,0,3.0);
-      TEfficiency* Efficiency_MuonKE_Analysis = new TEfficiency("MuonKE_eff_Analysis",";True Muon KE (GeV);Selected/All",60,0,3.0);
+      TH1D *h_MuonKE_CT = new TH1D("h_MuonKE_CT","",60,0,3.0);
+      TH1D *h_SelectedMuonKE_CT = new TH1D("h_SelectedMuonKE_CT","",60,0,3.0);
+      TEfficiency* Efficiency_MuonKE_CT = new TEfficiency("MuonKE_eff_CT",";True Muon KE (GeV);Selected/All",60,0,3.0);
 
-      TH1D *h_MuonTrueTheta_Analysis = new TH1D("h_MuonTrueTheta_Analysis","",60,0,3.1415);
-      TH1D *h_SelectedMuonTrueTheta_Analysis = new TH1D("h_SelectedMuonTrueTheta_Analysis","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonTrueTheta_Analysis = new TEfficiency("MuonTrueTheta_eff_Analysis",";Muon True #theta;Selected/All",60,0,3.1415);
+      TH1D *h_MuonTrueTheta_CT = new TH1D("h_MuonTrueTheta_CT","",60,0,3.1415);
+      TH1D *h_SelectedMuonTrueTheta_CT = new TH1D("h_SelectedMuonTrueTheta_CT","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonTrueTheta_CT = new TEfficiency("MuonTrueTheta_eff_CT",";Muon True #theta;Selected/All",60,0,3.1415);
 
-      TH1D *h_MuonDetectorTheta_Analysis = new TH1D("h_TrueMuonDetectorTheta_Analysis","",60,0,3.1415);
-      TH1D *h_SelectedMuonDetectorTheta_Analysis = new TH1D("h_SelectedMuonDetectorTheta_Analysis","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonDetectorTheta_Analysis = new TEfficiency("MuonDetectorTheta_eff",";Muon Detector #theta;Selected/All",60,0,3.1415);
+      TH1D *h_MuonDetectorTheta_CT = new TH1D("h_TrueMuonDetectorTheta_CT","",60,0,3.1415);
+      TH1D *h_SelectedMuonDetectorTheta_CT = new TH1D("h_SelectedMuonDetectorTheta_CT","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonDetectorTheta_CT = new TEfficiency("MuonDetectorTheta_eff",";Muon Detector #theta;Selected/All",60,0,3.1415);
 
-      TH1D *h_MuonDetectorPhi_Analysis = new TH1D("h_TrueMuonDetectorPhi_Analysis","",60,-3.1415,3.1415);
-      TH1D *h_SelectedMuonDetectorPhi_Analysis = new TH1D("h_SelectedMuonDetectorPhi_Analysis","",60,-3.1415,3.1415);
-      TEfficiency* Efficiency_MuonDetectorPhi_Analysis = new TEfficiency("MuonDetectorPhi_eff_Analysis",";Muon Detector #theta;Selected/All",60,-3.1415,3.1415);
+      TH1D *h_MuonDetectorPhi_CT = new TH1D("h_TrueMuonDetectorPhi_CT","",60,-3.1415,3.1415);
+      TH1D *h_SelectedMuonDetectorPhi_CT = new TH1D("h_SelectedMuonDetectorPhi_CT","",60,-3.1415,3.1415);
+      TEfficiency* Efficiency_MuonDetectorPhi_CT = new TEfficiency("MuonDetectorPhi_eff_CT",";Muon Detector #theta;Selected/All",60,-3.1415,3.1415);
 
-      TH1D *h_MuonBeamTheta_Analysis = new TH1D("h_TrueMuonBeamTheta_Analysis","",60,0,3.1415);
-      TH1D *h_SelectedMuonBeamTheta_Analysis = new TH1D("h_SelectedMuonBeamTheta_Analysis","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonBeamTheta_Analysis = new TEfficiency("MuonBeamTheta_eff_Analysis",";Muon Beam #theta;Selected/All",60,0,3.1415);
+      TH1D *h_MuonBeamTheta_CT = new TH1D("h_TrueMuonBeamTheta_CT","",60,0,3.1415);
+      TH1D *h_SelectedMuonBeamTheta_CT = new TH1D("h_SelectedMuonBeamTheta_CT","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonBeamTheta_CT = new TEfficiency("MuonBeamTheta_eff_CT",";Muon Beam #theta;Selected/All",60,0,3.1415);
 
-      TH1D *h_MuonBeamPhi_Analysis = new TH1D("h_TrueMuonBeamPhi_Analysis","",60,-3.1415,3.1415);
-      TH1D *h_SelectedMuonBeamPhi_Analysis = new TH1D("h_SelectedMuonBeamPhi_Analysis","",60,-3.1415,3.1415);
-      TEfficiency* Efficiency_MuonBeamPhi_Analysis = new TEfficiency("MuonBeamPhi_eff_Analysis",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
+      TH1D *h_MuonBeamPhi_CT = new TH1D("h_TrueMuonBeamPhi_CT","",60,-3.1415,3.1415);
+      TH1D *h_SelectedMuonBeamPhi_CT = new TH1D("h_SelectedMuonBeamPhi_CT","",60,-3.1415,3.1415);
+      TEfficiency* Efficiency_MuonBeamPhi_CT = new TEfficiency("MuonBeamPhi_eff_CT",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
 
-      TH1D *h_LambdaMomentum_Analysis = new TH1D("h_TrueLambdaMomentum_Analysis","",60,0.0,2.0);
-      TH1D *h_SelectedLambdaMomentum_Analysis = new TH1D("h_SelectedLambdaMomentum_Analysis","",60,0.0,2.0);
-      TEfficiency* Efficiency_LambdaMomentum_Analysis = new TEfficiency("LambdaMomentum_eff_Analysis",";True #Lambda Momentum (GeV/c);Selected/All",60,0.0,2.0);
+      TH1D *h_LambdaMomentum_CT = new TH1D("h_TrueLambdaMomentum_CT","",60,0.0,2.0);
+      TH1D *h_SelectedLambdaMomentum_CT = new TH1D("h_SelectedLambdaMomentum_CT","",60,0.0,2.0);
+      TEfficiency* Efficiency_LambdaMomentum_CT = new TEfficiency("LambdaMomentum_eff_CT",";True #Lambda Momentum (GeV/c);Selected/All",60,0.0,2.0);
 
-      TH1D *h_DecayProtonMomentum_Analysis = new TH1D("h_TrueDecayProtonMomentum_Analysis","",60,0.3,1.5);
-      TH1D *h_SelectedDecayProtonMomentum_Analysis = new TH1D("h_SelectedDecayProtonMomentum_Analysis","",60,0.3,1.5);
-      TEfficiency* Efficiency_DecayProtonMomentum_Analysis = new TEfficiency("DecayProtonMomentum_eff_Analysis",";True Decay Proton Momentum (GeV/c);Selected/All",60,0.3,1.5);
+      TH1D *h_DecayProtonMomentum_CT = new TH1D("h_TrueDecayProtonMomentum_CT","",60,0.3,1.5);
+      TH1D *h_SelectedDecayProtonMomentum_CT = new TH1D("h_SelectedDecayProtonMomentum_CT","",60,0.3,1.5);
+      TEfficiency* Efficiency_DecayProtonMomentum_CT = new TEfficiency("DecayProtonMomentum_eff_CT",";True Decay Proton Momentum (GeV/c);Selected/All",60,0.3,1.5);
 
-      TH1D *h_DecayPionMomentum_Analysis = new TH1D("h_TrueDecayPionMomentum_Analysis","",60,0.1,0.8);
-      TH1D *h_SelectedDecayPionMomentum_Analysis = new TH1D("h_SelectedDecayPionMomentum_Analysis","",60,0.1,0.8);
-      TEfficiency* Efficiency_DecayPionMomentum_Analysis = new TEfficiency("DecayPionMomentum_eff_Analysis",";True Decay #pi^{-} Momentum (GeV/c);Selected/All",60,0.1,0.8);
+      TH1D *h_DecayPionMomentum_CT = new TH1D("h_TrueDecayPionMomentum_CT","",60,0.1,0.8);
+      TH1D *h_SelectedDecayPionMomentum_CT = new TH1D("h_SelectedDecayPionMomentum_CT","",60,0.1,0.8);
+      TEfficiency* Efficiency_DecayPionMomentum_CT = new TEfficiency("DecayPionMomentum_eff_CT",";True Decay #pi^{-} Momentum (GeV/c);Selected/All",60,0.1,0.8);
 
-      TH1D *h_OpeningAngle_Analysis = new TH1D("h_OpeningAngle_Analysis","",60,0,100);
-      TH1D *h_SelectedOpeningAngle_Analysis = new TH1D("h_SelectedOpeningAngle_Analysis","",60,0,100);
-      TEfficiency* Efficiency_OpeningAngle_Analysis = new TEfficiency("OpeningAngle_eff_Analysis",";True Opening Angle (deg);Selected/All",60,0,100);
+      TH1D *h_OpeningAngle_CT = new TH1D("h_OpeningAngle_CT","",60,0,100);
+      TH1D *h_SelectedOpeningAngle_CT = new TH1D("h_SelectedOpeningAngle_CT","",60,0,100);
+      TEfficiency* Efficiency_OpeningAngle_CT = new TEfficiency("OpeningAngle_eff_CT",";True Opening Angle (deg);Selected/All",60,0,100);
 
-      TH1D *h_LambdaRange_Analysis = new TH1D("h_LambdaRange_Analysis","",100,0,20.0);
-      TH1D *h_SelectedLambdaRange_Analysis = new TH1D("h_SelectedLambdaRange_Analysis","",100,0,20.0);
-      TEfficiency* Efficiency_LambdaRange_Analysis = new TEfficiency("LambdaRange_eff_Analysis",";True #Lambda Range (cm);Selected/All",100,0,20.0);
+      TH1D *h_LambdaRange_CT = new TH1D("h_LambdaRange_CT","",100,0,20.0);
+      TH1D *h_SelectedLambdaRange_CT = new TH1D("h_SelectedLambdaRange_CT","",100,0,20.0);
+      TEfficiency* Efficiency_LambdaRange_CT = new TEfficiency("LambdaRange_eff_CT",";True #Lambda Range (cm);Selected/All",100,0,20.0);
 
-      TH1D *h_Analysis = new TH1D("h_Analysis","",1,0,1.0);
-      TH1D *h_Selected_Analysis = new TH1D("h_Selected_Analysis","",1,0,1.0);
-      TEfficiency* Efficiency_Analysis = new TEfficiency("eff_Analysis",";;Selected/All",1,0,1.0);
+      TH1D *h_CT = new TH1D("h_CT","",1,0,1.0);
+      TH1D *h_Selected_CT = new TH1D("h_Selected_CT","",1,0,1.0);
+      TEfficiency* Efficiency_CT = new TEfficiency("eff_CT",";;Selected/All",1,0,1.0);
 
-      // Connectedness Test //
+      // Invariant mass cut //
 
-      TH1D *h_Q2_Connectedness = new TH1D("h_Q2_Connectedness","",60,0,3.0);
-      TH1D *h_SelectedQ2_Connectedness = new TH1D("h_SelectedQ2_Connectedness","",60,0,3.0);
-      TEfficiency* Efficiency_Q2_Connectedness = new TEfficiency("Q2_eff_Connectedness",";True Q^{2} (GeV^{2});Selected/All",60,0,3.0);
+      TH1D *h_Q2_WCut = new TH1D("h_Q2_WCut","",60,0,3.0);
+      TH1D *h_SelectedQ2_WCut = new TH1D("h_SelectedQ2_WCut","",60,0,3.0);
+      TEfficiency* Efficiency_Q2_WCut = new TEfficiency("Q2_eff_WCut",";True Q^{2} (GeV^{2});Selected/All",60,0,3.0);
 
-      TH1D *h_NuE_Connectedness = new TH1D("h_TrueNuE_Connectedness","",60,0,4.0);
-      TH1D *h_SelectedNuE_Connectedness = new TH1D("h_SelectedNuE_Connectedness","",60,0,4.0);
-      TEfficiency* Efficiency_NuE_Connectedness = new TEfficiency("NuE_eff_Connectedness",";True E_{#nu} (GeV);Selected/All",60,0,4.0);
+      TH1D *h_NuE_WCut = new TH1D("h_TrueNuE_WCut","",60,0,4.0);
+      TH1D *h_SelectedNuE_WCut = new TH1D("h_SelectedNuE_WCut","",60,0,4.0);
+      TEfficiency* Efficiency_NuE_WCut = new TEfficiency("NuE_eff_WCut",";True E_{#nu} (GeV);Selected/All",60,0,4.0);
 
-      TH1D *h_MuonKE_Connectedness = new TH1D("h_MuonKE_Connectedness","",60,0,3.0);
-      TH1D *h_SelectedMuonKE_Connectedness = new TH1D("h_SelectedMuonKE_Connectedness","",60,0,3.0);
-      TEfficiency* Efficiency_MuonKE_Connectedness = new TEfficiency("MuonKE_eff_Connectedness",";True Muon KE (GeV);Selected/All",60,0,3.0);
+      TH1D *h_MuonKE_WCut = new TH1D("h_MuonKE_WCut","",60,0,3.0);
+      TH1D *h_SelectedMuonKE_WCut = new TH1D("h_SelectedMuonKE_WCut","",60,0,3.0);
+      TEfficiency* Efficiency_MuonKE_WCut = new TEfficiency("MuonKE_eff_WCut",";True Muon KE (GeV);Selected/All",60,0,3.0);
 
-      TH1D *h_MuonTrueTheta_Connectedness = new TH1D("h_MuonTrueTheta_Connectedness","",60,0,3.1415);
-      TH1D *h_SelectedMuonTrueTheta_Connectedness = new TH1D("h_SelectedMuonTrueTheta_Connectedness","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonTrueTheta_Connectedness = new TEfficiency("MuonTrueTheta_eff_Connectedness",";Muon True #theta;Selected/All",60,0,3.1415);
+      TH1D *h_MuonTrueTheta_WCut = new TH1D("h_MuonTrueTheta_WCut","",60,0,3.1415);
+      TH1D *h_SelectedMuonTrueTheta_WCut = new TH1D("h_SelectedMuonTrueTheta_WCut","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonTrueTheta_WCut = new TEfficiency("MuonTrueTheta_eff_WCut",";Muon True #theta;Selected/All",60,0,3.1415);
 
-      TH1D *h_MuonDetectorTheta_Connectedness = new TH1D("h_TrueMuonDetectorTheta_Connectedness","",60,0,3.1415);
-      TH1D *h_SelectedMuonDetectorTheta_Connectedness = new TH1D("h_SelectedMuonDetectorTheta_Connectedness","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonDetectorTheta_Connectedness = new TEfficiency("MuonDetectorTheta_eff",";Muon Detector #theta;Selected/All",60,0,3.1415);
+      TH1D *h_MuonDetectorTheta_WCut = new TH1D("h_TrueMuonDetectorTheta_WCut","",60,0,3.1415);
+      TH1D *h_SelectedMuonDetectorTheta_WCut = new TH1D("h_SelectedMuonDetectorTheta_WCut","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonDetectorTheta_WCut = new TEfficiency("MuonDetectorTheta_eff",";Muon Detector #theta;Selected/All",60,0,3.1415);
 
-      TH1D *h_MuonDetectorPhi_Connectedness = new TH1D("h_TrueMuonDetectorPhi_Connectedness","",60,-3.1415,3.1415);
-      TH1D *h_SelectedMuonDetectorPhi_Connectedness = new TH1D("h_SelectedMuonDetectorPhi_Connectedness","",60,-3.1415,3.1415);
-      TEfficiency* Efficiency_MuonDetectorPhi_Connectedness = new TEfficiency("MuonDetectorPhi_eff_Connectedness",";Muon Detector #theta;Selected/All",60,-3.1415,3.1415);
+      TH1D *h_MuonDetectorPhi_WCut = new TH1D("h_TrueMuonDetectorPhi_WCut","",60,-3.1415,3.1415);
+      TH1D *h_SelectedMuonDetectorPhi_WCut = new TH1D("h_SelectedMuonDetectorPhi_WCut","",60,-3.1415,3.1415);
+      TEfficiency* Efficiency_MuonDetectorPhi_WCut = new TEfficiency("MuonDetectorPhi_eff_WCut",";Muon Detector #theta;Selected/All",60,-3.1415,3.1415);
 
-      TH1D *h_MuonBeamTheta_Connectedness = new TH1D("h_TrueMuonBeamTheta_Connectedness","",60,0,3.1415);
-      TH1D *h_SelectedMuonBeamTheta_Connectedness = new TH1D("h_SelectedMuonBeamTheta_Connectedness","",60,0,3.1415);
-      TEfficiency* Efficiency_MuonBeamTheta_Connectedness = new TEfficiency("MuonBeamTheta_eff_Connectedness",";Muon Beam #theta;Selected/All",60,0,3.1415);
+      TH1D *h_MuonBeamTheta_WCut = new TH1D("h_TrueMuonBeamTheta_WCut","",60,0,3.1415);
+      TH1D *h_SelectedMuonBeamTheta_WCut = new TH1D("h_SelectedMuonBeamTheta_WCut","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonBeamTheta_WCut = new TEfficiency("MuonBeamTheta_eff_WCut",";Muon Beam #theta;Selected/All",60,0,3.1415);
 
-      TH1D *h_MuonBeamPhi_Connectedness = new TH1D("h_TrueMuonBeamPhi_Connectedness","",60,-3.1415,3.1415);
-      TH1D *h_SelectedMuonBeamPhi_Connectedness = new TH1D("h_SelectedMuonBeamPhi_Connectedness","",60,-3.1415,3.1415);
-      TEfficiency* Efficiency_MuonBeamPhi_Connectedness = new TEfficiency("MuonBeamPhi_eff_Connectedness",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
+      TH1D *h_MuonBeamPhi_WCut = new TH1D("h_TrueMuonBeamPhi_WCut","",60,-3.1415,3.1415);
+      TH1D *h_SelectedMuonBeamPhi_WCut = new TH1D("h_SelectedMuonBeamPhi_WCut","",60,-3.1415,3.1415);
+      TEfficiency* Efficiency_MuonBeamPhi_WCut = new TEfficiency("MuonBeamPhi_eff_WCut",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
 
-      TH1D *h_LambdaMomentum_Connectedness = new TH1D("h_TrueLambdaMomentum_Connectedness","",60,0.0,2.0);
-      TH1D *h_SelectedLambdaMomentum_Connectedness = new TH1D("h_SelectedLambdaMomentum_Connectedness","",60,0.0,2.0);
-      TEfficiency* Efficiency_LambdaMomentum_Connectedness = new TEfficiency("LambdaMomentum_eff_Connectedness",";True #Lambda Momentum (GeV/c);Selected/All",60,0.0,2.0);
+      TH1D *h_LambdaMomentum_WCut = new TH1D("h_TrueLambdaMomentum_WCut","",60,0.0,2.0);
+      TH1D *h_SelectedLambdaMomentum_WCut = new TH1D("h_SelectedLambdaMomentum_WCut","",60,0.0,2.0);
+      TEfficiency* Efficiency_LambdaMomentum_WCut = new TEfficiency("LambdaMomentum_eff_WCut",";True #Lambda Momentum (GeV/c);Selected/All",60,0.0,2.0);
 
-      TH1D *h_DecayProtonMomentum_Connectedness = new TH1D("h_TrueDecayProtonMomentum_Connectedness","",60,0.3,1.5);
-      TH1D *h_SelectedDecayProtonMomentum_Connectedness = new TH1D("h_SelectedDecayProtonMomentum_Connectedness","",60,0.3,1.5);
-      TEfficiency* Efficiency_DecayProtonMomentum_Connectedness = new TEfficiency("DecayProtonMomentum_eff_Connectedness",";True Decay Proton Momentum (GeV/c);Selected/All",60,0.3,1.5);
+      TH1D *h_DecayProtonMomentum_WCut = new TH1D("h_TrueDecayProtonMomentum_WCut","",60,0.3,1.5);
+      TH1D *h_SelectedDecayProtonMomentum_WCut = new TH1D("h_SelectedDecayProtonMomentum_WCut","",60,0.3,1.5);
+      TEfficiency* Efficiency_DecayProtonMomentum_WCut = new TEfficiency("DecayProtonMomentum_eff_WCut",";True Decay Proton Momentum (GeV/c);Selected/All",60,0.3,1.5);
 
-      TH1D *h_DecayPionMomentum_Connectedness = new TH1D("h_TrueDecayPionMomentum_Connectedness","",60,0.1,0.8);
-      TH1D *h_SelectedDecayPionMomentum_Connectedness = new TH1D("h_SelectedDecayPionMomentum_Connectedness","",60,0.1,0.8);
-      TEfficiency* Efficiency_DecayPionMomentum_Connectedness = new TEfficiency("DecayPionMomentum_eff_Connectedness",";True Decay #pi^{-} Momentum (GeV/c);Selected/All",60,0.1,0.8);
+      TH1D *h_DecayPionMomentum_WCut = new TH1D("h_TrueDecayPionMomentum_WCut","",60,0.1,0.8);
+      TH1D *h_SelectedDecayPionMomentum_WCut = new TH1D("h_SelectedDecayPionMomentum_WCut","",60,0.1,0.8);
+      TEfficiency* Efficiency_DecayPionMomentum_WCut = new TEfficiency("DecayPionMomentum_eff_WCut",";True Decay #pi^{-} Momentum (GeV/c);Selected/All",60,0.1,0.8);
 
-      TH1D *h_OpeningAngle_Connectedness = new TH1D("h_OpeningAngle_Connectedness","",60,0,100);
-      TH1D *h_SelectedOpeningAngle_Connectedness = new TH1D("h_SelectedOpeningAngle_Connectedness","",60,0,100);
-      TEfficiency* Efficiency_OpeningAngle_Connectedness = new TEfficiency("OpeningAngle_eff_Connectedness",";True Opening Angle (deg);Selected/All",60,0,100);
+      TH1D *h_OpeningAngle_WCut = new TH1D("h_OpeningAngle_WCut","",60,0,100);
+      TH1D *h_SelectedOpeningAngle_WCut = new TH1D("h_SelectedOpeningAngle_WCut","",60,0,100);
+      TEfficiency* Efficiency_OpeningAngle_WCut = new TEfficiency("OpeningAngle_eff_WCut",";True Opening Angle (deg);Selected/All",60,0,100);
 
-      TH1D *h_LambdaRange_Connectedness = new TH1D("h_LambdaRange_Connectedness","",100,0,20.0);
-      TH1D *h_SelectedLambdaRange_Connectedness = new TH1D("h_SelectedLambdaRange_Connectedness","",100,0,20.0);
-      TEfficiency* Efficiency_LambdaRange_Connectedness = new TEfficiency("LambdaRange_eff_Connectedness",";True #Lambda Range (cm);Selected/All",100,0,20.0);
+      TH1D *h_LambdaRange_WCut = new TH1D("h_LambdaRange_WCut","",100,0,20.0);
+      TH1D *h_SelectedLambdaRange_WCut = new TH1D("h_SelectedLambdaRange_WCut","",100,0,20.0);
+      TEfficiency* Efficiency_LambdaRange_WCut = new TEfficiency("LambdaRange_eff_WCut",";True #Lambda Range (cm);Selected/All",100,0,20.0);
 
-      TH1D *h_Connectedness = new TH1D("h_Connectedness","",1,0,1.0);
-      TH1D *h_Selected_Connectedness = new TH1D("h_Selected_Connectedness","",1,0,1.0);
-      TEfficiency* Efficiency_Connectedness = new TEfficiency("eff_Connectedness",";;Selected/All",1,0,1.0);
+      TH1D *h_WCut = new TH1D("h_WCut","",1,0,1.0);
+      TH1D *h_Selected_WCut = new TH1D("h_Selected_WCut","",1,0,1.0);
+      TEfficiency* Efficiency_WCut = new TEfficiency("eff_WCut",";;Selected/All",1,0,1.0);
+
+      // Angular deviation cut //
+
+      TH1D *h_Q2_AngleCut = new TH1D("h_Q2_AngleCut","",60,0,3.0);
+      TH1D *h_SelectedQ2_AngleCut = new TH1D("h_SelectedQ2_AngleCut","",60,0,3.0);
+      TEfficiency* Efficiency_Q2_AngleCut = new TEfficiency("Q2_eff_AngleCut",";True Q^{2} (GeV^{2});Selected/All",60,0,3.0);
+
+      TH1D *h_NuE_AngleCut = new TH1D("h_TrueNuE_AngleCut","",60,0,4.0);
+      TH1D *h_SelectedNuE_AngleCut = new TH1D("h_SelectedNuE_AngleCut","",60,0,4.0);
+      TEfficiency* Efficiency_NuE_AngleCut = new TEfficiency("NuE_eff_AngleCut",";True E_{#nu} (GeV);Selected/All",60,0,4.0);
+
+      TH1D *h_MuonKE_AngleCut = new TH1D("h_MuonKE_AngleCut","",60,0,3.0);
+      TH1D *h_SelectedMuonKE_AngleCut = new TH1D("h_SelectedMuonKE_AngleCut","",60,0,3.0);
+      TEfficiency* Efficiency_MuonKE_AngleCut = new TEfficiency("MuonKE_eff_AngleCut",";True Muon KE (GeV);Selected/All",60,0,3.0);
+
+      TH1D *h_MuonTrueTheta_AngleCut = new TH1D("h_MuonTrueTheta_AngleCut","",60,0,3.1415);
+      TH1D *h_SelectedMuonTrueTheta_AngleCut = new TH1D("h_SelectedMuonTrueTheta_AngleCut","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonTrueTheta_AngleCut = new TEfficiency("MuonTrueTheta_eff_AngleCut",";Muon True #theta;Selected/All",60,0,3.1415);
+
+      TH1D *h_MuonDetectorTheta_AngleCut = new TH1D("h_TrueMuonDetectorTheta_AngleCut","",60,0,3.1415);
+      TH1D *h_SelectedMuonDetectorTheta_AngleCut = new TH1D("h_SelectedMuonDetectorTheta_AngleCut","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonDetectorTheta_AngleCut = new TEfficiency("MuonDetectorTheta_eff",";Muon Detector #theta;Selected/All",60,0,3.1415);
+
+      TH1D *h_MuonDetectorPhi_AngleCut = new TH1D("h_TrueMuonDetectorPhi_AngleCut","",60,-3.1415,3.1415);
+      TH1D *h_SelectedMuonDetectorPhi_AngleCut = new TH1D("h_SelectedMuonDetectorPhi_AngleCut","",60,-3.1415,3.1415);
+      TEfficiency* Efficiency_MuonDetectorPhi_AngleCut = new TEfficiency("MuonDetectorPhi_eff_AngleCut",";Muon Detector #theta;Selected/All",60,-3.1415,3.1415);
+
+      TH1D *h_MuonBeamTheta_AngleCut = new TH1D("h_TrueMuonBeamTheta_AngleCut","",60,0,3.1415);
+      TH1D *h_SelectedMuonBeamTheta_AngleCut = new TH1D("h_SelectedMuonBeamTheta_AngleCut","",60,0,3.1415);
+      TEfficiency* Efficiency_MuonBeamTheta_AngleCut = new TEfficiency("MuonBeamTheta_eff_AngleCut",";Muon Beam #theta;Selected/All",60,0,3.1415);
+
+      TH1D *h_MuonBeamPhi_AngleCut = new TH1D("h_TrueMuonBeamPhi_AngleCut","",60,-3.1415,3.1415);
+      TH1D *h_SelectedMuonBeamPhi_AngleCut = new TH1D("h_SelectedMuonBeamPhi_AngleCut","",60,-3.1415,3.1415);
+      TEfficiency* Efficiency_MuonBeamPhi_AngleCut = new TEfficiency("MuonBeamPhi_eff_AngleCut",";Muon Beam #theta;Selected/All",60,-3.1415,3.1415);
+
+      TH1D *h_LambdaMomentum_AngleCut = new TH1D("h_TrueLambdaMomentum_AngleCut","",60,0.0,2.0);
+      TH1D *h_SelectedLambdaMomentum_AngleCut = new TH1D("h_SelectedLambdaMomentum_AngleCut","",60,0.0,2.0);
+      TEfficiency* Efficiency_LambdaMomentum_AngleCut = new TEfficiency("LambdaMomentum_eff_AngleCut",";True #Lambda Momentum (GeV/c);Selected/All",60,0.0,2.0);
+
+      TH1D *h_DecayProtonMomentum_AngleCut = new TH1D("h_TrueDecayProtonMomentum_AngleCut","",60,0.3,1.5);
+      TH1D *h_SelectedDecayProtonMomentum_AngleCut = new TH1D("h_SelectedDecayProtonMomentum_AngleCut","",60,0.3,1.5);
+      TEfficiency* Efficiency_DecayProtonMomentum_AngleCut = new TEfficiency("DecayProtonMomentum_eff_AngleCut",";True Decay Proton Momentum (GeV/c);Selected/All",60,0.3,1.5);
+
+      TH1D *h_DecayPionMomentum_AngleCut = new TH1D("h_TrueDecayPionMomentum_AngleCut","",60,0.1,0.8);
+      TH1D *h_SelectedDecayPionMomentum_AngleCut = new TH1D("h_SelectedDecayPionMomentum_AngleCut","",60,0.1,0.8);
+      TEfficiency* Efficiency_DecayPionMomentum_AngleCut = new TEfficiency("DecayPionMomentum_eff_AngleCut",";True Decay #pi^{-} Momentum (GeV/c);Selected/All",60,0.1,0.8);
+
+      TH1D *h_OpeningAngle_AngleCut = new TH1D("h_OpeningAngle_AngleCut","",60,0,100);
+      TH1D *h_SelectedOpeningAngle_AngleCut = new TH1D("h_SelectedOpeningAngle_AngleCut","",60,0,100);
+      TEfficiency* Efficiency_OpeningAngle_AngleCut = new TEfficiency("OpeningAngle_eff_AngleCut",";True Opening Angle (deg);Selected/All",60,0,100);
+
+      TH1D *h_LambdaRange_AngleCut = new TH1D("h_LambdaRange_AngleCut","",100,0,20.0);
+      TH1D *h_SelectedLambdaRange_AngleCut = new TH1D("h_SelectedLambdaRange_AngleCut","",100,0,20.0);
+      TEfficiency* Efficiency_LambdaRange_AngleCut = new TEfficiency("LambdaRange_eff_AngleCut",";True #Lambda Range (cm);Selected/All",100,0,20.0);
+
+      TH1D *h_AngleCut = new TH1D("h_AngleCut","",1,0,1.0);
+      TH1D *h_Selected_AngleCut = new TH1D("h_Selected_AngleCut","",1,0,1.0);
+      TEfficiency* Efficiency_AngleCut = new TEfficiency("eff_AngleCut",";;Selected/All",1,0,1.0);
 
       /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      // Iterate over the samples. 
-      for(size_t i_s=0;i_s<SampleNames.size();i_s++){
+      E.SetFile("run1_FHC/analysisOutputFHC_Overlay_GENIE_Hyperon_All.root");
+      M.AddSample("Hyperon","Hyperon",E.GetPOT());         
 
-         E.SetFile(SampleFiles.at(i_s));
-         if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
-         else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT);
-         else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),EXT_POT);
+      for(int i=0;i<E.GetNEvents();i++){
+        
+         if(i % 10000 == 0) std::cout << "Processing event " << i << "/" << E.GetNEvents() << std::endl;
+        
+         //get an event
+         Event e = E.GetEvent(i);
 
-         for(int i=0;i<E.GetNEvents();i++){
+         //update metadata
+         M.AddEvent(e);
+         M.SetSignal(e);
 
-            //get an event
-            Event e = E.GetEvent(i);
+         if(!e.EventIsSignal) continue;
 
-            M.SetSignal(e);
+         // Calculate Q2
+         double Q2 = -1;
 
-            if(!e.EventIsSignal) continue;
+         TLorentzVector Nu4Momentum(e.Neutrino.at(0).Px,e.Neutrino.at(0).Py,e.Neutrino.at(0).Pz,e.Neutrino.at(0).E);
+         TLorentzVector Muon4Momentum(e.Lepton.at(0).Px,e.Lepton.at(0).Py,e.Lepton.at(0).Pz,e.Lepton.at(0).E);
 
-            //update metadata
-            M.AddEvent(e);
+         Q2 = (-1)*(Nu4Momentum - Muon4Momentum)*(Nu4Momentum - Muon4Momentum);
 
-            // Calculate Q2
-            double Q2 = -1;
+         // Calculate NuE
+         double NuE = -1;
+         NuE = e.Neutrino.at(0).E;
 
-            TLorentzVector Nu4Momentum(e.Neutrino.at(0).Px,e.Neutrino.at(0).Py,e.Neutrino.at(0).Pz,e.Neutrino.at(0).E);
-            TLorentzVector Muon4Momentum(e.Lepton.at(0).Px,e.Lepton.at(0).Py,e.Lepton.at(0).Pz,e.Lepton.at(0).E);
+         // Calculate Muon KE
+         double MuonKE = -1;
+         MuonKE = e.Lepton.at(0).KE;
 
-            Q2 = (-1)*(Nu4Momentum - Muon4Momentum)*(Nu4Momentum - Muon4Momentum);
+         // Get the Neutrino's true direction
+         TVector3 NuDirection(e.Neutrino.at(0).Px,e.Neutrino.at(0).Py,e.Neutrino.at(0).Pz);
+         NuDirection *= 1.0/NuDirection.Mag();
 
-            // Calculate NuE
-            double NuE = -1;
-            NuE = e.Neutrino.at(0).E;
+         // Get the muon's true direction
+         TVector3 MuonTrueDir(e.Lepton.at(0).Px,e.Lepton.at(0).Py,e.Lepton.at(0).Pz);
 
-            // Calculate Muon KE
-            double MuonKE = -1;
-            MuonKE = e.Lepton.at(0).KE;
+         double MuonTrueTheta = MuonTrueDir.Angle(NuDirection);
+         double MuonDetectorTheta = MuonTrueDir.Theta();
+         double MuonDetectorPhi = MuonTrueDir.Phi();
 
-            // Get the Neutrino's true direction
-            TVector3 NuDirection(e.Neutrino.at(0).Px,e.Neutrino.at(0).Py,e.Neutrino.at(0).Pz);
-            NuDirection *= 1.0/NuDirection.Mag();
+         TVector3 MuonTrueDirBeam = RotateToBeam(MuonTrueDir);
 
-            // Get the muon's true direction
-            TVector3 MuonTrueDir(e.Lepton.at(0).Px,e.Lepton.at(0).Py,e.Lepton.at(0).Pz);
+         double MuonBeamTheta = MuonTrueDirBeam.Theta();
+         double MuonBeamPhi = MuonTrueDirBeam.Phi();
+         double LambdaMomentum = e.Hyperon.at(0).ModMomentum;
+         double DecayProtonMomentum,DecayPionMomentum=-1.0;
+         double OpeningAngle=-1.0;
+         double LambdaRange = e.Hyperon.at(0).Travel;
 
-            double MuonTrueTheta = MuonTrueDir.Angle(NuDirection);
-            double MuonDetectorTheta = MuonTrueDir.Theta();
-            double MuonDetectorPhi = MuonTrueDir.Phi();
+         if(e.Decay.size() == 2){
 
-            TVector3 MuonTrueDirBeam = RotateToBeam(MuonTrueDir);
+            if(e.Decay.at(0).PDG == 2212) DecayProtonMomentum = e.Decay.at(0).ModMomentum;                
+            if(e.Decay.at(0).PDG == -211) DecayPionMomentum = e.Decay.at(0).ModMomentum;               
 
-            double MuonBeamTheta = MuonTrueDirBeam.Theta();
-            double MuonBeamPhi = MuonTrueDirBeam.Phi();
-            double LambdaMomentum = e.Hyperon.at(0).ModMomentum;
-            double DecayProtonMomentum,DecayPionMomentum=-1.0;
-            double OpeningAngle=-1.0;
-            double LambdaRange = e.Hyperon.at(0).Travel;
+            if(e.Decay.at(1).PDG == 2212) DecayProtonMomentum = e.Decay.at(1).ModMomentum;                
+            if(e.Decay.at(1).PDG == -211) DecayPionMomentum = e.Decay.at(1).ModMomentum;                
 
-            if(e.Decay.size() == 2){
+            TVector3 Momentum1(e.Decay.at(0).Px,e.Decay.at(0).Py,e.Decay.at(0).Pz);
+            TVector3 Momentum2(e.Decay.at(1).Px,e.Decay.at(1).Py,e.Decay.at(1).Pz);
 
-               if(e.Decay.at(0).PDG == 2212) DecayProtonMomentum = e.Decay.at(0).ModMomentum;                
-               if(e.Decay.at(0).PDG == -211) DecayPionMomentum = e.Decay.at(0).ModMomentum;               
-
-               if(e.Decay.at(1).PDG == 2212) DecayProtonMomentum = e.Decay.at(1).ModMomentum;                
-               if(e.Decay.at(1).PDG == -211) DecayPionMomentum = e.Decay.at(1).ModMomentum;                
-
-               TVector3 Momentum1(e.Decay.at(0).Px,e.Decay.at(0).Py,e.Decay.at(0).Pz);
-               TVector3 Momentum2(e.Decay.at(1).Px,e.Decay.at(1).Py,e.Decay.at(1).Pz);
-
-               OpeningAngle = (180/3.1415)*Momentum1.Angle(Momentum2);
-
-            }
-
-            bool passed_FV=false,passed_Tracks=false,passed_Showers=false,passed_MuonID=false,passed_TrackLengths=false,passed_Selector=false,passed_Analysis=false,passed_Connectedness=false,passed_All=false;
-
-            passed_FV = M.FiducialVolumeCut(e);
-            if(passed_FV) passed_Tracks = M.TrackCut(e);
-            if(passed_Tracks) passed_Showers = M.ShowerCut(e);
-            if(passed_Showers) passed_MuonID = M.ChooseMuonCandidate(e);
-            if(passed_MuonID) passed_TrackLengths = M.TrackLengthCut(e);
-            //if(passed_TrackLengths) passed_Selector = M.ChooseProtonPionCandidates(e); 
-            //if(passed_Selector) passed_Analysis = M.AnalysisBDTCut(e);
-            //if(passed_Analysis) passed_Connectedness = M.EventListCut(e);
-            //if(passed_Connectedness) passed_All = true;
-
-            // Entire Selection         
-            h_Q2_All->Fill(Q2,e.Weight);
-            Efficiency_Q2_All->FillWeighted(passed_All,e.Weight,Q2);
-            if(Q2 > 0 && passed_All) h_SelectedQ2_All->Fill(Q2,e.Weight);
-
-            h_NuE_All->Fill(NuE,e.Weight); 
-            Efficiency_NuE_All->FillWeighted(passed_All,e.Weight,NuE);
-            if(NuE > 0 && passed_All)  h_SelectedNuE_All->Fill(NuE,e.Weight);
-
-            h_MuonKE_All->Fill(MuonKE,e.Weight); 
-            Efficiency_MuonKE_All->FillWeighted(passed_All,e.Weight,MuonKE);
-            if(MuonKE > 0 && passed_All)  h_SelectedMuonKE_All->Fill(MuonKE,e.Weight);
-
-            h_MuonTrueTheta_All->Fill(MuonTrueTheta,e.Weight); 
-            Efficiency_MuonTrueTheta_All->FillWeighted(passed_All,e.Weight,MuonTrueTheta);
-            if(passed_All)  h_SelectedMuonTrueTheta_All->Fill(MuonTrueTheta,e.Weight);
-
-            h_MuonDetectorTheta_All->Fill(MuonDetectorTheta,e.Weight); 
-            Efficiency_MuonDetectorTheta_All->FillWeighted(passed_All,e.Weight,MuonDetectorTheta);
-            if(passed_All)  h_SelectedMuonDetectorTheta_All->Fill(MuonDetectorTheta,e.Weight);
-
-            h_MuonDetectorPhi_All->Fill(MuonDetectorPhi,e.Weight); 
-            Efficiency_MuonDetectorPhi_All->FillWeighted(passed_All,e.Weight,MuonDetectorPhi);
-            if(passed_All)  h_SelectedMuonDetectorPhi_All->Fill(MuonDetectorPhi,e.Weight);
-
-            h_MuonBeamTheta_All->Fill(MuonBeamTheta,e.Weight); 
-            Efficiency_MuonBeamTheta_All->FillWeighted(passed_All,e.Weight,MuonBeamTheta);
-            if(passed_All)  h_SelectedMuonBeamTheta_All->Fill(MuonBeamTheta,e.Weight);
-
-            h_MuonBeamPhi_All->Fill(MuonBeamPhi,e.Weight); 
-            Efficiency_MuonBeamPhi_All->FillWeighted(passed_All,e.Weight,MuonBeamPhi);
-            if(passed_All)  h_SelectedMuonBeamPhi_All->Fill(MuonBeamPhi,e.Weight);
-
-            h_LambdaMomentum_All->Fill(LambdaMomentum,e.Weight); 
-            Efficiency_LambdaMomentum_All->FillWeighted(passed_All,e.Weight,LambdaMomentum);
-            if(passed_All)  h_SelectedLambdaMomentum_All->Fill(LambdaMomentum,e.Weight);
-
-            h_DecayProtonMomentum_All->Fill(DecayProtonMomentum,e.Weight); 
-            Efficiency_DecayProtonMomentum_All->FillWeighted(passed_All,e.Weight,DecayProtonMomentum);
-            if(passed_All)  h_SelectedDecayProtonMomentum_All->Fill(DecayProtonMomentum,e.Weight);
-
-            h_DecayPionMomentum_All->Fill(DecayPionMomentum,e.Weight); 
-            Efficiency_DecayPionMomentum_All->FillWeighted(passed_All,e.Weight,DecayPionMomentum);
-            if(passed_All)  h_SelectedDecayPionMomentum_All->Fill(DecayPionMomentum,e.Weight);
-
-            h_OpeningAngle_All->Fill(OpeningAngle,e.Weight);
-            Efficiency_OpeningAngle_All->FillWeighted(passed_All,e.Weight,OpeningAngle);
-            if(OpeningAngle > 0 && passed_All) h_SelectedOpeningAngle_All->Fill(OpeningAngle,e.Weight);
-
-            h_LambdaRange_All->Fill(LambdaRange,e.Weight);
-            Efficiency_LambdaRange_All->FillWeighted(passed_All,e.Weight,LambdaRange);
-            if(LambdaRange > 0 && passed_All) h_SelectedLambdaRange_All->Fill(LambdaRange,e.Weight);
-
-            h_All->Fill(0.5,e.Weight);
-            Efficiency_All->FillWeighted(passed_All,e.Weight,0.5);
-            if(passed_All) h_Selected_All->Fill(0.5,e.Weight);
-
-            // Fiducial Volume Cut
-            h_Q2_FV->Fill(Q2,e.Weight);
-            Efficiency_Q2_FV->FillWeighted(passed_FV,e.Weight,Q2);
-            if(Q2 > 0 && passed_FV) h_SelectedQ2_FV->Fill(Q2,e.Weight);
-
-            h_NuE_FV->Fill(NuE,e.Weight); 
-            Efficiency_NuE_FV->FillWeighted(passed_FV,e.Weight,NuE);
-            if(NuE > 0 && passed_FV)  h_SelectedNuE_FV->Fill(NuE,e.Weight);
-
-            h_MuonKE_FV->Fill(MuonKE,e.Weight); 
-            Efficiency_MuonKE_FV->FillWeighted(passed_FV,e.Weight,MuonKE);
-            if(MuonKE > 0 && passed_FV)  h_SelectedMuonKE_FV->Fill(MuonKE,e.Weight);
-
-            h_MuonTrueTheta_FV->Fill(MuonTrueTheta,e.Weight); 
-            Efficiency_MuonTrueTheta_FV->FillWeighted(passed_FV,e.Weight,MuonTrueTheta);
-            if(passed_FV)  h_SelectedMuonTrueTheta_FV->Fill(MuonTrueTheta,e.Weight);
-
-            h_MuonDetectorTheta_FV->Fill(MuonDetectorTheta,e.Weight); 
-            Efficiency_MuonDetectorTheta_FV->FillWeighted(passed_FV,e.Weight,MuonDetectorTheta);
-            if(passed_FV)  h_SelectedMuonDetectorTheta_FV->Fill(MuonDetectorTheta,e.Weight);
-
-            h_MuonDetectorPhi_FV->Fill(MuonDetectorPhi,e.Weight); 
-            Efficiency_MuonDetectorPhi_FV->FillWeighted(passed_FV,e.Weight,MuonDetectorPhi);
-            if(passed_FV)  h_SelectedMuonDetectorPhi_FV->Fill(MuonDetectorPhi,e.Weight);
-
-            h_MuonBeamTheta_FV->Fill(MuonBeamTheta,e.Weight); 
-            Efficiency_MuonBeamTheta_FV->FillWeighted(passed_FV,e.Weight,MuonBeamTheta);
-            if(passed_FV)  h_SelectedMuonBeamTheta_FV->Fill(MuonBeamTheta,e.Weight);
-
-            h_MuonBeamPhi_FV->Fill(MuonBeamPhi,e.Weight); 
-            Efficiency_MuonBeamPhi_FV->FillWeighted(passed_FV,e.Weight,MuonBeamPhi);
-            if(passed_FV)  h_SelectedMuonBeamPhi_FV->Fill(MuonBeamPhi,e.Weight);
-
-            h_LambdaMomentum_FV->Fill(LambdaMomentum,e.Weight); 
-            Efficiency_LambdaMomentum_FV->FillWeighted(passed_FV,e.Weight,LambdaMomentum);
-            if(passed_FV)  h_SelectedLambdaMomentum_FV->Fill(LambdaMomentum,e.Weight);
-
-            h_DecayProtonMomentum_FV->Fill(DecayProtonMomentum,e.Weight); 
-            Efficiency_DecayProtonMomentum_FV->FillWeighted(passed_FV,e.Weight,DecayProtonMomentum);
-            if(passed_FV)  h_SelectedDecayProtonMomentum_FV->Fill(DecayProtonMomentum,e.Weight);
-
-            h_DecayPionMomentum_FV->Fill(DecayPionMomentum,e.Weight); 
-            Efficiency_DecayPionMomentum_FV->FillWeighted(passed_FV,e.Weight,DecayPionMomentum);
-            if(passed_FV)  h_SelectedDecayPionMomentum_FV->Fill(DecayPionMomentum,e.Weight);
-
-            h_OpeningAngle_FV->Fill(OpeningAngle,e.Weight);
-            Efficiency_OpeningAngle_FV->FillWeighted(passed_FV,e.Weight,OpeningAngle);
-            if(OpeningAngle > 0 && passed_FV) h_SelectedOpeningAngle_FV->Fill(OpeningAngle,e.Weight);
-
-            h_LambdaRange_FV->Fill(LambdaRange,e.Weight);
-            Efficiency_LambdaRange_FV->FillWeighted(passed_FV,e.Weight,LambdaRange);
-            if(LambdaRange > 0 && passed_FV) h_SelectedLambdaRange_FV->Fill(LambdaRange,e.Weight);
-
-            h_FV->Fill(0.5,e.Weight);
-            Efficiency_FV->FillWeighted(passed_FV,e.Weight,0.5);
-            if(passed_FV) h_Selected_FV->Fill(0.5,e.Weight);
-
-            // Track Cut
-            h_Q2_Tracks->Fill(Q2,e.Weight);
-            Efficiency_Q2_Tracks->FillWeighted(passed_Tracks,e.Weight,Q2);
-            if(Q2 > 0 && passed_Tracks) h_SelectedQ2_Tracks->Fill(Q2,e.Weight);
-
-            h_NuE_Tracks->Fill(NuE,e.Weight); 
-            Efficiency_NuE_Tracks->FillWeighted(passed_Tracks,e.Weight,NuE);
-            if(NuE > 0 && passed_Tracks)  h_SelectedNuE_Tracks->Fill(NuE,e.Weight);
-
-            h_MuonKE_Tracks->Fill(MuonKE,e.Weight); 
-            Efficiency_MuonKE_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonKE);
-            if(MuonKE > 0 && passed_Tracks)  h_SelectedMuonKE_Tracks->Fill(MuonKE,e.Weight);
-
-            h_MuonTrueTheta_Tracks->Fill(MuonTrueTheta,e.Weight); 
-            Efficiency_MuonTrueTheta_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonTrueTheta);
-            if(passed_Tracks)  h_SelectedMuonTrueTheta_Tracks->Fill(MuonTrueTheta,e.Weight);
-
-            h_MuonDetectorTheta_Tracks->Fill(MuonDetectorTheta,e.Weight); 
-            Efficiency_MuonDetectorTheta_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonDetectorTheta);
-            if(passed_Tracks)  h_SelectedMuonDetectorTheta_Tracks->Fill(MuonDetectorTheta,e.Weight);
-
-            h_MuonDetectorPhi_Tracks->Fill(MuonDetectorPhi,e.Weight); 
-            Efficiency_MuonDetectorPhi_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonDetectorPhi);
-            if(passed_Tracks)  h_SelectedMuonDetectorPhi_Tracks->Fill(MuonDetectorPhi,e.Weight);
-
-            h_MuonBeamTheta_Tracks->Fill(MuonBeamTheta,e.Weight); 
-            Efficiency_MuonBeamTheta_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonBeamTheta);
-            if(passed_Tracks)  h_SelectedMuonBeamTheta_Tracks->Fill(MuonBeamTheta,e.Weight);
-
-            h_MuonBeamPhi_Tracks->Fill(MuonBeamPhi,e.Weight); 
-            Efficiency_MuonBeamPhi_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonBeamPhi);
-            if(passed_Tracks)  h_SelectedMuonBeamPhi_Tracks->Fill(MuonBeamPhi,e.Weight);
-
-            h_LambdaMomentum_Tracks->Fill(LambdaMomentum,e.Weight); 
-            Efficiency_LambdaMomentum_Tracks->FillWeighted(passed_Tracks,e.Weight,LambdaMomentum);
-            if(passed_Tracks)  h_SelectedLambdaMomentum_Tracks->Fill(LambdaMomentum,e.Weight);
-
-            h_DecayProtonMomentum_Tracks->Fill(DecayProtonMomentum,e.Weight); 
-            Efficiency_DecayProtonMomentum_Tracks->FillWeighted(passed_Tracks,e.Weight,DecayProtonMomentum);
-            if(passed_Tracks)  h_SelectedDecayProtonMomentum_Tracks->Fill(DecayProtonMomentum,e.Weight);
-
-            h_DecayPionMomentum_Tracks->Fill(DecayPionMomentum,e.Weight); 
-            Efficiency_DecayPionMomentum_Tracks->FillWeighted(passed_Tracks,e.Weight,DecayPionMomentum);
-            if(passed_Tracks)  h_SelectedDecayPionMomentum_Tracks->Fill(DecayPionMomentum,e.Weight);
-
-            h_OpeningAngle_Tracks->Fill(OpeningAngle,e.Weight);
-            Efficiency_OpeningAngle_Tracks->FillWeighted(passed_Tracks,e.Weight,OpeningAngle);
-            if(OpeningAngle > 0 && passed_Tracks) h_SelectedOpeningAngle_Tracks->Fill(OpeningAngle,e.Weight);
-
-            h_LambdaRange_Tracks->Fill(LambdaRange,e.Weight);
-            Efficiency_LambdaRange_Tracks->FillWeighted(passed_Tracks,e.Weight,LambdaRange);
-            if(LambdaRange > 0 && passed_Tracks) h_SelectedLambdaRange_Tracks->Fill(LambdaRange,e.Weight);
-
-            h_Tracks->Fill(0.5,e.Weight);
-            Efficiency_Tracks->FillWeighted(passed_Tracks,e.Weight,0.5);
-            if(passed_Tracks) h_Selected_Tracks->Fill(0.5,e.Weight);
-
-            // Shower Cut
-            h_Q2_Showers->Fill(Q2,e.Weight);
-            Efficiency_Q2_Showers->FillWeighted(passed_Showers,e.Weight,Q2);
-            if(Q2 > 0 && passed_Showers) h_SelectedQ2_Showers->Fill(Q2,e.Weight);
-
-            h_NuE_Showers->Fill(NuE,e.Weight); 
-            Efficiency_NuE_Showers->FillWeighted(passed_Showers,e.Weight,NuE);
-            if(NuE > 0 && passed_Showers)  h_SelectedNuE_Showers->Fill(NuE,e.Weight);
-
-            h_MuonKE_Showers->Fill(MuonKE,e.Weight); 
-            Efficiency_MuonKE_Showers->FillWeighted(passed_Showers,e.Weight,MuonKE);
-            if(MuonKE > 0 && passed_Showers)  h_SelectedMuonKE_Showers->Fill(MuonKE,e.Weight);
-
-            h_MuonTrueTheta_Showers->Fill(MuonTrueTheta,e.Weight); 
-            Efficiency_MuonTrueTheta_Showers->FillWeighted(passed_Showers,e.Weight,MuonTrueTheta);
-            if(passed_Showers)  h_SelectedMuonTrueTheta_Showers->Fill(MuonTrueTheta,e.Weight);
-
-            h_MuonDetectorTheta_Showers->Fill(MuonDetectorTheta,e.Weight); 
-            Efficiency_MuonDetectorTheta_Showers->FillWeighted(passed_Showers,e.Weight,MuonDetectorTheta);
-            if(passed_Showers)  h_SelectedMuonDetectorTheta_Showers->Fill(MuonDetectorTheta,e.Weight);
-
-            h_MuonDetectorPhi_Showers->Fill(MuonDetectorPhi,e.Weight); 
-            Efficiency_MuonDetectorPhi_Showers->FillWeighted(passed_Showers,e.Weight,MuonDetectorPhi);
-            if(passed_Showers)  h_SelectedMuonDetectorPhi_Showers->Fill(MuonDetectorPhi,e.Weight);
-
-            h_MuonBeamTheta_Showers->Fill(MuonBeamTheta,e.Weight); 
-            Efficiency_MuonBeamTheta_Showers->FillWeighted(passed_Showers,e.Weight,MuonBeamTheta);
-            if(passed_Showers)  h_SelectedMuonBeamTheta_Showers->Fill(MuonBeamTheta,e.Weight);
-
-            h_MuonBeamPhi_Showers->Fill(MuonBeamPhi,e.Weight); 
-            Efficiency_MuonBeamPhi_Showers->FillWeighted(passed_Showers,e.Weight,MuonBeamPhi);
-            if(passed_Showers)  h_SelectedMuonBeamPhi_Showers->Fill(MuonBeamPhi,e.Weight);
-
-            h_LambdaMomentum_Showers->Fill(LambdaMomentum,e.Weight); 
-            Efficiency_LambdaMomentum_Showers->FillWeighted(passed_Showers,e.Weight,LambdaMomentum);
-            if(passed_Showers)  h_SelectedLambdaMomentum_Showers->Fill(LambdaMomentum,e.Weight);
-
-            h_DecayProtonMomentum_Showers->Fill(DecayProtonMomentum,e.Weight); 
-            Efficiency_DecayProtonMomentum_Showers->FillWeighted(passed_Showers,e.Weight,DecayProtonMomentum);
-            if(passed_Showers)  h_SelectedDecayProtonMomentum_Showers->Fill(DecayProtonMomentum,e.Weight);
-
-            h_DecayPionMomentum_Showers->Fill(DecayPionMomentum,e.Weight); 
-            Efficiency_DecayPionMomentum_Showers->FillWeighted(passed_Showers,e.Weight,DecayPionMomentum);
-            if(passed_Showers)  h_SelectedDecayPionMomentum_Showers->Fill(DecayPionMomentum,e.Weight);
-
-            h_OpeningAngle_Showers->Fill(OpeningAngle,e.Weight);
-            Efficiency_OpeningAngle_Showers->FillWeighted(passed_Showers,e.Weight,OpeningAngle);
-            if(OpeningAngle > 0 && passed_Showers) h_SelectedOpeningAngle_Showers->Fill(OpeningAngle,e.Weight);
-
-            h_LambdaRange_Showers->Fill(LambdaRange,e.Weight);
-            Efficiency_LambdaRange_Showers->FillWeighted(passed_Showers,e.Weight,LambdaRange);
-            if(LambdaRange > 0 && passed_Showers) h_SelectedLambdaRange_Showers->Fill(LambdaRange,e.Weight);
-
-            h_Showers->Fill(0.5,e.Weight);
-            Efficiency_Showers->FillWeighted(passed_Showers,e.Weight,0.5);
-            if(passed_Showers) h_Selected_Showers->Fill(0.5,e.Weight);
-
-            // Muon ID
-            h_Q2_MuonID->Fill(Q2,e.Weight);
-            Efficiency_Q2_MuonID->FillWeighted(passed_MuonID,e.Weight,Q2);
-            if(Q2 > 0 && passed_MuonID) h_SelectedQ2_MuonID->Fill(Q2,e.Weight);
-
-            h_NuE_MuonID->Fill(NuE,e.Weight); 
-            Efficiency_NuE_MuonID->FillWeighted(passed_MuonID,e.Weight,NuE);
-            if(NuE > 0 && passed_MuonID)  h_SelectedNuE_MuonID->Fill(NuE,e.Weight);
-
-            h_MuonKE_MuonID->Fill(MuonKE,e.Weight); 
-            Efficiency_MuonKE_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonKE);
-            if(MuonKE > 0 && passed_MuonID)  h_SelectedMuonKE_MuonID->Fill(MuonKE,e.Weight);
-
-            h_MuonTrueTheta_MuonID->Fill(MuonTrueTheta,e.Weight); 
-            Efficiency_MuonTrueTheta_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonTrueTheta);
-            if(passed_MuonID)  h_SelectedMuonTrueTheta_MuonID->Fill(MuonTrueTheta,e.Weight);
-
-            h_MuonDetectorTheta_MuonID->Fill(MuonDetectorTheta,e.Weight); 
-            Efficiency_MuonDetectorTheta_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonDetectorTheta);
-            if(passed_MuonID)  h_SelectedMuonDetectorTheta_MuonID->Fill(MuonDetectorTheta,e.Weight);
-
-            h_MuonDetectorPhi_MuonID->Fill(MuonDetectorPhi,e.Weight); 
-            Efficiency_MuonDetectorPhi_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonDetectorPhi);
-            if(passed_MuonID)  h_SelectedMuonDetectorPhi_MuonID->Fill(MuonDetectorPhi,e.Weight);
-
-            h_MuonBeamTheta_MuonID->Fill(MuonBeamTheta,e.Weight); 
-            Efficiency_MuonBeamTheta_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonBeamTheta);
-            if(passed_MuonID)  h_SelectedMuonBeamTheta_MuonID->Fill(MuonBeamTheta,e.Weight);
-
-            h_MuonBeamPhi_MuonID->Fill(MuonBeamPhi,e.Weight); 
-            Efficiency_MuonBeamPhi_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonBeamPhi);
-            if(passed_MuonID)  h_SelectedMuonBeamPhi_MuonID->Fill(MuonBeamPhi,e.Weight);
-
-            h_LambdaMomentum_MuonID->Fill(LambdaMomentum,e.Weight); 
-            Efficiency_LambdaMomentum_MuonID->FillWeighted(passed_MuonID,e.Weight,LambdaMomentum);
-            if(passed_MuonID)  h_SelectedLambdaMomentum_MuonID->Fill(LambdaMomentum,e.Weight);
-
-            h_DecayProtonMomentum_MuonID->Fill(DecayProtonMomentum,e.Weight); 
-            Efficiency_DecayProtonMomentum_MuonID->FillWeighted(passed_MuonID,e.Weight,DecayProtonMomentum);
-            if(passed_MuonID)  h_SelectedDecayProtonMomentum_MuonID->Fill(DecayProtonMomentum,e.Weight);
-
-            h_DecayPionMomentum_MuonID->Fill(DecayPionMomentum,e.Weight); 
-            Efficiency_DecayPionMomentum_MuonID->FillWeighted(passed_MuonID,e.Weight,DecayPionMomentum);
-            if(passed_MuonID)  h_SelectedDecayPionMomentum_MuonID->Fill(DecayPionMomentum,e.Weight);
-
-            h_OpeningAngle_MuonID->Fill(OpeningAngle,e.Weight);
-            Efficiency_OpeningAngle_MuonID->FillWeighted(passed_MuonID,e.Weight,OpeningAngle);
-            if(OpeningAngle > 0 && passed_MuonID) h_SelectedOpeningAngle_MuonID->Fill(OpeningAngle,e.Weight);
-
-            h_LambdaRange_MuonID->Fill(LambdaRange,e.Weight);
-            Efficiency_LambdaRange_MuonID->FillWeighted(passed_MuonID,e.Weight,LambdaRange);
-            if(LambdaRange > 0 && passed_MuonID) h_SelectedLambdaRange_MuonID->Fill(LambdaRange,e.Weight);
-
-            h_MuonID->Fill(0.5,e.Weight);
-            Efficiency_MuonID->FillWeighted(passed_MuonID,e.Weight,0.5);
-            if(passed_MuonID) h_Selected_MuonID->Fill(0.5,e.Weight);
-
-            // Subleading Track Length Cut
-            h_Q2_TrackLengths->Fill(Q2,e.Weight);
-            Efficiency_Q2_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,Q2);
-            if(Q2 > 0 && passed_TrackLengths) h_SelectedQ2_TrackLengths->Fill(Q2,e.Weight);
-
-            h_NuE_TrackLengths->Fill(NuE,e.Weight); 
-            Efficiency_NuE_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,NuE);
-            if(NuE > 0 && passed_TrackLengths)  h_SelectedNuE_TrackLengths->Fill(NuE,e.Weight);
-
-            h_MuonKE_TrackLengths->Fill(MuonKE,e.Weight); 
-            Efficiency_MuonKE_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,MuonKE);
-            if(MuonKE > 0 && passed_TrackLengths)  h_SelectedMuonKE_TrackLengths->Fill(MuonKE,e.Weight);
-
-            h_MuonTrueTheta_TrackLengths->Fill(MuonTrueTheta,e.Weight); 
-            Efficiency_MuonTrueTheta_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,MuonTrueTheta);
-            if(passed_TrackLengths)  h_SelectedMuonTrueTheta_TrackLengths->Fill(MuonTrueTheta,e.Weight);
-
-            h_MuonDetectorTheta_TrackLengths->Fill(MuonDetectorTheta,e.Weight); 
-            Efficiency_MuonDetectorTheta_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,MuonDetectorTheta);
-            if(passed_TrackLengths)  h_SelectedMuonDetectorTheta_TrackLengths->Fill(MuonDetectorTheta,e.Weight);
-
-            h_MuonDetectorPhi_TrackLengths->Fill(MuonDetectorPhi,e.Weight); 
-            Efficiency_MuonDetectorPhi_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,MuonDetectorPhi);
-            if(passed_TrackLengths)  h_SelectedMuonDetectorPhi_TrackLengths->Fill(MuonDetectorPhi,e.Weight);
-
-            h_MuonBeamTheta_TrackLengths->Fill(MuonBeamTheta,e.Weight); 
-            Efficiency_MuonBeamTheta_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,MuonBeamTheta);
-            if(passed_TrackLengths)  h_SelectedMuonBeamTheta_TrackLengths->Fill(MuonBeamTheta,e.Weight);
-
-            h_MuonBeamPhi_TrackLengths->Fill(MuonBeamPhi,e.Weight); 
-            Efficiency_MuonBeamPhi_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,MuonBeamPhi);
-            if(passed_TrackLengths)  h_SelectedMuonBeamPhi_TrackLengths->Fill(MuonBeamPhi,e.Weight);
-
-            h_LambdaMomentum_TrackLengths->Fill(LambdaMomentum,e.Weight); 
-            Efficiency_LambdaMomentum_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,LambdaMomentum);
-            if(passed_TrackLengths)  h_SelectedLambdaMomentum_TrackLengths->Fill(LambdaMomentum,e.Weight);
-
-            h_DecayProtonMomentum_TrackLengths->Fill(DecayProtonMomentum,e.Weight); 
-            Efficiency_DecayProtonMomentum_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,DecayProtonMomentum);
-            if(passed_TrackLengths)  h_SelectedDecayProtonMomentum_TrackLengths->Fill(DecayProtonMomentum,e.Weight);
-
-            h_DecayPionMomentum_TrackLengths->Fill(DecayPionMomentum,e.Weight); 
-            Efficiency_DecayPionMomentum_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,DecayPionMomentum);
-            if(passed_TrackLengths)  h_SelectedDecayPionMomentum_TrackLengths->Fill(DecayPionMomentum,e.Weight);
-
-            h_OpeningAngle_TrackLengths->Fill(OpeningAngle,e.Weight);
-            Efficiency_OpeningAngle_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,OpeningAngle);
-            if(OpeningAngle > 0 && passed_TrackLengths) h_SelectedOpeningAngle_TrackLengths->Fill(OpeningAngle,e.Weight);
-
-            h_LambdaRange_TrackLengths->Fill(LambdaRange,e.Weight);
-            Efficiency_LambdaRange_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,LambdaRange);
-            if(LambdaRange > 0 && passed_TrackLengths) h_SelectedLambdaRange_TrackLengths->Fill(LambdaRange,e.Weight);
-
-            h_TrackLengths->Fill(0.5,e.Weight);
-            Efficiency_TrackLengths->FillWeighted(passed_TrackLengths,e.Weight,0.5);
-            if(passed_TrackLengths) h_Selected_TrackLengths->Fill(0.5,e.Weight);
-
-            // Decay Selector
-            h_Q2_Selector->Fill(Q2,e.Weight);
-            Efficiency_Q2_Selector->FillWeighted(passed_Selector,e.Weight,Q2);
-            if(Q2 > 0 && passed_Selector) h_SelectedQ2_Selector->Fill(Q2,e.Weight);
-
-            h_NuE_Selector->Fill(NuE,e.Weight); 
-            Efficiency_NuE_Selector->FillWeighted(passed_Selector,e.Weight,NuE);
-            if(NuE > 0 && passed_Selector)  h_SelectedNuE_Selector->Fill(NuE,e.Weight);
-
-            h_MuonKE_Selector->Fill(MuonKE,e.Weight); 
-            Efficiency_MuonKE_Selector->FillWeighted(passed_Selector,e.Weight,MuonKE);
-            if(MuonKE > 0 && passed_Selector)  h_SelectedMuonKE_Selector->Fill(MuonKE,e.Weight);
-
-            h_MuonTrueTheta_Selector->Fill(MuonTrueTheta,e.Weight); 
-            Efficiency_MuonTrueTheta_Selector->FillWeighted(passed_Selector,e.Weight,MuonTrueTheta);
-            if(passed_Selector)  h_SelectedMuonTrueTheta_Selector->Fill(MuonTrueTheta,e.Weight);
-
-            h_MuonDetectorTheta_Selector->Fill(MuonDetectorTheta,e.Weight); 
-            Efficiency_MuonDetectorTheta_Selector->FillWeighted(passed_Selector,e.Weight,MuonDetectorTheta);
-            if(passed_Selector)  h_SelectedMuonDetectorTheta_Selector->Fill(MuonDetectorTheta,e.Weight);
-
-            h_MuonDetectorPhi_Selector->Fill(MuonDetectorPhi,e.Weight); 
-            Efficiency_MuonDetectorPhi_Selector->FillWeighted(passed_Selector,e.Weight,MuonDetectorPhi);
-            if(passed_Selector)  h_SelectedMuonDetectorPhi_Selector->Fill(MuonDetectorPhi,e.Weight);
-
-            h_MuonBeamTheta_Selector->Fill(MuonBeamTheta,e.Weight); 
-            Efficiency_MuonBeamTheta_Selector->FillWeighted(passed_Selector,e.Weight,MuonBeamTheta);
-            if(passed_Selector)  h_SelectedMuonBeamTheta_Selector->Fill(MuonBeamTheta,e.Weight);
-
-            h_MuonBeamPhi_Selector->Fill(MuonBeamPhi,e.Weight); 
-            Efficiency_MuonBeamPhi_Selector->FillWeighted(passed_Selector,e.Weight,MuonBeamPhi);
-            if(passed_Selector)  h_SelectedMuonBeamPhi_Selector->Fill(MuonBeamPhi,e.Weight);
-
-            h_LambdaMomentum_Selector->Fill(LambdaMomentum,e.Weight); 
-            Efficiency_LambdaMomentum_Selector->FillWeighted(passed_Selector,e.Weight,LambdaMomentum);
-            if(passed_Selector)  h_SelectedLambdaMomentum_Selector->Fill(LambdaMomentum,e.Weight);
-
-            h_DecayProtonMomentum_Selector->Fill(DecayProtonMomentum,e.Weight); 
-            Efficiency_DecayProtonMomentum_Selector->FillWeighted(passed_Selector,e.Weight,DecayProtonMomentum);
-            if(passed_Selector)  h_SelectedDecayProtonMomentum_Selector->Fill(DecayProtonMomentum,e.Weight);
-
-            h_DecayPionMomentum_Selector->Fill(DecayPionMomentum,e.Weight); 
-            Efficiency_DecayPionMomentum_Selector->FillWeighted(passed_Selector,e.Weight,DecayPionMomentum);
-            if(passed_Selector)  h_SelectedDecayPionMomentum_Selector->Fill(DecayPionMomentum,e.Weight);
-
-            h_OpeningAngle_Selector->Fill(OpeningAngle,e.Weight);
-            Efficiency_OpeningAngle_Selector->FillWeighted(passed_Selector,e.Weight,OpeningAngle);
-            if(OpeningAngle > 0 && passed_Selector) h_SelectedOpeningAngle_Selector->Fill(OpeningAngle,e.Weight);
-
-            h_Selector->Fill(0.5,e.Weight);
-            Efficiency_Selector->FillWeighted(passed_Selector,e.Weight,0.5);
-            if(passed_Selector) h_Selected_Selector->Fill(0.5,e.Weight);
-
-            h_LambdaRange_Selector->Fill(LambdaRange,e.Weight);
-            Efficiency_LambdaRange_Selector->FillWeighted(passed_Selector,e.Weight,LambdaRange);
-            if(LambdaRange > 0 && passed_Selector) h_SelectedLambdaRange_Selector->Fill(LambdaRange,e.Weight);
-
-            // Decay Analysis
-            h_Q2_Analysis->Fill(Q2,e.Weight);
-            Efficiency_Q2_Analysis->FillWeighted(passed_Analysis,e.Weight,Q2);
-            if(Q2 > 0 && passed_Analysis) h_SelectedQ2_Analysis->Fill(Q2,e.Weight);
-
-            h_NuE_Analysis->Fill(NuE,e.Weight); 
-            Efficiency_NuE_Analysis->FillWeighted(passed_Analysis,e.Weight,NuE);
-            if(NuE > 0 && passed_Analysis)  h_SelectedNuE_Analysis->Fill(NuE,e.Weight);
-
-            h_MuonKE_Analysis->Fill(MuonKE,e.Weight); 
-            Efficiency_MuonKE_Analysis->FillWeighted(passed_Analysis,e.Weight,MuonKE);
-            if(MuonKE > 0 && passed_Analysis)  h_SelectedMuonKE_Analysis->Fill(MuonKE,e.Weight);
-
-            h_MuonTrueTheta_Analysis->Fill(MuonTrueTheta,e.Weight); 
-            Efficiency_MuonTrueTheta_Analysis->FillWeighted(passed_Analysis,e.Weight,MuonTrueTheta);
-            if(passed_Analysis)  h_SelectedMuonTrueTheta_Analysis->Fill(MuonTrueTheta,e.Weight);
-
-            h_MuonDetectorTheta_Analysis->Fill(MuonDetectorTheta,e.Weight); 
-            Efficiency_MuonDetectorTheta_Analysis->FillWeighted(passed_Analysis,e.Weight,MuonDetectorTheta);
-            if(passed_Analysis)  h_SelectedMuonDetectorTheta_Analysis->Fill(MuonDetectorTheta,e.Weight);
-
-            h_MuonDetectorPhi_Analysis->Fill(MuonDetectorPhi,e.Weight); 
-            Efficiency_MuonDetectorPhi_Analysis->FillWeighted(passed_Analysis,e.Weight,MuonDetectorPhi);
-            if(passed_Analysis)  h_SelectedMuonDetectorPhi_Analysis->Fill(MuonDetectorPhi,e.Weight);
-
-            h_MuonBeamTheta_Analysis->Fill(MuonBeamTheta,e.Weight); 
-            Efficiency_MuonBeamTheta_Analysis->FillWeighted(passed_Analysis,e.Weight,MuonBeamTheta);
-            if(passed_Analysis)  h_SelectedMuonBeamTheta_Analysis->Fill(MuonBeamTheta,e.Weight);
-
-            h_MuonBeamPhi_Analysis->Fill(MuonBeamPhi,e.Weight); 
-            Efficiency_MuonBeamPhi_Analysis->FillWeighted(passed_Analysis,e.Weight,MuonBeamPhi);
-            if(passed_Analysis)  h_SelectedMuonBeamPhi_Analysis->Fill(MuonBeamPhi,e.Weight);
-
-            h_LambdaMomentum_Analysis->Fill(LambdaMomentum,e.Weight); 
-            Efficiency_LambdaMomentum_Analysis->FillWeighted(passed_Analysis,e.Weight,LambdaMomentum);
-            if(passed_Analysis)  h_SelectedLambdaMomentum_Analysis->Fill(LambdaMomentum,e.Weight);
-
-            h_DecayProtonMomentum_Analysis->Fill(DecayProtonMomentum,e.Weight); 
-            Efficiency_DecayProtonMomentum_Analysis->FillWeighted(passed_Analysis,e.Weight,DecayProtonMomentum);
-            if(passed_Analysis)  h_SelectedDecayProtonMomentum_Analysis->Fill(DecayProtonMomentum,e.Weight);
-
-            h_DecayPionMomentum_Analysis->Fill(DecayPionMomentum,e.Weight); 
-            Efficiency_DecayPionMomentum_Analysis->FillWeighted(passed_Analysis,e.Weight,DecayPionMomentum);
-            if(passed_Analysis)  h_SelectedDecayPionMomentum_Analysis->Fill(DecayPionMomentum,e.Weight);
-
-            h_OpeningAngle_Analysis->Fill(OpeningAngle,e.Weight);
-            Efficiency_OpeningAngle_Analysis->FillWeighted(passed_Analysis,e.Weight,OpeningAngle);
-            if(OpeningAngle > 0 && passed_Analysis) h_SelectedOpeningAngle_Analysis->Fill(OpeningAngle,e.Weight);
-
-            h_LambdaRange_Analysis->Fill(LambdaRange,e.Weight);
-            Efficiency_LambdaRange_Analysis->FillWeighted(passed_Analysis,e.Weight,LambdaRange);
-            if(LambdaRange > 0 && passed_Analysis) h_SelectedLambdaRange_Analysis->Fill(LambdaRange,e.Weight);
-
-            h_Analysis->Fill(0.5,e.Weight);
-            Efficiency_Analysis->FillWeighted(passed_Analysis,e.Weight,0.5);
-            if(passed_Analysis) h_Selected_Analysis->Fill(0.5,e.Weight);
-
-            // Connectedness
-            h_Q2_Connectedness->Fill(Q2,e.Weight);
-            Efficiency_Q2_Connectedness->FillWeighted(passed_Connectedness,e.Weight,Q2);
-            if(Q2 > 0 && passed_Connectedness) h_SelectedQ2_Connectedness->Fill(Q2,e.Weight);
-
-            h_NuE_Connectedness->Fill(NuE,e.Weight); 
-            Efficiency_NuE_Connectedness->FillWeighted(passed_Connectedness,e.Weight,NuE);
-            if(NuE > 0 && passed_Connectedness)  h_SelectedNuE_Connectedness->Fill(NuE,e.Weight);
-
-            h_MuonKE_Connectedness->Fill(MuonKE,e.Weight); 
-            Efficiency_MuonKE_Connectedness->FillWeighted(passed_Connectedness,e.Weight,MuonKE);
-            if(MuonKE > 0 && passed_Connectedness)  h_SelectedMuonKE_Connectedness->Fill(MuonKE,e.Weight);
-
-            h_MuonTrueTheta_Connectedness->Fill(MuonTrueTheta,e.Weight); 
-            Efficiency_MuonTrueTheta_Connectedness->FillWeighted(passed_Connectedness,e.Weight,MuonTrueTheta);
-            if(passed_Connectedness)  h_SelectedMuonTrueTheta_Connectedness->Fill(MuonTrueTheta,e.Weight);
-
-            h_MuonDetectorTheta_Connectedness->Fill(MuonDetectorTheta,e.Weight); 
-            Efficiency_MuonDetectorTheta_Connectedness->FillWeighted(passed_Connectedness,e.Weight,MuonDetectorTheta);
-            if(passed_Connectedness)  h_SelectedMuonDetectorTheta_Connectedness->Fill(MuonDetectorTheta,e.Weight);
-
-            h_MuonDetectorPhi_Connectedness->Fill(MuonDetectorPhi,e.Weight); 
-            Efficiency_MuonDetectorPhi_Connectedness->FillWeighted(passed_Connectedness,e.Weight,MuonDetectorPhi);
-            if(passed_Connectedness)  h_SelectedMuonDetectorPhi_Connectedness->Fill(MuonDetectorPhi,e.Weight);
-
-            h_MuonBeamTheta_Connectedness->Fill(MuonBeamTheta,e.Weight); 
-            Efficiency_MuonBeamTheta_Connectedness->FillWeighted(passed_Connectedness,e.Weight,MuonBeamTheta);
-            if(passed_Connectedness)  h_SelectedMuonBeamTheta_Connectedness->Fill(MuonBeamTheta,e.Weight);
-
-            h_MuonBeamPhi_Connectedness->Fill(MuonBeamPhi,e.Weight); 
-            Efficiency_MuonBeamPhi_Connectedness->FillWeighted(passed_Connectedness,e.Weight,MuonBeamPhi);
-            if(passed_Connectedness)  h_SelectedMuonBeamPhi_Connectedness->Fill(MuonBeamPhi,e.Weight);
-
-            h_LambdaMomentum_Connectedness->Fill(LambdaMomentum,e.Weight); 
-            Efficiency_LambdaMomentum_Connectedness->FillWeighted(passed_Connectedness,e.Weight,LambdaMomentum);
-            if(passed_Connectedness)  h_SelectedLambdaMomentum_Connectedness->Fill(LambdaMomentum,e.Weight);
-
-            h_DecayProtonMomentum_Connectedness->Fill(DecayProtonMomentum,e.Weight); 
-            Efficiency_DecayProtonMomentum_Connectedness->FillWeighted(passed_Connectedness,e.Weight,DecayProtonMomentum);
-            if(passed_Connectedness)  h_SelectedDecayProtonMomentum_Connectedness->Fill(DecayProtonMomentum,e.Weight);
-
-            h_DecayPionMomentum_Connectedness->Fill(DecayPionMomentum,e.Weight); 
-            Efficiency_DecayPionMomentum_Connectedness->FillWeighted(passed_Connectedness,e.Weight,DecayPionMomentum);
-            if(passed_Connectedness)  h_SelectedDecayPionMomentum_Connectedness->Fill(DecayPionMomentum,e.Weight);
-
-            h_OpeningAngle_Connectedness->Fill(OpeningAngle,e.Weight);
-            Efficiency_OpeningAngle_Connectedness->FillWeighted(passed_Connectedness,e.Weight,OpeningAngle);
-            if(OpeningAngle > 0 && passed_Connectedness) h_SelectedOpeningAngle_Connectedness->Fill(OpeningAngle,e.Weight);
-
-            h_LambdaRange_Connectedness->Fill(LambdaRange,e.Weight);
-            Efficiency_LambdaRange_Connectedness->FillWeighted(passed_Connectedness,e.Weight,LambdaRange);
-            if(LambdaRange > 0 && passed_Connectedness) h_SelectedLambdaRange_Connectedness->Fill(LambdaRange,e.Weight);
-
-            h_Connectedness->Fill(0.5,e.Weight);
-            Efficiency_Connectedness->FillWeighted(passed_Connectedness,e.Weight,0.5);
-            if(passed_Connectedness) h_Selected_Connectedness->Fill(0.5,e.Weight);
-
+            OpeningAngle = (180/3.1415)*Momentum1.Angle(Momentum2);
          }
 
-         //close the event assembler
-         E.Close();
+         bool passed_FV=false,passed_Tracks=false,passed_Showers=false,passed_MuonID=false,passed_TrackLengths=false,passed_Selector=false,passed_CT=false,passed_WCut=false,passed_AngleCut=false,passed_All=false;
+       
+         passed_FV = M.FiducialVolumeCut(e);
+         if(passed_FV) passed_Tracks = M.TrackCut(e);
+         if(passed_Tracks) passed_Showers = M.ShowerCut(e);
+         if(passed_Showers) passed_MuonID = M.ChooseMuonCandidate(e);
+         if(passed_MuonID) passed_Selector = M.ChooseProtonPionCandidates(e); 
+         if(passed_Selector) passed_CT = M.ConnectednessTest(e);
+         if(passed_CT) passed_WCut = M.WCut(e);
+         if(passed_WCut) passed_AngleCut = M.AngleCut(e);
 
+         passed_All = passed_AngleCut;
+
+         // Entire Selection         
+         h_Q2_All->Fill(Q2,e.Weight);
+         Efficiency_Q2_All->FillWeighted(passed_All,e.Weight,Q2);
+         if(Q2 > 0 && passed_All) h_SelectedQ2_All->Fill(Q2,e.Weight);
+
+         h_NuE_All->Fill(NuE,e.Weight); 
+         Efficiency_NuE_All->FillWeighted(passed_All,e.Weight,NuE);
+         if(NuE > 0 && passed_All)  h_SelectedNuE_All->Fill(NuE,e.Weight);
+
+         h_MuonKE_All->Fill(MuonKE,e.Weight); 
+         Efficiency_MuonKE_All->FillWeighted(passed_All,e.Weight,MuonKE);
+         if(MuonKE > 0 && passed_All)  h_SelectedMuonKE_All->Fill(MuonKE,e.Weight);
+
+         h_MuonTrueTheta_All->Fill(MuonTrueTheta,e.Weight); 
+         Efficiency_MuonTrueTheta_All->FillWeighted(passed_All,e.Weight,MuonTrueTheta);
+         if(passed_All)  h_SelectedMuonTrueTheta_All->Fill(MuonTrueTheta,e.Weight);
+
+         h_MuonDetectorTheta_All->Fill(MuonDetectorTheta,e.Weight); 
+         Efficiency_MuonDetectorTheta_All->FillWeighted(passed_All,e.Weight,MuonDetectorTheta);
+         if(passed_All)  h_SelectedMuonDetectorTheta_All->Fill(MuonDetectorTheta,e.Weight);
+
+         h_MuonDetectorPhi_All->Fill(MuonDetectorPhi,e.Weight); 
+         Efficiency_MuonDetectorPhi_All->FillWeighted(passed_All,e.Weight,MuonDetectorPhi);
+         if(passed_All)  h_SelectedMuonDetectorPhi_All->Fill(MuonDetectorPhi,e.Weight);
+
+         h_MuonBeamTheta_All->Fill(MuonBeamTheta,e.Weight); 
+         Efficiency_MuonBeamTheta_All->FillWeighted(passed_All,e.Weight,MuonBeamTheta);
+         if(passed_All)  h_SelectedMuonBeamTheta_All->Fill(MuonBeamTheta,e.Weight);
+
+         h_MuonBeamPhi_All->Fill(MuonBeamPhi,e.Weight); 
+         Efficiency_MuonBeamPhi_All->FillWeighted(passed_All,e.Weight,MuonBeamPhi);
+         if(passed_All)  h_SelectedMuonBeamPhi_All->Fill(MuonBeamPhi,e.Weight);
+
+         h_LambdaMomentum_All->Fill(LambdaMomentum,e.Weight); 
+         Efficiency_LambdaMomentum_All->FillWeighted(passed_All,e.Weight,LambdaMomentum);
+         if(passed_All)  h_SelectedLambdaMomentum_All->Fill(LambdaMomentum,e.Weight);
+
+         h_DecayProtonMomentum_All->Fill(DecayProtonMomentum,e.Weight); 
+         Efficiency_DecayProtonMomentum_All->FillWeighted(passed_All,e.Weight,DecayProtonMomentum);
+         if(passed_All)  h_SelectedDecayProtonMomentum_All->Fill(DecayProtonMomentum,e.Weight);
+
+         h_DecayPionMomentum_All->Fill(DecayPionMomentum,e.Weight); 
+         Efficiency_DecayPionMomentum_All->FillWeighted(passed_All,e.Weight,DecayPionMomentum);
+         if(passed_All)  h_SelectedDecayPionMomentum_All->Fill(DecayPionMomentum,e.Weight);
+
+         h_OpeningAngle_All->Fill(OpeningAngle,e.Weight);
+         Efficiency_OpeningAngle_All->FillWeighted(passed_All,e.Weight,OpeningAngle);
+         if(OpeningAngle > 0 && passed_All) h_SelectedOpeningAngle_All->Fill(OpeningAngle,e.Weight);
+
+         h_LambdaRange_All->Fill(LambdaRange,e.Weight);
+         Efficiency_LambdaRange_All->FillWeighted(passed_All,e.Weight,LambdaRange);
+         if(LambdaRange > 0 && passed_All) h_SelectedLambdaRange_All->Fill(LambdaRange,e.Weight);
+
+         h_All->Fill(0.5,e.Weight);
+         Efficiency_All->FillWeighted(passed_All,e.Weight,0.5);
+         if(passed_All) h_Selected_All->Fill(0.5,e.Weight);
+
+         // Fiducial Volume Cut
+         h_Q2_FV->Fill(Q2,e.Weight);
+         Efficiency_Q2_FV->FillWeighted(passed_FV,e.Weight,Q2);
+         if(Q2 > 0 && passed_FV) h_SelectedQ2_FV->Fill(Q2,e.Weight);
+
+         h_NuE_FV->Fill(NuE,e.Weight); 
+         Efficiency_NuE_FV->FillWeighted(passed_FV,e.Weight,NuE);
+         if(NuE > 0 && passed_FV)  h_SelectedNuE_FV->Fill(NuE,e.Weight);
+
+         h_MuonKE_FV->Fill(MuonKE,e.Weight); 
+         Efficiency_MuonKE_FV->FillWeighted(passed_FV,e.Weight,MuonKE);
+         if(MuonKE > 0 && passed_FV)  h_SelectedMuonKE_FV->Fill(MuonKE,e.Weight);
+
+         h_MuonTrueTheta_FV->Fill(MuonTrueTheta,e.Weight); 
+         Efficiency_MuonTrueTheta_FV->FillWeighted(passed_FV,e.Weight,MuonTrueTheta);
+         if(passed_FV)  h_SelectedMuonTrueTheta_FV->Fill(MuonTrueTheta,e.Weight);
+
+         h_MuonDetectorTheta_FV->Fill(MuonDetectorTheta,e.Weight); 
+         Efficiency_MuonDetectorTheta_FV->FillWeighted(passed_FV,e.Weight,MuonDetectorTheta);
+         if(passed_FV)  h_SelectedMuonDetectorTheta_FV->Fill(MuonDetectorTheta,e.Weight);
+
+         h_MuonDetectorPhi_FV->Fill(MuonDetectorPhi,e.Weight); 
+         Efficiency_MuonDetectorPhi_FV->FillWeighted(passed_FV,e.Weight,MuonDetectorPhi);
+         if(passed_FV)  h_SelectedMuonDetectorPhi_FV->Fill(MuonDetectorPhi,e.Weight);
+
+         h_MuonBeamTheta_FV->Fill(MuonBeamTheta,e.Weight); 
+         Efficiency_MuonBeamTheta_FV->FillWeighted(passed_FV,e.Weight,MuonBeamTheta);
+         if(passed_FV)  h_SelectedMuonBeamTheta_FV->Fill(MuonBeamTheta,e.Weight);
+
+         h_MuonBeamPhi_FV->Fill(MuonBeamPhi,e.Weight); 
+         Efficiency_MuonBeamPhi_FV->FillWeighted(passed_FV,e.Weight,MuonBeamPhi);
+         if(passed_FV)  h_SelectedMuonBeamPhi_FV->Fill(MuonBeamPhi,e.Weight);
+
+         h_LambdaMomentum_FV->Fill(LambdaMomentum,e.Weight); 
+         Efficiency_LambdaMomentum_FV->FillWeighted(passed_FV,e.Weight,LambdaMomentum);
+         if(passed_FV)  h_SelectedLambdaMomentum_FV->Fill(LambdaMomentum,e.Weight);
+
+         h_DecayProtonMomentum_FV->Fill(DecayProtonMomentum,e.Weight); 
+         Efficiency_DecayProtonMomentum_FV->FillWeighted(passed_FV,e.Weight,DecayProtonMomentum);
+         if(passed_FV)  h_SelectedDecayProtonMomentum_FV->Fill(DecayProtonMomentum,e.Weight);
+
+         h_DecayPionMomentum_FV->Fill(DecayPionMomentum,e.Weight); 
+         Efficiency_DecayPionMomentum_FV->FillWeighted(passed_FV,e.Weight,DecayPionMomentum);
+         if(passed_FV)  h_SelectedDecayPionMomentum_FV->Fill(DecayPionMomentum,e.Weight);
+
+         h_OpeningAngle_FV->Fill(OpeningAngle,e.Weight);
+         Efficiency_OpeningAngle_FV->FillWeighted(passed_FV,e.Weight,OpeningAngle);
+         if(OpeningAngle > 0 && passed_FV) h_SelectedOpeningAngle_FV->Fill(OpeningAngle,e.Weight);
+
+         h_LambdaRange_FV->Fill(LambdaRange,e.Weight);
+         Efficiency_LambdaRange_FV->FillWeighted(passed_FV,e.Weight,LambdaRange);
+         if(LambdaRange > 0 && passed_FV) h_SelectedLambdaRange_FV->Fill(LambdaRange,e.Weight);
+
+         h_FV->Fill(0.5,e.Weight);
+         Efficiency_FV->FillWeighted(passed_FV,e.Weight,0.5);
+         if(passed_FV) h_Selected_FV->Fill(0.5,e.Weight);
+
+         // Track Cut
+         h_Q2_Tracks->Fill(Q2,e.Weight);
+         Efficiency_Q2_Tracks->FillWeighted(passed_Tracks,e.Weight,Q2);
+         if(Q2 > 0 && passed_Tracks) h_SelectedQ2_Tracks->Fill(Q2,e.Weight);
+
+         h_NuE_Tracks->Fill(NuE,e.Weight); 
+         Efficiency_NuE_Tracks->FillWeighted(passed_Tracks,e.Weight,NuE);
+         if(NuE > 0 && passed_Tracks)  h_SelectedNuE_Tracks->Fill(NuE,e.Weight);
+
+         h_MuonKE_Tracks->Fill(MuonKE,e.Weight); 
+         Efficiency_MuonKE_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonKE);
+         if(MuonKE > 0 && passed_Tracks)  h_SelectedMuonKE_Tracks->Fill(MuonKE,e.Weight);
+
+         h_MuonTrueTheta_Tracks->Fill(MuonTrueTheta,e.Weight); 
+         Efficiency_MuonTrueTheta_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonTrueTheta);
+         if(passed_Tracks)  h_SelectedMuonTrueTheta_Tracks->Fill(MuonTrueTheta,e.Weight);
+
+         h_MuonDetectorTheta_Tracks->Fill(MuonDetectorTheta,e.Weight); 
+         Efficiency_MuonDetectorTheta_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonDetectorTheta);
+         if(passed_Tracks)  h_SelectedMuonDetectorTheta_Tracks->Fill(MuonDetectorTheta,e.Weight);
+
+         h_MuonDetectorPhi_Tracks->Fill(MuonDetectorPhi,e.Weight); 
+         Efficiency_MuonDetectorPhi_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonDetectorPhi);
+         if(passed_Tracks)  h_SelectedMuonDetectorPhi_Tracks->Fill(MuonDetectorPhi,e.Weight);
+
+         h_MuonBeamTheta_Tracks->Fill(MuonBeamTheta,e.Weight); 
+         Efficiency_MuonBeamTheta_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonBeamTheta);
+         if(passed_Tracks)  h_SelectedMuonBeamTheta_Tracks->Fill(MuonBeamTheta,e.Weight);
+
+         h_MuonBeamPhi_Tracks->Fill(MuonBeamPhi,e.Weight); 
+         Efficiency_MuonBeamPhi_Tracks->FillWeighted(passed_Tracks,e.Weight,MuonBeamPhi);
+         if(passed_Tracks)  h_SelectedMuonBeamPhi_Tracks->Fill(MuonBeamPhi,e.Weight);
+
+         h_LambdaMomentum_Tracks->Fill(LambdaMomentum,e.Weight); 
+         Efficiency_LambdaMomentum_Tracks->FillWeighted(passed_Tracks,e.Weight,LambdaMomentum);
+         if(passed_Tracks)  h_SelectedLambdaMomentum_Tracks->Fill(LambdaMomentum,e.Weight);
+
+         h_DecayProtonMomentum_Tracks->Fill(DecayProtonMomentum,e.Weight); 
+         Efficiency_DecayProtonMomentum_Tracks->FillWeighted(passed_Tracks,e.Weight,DecayProtonMomentum);
+         if(passed_Tracks)  h_SelectedDecayProtonMomentum_Tracks->Fill(DecayProtonMomentum,e.Weight);
+
+         h_DecayPionMomentum_Tracks->Fill(DecayPionMomentum,e.Weight); 
+         Efficiency_DecayPionMomentum_Tracks->FillWeighted(passed_Tracks,e.Weight,DecayPionMomentum);
+         if(passed_Tracks)  h_SelectedDecayPionMomentum_Tracks->Fill(DecayPionMomentum,e.Weight);
+
+         h_OpeningAngle_Tracks->Fill(OpeningAngle,e.Weight);
+         Efficiency_OpeningAngle_Tracks->FillWeighted(passed_Tracks,e.Weight,OpeningAngle);
+         if(OpeningAngle > 0 && passed_Tracks) h_SelectedOpeningAngle_Tracks->Fill(OpeningAngle,e.Weight);
+
+         h_LambdaRange_Tracks->Fill(LambdaRange,e.Weight);
+         Efficiency_LambdaRange_Tracks->FillWeighted(passed_Tracks,e.Weight,LambdaRange);
+         if(LambdaRange > 0 && passed_Tracks) h_SelectedLambdaRange_Tracks->Fill(LambdaRange,e.Weight);
+
+         h_Tracks->Fill(0.5,e.Weight);
+         Efficiency_Tracks->FillWeighted(passed_Tracks,e.Weight,0.5);
+         if(passed_Tracks) h_Selected_Tracks->Fill(0.5,e.Weight);
+
+         // Shower Cut
+         h_Q2_Showers->Fill(Q2,e.Weight);
+         Efficiency_Q2_Showers->FillWeighted(passed_Showers,e.Weight,Q2);
+         if(Q2 > 0 && passed_Showers) h_SelectedQ2_Showers->Fill(Q2,e.Weight);
+
+         h_NuE_Showers->Fill(NuE,e.Weight); 
+         Efficiency_NuE_Showers->FillWeighted(passed_Showers,e.Weight,NuE);
+         if(NuE > 0 && passed_Showers)  h_SelectedNuE_Showers->Fill(NuE,e.Weight);
+
+         h_MuonKE_Showers->Fill(MuonKE,e.Weight); 
+         Efficiency_MuonKE_Showers->FillWeighted(passed_Showers,e.Weight,MuonKE);
+         if(MuonKE > 0 && passed_Showers)  h_SelectedMuonKE_Showers->Fill(MuonKE,e.Weight);
+
+         h_MuonTrueTheta_Showers->Fill(MuonTrueTheta,e.Weight); 
+         Efficiency_MuonTrueTheta_Showers->FillWeighted(passed_Showers,e.Weight,MuonTrueTheta);
+         if(passed_Showers)  h_SelectedMuonTrueTheta_Showers->Fill(MuonTrueTheta,e.Weight);
+
+         h_MuonDetectorTheta_Showers->Fill(MuonDetectorTheta,e.Weight); 
+         Efficiency_MuonDetectorTheta_Showers->FillWeighted(passed_Showers,e.Weight,MuonDetectorTheta);
+         if(passed_Showers)  h_SelectedMuonDetectorTheta_Showers->Fill(MuonDetectorTheta,e.Weight);
+
+         h_MuonDetectorPhi_Showers->Fill(MuonDetectorPhi,e.Weight); 
+         Efficiency_MuonDetectorPhi_Showers->FillWeighted(passed_Showers,e.Weight,MuonDetectorPhi);
+         if(passed_Showers)  h_SelectedMuonDetectorPhi_Showers->Fill(MuonDetectorPhi,e.Weight);
+
+         h_MuonBeamTheta_Showers->Fill(MuonBeamTheta,e.Weight); 
+         Efficiency_MuonBeamTheta_Showers->FillWeighted(passed_Showers,e.Weight,MuonBeamTheta);
+         if(passed_Showers)  h_SelectedMuonBeamTheta_Showers->Fill(MuonBeamTheta,e.Weight);
+
+         h_MuonBeamPhi_Showers->Fill(MuonBeamPhi,e.Weight); 
+         Efficiency_MuonBeamPhi_Showers->FillWeighted(passed_Showers,e.Weight,MuonBeamPhi);
+         if(passed_Showers)  h_SelectedMuonBeamPhi_Showers->Fill(MuonBeamPhi,e.Weight);
+
+         h_LambdaMomentum_Showers->Fill(LambdaMomentum,e.Weight); 
+         Efficiency_LambdaMomentum_Showers->FillWeighted(passed_Showers,e.Weight,LambdaMomentum);
+         if(passed_Showers)  h_SelectedLambdaMomentum_Showers->Fill(LambdaMomentum,e.Weight);
+
+         h_DecayProtonMomentum_Showers->Fill(DecayProtonMomentum,e.Weight); 
+         Efficiency_DecayProtonMomentum_Showers->FillWeighted(passed_Showers,e.Weight,DecayProtonMomentum);
+         if(passed_Showers)  h_SelectedDecayProtonMomentum_Showers->Fill(DecayProtonMomentum,e.Weight);
+
+         h_DecayPionMomentum_Showers->Fill(DecayPionMomentum,e.Weight); 
+         Efficiency_DecayPionMomentum_Showers->FillWeighted(passed_Showers,e.Weight,DecayPionMomentum);
+         if(passed_Showers)  h_SelectedDecayPionMomentum_Showers->Fill(DecayPionMomentum,e.Weight);
+
+         h_OpeningAngle_Showers->Fill(OpeningAngle,e.Weight);
+         Efficiency_OpeningAngle_Showers->FillWeighted(passed_Showers,e.Weight,OpeningAngle);
+         if(OpeningAngle > 0 && passed_Showers) h_SelectedOpeningAngle_Showers->Fill(OpeningAngle,e.Weight);
+
+         h_LambdaRange_Showers->Fill(LambdaRange,e.Weight);
+         Efficiency_LambdaRange_Showers->FillWeighted(passed_Showers,e.Weight,LambdaRange);
+         if(LambdaRange > 0 && passed_Showers) h_SelectedLambdaRange_Showers->Fill(LambdaRange,e.Weight);
+
+         h_Showers->Fill(0.5,e.Weight);
+         Efficiency_Showers->FillWeighted(passed_Showers,e.Weight,0.5);
+         if(passed_Showers) h_Selected_Showers->Fill(0.5,e.Weight);
+
+         // Muon ID
+         h_Q2_MuonID->Fill(Q2,e.Weight);
+         Efficiency_Q2_MuonID->FillWeighted(passed_MuonID,e.Weight,Q2);
+         if(Q2 > 0 && passed_MuonID) h_SelectedQ2_MuonID->Fill(Q2,e.Weight);
+
+         h_NuE_MuonID->Fill(NuE,e.Weight); 
+         Efficiency_NuE_MuonID->FillWeighted(passed_MuonID,e.Weight,NuE);
+         if(NuE > 0 && passed_MuonID)  h_SelectedNuE_MuonID->Fill(NuE,e.Weight);
+
+         h_MuonKE_MuonID->Fill(MuonKE,e.Weight); 
+         Efficiency_MuonKE_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonKE);
+         if(MuonKE > 0 && passed_MuonID)  h_SelectedMuonKE_MuonID->Fill(MuonKE,e.Weight);
+
+         h_MuonTrueTheta_MuonID->Fill(MuonTrueTheta,e.Weight); 
+         Efficiency_MuonTrueTheta_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonTrueTheta);
+         if(passed_MuonID)  h_SelectedMuonTrueTheta_MuonID->Fill(MuonTrueTheta,e.Weight);
+
+         h_MuonDetectorTheta_MuonID->Fill(MuonDetectorTheta,e.Weight); 
+         Efficiency_MuonDetectorTheta_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonDetectorTheta);
+         if(passed_MuonID)  h_SelectedMuonDetectorTheta_MuonID->Fill(MuonDetectorTheta,e.Weight);
+
+         h_MuonDetectorPhi_MuonID->Fill(MuonDetectorPhi,e.Weight); 
+         Efficiency_MuonDetectorPhi_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonDetectorPhi);
+         if(passed_MuonID)  h_SelectedMuonDetectorPhi_MuonID->Fill(MuonDetectorPhi,e.Weight);
+
+         h_MuonBeamTheta_MuonID->Fill(MuonBeamTheta,e.Weight); 
+         Efficiency_MuonBeamTheta_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonBeamTheta);
+         if(passed_MuonID)  h_SelectedMuonBeamTheta_MuonID->Fill(MuonBeamTheta,e.Weight);
+
+         h_MuonBeamPhi_MuonID->Fill(MuonBeamPhi,e.Weight); 
+         Efficiency_MuonBeamPhi_MuonID->FillWeighted(passed_MuonID,e.Weight,MuonBeamPhi);
+         if(passed_MuonID)  h_SelectedMuonBeamPhi_MuonID->Fill(MuonBeamPhi,e.Weight);
+
+         h_LambdaMomentum_MuonID->Fill(LambdaMomentum,e.Weight); 
+         Efficiency_LambdaMomentum_MuonID->FillWeighted(passed_MuonID,e.Weight,LambdaMomentum);
+         if(passed_MuonID)  h_SelectedLambdaMomentum_MuonID->Fill(LambdaMomentum,e.Weight);
+
+         h_DecayProtonMomentum_MuonID->Fill(DecayProtonMomentum,e.Weight); 
+         Efficiency_DecayProtonMomentum_MuonID->FillWeighted(passed_MuonID,e.Weight,DecayProtonMomentum);
+         if(passed_MuonID)  h_SelectedDecayProtonMomentum_MuonID->Fill(DecayProtonMomentum,e.Weight);
+
+         h_DecayPionMomentum_MuonID->Fill(DecayPionMomentum,e.Weight); 
+         Efficiency_DecayPionMomentum_MuonID->FillWeighted(passed_MuonID,e.Weight,DecayPionMomentum);
+         if(passed_MuonID)  h_SelectedDecayPionMomentum_MuonID->Fill(DecayPionMomentum,e.Weight);
+
+         h_OpeningAngle_MuonID->Fill(OpeningAngle,e.Weight);
+         Efficiency_OpeningAngle_MuonID->FillWeighted(passed_MuonID,e.Weight,OpeningAngle);
+         if(OpeningAngle > 0 && passed_MuonID) h_SelectedOpeningAngle_MuonID->Fill(OpeningAngle,e.Weight);
+
+         h_LambdaRange_MuonID->Fill(LambdaRange,e.Weight);
+         Efficiency_LambdaRange_MuonID->FillWeighted(passed_MuonID,e.Weight,LambdaRange);
+         if(LambdaRange > 0 && passed_MuonID) h_SelectedLambdaRange_MuonID->Fill(LambdaRange,e.Weight);
+
+         h_MuonID->Fill(0.5,e.Weight);
+         Efficiency_MuonID->FillWeighted(passed_MuonID,e.Weight,0.5);
+         if(passed_MuonID) h_Selected_MuonID->Fill(0.5,e.Weight);
+
+         // Decay Selector
+         h_Q2_Selector->Fill(Q2,e.Weight);
+         Efficiency_Q2_Selector->FillWeighted(passed_Selector,e.Weight,Q2);
+         if(Q2 > 0 && passed_Selector) h_SelectedQ2_Selector->Fill(Q2,e.Weight);
+
+         h_NuE_Selector->Fill(NuE,e.Weight); 
+         Efficiency_NuE_Selector->FillWeighted(passed_Selector,e.Weight,NuE);
+         if(NuE > 0 && passed_Selector)  h_SelectedNuE_Selector->Fill(NuE,e.Weight);
+
+         h_MuonKE_Selector->Fill(MuonKE,e.Weight); 
+         Efficiency_MuonKE_Selector->FillWeighted(passed_Selector,e.Weight,MuonKE);
+         if(MuonKE > 0 && passed_Selector)  h_SelectedMuonKE_Selector->Fill(MuonKE,e.Weight);
+
+         h_MuonTrueTheta_Selector->Fill(MuonTrueTheta,e.Weight); 
+         Efficiency_MuonTrueTheta_Selector->FillWeighted(passed_Selector,e.Weight,MuonTrueTheta);
+         if(passed_Selector)  h_SelectedMuonTrueTheta_Selector->Fill(MuonTrueTheta,e.Weight);
+
+         h_MuonDetectorTheta_Selector->Fill(MuonDetectorTheta,e.Weight); 
+         Efficiency_MuonDetectorTheta_Selector->FillWeighted(passed_Selector,e.Weight,MuonDetectorTheta);
+         if(passed_Selector)  h_SelectedMuonDetectorTheta_Selector->Fill(MuonDetectorTheta,e.Weight);
+
+         h_MuonDetectorPhi_Selector->Fill(MuonDetectorPhi,e.Weight); 
+         Efficiency_MuonDetectorPhi_Selector->FillWeighted(passed_Selector,e.Weight,MuonDetectorPhi);
+         if(passed_Selector)  h_SelectedMuonDetectorPhi_Selector->Fill(MuonDetectorPhi,e.Weight);
+
+         h_MuonBeamTheta_Selector->Fill(MuonBeamTheta,e.Weight); 
+         Efficiency_MuonBeamTheta_Selector->FillWeighted(passed_Selector,e.Weight,MuonBeamTheta);
+         if(passed_Selector)  h_SelectedMuonBeamTheta_Selector->Fill(MuonBeamTheta,e.Weight);
+
+         h_MuonBeamPhi_Selector->Fill(MuonBeamPhi,e.Weight); 
+         Efficiency_MuonBeamPhi_Selector->FillWeighted(passed_Selector,e.Weight,MuonBeamPhi);
+         if(passed_Selector)  h_SelectedMuonBeamPhi_Selector->Fill(MuonBeamPhi,e.Weight);
+
+         h_LambdaMomentum_Selector->Fill(LambdaMomentum,e.Weight); 
+         Efficiency_LambdaMomentum_Selector->FillWeighted(passed_Selector,e.Weight,LambdaMomentum);
+         if(passed_Selector)  h_SelectedLambdaMomentum_Selector->Fill(LambdaMomentum,e.Weight);
+
+         h_DecayProtonMomentum_Selector->Fill(DecayProtonMomentum,e.Weight); 
+         Efficiency_DecayProtonMomentum_Selector->FillWeighted(passed_Selector,e.Weight,DecayProtonMomentum);
+         if(passed_Selector)  h_SelectedDecayProtonMomentum_Selector->Fill(DecayProtonMomentum,e.Weight);
+
+         h_DecayPionMomentum_Selector->Fill(DecayPionMomentum,e.Weight); 
+         Efficiency_DecayPionMomentum_Selector->FillWeighted(passed_Selector,e.Weight,DecayPionMomentum);
+         if(passed_Selector)  h_SelectedDecayPionMomentum_Selector->Fill(DecayPionMomentum,e.Weight);
+
+         h_OpeningAngle_Selector->Fill(OpeningAngle,e.Weight);
+         Efficiency_OpeningAngle_Selector->FillWeighted(passed_Selector,e.Weight,OpeningAngle);
+         if(OpeningAngle > 0 && passed_Selector) h_SelectedOpeningAngle_Selector->Fill(OpeningAngle,e.Weight);
+
+         h_Selector->Fill(0.5,e.Weight);
+         Efficiency_Selector->FillWeighted(passed_Selector,e.Weight,0.5);
+         if(passed_Selector) h_Selected_Selector->Fill(0.5,e.Weight);
+
+         h_LambdaRange_Selector->Fill(LambdaRange,e.Weight);
+         Efficiency_LambdaRange_Selector->FillWeighted(passed_Selector,e.Weight,LambdaRange);
+         if(LambdaRange > 0 && passed_Selector) h_SelectedLambdaRange_Selector->Fill(LambdaRange,e.Weight);
+
+         // Connectedness
+         h_Q2_CT->Fill(Q2,e.Weight);
+         Efficiency_Q2_CT->FillWeighted(passed_CT,e.Weight,Q2);
+         if(Q2 > 0 && passed_CT) h_SelectedQ2_CT->Fill(Q2,e.Weight);
+
+         h_NuE_CT->Fill(NuE,e.Weight); 
+         Efficiency_NuE_CT->FillWeighted(passed_CT,e.Weight,NuE);
+         if(NuE > 0 && passed_CT)  h_SelectedNuE_CT->Fill(NuE,e.Weight);
+
+         h_MuonKE_CT->Fill(MuonKE,e.Weight); 
+         Efficiency_MuonKE_CT->FillWeighted(passed_CT,e.Weight,MuonKE);
+         if(MuonKE > 0 && passed_CT)  h_SelectedMuonKE_CT->Fill(MuonKE,e.Weight);
+
+         h_MuonTrueTheta_CT->Fill(MuonTrueTheta,e.Weight); 
+         Efficiency_MuonTrueTheta_CT->FillWeighted(passed_CT,e.Weight,MuonTrueTheta);
+         if(passed_CT)  h_SelectedMuonTrueTheta_CT->Fill(MuonTrueTheta,e.Weight);
+
+         h_MuonDetectorTheta_CT->Fill(MuonDetectorTheta,e.Weight); 
+         Efficiency_MuonDetectorTheta_CT->FillWeighted(passed_CT,e.Weight,MuonDetectorTheta);
+         if(passed_CT)  h_SelectedMuonDetectorTheta_CT->Fill(MuonDetectorTheta,e.Weight);
+
+         h_MuonDetectorPhi_CT->Fill(MuonDetectorPhi,e.Weight); 
+         Efficiency_MuonDetectorPhi_CT->FillWeighted(passed_CT,e.Weight,MuonDetectorPhi);
+         if(passed_CT)  h_SelectedMuonDetectorPhi_CT->Fill(MuonDetectorPhi,e.Weight);
+
+         h_MuonBeamTheta_CT->Fill(MuonBeamTheta,e.Weight); 
+         Efficiency_MuonBeamTheta_CT->FillWeighted(passed_CT,e.Weight,MuonBeamTheta);
+         if(passed_CT)  h_SelectedMuonBeamTheta_CT->Fill(MuonBeamTheta,e.Weight);
+
+         h_MuonBeamPhi_CT->Fill(MuonBeamPhi,e.Weight); 
+         Efficiency_MuonBeamPhi_CT->FillWeighted(passed_CT,e.Weight,MuonBeamPhi);
+         if(passed_CT)  h_SelectedMuonBeamPhi_CT->Fill(MuonBeamPhi,e.Weight);
+
+         h_LambdaMomentum_CT->Fill(LambdaMomentum,e.Weight); 
+         Efficiency_LambdaMomentum_CT->FillWeighted(passed_CT,e.Weight,LambdaMomentum);
+         if(passed_CT)  h_SelectedLambdaMomentum_CT->Fill(LambdaMomentum,e.Weight);
+
+         h_DecayProtonMomentum_CT->Fill(DecayProtonMomentum,e.Weight); 
+         Efficiency_DecayProtonMomentum_CT->FillWeighted(passed_CT,e.Weight,DecayProtonMomentum);
+         if(passed_CT)  h_SelectedDecayProtonMomentum_CT->Fill(DecayProtonMomentum,e.Weight);
+
+         h_DecayPionMomentum_CT->Fill(DecayPionMomentum,e.Weight); 
+         Efficiency_DecayPionMomentum_CT->FillWeighted(passed_CT,e.Weight,DecayPionMomentum);
+         if(passed_CT)  h_SelectedDecayPionMomentum_CT->Fill(DecayPionMomentum,e.Weight);
+
+         h_OpeningAngle_CT->Fill(OpeningAngle,e.Weight);
+         Efficiency_OpeningAngle_CT->FillWeighted(passed_CT,e.Weight,OpeningAngle);
+         if(OpeningAngle > 0 && passed_CT) h_SelectedOpeningAngle_CT->Fill(OpeningAngle,e.Weight);
+
+         h_LambdaRange_CT->Fill(LambdaRange,e.Weight);
+         Efficiency_LambdaRange_CT->FillWeighted(passed_CT,e.Weight,LambdaRange);
+         if(LambdaRange > 0 && passed_CT) h_SelectedLambdaRange_CT->Fill(LambdaRange,e.Weight);
+
+         h_CT->Fill(0.5,e.Weight);
+         Efficiency_CT->FillWeighted(passed_CT,e.Weight,0.5);
+         if(passed_CT) h_Selected_CT->Fill(0.5,e.Weight);
+
+         // Invariant mass cut
+         h_Q2_WCut->Fill(Q2,e.Weight);
+         Efficiency_Q2_WCut->FillWeighted(passed_WCut,e.Weight,Q2);
+         if(Q2 > 0 && passed_WCut) h_SelectedQ2_WCut->Fill(Q2,e.Weight);
+
+         h_NuE_WCut->Fill(NuE,e.Weight); 
+         Efficiency_NuE_WCut->FillWeighted(passed_WCut,e.Weight,NuE);
+         if(NuE > 0 && passed_WCut)  h_SelectedNuE_WCut->Fill(NuE,e.Weight);
+
+         h_MuonKE_WCut->Fill(MuonKE,e.Weight); 
+         Efficiency_MuonKE_WCut->FillWeighted(passed_WCut,e.Weight,MuonKE);
+         if(MuonKE > 0 && passed_WCut)  h_SelectedMuonKE_WCut->Fill(MuonKE,e.Weight);
+
+         h_MuonTrueTheta_WCut->Fill(MuonTrueTheta,e.Weight); 
+         Efficiency_MuonTrueTheta_WCut->FillWeighted(passed_WCut,e.Weight,MuonTrueTheta);
+         if(passed_WCut)  h_SelectedMuonTrueTheta_WCut->Fill(MuonTrueTheta,e.Weight);
+
+         h_MuonDetectorTheta_WCut->Fill(MuonDetectorTheta,e.Weight); 
+         Efficiency_MuonDetectorTheta_WCut->FillWeighted(passed_WCut,e.Weight,MuonDetectorTheta);
+         if(passed_WCut)  h_SelectedMuonDetectorTheta_WCut->Fill(MuonDetectorTheta,e.Weight);
+
+         h_MuonDetectorPhi_WCut->Fill(MuonDetectorPhi,e.Weight); 
+         Efficiency_MuonDetectorPhi_WCut->FillWeighted(passed_WCut,e.Weight,MuonDetectorPhi);
+         if(passed_WCut)  h_SelectedMuonDetectorPhi_WCut->Fill(MuonDetectorPhi,e.Weight);
+
+         h_MuonBeamTheta_WCut->Fill(MuonBeamTheta,e.Weight); 
+         Efficiency_MuonBeamTheta_WCut->FillWeighted(passed_WCut,e.Weight,MuonBeamTheta);
+         if(passed_WCut)  h_SelectedMuonBeamTheta_WCut->Fill(MuonBeamTheta,e.Weight);
+
+         h_MuonBeamPhi_WCut->Fill(MuonBeamPhi,e.Weight); 
+         Efficiency_MuonBeamPhi_WCut->FillWeighted(passed_WCut,e.Weight,MuonBeamPhi);
+         if(passed_WCut)  h_SelectedMuonBeamPhi_WCut->Fill(MuonBeamPhi,e.Weight);
+
+         h_LambdaMomentum_WCut->Fill(LambdaMomentum,e.Weight); 
+         Efficiency_LambdaMomentum_WCut->FillWeighted(passed_WCut,e.Weight,LambdaMomentum);
+         if(passed_WCut)  h_SelectedLambdaMomentum_WCut->Fill(LambdaMomentum,e.Weight);
+
+         h_DecayProtonMomentum_WCut->Fill(DecayProtonMomentum,e.Weight); 
+         Efficiency_DecayProtonMomentum_WCut->FillWeighted(passed_WCut,e.Weight,DecayProtonMomentum);
+         if(passed_WCut)  h_SelectedDecayProtonMomentum_WCut->Fill(DecayProtonMomentum,e.Weight);
+
+         h_DecayPionMomentum_WCut->Fill(DecayPionMomentum,e.Weight); 
+         Efficiency_DecayPionMomentum_WCut->FillWeighted(passed_WCut,e.Weight,DecayPionMomentum);
+         if(passed_WCut)  h_SelectedDecayPionMomentum_WCut->Fill(DecayPionMomentum,e.Weight);
+
+         h_OpeningAngle_WCut->Fill(OpeningAngle,e.Weight);
+         Efficiency_OpeningAngle_WCut->FillWeighted(passed_WCut,e.Weight,OpeningAngle);
+         if(OpeningAngle > 0 && passed_WCut) h_SelectedOpeningAngle_WCut->Fill(OpeningAngle,e.Weight);
+
+         h_LambdaRange_WCut->Fill(LambdaRange,e.Weight);
+         Efficiency_LambdaRange_WCut->FillWeighted(passed_WCut,e.Weight,LambdaRange);
+         if(LambdaRange > 0 && passed_WCut) h_SelectedLambdaRange_WCut->Fill(LambdaRange,e.Weight);
+
+         h_WCut->Fill(0.5,e.Weight);
+         Efficiency_WCut->FillWeighted(passed_WCut,e.Weight,0.5);
+         if(passed_WCut) h_Selected_WCut->Fill(0.5,e.Weight);
+
+         // Angle cut
+         h_Q2_AngleCut->Fill(Q2,e.Weight);
+         Efficiency_Q2_AngleCut->FillWeighted(passed_AngleCut,e.Weight,Q2);
+         if(Q2 > 0 && passed_AngleCut) h_SelectedQ2_AngleCut->Fill(Q2,e.Weight);
+
+         h_NuE_AngleCut->Fill(NuE,e.Weight); 
+         Efficiency_NuE_AngleCut->FillWeighted(passed_AngleCut,e.Weight,NuE);
+         if(NuE > 0 && passed_AngleCut)  h_SelectedNuE_AngleCut->Fill(NuE,e.Weight);
+
+         h_MuonKE_AngleCut->Fill(MuonKE,e.Weight); 
+         Efficiency_MuonKE_AngleCut->FillWeighted(passed_AngleCut,e.Weight,MuonKE);
+         if(MuonKE > 0 && passed_AngleCut)  h_SelectedMuonKE_AngleCut->Fill(MuonKE,e.Weight);
+
+         h_MuonTrueTheta_AngleCut->Fill(MuonTrueTheta,e.Weight); 
+         Efficiency_MuonTrueTheta_AngleCut->FillWeighted(passed_AngleCut,e.Weight,MuonTrueTheta);
+         if(passed_AngleCut)  h_SelectedMuonTrueTheta_AngleCut->Fill(MuonTrueTheta,e.Weight);
+
+         h_MuonDetectorTheta_AngleCut->Fill(MuonDetectorTheta,e.Weight); 
+         Efficiency_MuonDetectorTheta_AngleCut->FillWeighted(passed_AngleCut,e.Weight,MuonDetectorTheta);
+         if(passed_AngleCut)  h_SelectedMuonDetectorTheta_AngleCut->Fill(MuonDetectorTheta,e.Weight);
+
+         h_MuonDetectorPhi_AngleCut->Fill(MuonDetectorPhi,e.Weight); 
+         Efficiency_MuonDetectorPhi_AngleCut->FillWeighted(passed_AngleCut,e.Weight,MuonDetectorPhi);
+         if(passed_AngleCut)  h_SelectedMuonDetectorPhi_AngleCut->Fill(MuonDetectorPhi,e.Weight);
+
+         h_MuonBeamTheta_AngleCut->Fill(MuonBeamTheta,e.Weight); 
+         Efficiency_MuonBeamTheta_AngleCut->FillWeighted(passed_AngleCut,e.Weight,MuonBeamTheta);
+         if(passed_AngleCut)  h_SelectedMuonBeamTheta_AngleCut->Fill(MuonBeamTheta,e.Weight);
+
+         h_MuonBeamPhi_AngleCut->Fill(MuonBeamPhi,e.Weight); 
+         Efficiency_MuonBeamPhi_AngleCut->FillWeighted(passed_AngleCut,e.Weight,MuonBeamPhi);
+         if(passed_AngleCut)  h_SelectedMuonBeamPhi_AngleCut->Fill(MuonBeamPhi,e.Weight);
+
+         h_LambdaMomentum_AngleCut->Fill(LambdaMomentum,e.Weight); 
+         Efficiency_LambdaMomentum_AngleCut->FillWeighted(passed_AngleCut,e.Weight,LambdaMomentum);
+         if(passed_AngleCut)  h_SelectedLambdaMomentum_AngleCut->Fill(LambdaMomentum,e.Weight);
+
+         h_DecayProtonMomentum_AngleCut->Fill(DecayProtonMomentum,e.Weight); 
+         Efficiency_DecayProtonMomentum_AngleCut->FillWeighted(passed_AngleCut,e.Weight,DecayProtonMomentum);
+         if(passed_AngleCut)  h_SelectedDecayProtonMomentum_AngleCut->Fill(DecayProtonMomentum,e.Weight);
+
+         h_DecayPionMomentum_AngleCut->Fill(DecayPionMomentum,e.Weight); 
+         Efficiency_DecayPionMomentum_AngleCut->FillWeighted(passed_AngleCut,e.Weight,DecayPionMomentum);
+         if(passed_AngleCut)  h_SelectedDecayPionMomentum_AngleCut->Fill(DecayPionMomentum,e.Weight);
+
+         h_OpeningAngle_AngleCut->Fill(OpeningAngle,e.Weight);
+         Efficiency_OpeningAngle_AngleCut->FillWeighted(passed_AngleCut,e.Weight,OpeningAngle);
+         if(OpeningAngle > 0 && passed_AngleCut) h_SelectedOpeningAngle_AngleCut->Fill(OpeningAngle,e.Weight);
+
+         h_LambdaRange_AngleCut->Fill(LambdaRange,e.Weight);
+         Efficiency_LambdaRange_AngleCut->FillWeighted(passed_AngleCut,e.Weight,LambdaRange);
+         if(LambdaRange > 0 && passed_AngleCut) h_SelectedLambdaRange_AngleCut->Fill(LambdaRange,e.Weight);
+
+         h_AngleCut->Fill(0.5,e.Weight);
+         Efficiency_AngleCut->FillWeighted(passed_AngleCut,e.Weight,0.5);
+         if(passed_AngleCut) h_Selected_AngleCut->Fill(0.5,e.Weight);
       }
+
+      //close the event assembler
+      E.Close();
 
       // Entire Selection
       DrawEfficiencyPlot(h_Q2_All,h_SelectedQ2_All,Efficiency_Q2_All,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_All",Mode,POT);
@@ -1250,22 +1238,6 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_LambdaRange_MuonID,h_SelectedLambdaRange_MuonID,Efficiency_LambdaRange_MuonID,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_MuonID",Mode,POT);
       DrawEfficiencyPlot(h_MuonID,h_Selected_MuonID,Efficiency_MuonID,";;Events",label + "_MuonID",Mode,POT);
 
-      // Subleading Track Lengths
-      DrawEfficiencyPlot(h_Q2_TrackLengths,h_SelectedQ2_TrackLengths,Efficiency_Q2_TrackLengths,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_NuE_TrackLengths,h_SelectedNuE_TrackLengths,Efficiency_NuE_TrackLengths,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_MuonKE_TrackLengths,h_SelectedMuonKE_TrackLengths,Efficiency_MuonKE_TrackLengths,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_MuonTrueTheta_TrackLengths,h_SelectedMuonTrueTheta_TrackLengths,Efficiency_MuonTrueTheta_TrackLengths,";True Muon #theta;Events",label + "_MuonTrueTheta_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_MuonDetectorTheta_TrackLengths,h_SelectedMuonDetectorTheta_TrackLengths,Efficiency_MuonDetectorTheta_TrackLengths,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_MuonDetectorPhi_TrackLengths,h_SelectedMuonDetectorPhi_TrackLengths,Efficiency_MuonDetectorPhi_TrackLengths,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_MuonBeamTheta_TrackLengths,h_SelectedMuonBeamTheta_TrackLengths,Efficiency_MuonBeamTheta_TrackLengths,";Beam Muon #theta;Events",label + "_MuonBeamTheta_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_MuonBeamPhi_TrackLengths,h_SelectedMuonBeamPhi_TrackLengths,Efficiency_MuonBeamPhi_TrackLengths,";Beam Muon #phi;Events",label + "_MuonBeamPhi_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_LambdaMomentum_TrackLengths,h_SelectedLambdaMomentum_TrackLengths,Efficiency_LambdaMomentum_TrackLengths,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_DecayProtonMomentum_TrackLengths,h_SelectedDecayProtonMomentum_TrackLengths,Efficiency_DecayProtonMomentum_TrackLengths,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_DecayPionMomentum_TrackLengths,h_SelectedDecayPionMomentum_TrackLengths,Efficiency_DecayPionMomentum_TrackLengths,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_OpeningAngle_TrackLengths,h_SelectedOpeningAngle_TrackLengths,Efficiency_OpeningAngle_TrackLengths,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_LambdaRange_TrackLengths,h_SelectedLambdaRange_TrackLengths,Efficiency_LambdaRange_TrackLengths,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_TrackLengths",Mode,POT);
-      DrawEfficiencyPlot(h_TrackLengths,h_Selected_TrackLengths,Efficiency_TrackLengths,";;Events",label + "_TrackLengths",Mode,POT);
-
       // Track Selector BDT
       DrawEfficiencyPlot(h_Q2_Selector,h_SelectedQ2_Selector,Efficiency_Q2_Selector,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_Selector",Mode,POT);
       DrawEfficiencyPlot(h_NuE_Selector,h_SelectedNuE_Selector,Efficiency_NuE_Selector,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_Selector",Mode,POT);
@@ -1283,37 +1255,52 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       DrawEfficiencyPlot(h_Selector,h_Selected_Selector,Efficiency_Selector,";;Events",label + "_Selector",Mode,POT);
 
 
-      // Analysis BDT
-      DrawEfficiencyPlot(h_Q2_Analysis,h_SelectedQ2_Analysis,Efficiency_Q2_Analysis,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_NuE_Analysis,h_SelectedNuE_Analysis,Efficiency_NuE_Analysis,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_MuonKE_Analysis,h_SelectedMuonKE_Analysis,Efficiency_MuonKE_Analysis,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_MuonTrueTheta_Analysis,h_SelectedMuonTrueTheta_Analysis,Efficiency_MuonTrueTheta_Analysis,";True Muon #theta;Events",label + "_MuonTrueTheta_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_MuonDetectorTheta_Analysis,h_SelectedMuonDetectorTheta_Analysis,Efficiency_MuonDetectorTheta_Analysis,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_MuonDetectorPhi_Analysis,h_SelectedMuonDetectorPhi_Analysis,Efficiency_MuonDetectorPhi_Analysis,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_MuonBeamTheta_Analysis,h_SelectedMuonBeamTheta_Analysis,Efficiency_MuonBeamTheta_Analysis,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_MuonBeamPhi_Analysis,h_SelectedMuonBeamPhi_Analysis,Efficiency_MuonBeamPhi_Analysis,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_LambdaMomentum_Analysis,h_SelectedLambdaMomentum_Analysis,Efficiency_LambdaMomentum_Analysis,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_DecayProtonMomentum_Analysis,h_SelectedDecayProtonMomentum_Analysis,Efficiency_DecayProtonMomentum_Analysis,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_DecayPionMomentum_Analysis,h_SelectedDecayPionMomentum_Analysis,Efficiency_DecayPionMomentum_Analysis,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_OpeningAngle_Analysis,h_SelectedOpeningAngle_Analysis,Efficiency_OpeningAngle_Analysis,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_LambdaRange_Analysis,h_SelectedLambdaRange_Analysis,Efficiency_LambdaRange_Analysis,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_Analysis",Mode,POT);
-      DrawEfficiencyPlot(h_Analysis,h_Selected_Analysis,Efficiency_Analysis,";;Events",label + "_Analysis",Mode,POT);
+      // CT
+      DrawEfficiencyPlot(h_Q2_CT,h_SelectedQ2_CT,Efficiency_Q2_CT,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_CT",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_CT,h_SelectedNuE_CT,Efficiency_NuE_CT,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_CT",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_CT,h_SelectedMuonKE_CT,Efficiency_MuonKE_CT,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_CT",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_CT,h_SelectedMuonTrueTheta_CT,Efficiency_MuonTrueTheta_CT,";True Muon #theta;Events",label + "_MuonTrueTheta_CT",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_CT,h_SelectedMuonDetectorTheta_CT,Efficiency_MuonDetectorTheta_CT,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_CT",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_CT,h_SelectedMuonDetectorPhi_CT,Efficiency_MuonDetectorPhi_CT,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_CT",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_CT,h_SelectedMuonBeamTheta_CT,Efficiency_MuonBeamTheta_CT,";Beam Muon #theta;Events",label + "_MuonBeamTheta_CT",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_CT,h_SelectedMuonBeamPhi_CT,Efficiency_MuonBeamPhi_CT,";Beam Muon #phi;Events",label + "_MuonBeamPhi_CT",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_CT,h_SelectedLambdaMomentum_CT,Efficiency_LambdaMomentum_CT,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_CT",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_CT,h_SelectedDecayProtonMomentum_CT,Efficiency_DecayProtonMomentum_CT,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_CT",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_CT,h_SelectedDecayPionMomentum_CT,Efficiency_DecayPionMomentum_CT,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_CT",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_CT,h_SelectedOpeningAngle_CT,Efficiency_OpeningAngle_CT,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_CT",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_CT,h_SelectedLambdaRange_CT,Efficiency_LambdaRange_CT,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_CT",Mode,POT);
+      DrawEfficiencyPlot(h_CT,h_Selected_CT,Efficiency_CT,";;Events",label + "_CT",Mode,POT);
 
-      // Connectedness
-      DrawEfficiencyPlot(h_Q2_Connectedness,h_SelectedQ2_Connectedness,Efficiency_Q2_Connectedness,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_NuE_Connectedness,h_SelectedNuE_Connectedness,Efficiency_NuE_Connectedness,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_MuonKE_Connectedness,h_SelectedMuonKE_Connectedness,Efficiency_MuonKE_Connectedness,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_MuonTrueTheta_Connectedness,h_SelectedMuonTrueTheta_Connectedness,Efficiency_MuonTrueTheta_Connectedness,";True Muon #theta;Events",label + "_MuonTrueTheta_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_MuonDetectorTheta_Connectedness,h_SelectedMuonDetectorTheta_Connectedness,Efficiency_MuonDetectorTheta_Connectedness,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_MuonDetectorPhi_Connectedness,h_SelectedMuonDetectorPhi_Connectedness,Efficiency_MuonDetectorPhi_Connectedness,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_MuonBeamTheta_Connectedness,h_SelectedMuonBeamTheta_Connectedness,Efficiency_MuonBeamTheta_Connectedness,";Beam Muon #theta;Events",label + "_MuonBeamTheta_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_MuonBeamPhi_Connectedness,h_SelectedMuonBeamPhi_Connectedness,Efficiency_MuonBeamPhi_Connectedness,";Beam Muon #phi;Events",label + "_MuonBeamPhi_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_LambdaMomentum_Connectedness,h_SelectedLambdaMomentum_Connectedness,Efficiency_LambdaMomentum_Connectedness,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_DecayProtonMomentum_Connectedness,h_SelectedDecayProtonMomentum_Connectedness,Efficiency_DecayProtonMomentum_Connectedness,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_DecayPionMomentum_Connectedness,h_SelectedDecayPionMomentum_Connectedness,Efficiency_DecayPionMomentum_Connectedness,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_OpeningAngle_Connectedness,h_SelectedOpeningAngle_Connectedness,Efficiency_OpeningAngle_Connectedness,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_LambdaRange_Connectedness,h_SelectedLambdaRange_Connectedness,Efficiency_LambdaRange_Connectedness,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_Connectedness",Mode,POT);
-      DrawEfficiencyPlot(h_Connectedness,h_Selected_Connectedness,Efficiency_Connectedness,";;Events",label + "_Connectedness",Mode,POT);
+      // WCut
+      DrawEfficiencyPlot(h_Q2_WCut,h_SelectedQ2_WCut,Efficiency_Q2_WCut,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_WCut,h_SelectedNuE_WCut,Efficiency_NuE_WCut,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_WCut,h_SelectedMuonKE_WCut,Efficiency_MuonKE_WCut,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_WCut,h_SelectedMuonTrueTheta_WCut,Efficiency_MuonTrueTheta_WCut,";True Muon #theta;Events",label + "_MuonTrueTheta_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_WCut,h_SelectedMuonDetectorTheta_WCut,Efficiency_MuonDetectorTheta_WCut,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_WCut,h_SelectedMuonDetectorPhi_WCut,Efficiency_MuonDetectorPhi_WCut,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_WCut,h_SelectedMuonBeamTheta_WCut,Efficiency_MuonBeamTheta_WCut,";Beam Muon #theta;Events",label + "_MuonBeamTheta_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_WCut,h_SelectedMuonBeamPhi_WCut,Efficiency_MuonBeamPhi_WCut,";Beam Muon #phi;Events",label + "_MuonBeamPhi_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_WCut,h_SelectedLambdaMomentum_WCut,Efficiency_LambdaMomentum_WCut,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_WCut,h_SelectedDecayProtonMomentum_WCut,Efficiency_DecayProtonMomentum_WCut,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_WCut,h_SelectedDecayPionMomentum_WCut,Efficiency_DecayPionMomentum_WCut,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_WCut,h_SelectedOpeningAngle_WCut,Efficiency_OpeningAngle_WCut,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_WCut,h_SelectedLambdaRange_WCut,Efficiency_LambdaRange_WCut,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_WCut",Mode,POT);
+      DrawEfficiencyPlot(h_WCut,h_Selected_WCut,Efficiency_WCut,";;Events",label + "_WCut",Mode,POT);
 
+      // AngleCut
+      DrawEfficiencyPlot(h_Q2_AngleCut,h_SelectedQ2_AngleCut,Efficiency_Q2_AngleCut,";True Q^{2} (GeV^{2},Mode,POT);Events",label + "_Q2_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_NuE_AngleCut,h_SelectedNuE_AngleCut,Efficiency_NuE_AngleCut,";True E_{#nu} (GeV,Mode,POT);Events",label + "_NuE_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonKE_AngleCut,h_SelectedMuonKE_AngleCut,Efficiency_MuonKE_AngleCut,";True Muon E_{k} (GeV,Mode,POT);Events",label + "_MuonKE_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonTrueTheta_AngleCut,h_SelectedMuonTrueTheta_AngleCut,Efficiency_MuonTrueTheta_AngleCut,";True Muon #theta;Events",label + "_MuonTrueTheta_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorTheta_AngleCut,h_SelectedMuonDetectorTheta_AngleCut,Efficiency_MuonDetectorTheta_AngleCut,";Detector Muon #theta;Events",label + "_MuonDetectorTheta_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonDetectorPhi_AngleCut,h_SelectedMuonDetectorPhi_AngleCut,Efficiency_MuonDetectorPhi_AngleCut,";Detector Muon #phi;Events",label + "_MuonDetectorPhi_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamTheta_AngleCut,h_SelectedMuonBeamTheta_AngleCut,Efficiency_MuonBeamTheta_AngleCut,";Beam Muon #theta;Events",label + "_MuonBeamTheta_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_MuonBeamPhi_AngleCut,h_SelectedMuonBeamPhi_AngleCut,Efficiency_MuonBeamPhi_AngleCut,";Beam Muon #phi;Events",label + "_MuonBeamPhi_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaMomentum_AngleCut,h_SelectedLambdaMomentum_AngleCut,Efficiency_LambdaMomentum_AngleCut,";True #Lambda Momentum (GeV/c,Mode,POT);Events",label + "_LambdaMomentum_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_DecayProtonMomentum_AngleCut,h_SelectedDecayProtonMomentum_AngleCut,Efficiency_DecayProtonMomentum_AngleCut,";True Decay Proton Momentum (GeV/c,Mode,POT);Events",label + "_DecayProtonMomentum_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_DecayPionMomentum_AngleCut,h_SelectedDecayPionMomentum_AngleCut,Efficiency_DecayPionMomentum_AngleCut,";True Decay #pi^{-} Momentum (GeV/c,Mode,POT);Events",label + "_DecayPionMomentum_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_OpeningAngle_AngleCut,h_SelectedOpeningAngle_AngleCut,Efficiency_OpeningAngle_AngleCut,";True Opening Angle (deg,Mode,POT);Events",label + "_OpeningAngle_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_LambdaRange_AngleCut,h_SelectedLambdaRange_AngleCut,Efficiency_LambdaRange_AngleCut,";True #Lambda Range (cm,Mode,POT);Events",label + "_LambdaRange_AngleCut",Mode,POT);
+      DrawEfficiencyPlot(h_AngleCut,h_Selected_AngleCut,Efficiency_AngleCut,";;Events",label + "_AngleCut",Mode,POT);
    }
 

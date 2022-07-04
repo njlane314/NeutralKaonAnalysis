@@ -208,6 +208,7 @@ Event EventAssembler::GetEvent(int i){
    e.IsSigmaZeroCharged = *IsSigmaZeroCharged;
    e.IsSignal = *IsSignal;
    e.IsSignalSigmaZero = *IsSignalSigmaZero;
+   e.IsAssociatedHyperon = *IsAssociatedHyperon;
    e.GoodReco = GoodReco;
    e.EventHasNeutronScatter = EventHasNeutronScatter;
    e.EventHasHyperon = EventHasHyperon;

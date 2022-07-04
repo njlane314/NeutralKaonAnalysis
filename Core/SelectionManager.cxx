@@ -82,7 +82,7 @@ void SelectionManager::SetBeamMode(int mode){
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 SelectionParameters SelectionManager::GetParams(){
-return TheParams;
+   return TheParams;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,8 +109,10 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
 
    TString file = DataDir + TString("/EventLists/") +  TString(EventList);  
 
-   if(EventList != "") a_EventListFilter.SetList(file); 
-
+   if(EventList != ""){
+      std::cout << "Adding event list " << EventList << std::endl;
+      a_EventListFilter.SetList(file); 
+   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +138,6 @@ void SelectionManager::AddEvent(Event &e){
    if(thisSampleType != "Data" && thisSampleType != "EXT"){
       if(fUseFluxWeight) e.Weight *= a_FluxWeightCalc.GetFluxWeight(e);        
       if(fUseGenWeight) {
-      //std::cout << "SelectionManager: Loading event in Gen/G4 weight calc" << std::endl;
          a_GenG4WeightCalc.LoadEvent(e);
          e.Weight *= a_GenG4WeightCalc.GetCVWeight();
       }
@@ -197,12 +198,10 @@ void SelectionManager::SetSignal(Event &e){
 
             if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == -211 && e.Decay.at(i_d).ModMomentum > 0.1) 
                found_pion = true;
-
          }                   
 
          IsSignal_tmp.at(i_tr) = found_proton && found_pion && e.InActiveTPC.at(i_tr) && e.IsSignal.at(i_tr);
          IsSignalSigmaZero_tmp.at(i_tr) = found_proton && found_pion && e.InActiveTPC.at(i_tr) && e.IsSignalSigmaZero.at(i_tr);
-
       }
    }
 
@@ -214,9 +213,9 @@ void SelectionManager::SetSignal(Event &e){
 
    // Search the list of reco'd tracks for the proton and pion
    bool found_proton=false,found_pion=false;
-   
+
    if(!e.EventIsSignal) return;
-   
+
    for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
       if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 2212 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2){ 
          found_proton = true; 
@@ -335,7 +334,6 @@ bool SelectionManager::FiducialVolumeCut(Event e){
    UpdateCut(e,passed,"FV");
 
    return passed;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -347,7 +345,6 @@ bool SelectionManager::TrackCut(Event e){
    UpdateCut(e,passed,"Tracks");
 
    return passed;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -359,7 +356,6 @@ bool SelectionManager::ShowerCut(Event e){
    UpdateCut(e,passed,"Showers");
 
    return passed;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -380,7 +376,6 @@ bool SelectionManager::ChooseMuonCandidate(Event &e){
    UpdateCut(e,true,"MuonID");
 
    return true;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -422,10 +417,8 @@ bool SelectionManager::ChooseProtonPionCandidates(Event &e,bool cheat){
 
    e.TracklikePrimaryDaughters = TracklikePrimaryDaughters_tmp;
 
-
    UpdateCut(e,passed,"DecaySelector");
    return true;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -468,7 +461,7 @@ bool SelectionManager::ConnectednessTest(Event e, int nplanes){
    if(a_CTTest_Plane0.DoTest(muon_index,proton_index,pion_index)) npassed++;
    if(a_CTTest_Plane1.DoTest(muon_index,proton_index,pion_index)) npassed++;
    if(a_CTTest_Plane2.DoTest(muon_index,proton_index,pion_index)) npassed++;
-   
+
 
    bool passed = npassed >= nplanes; 
 
@@ -563,7 +556,7 @@ void SelectionManager::SetupHistograms(int n,double low,double high,std::string 
 
    double width = (high-low)/n;
    for(int i=0;i<n+1;i++) fHistBoundaries.push_back(low+width*i); 
-    
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -575,6 +568,7 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
    const int arr_n = fHistBoundaries.size();
    Double_t arr_boundaries[arr_n];
    for(size_t i=0;i<arr_n;i++) arr_boundaries[i] = fHistBoundaries.at(i);
+
 
    if(systype == kMultisim){
       for(size_t i_type=0;i_type<Types.size();i_type++){
@@ -620,11 +614,11 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
 std::string SelectionManager::GetMode(Event e){
 
    std::string mode;
-   if( thisSampleType == "Data" ) mode = "Data";
-   else if( thisSampleType == "EXT" ) mode = "EXT";
-   else if( thisSampleType == "Dirt" ) mode = "Dirt";
-   else if( e.EventIsSignal ) mode = "Signal";
-   else if( e.Mode.at(0) == "HYP") mode = "OtherHYP";
+   if(thisSampleType == "Data") mode = "Data";
+   else if(thisSampleType == "EXT") mode = "EXT";
+   else if(thisSampleType == "Dirt") mode = "Dirt";
+   else if(e.EventIsSignal) mode = "Signal";
+   else if(e.Mode.at(0) == "HYP") mode = "OtherHYP";
    else  mode = "OtherNu";
 
    return mode;
@@ -636,21 +630,21 @@ std::string SelectionManager::GetMode2(Event e){
 
    std::string mode;
 
-   if( thisSampleType == "Data" ) return "Data";
-   else if( thisSampleType == "EXT" ) return "EXT";
-   else if (thisSampleType == "Dirt" ) return "Dirt";
+   if(thisSampleType == "Data") return "Data";
+   else if(thisSampleType == "EXT") return "EXT";
+   else if (thisSampleType == "Dirt") return "Dirt";
 
-  bool islambdacharged =  std::find(e.IsLambdaCharged.begin(),e.IsLambdaCharged.end(), true) != e.IsLambdaCharged.end();
-  bool ishyperon = e.Hyperon.size(); 
+   bool islambdacharged =  std::find(e.IsLambdaCharged.begin(),e.IsLambdaCharged.end(), true) != e.IsLambdaCharged.end();
+   bool ishyperon = e.Hyperon.size(); 
 
-  if(e.EventIsSignal) return "DirectLambda";
-  else if(e.Mode.at(0) == "HYP") return "DirectHYP"; 
-  else if(e.Mode.at(0) == "RES" && islambdacharged) return "RESLambda";
-  else if(e.Mode.at(0) == "RES" && e.Hyperon.size()) return "RESHYP"; 
-  else if(e.Mode.at(0) == "DIS" && islambdacharged) return "DISLambda";
-  else if(e.Mode.at(0) == "DIS" && e.Hyperon.size()) return "DISHYP"; 
-  else if(e.EventHasNeutronScatter) return "Neutron";
-  else return "Other";
+   if(e.EventIsSignal) return "DirectLambda";
+   else if(e.Mode.at(0) == "HYP") return "DirectHYP"; 
+   else if(e.Mode.at(0) == "RES" && islambdacharged) return "RESLambda";
+   else if(e.Mode.at(0) == "RES" && e.Hyperon.size()) return "RESHYP"; 
+   else if(e.Mode.at(0) == "DIS" && islambdacharged) return "DISLambda";
+   else if(e.Mode.at(0) == "DIS" && e.Hyperon.size()) return "DISHYP"; 
+   else if(e.EventHasNeutronScatter) return "Neutron";
+   else return "Other";
 
    return mode;
 }
@@ -706,8 +700,8 @@ void SelectionManager::FillHistogramsSys(Event e,double variable,std::string nam
 
    if(thisSampleType == "Data") return;
 
-   if(std::isnan(e.Weight) || std::isnan(weight)){
-     // std::cout << "Nan weight detected for event " << e.run << " " << e.subrun << " " << e.event << " skipping" << std::endl;
+   if(std::isnan(e.Weight) || std::isnan(weight) || std::isinf(e.Weight) || std::isinf(weight)){
+       //std::cout << "Nan weight detected for dial " << name << "  event " << e.run << " " << e.subrun << " " << e.event << " skipping" << std::endl;
       return;
    }
 
@@ -741,8 +735,8 @@ void SelectionManager::FillHistogramsSys(Event e,double variable,std::string nam
 
 void SelectionManager::FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights){
 
-      for(size_t i=0;i<weights.size();i++)
-         FillHistogramsSys(e,variable,name,i,weights.at(i)); 
+   for(size_t i=0;i<weights.size();i++)
+      FillHistogramsSys(e,variable,name,i,weights.at(i)); 
 
 }
 
@@ -779,29 +773,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    Hists_ByType["Signal"]->Scale(SignalScale);
 
    TH1D* h_errors = (TH1D*)Hists_ByType["All"]->Clone("h_errors");
-/*
-   if(BinLabels.size()){
-      for(int i=1;i<fHistNBins+1;i++){
-         h_errors->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
-         Hists_ByType["Signal"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
-         Hists_ByType["OtherHYP"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
-         Hists_ByType["OtherNu"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
-         Hists_ByType["Dirt"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
-         Hists_ByType["EXT"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
-         if(fHasData) Hists_ByType["Data"]->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
-      }
-      h_errors->GetXaxis()->SetLabelSize(0.08);
-      Hists_ByType["Signal"]->GetXaxis()->SetLabelSize(0.08);
-      Hists_ByType["OtherHYP"]->GetXaxis()->SetLabelSize(0.08);
-      Hists_ByType["OtherNu"]->GetXaxis()->SetLabelSize(0.08);
-      Hists_ByType["Dirt"]->GetXaxis()->SetLabelSize(0.08);
-      Hists_ByType["EXT"]->GetXaxis()->SetLabelSize(0.08);
-      if(fHasData) Hists_ByType["Data"]->GetXaxis()->SetLabelSize(0.08);
-   }
-*/
 
-
-    
    std::vector<std::string> captions = {"Signal","Other HYP","Other #nu","Dirt","EXT","Data"};
    std::vector<int> colors = {8,46,38,30,15,0};
    std::vector<TH1D*> Hists_ByType_v = {Hists_ByType["Signal"],Hists_ByType["OtherHYP"],Hists_ByType["OtherNu"],Hists_ByType["Dirt"],Hists_ByType["EXT"],Hists_ByType["Data"]};
@@ -812,7 +784,6 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 
    std::vector<TH1D*> Hists_ByType_v2 = {Hists_ByType2["DirectLambda"],Hists_ByType2["DirectHYP"],Hists_ByType2["Neutron"],Hists_ByType2["Dirt"],Hists_ByType2["RESLambda"],Hists_ByType2["RESHYP"],Hists_ByType2["Other"],Hists_ByType2["EXT"],Hists_ByType2["DISLambda"],Hists_ByType2["DISHYP"],Hists_ByType2["Data"]};
 
-   //std::vector<TH1D*> Hists_ByType_v2 = {Hists_ByType2["DirectLambda"],Hists_ByType2["RESLambda"],Hists_ByType2["DISLambda"],Hists_ByType2["DirHYP"],Hists_ByType2["RESHYP"],Hists_ByType2["DISHYP"],Hists_ByType2["Neutron"],Hists_ByType2["Other"],Hists_ByType2["Dirt"],Hists_ByType2["EXT"],Hists_ByType2["Data"]};
    DrawHistogram(Hists_ByType_v2,h_errors,captions2,PlotDir,label+"_ByType2",BeamMode,Run,fPOT,SignalScale,fHasData,colors2,BinLabels,std::make_pair(0,0));
 
    std::vector<std::string> captions3 = {"Signal","Other HYP","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","ElectronScattering","Diffractive","Other","Dirt","EXT","Data"};
@@ -820,15 +791,15 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    std::vector<TH1D*> Hists_ByProc_v = {Hists_ByProc["Signal"],Hists_ByProc["OtherHYP"],Hists_ByProc["CCQEL"],Hists_ByProc["CCRES"],Hists_ByProc["CCDIS"],Hists_ByProc["CCMEC"],Hists_ByProc["CCCOH"],Hists_ByProc["NC"],Hists_ByProc["ElectronScattering"],Hists_ByProc["Diffractive"],Hists_ByProc["Other"],Hists_ByProc["EXT"],Hists_ByProc["Dirt"],Hists_ByProc["Data"]};
    DrawHistogram(Hists_ByProc_v,h_errors,captions3,PlotDir,label+"_ByProc",BeamMode,Run,fPOT,SignalScale,fHasData,colors3,BinLabels,std::make_pair(0,0));
 
-  std::map<std::string,TH1D*>::iterator it;
-  for (it = Hists_ByType.begin(); it != Hists_ByType.end(); it++)
-        it->second->Write(it->first.c_str());
-  for (it = Hists_ByType2.begin(); it != Hists_ByType2.end(); it++){
-        if(it->first == "Data" || it->first == "All" || it->first == "EXT" || it->first == "Dirt") continue;
-        it->second->Write(it->first.c_str());
-}
+   std::map<std::string,TH1D*>::iterator it;
+   for (it = Hists_ByType.begin(); it != Hists_ByType.end(); it++)
+      it->second->Write(it->first.c_str());
+   for (it = Hists_ByType2.begin(); it != Hists_ByType2.end(); it++){
+      if(it->first == "Data" || it->first == "All" || it->first == "EXT" || it->first == "Dirt") continue;
+      it->second->Write(it->first.c_str());
+   }
 
-h_errors->Write("ErrorBand");
+   h_errors->Write("ErrorBand");
 
 }
 
@@ -848,7 +819,6 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
       ToDraw = Multisim_Sys_Hists[type][name]; 
       systype = kMultisim;
    }
-
    else if (SingleUnisim_Sys_Hists[type].find(name) != SingleUnisim_Sys_Hists[type].end()){
       ToDraw = SingleUnisim_Sys_Hists[type][name];
       systype = kSingleUnisim;
@@ -858,16 +828,27 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
       systype = kDualUnisim;
    }
 
+   if(!ToDraw.size()){
+      std::cout << "Can't find systematic name=" << name << " type=" << type << std::endl;
+      return;
+   }
+
+   if(BinLabels.size())
+      for(size_t i_u=0;i_u<ToDraw.size();i_u++)
+         for(int i=1;i<fHistNBins+1;i++) ToDraw.at(i_u)->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+
    THStack *hs = new THStack("hs",fTitle.c_str());
 
    TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
    l->SetBorderSize(0);
    l->SetNColumns(2);
-
    l->AddEntry(Hists_ByType[type],"Central Value","L");
 
    // Get the maximum of all the histograms
    double maximum = 0.0;
+
+   f_Hists->mkdir(name.c_str()); 
+   f_Hists->GetDirectory(name.c_str())->cd();
 
    for(size_t i=0;i<ToDraw.size();i++){
 
@@ -889,20 +870,32 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
       }
 
       hs->Add(ToDraw.at(i));
-    
-     if(GetHistMax(ToDraw.at(i)) > maximum) maximum = GetHistMax(ToDraw.at(i));
-   
+
+      if(GetHistMax(ToDraw.at(i)) > maximum) maximum = GetHistMax(ToDraw.at(i));
+
+      ToDraw.at(i)->SetDirectory(new TDirectory(name.c_str(),name.c_str()));      
+      ToDraw.at(i)->Write();
    }
 
-   if(GetHistMax(Hists_ByType[type]) > maximum) maximum = GetHistMax(Hists_ByType[type]);
+   f_Hists->cd();
 
-   Hists_ByType[type]->SetLineColor(1);
-   Hists_ByType[type]->SetLineWidth(2);
-   Hists_ByType[type]->SetFillColor(0);
+   TH1D* h_CV = nullptr;
+   if(std::find(Types.begin(), Types.end(), type) != Types.end())
+      h_CV = Hists_ByType[type];
+   else if(std::find(Types2.begin(), Types2.end(), type) != Types2.end())
+      h_CV = Hists_ByType2[type];   
+   else {
+      std::cout << "Can't find histogram for channel=" << type << std::endl;
+      return;
+   }
 
-   Hists_ByType[type]->SetMaximum(maximum*1.25);
 
-   hs->Add(Hists_ByType[type]);
+   if(GetHistMax(h_CV) > maximum) maximum = GetHistMax(h_CV);
+   h_CV->SetLineColor(1);
+   h_CV->SetLineWidth(2);
+   h_CV->SetFillColor(0);
+   h_CV->SetMaximum(maximum*1.25);
+   hs->Add(h_CV);
 
    TCanvas *c = new TCanvas("c","c",800,600);
 
@@ -913,14 +906,12 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    p_legend->SetTopMargin(0.1);
    p_plot->SetTopMargin(0.01);
 
-
    TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
    l_Watermark->SetBorderSize(0);
    l_Watermark->SetMargin(0.005);
    l_Watermark->SetTextAlign(32);
    l_Watermark->SetTextSize(0.05);
    l_Watermark->SetTextFont(62);
-
    l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
    //l_Watermark->SetHeader("MicroBooNE Simulation In Progress","R");
 
@@ -929,7 +920,6 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    l_POT->SetMargin(0.005);
    l_POT->SetTextAlign(32);
    l_POT->SetTextSize(0.05);
-
    if(BeamMode == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
    if(BeamMode == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
    if(BeamMode == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(fPOT/1e20,1) + " #times 10^{20} POT").c_str());
@@ -941,20 +931,16 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    p_plot->Draw();
    p_plot->cd();
 
-   //Hists_ByType[type]->Draw("HIST");
-   //Hists_ByType[type]->SetStats(0);
    hs->Draw("HIST nostack");
-
    hs->GetXaxis()->SetTitleSize(0.05);
    hs->GetYaxis()->SetTitleSize(0.05);
-
    hs->GetXaxis()->SetTitleOffset(0.9);
    hs->GetYaxis()->SetTitleOffset(0.9);
 
    hs->GetXaxis()->SetLabelSize(0.045);
    hs->GetYaxis()->SetLabelSize(0.045);
 
-   Hists_ByType[type]->Draw("HIST same");
+   h_CV->Draw("HIST same");
 
    if(BinLabels.size()){
       for(int i=1;i<fHistNBins+1;i++) hs->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
@@ -971,6 +957,8 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    c->Print((PlotDir + label + "_Sys_" + type + "_" +  name + ".C").c_str());
 
    c->Close();
+
+   std::cout << "Done drawing systematic hists " << name << std::endl;
 }
 
 
@@ -990,8 +978,6 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
    std::vector<TH1D*> ToUse;
 
    if (Multisim_Sys_Hists[type].find(name) != Multisim_Sys_Hists[type].end()){
-
-      std::cout << "Calculating covariance matrix for multisim systematic" << std::endl;
       ToUse = Multisim_Sys_Hists[type][name];
       systype = kMultisim;
    }
@@ -1011,11 +997,9 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
    std::string title = ";" + std::string(Hists_ByType["All"]->GetXaxis()->GetTitle()) + ";" + std::string(Hists_ByType["All"]->GetXaxis()->GetTitle());
 
    TMatrixD Cov(fHistNBins,fHistNBins);
-   //TH2D *h_Cov = new TH2D("h_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
    TH2D *h_Cov = new TH2D("h_Cov",title.c_str(),fHistNBins,arr_boundaries,fHistNBins,arr_boundaries);
- 
+
    TMatrixD frac_Cov(fHistNBins,fHistNBins);
-   //TH2D *h_frac_Cov = new TH2D("h_frac_Cov",";Bin;Bin",fHistNBins,-0.5,fHistNBins-0.5,fHistNBins,-0.5,fHistNBins-0.5);
    TH2D *h_frac_Cov = new TH2D("h_frac_Cov",title.c_str(),fHistNBins,arr_boundaries,fHistNBins,arr_boundaries);
 
    if(BinLabels.size()){
@@ -1030,9 +1014,8 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
       h_Cov->GetYaxis()->SetLabelSize(0.07);
       h_frac_Cov->GetXaxis()->SetLabelSize(0.07);
       h_frac_Cov->GetYaxis()->SetLabelSize(0.07);
- 
-  }
-   
+
+   }
 
    for(int i_b=1;i_b<fHistNBins+1;i_b++){
       for(int j_b=1;j_b<fHistNBins+1;j_b++){
@@ -1051,30 +1034,26 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
             for(size_t i_u=0;i_u<ToUse.size();i_u++) Mean_j += ToUse.at(i_u)->GetBinContent(j_b)/ToUse.size();
             for(size_t i_u=0;i_u<ToUse.size();i_u++) Cov_ij += (ToUse.at(i_u)->GetBinContent(i_b) - Mean_i)*(ToUse.at(i_u)->GetBinContent(j_b) - Mean_j)/(ToUse.size()-1);
          }
-
          if(systype == kSingleUnisim){
             Mean_i = Hists_ByType[type]->GetBinContent(i_b);
             Mean_j = Hists_ByType[type]->GetBinContent(j_b);
             Cov_ij = (ToUse.at(0)->GetBinContent(i_b) - Mean_i)*(ToUse.at(0)->GetBinContent(j_b) - Mean_j);
          } 
-
          if(systype == kDualUnisim){
             Mean_i = Hists_ByType[type]->GetBinContent(i_b);
             Mean_j = Hists_ByType[type]->GetBinContent(j_b);
             Cov_ij = (ToUse.at(1)->GetBinContent(i_b) - ToUse.at(0)->GetBinContent(i_b))*(ToUse.at(1)->GetBinContent(j_b) - ToUse.at(0)->GetBinContent(j_b))/4;
          } 
-
          frac_Cov[i_b-1][j_b-1] = Cov_ij/Mean_i/Mean_j; 
          Cov[i_b-1][j_b-1] = Cov_ij;
          h_Cov->SetBinContent(i_b,j_b,Cov_ij);
          h_frac_Cov->SetBinContent(i_b,j_b,Cov_ij/Mean_i/Mean_j);
-
       }
    }
 
-   //Cov.Print();
    std::string plottitle = PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name;
    DrawMatrix(Cov,h_Cov,plottitle,BinLabels.size(),fUseText);
+
    plottitle = PlotDir + label + "_FCovMatrix_Sys_" + type + "_" + name;
    DrawMatrix(frac_Cov,h_frac_Cov,plottitle,BinLabels.size(),fUseText);
 

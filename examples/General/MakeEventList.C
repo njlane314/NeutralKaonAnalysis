@@ -17,79 +17,64 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       double POT = 1.0e21; // POT to scale samples to
 
       BuildTunes();
-      //ImportSamples(sNuWroFullFHC);
+      EventAssembler E;
+      E.SetFile("run1_FHC/analysisOutputFHC_Overlay_GENIE_Hyperon_All.root");
+      std::string SampleType = "Hyperon"; 
 
-      SampleNames.push_back("GENIE Background");
-      SampleTypes.push_back("Background");
-      SampleFiles.push_back("HyperonTrees_Sys.root");
-
-      SelectionParameters P = P_FHC_Tune_325;
-      P.p_AnalysisBDT_Cut = 0.0;
+      SelectionParameters P = P_FHC_Tune_325_NoBDT;
 
       // Setup selection manager. Set POT to scale sample to
-      EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
       M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
       M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);      
-
-      int n_Signal=0;
-      int n_GoodReco=0;
+      M.AddSample(SampleType,SampleType,E.GetPOT());
+      M.UseFluxWeight(false);
+      M.UseGenWeight(false);
 
       // Setup some text files to store the run/sub/event numbers of the selected events
       gSystem->Exec("mkdir -p EventLists");
-
       std::ofstream out;
       std::ofstream out_Signal;      
 
-      // Sample Loop
-      for(size_t i_s=0;i_s<SampleNames.size();i_s++){
+      out.open("EventLists/Selected.txt");
+      if(SampleType == "Hyperon") out_Signal.open("EventLists/SignalSelected.txt");         
 
-         E.SetFile(SampleFiles.at(i_s));
-         if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
-         else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT);
-         else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),EXT_POT);
-      
-         out.open("EventLists/" + SampleFiles.at(i_s) + "_Selected.txt");
-         if(SampleTypes.at(i_s) == "Hyperon") out_Signal.open("EventLists/" + SampleFiles.at(i_s) + "_SignalSelected.txt");         
+      // Event Loop
+      for(int i=0;i<E.GetNEvents();i++){
 
-         // Event Loop
-         for(int i=0;i<E.GetNEvents();i++){
+         if(i % 20000 == 0) std::cout << i << "/" << E.GetNEvents() << std::endl;
 
-            Event e = E.GetEvent(i);
+         Event e = E.GetEvent(i);
 
-            M.SetSignal(e);                
-            M.AddEvent(e);
+         M.SetSignal(e);                
+         M.AddEvent(e);
 
-           // Insert Selection Here //
+         // Insert Selection Here //
 
-            if(!M.FiducialVolumeCut(e)) continue;
-            if(!M.TrackCut(e)) continue;
-            if(!M.ShowerCut(e)) continue;
-            if(!M.ChooseMuonCandidate(e)) continue;
-            if(!M.ChooseProtonPionCandidates(e)) continue;
-            if(!M.AnalysisBDTCut(e)) continue; 
-           
-           ///////////////////////////
-            
+         if(!M.FiducialVolumeCut(e)) continue;
+         if(!M.TrackCut(e)) continue;
+         if(!M.ShowerCut(e)) continue;
+         if(!M.ChooseMuonCandidate(e)) continue;
+         if(!M.ChooseProtonPionCandidates(e)) continue;
+         //if(!M.AnalysisBDTCut(e)) continue; 
+         //if(!M.AngleCut(e)) continue;
+         //if(!M.WCut(e)) continue;
+         if(!M.ConnectednessTest(e)) continue;
 
-            if(SampleTypes.at(i_s) != "Hyperon") out << e.run << " " << e.subrun << " " << e.event << std::endl;
+         ///////////////////////////
+
+         if(e.Weight > 0){
+            if(SampleType != "Hyperon") out << e.run << " " << e.subrun << " " << e.event << std::endl;
             else {
-
-               if(e.IsSignal) out_Signal << e.run << " " << e.subrun << " " << e.event << std::endl;
+               if(e.EventIsSignal) out_Signal << e.run << " " << e.subrun << " " << e.event << std::endl;
                else out << e.run << " " << e.subrun << " " << e.event << std::endl;
-
             }
-
-
-
-        }
-
-         out.close();
-         if(SampleTypes.at(i_s) == "Hyperon") out_Signal.close();
-
-         E.Close();
-
+         }
       }
 
-}
+      out.close();
+      if(SampleType == "Hyperon") out_Signal.close();
+
+      E.Close();
+   }
