@@ -200,6 +200,7 @@ Event EventAssembler::GetEvent(int i){
 
    t_in->GetEntry(i);
 
+   e.IsData = IsData;
    e.run = run;
    e.subrun = subrun;
    e.event = event;
