@@ -234,6 +234,75 @@ void SelectionManager::SetSignal(Event &e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Apply the signal definition used in the associated hyperon production analysis
+
+void SelectionManager::SetAssocSignal(Event &e){
+
+   // Define the kaon production signal
+   e.EventIsSignal = false;
+   e.GoodReco = false;
+
+   std::vector<bool> IsSignal_tmp = e.IsAssociatedHyperon;
+
+   for(size_t i_tr=0;i_tr<e.NMCTruths;i_tr++){
+
+      IsSignal_tmp.at(i_tr) = false;
+
+      e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex.at(i_tr)); 
+
+      if(e.IsAssociatedHyperon.at(i_tr)){
+       
+         bool found_Lambda=false,found_Kaon=false,found_muon=false;
+         for(size_t i_h=0;i_h<e.Hyperon.size();i_h++)
+            if(e.Hyperon.at(i_h).MCTruthIndex == i_tr && e.Hyperon.at(i_h).PDG == 3122)
+               found_Lambda = true;
+
+         for(size_t i_k=0;i_k<e.PrimaryKaon.size();i_k++)
+            if(e.PrimaryKaon.at(i_k).MCTruthIndex == i_tr && abs(e.PrimaryKaon.at(i_k).PDG) == 321 && e.PrimaryKaon.at(i_k).ModMomentum > 0.2)
+               found_Kaon = true;
+
+         for(size_t i_l=0;i_l<e.Lepton.size();i_l++)
+            if(e.Lepton.at(i_l).MCTruthIndex == i_tr && abs(e.Lepton.at(i_l).PDG) == 13)
+               found_muon = true;
+
+         bool found_proton=false,found_pion=false;
+
+         for(size_t i_d=0;i_d<e.Decay.size();i_d++){
+
+            if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == 2212 && e.Decay.at(i_d).ModMomentum > 0.3) 
+               found_proton = true;
+
+            if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == -211 && e.Decay.at(i_d).ModMomentum > 0.1) 
+               found_pion = true;
+
+         }                   
+         IsSignal_tmp.at(i_tr) = found_muon && found_Kaon && found_Lambda && found_proton && found_pion && e.InActiveTPC.at(i_tr) && e.IsAssociatedHyperon.at(i_tr);
+      }
+   }
+
+   e.IsSignal = IsSignal_tmp;
+   e.EventIsSignal = std::find(e.IsSignal.begin(),e.IsSignal.end(), true) != e.IsSignal.end();
+
+   if(!e.EventIsSignal) return;
+
+   // Find out if the Lambda decay got reconstructed               
+   bool found_proton=false,found_pion=false;               
+   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
+      if(e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2 && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 2212){
+         found_proton = true; 
+         e.TrueDecayProtonIndex = e.TracklikePrimaryDaughters.at(i_tr).Index;
+      }
+      if(e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2 && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211){
+         found_pion = true;
+         e.TrueDecayPionIndex = e.TracklikePrimaryDaughters.at(i_tr).Index;
+      }
+   }
+
+   e.GoodReco = found_proton && found_pion; 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 // Load the list of cuts
 
 void SelectionManager::DeclareCuts(){

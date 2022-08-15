@@ -56,6 +56,7 @@ class SelectionManager {
       // Increment metadata
       void AddEvent(Event &e);  
       void SetSignal(Event &e);
+      void SetAssocSignal(Event &e);
 
       // Set POT
       void SetPOT(double pot){ POT = pot; }
