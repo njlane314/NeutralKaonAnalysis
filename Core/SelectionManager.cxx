@@ -214,11 +214,15 @@ void SelectionManager::SetSignal(Event &e){
    e.EventIsSignalSigmaZero = std::find(e.IsSignalSigmaZero.begin(),e.IsSignalSigmaZero.end(), true) != e.IsSignalSigmaZero.end();
 
    // Search the list of reco'd tracks for the proton and pion
-   bool found_proton=false,found_pion=false;
+   bool found_muon=false,found_proton=false,found_pion=false;
 
    if(!e.EventIsSignal) return;
 
    for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
+      if(e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 1 && abs(e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG) == 13){
+         found_muon = true; 
+         e.TrueMuonIndex = e.TracklikePrimaryDaughters.at(i_tr).Index;
+      }
       if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 2212 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2){ 
          found_proton = true; 
          e.TrueDecayProtonIndex = i_tr; 
@@ -229,7 +233,7 @@ void SelectionManager::SetSignal(Event &e){
       }
    }
 
-   e.GoodReco = e.EventIsSignal && found_proton && found_pion; 
+   e.GoodReco = found_muon && found_proton && found_pion; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -286,8 +290,12 @@ void SelectionManager::SetAssocSignal(Event &e){
    if(!e.EventIsSignal) return;
 
    // Find out if the Lambda decay got reconstructed               
-   bool found_proton=false,found_pion=false;               
+   bool found_muon=false,found_proton=false,found_pion=false,found_kaon=false;
    for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
+      if(e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 1 && abs(e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG) == 13){
+         found_muon = true; 
+         e.TrueMuonIndex = e.TracklikePrimaryDaughters.at(i_tr).Index;
+      }
       if(e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2 && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 2212){
          found_proton = true; 
          e.TrueDecayProtonIndex = e.TracklikePrimaryDaughters.at(i_tr).Index;
@@ -296,9 +304,66 @@ void SelectionManager::SetAssocSignal(Event &e){
          found_pion = true;
          e.TrueDecayPionIndex = e.TracklikePrimaryDaughters.at(i_tr).Index;
       }
+      if(e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 1 && abs(e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG) == 321){
+         found_kaon = true; 
+         e.TrueKaonIndex = e.TracklikePrimaryDaughters.at(i_tr).Index;
+      }
+  }
+
+   e.GoodReco = found_muon && found_proton && found_pion && found_kaon; 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Use truth information to select muon, proton, pion and kaon (if assoc signal) tracks
+
+void SelectionManager::SelectTracksCheat(Event &e){
+
+   // Find the muon track 
+   double min_muon_displacement = 1000;
+   int muon_index = -1;
+   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++)
+      if(abs(e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG) == 13 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 1 && e.TracklikePrimaryDaughters.at(i_tr).Displacement < min_muon_displacement)
+         muon_index = i_tr;
+
+   if(muon_index != -1){
+      e.MuonCandidate = e.TracklikePrimaryDaughters.at(muon_index);
+      e.TracklikePrimaryDaughters.erase(e.TracklikePrimaryDaughters.begin()+muon_index);
    }
 
-   e.GoodReco = found_proton && found_pion; 
+   // Find the kaon track
+   double min_kaon_displacement = 1000;
+   int kaon_index = -1;
+   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++)
+      if(abs(e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG) == 321 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 1 && e.TracklikePrimaryDaughters.at(i_tr).Displacement < min_kaon_displacement)
+         kaon_index = i_tr;
+
+   if(kaon_index != -1){
+      e.KaonCandidate = e.TracklikePrimaryDaughters.at(kaon_index);
+      e.TracklikePrimaryDaughters.erase(e.TracklikePrimaryDaughters.begin()+kaon_index);
+   }
+
+   // Find the proton track
+   int decayproton_index = -1;
+   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++)
+      if(abs(e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG) == 2212 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2)
+         decayproton_index = i_tr;
+
+   if(decayproton_index != -1){
+      e.DecayProtonCandidate = e.TracklikePrimaryDaughters.at(decayproton_index);
+      e.TracklikePrimaryDaughters.erase(e.TracklikePrimaryDaughters.begin()+decayproton_index);
+   }
+
+   // Find the pion track
+   int decaypion_index = -1;
+   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++)
+      if(abs(e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG) == 211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 2)
+         decaypion_index = i_tr;
+
+   if(decaypion_index != -1){
+      e.DecayPionCandidate = e.TracklikePrimaryDaughters.at(decaypion_index);
+      e.TracklikePrimaryDaughters.erase(e.TracklikePrimaryDaughters.begin()+decaypion_index);
+   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

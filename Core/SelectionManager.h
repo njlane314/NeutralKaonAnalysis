@@ -58,6 +58,8 @@ class SelectionManager {
       void SetSignal(Event &e);
       void SetAssocSignal(Event &e);
 
+      void SelectTracksCheat(Event &e);
+
       // Set POT
       void SetPOT(double pot){ POT = pot; }
 

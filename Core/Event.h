@@ -69,11 +69,13 @@ struct Event {
 	int TrueMuonIndex;
 	int TrueDecayProtonIndex;
 	int TrueDecayPionIndex;
+        int TrueKaonIndex;
 
 	// Muon, proton and pion candidates
 	RecoParticle MuonCandidate;
 	RecoParticle DecayProtonCandidate;
 	RecoParticle DecayPionCandidate;
+        RecoParticle KaonCandidate;
 
 	Float_t SelectorBDTScore;
 	Float_t AnalysisBDTScore;
