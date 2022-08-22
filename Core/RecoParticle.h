@@ -27,6 +27,8 @@ int Index;
 
 // General reco info
 int PDG; // Pandora PDG code (11 or 13)
+int Parentage; // 1 - neutrino daughter, 2 - neutrino granddaughter, 3 - other
+int ParentIndex=-1; // -1 - neutrino candidate or no parent
 double TrackShowerScore;
 double X,Y,Z;
 double Displacement; // Distance from PV
