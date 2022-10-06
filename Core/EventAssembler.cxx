@@ -32,6 +32,8 @@ void EventAssembler::SetFile(std::string infilename){
    t_in->SetBranchStatus("KaonDecay",1);
    t_in->SetBranchStatus("TracklikePrimaryDaughters",1);
    t_in->SetBranchStatus("ShowerlikePrimaryDaughters",1);
+   t_in->SetBranchStatus("RepassTracklikePrimaryDaughters",1);
+   t_in->SetBranchStatus("RepassShowerlikePrimaryDaughters",1);
    t_in->SetBranchStatus("IsData",1);
    t_in->SetBranchStatus("EventID",1);
    t_in->SetBranchStatus("run",1);
@@ -128,7 +130,8 @@ void EventAssembler::SetFile(std::string infilename){
    t_in->SetBranchAddress("NPrimaryShowerDaughters", &NPrimaryShowerDaughters);
    t_in->SetBranchAddress("TracklikePrimaryDaughters",&TracklikePrimaryDaughters);
    t_in->SetBranchAddress("ShowerlikePrimaryDaughters",&ShowerlikePrimaryDaughters);
-
+   t_in->SetBranchAddress("RepassTracklikePrimaryDaughters",&RepassTracklikePrimaryDaughters);
+   t_in->SetBranchAddress("RepassShowerlikePrimaryDaughters",&RepassShowerlikePrimaryDaughters);
                
    t_in->SetBranchAddress("ConnSeedIndexes_Plane0", &ConnSeedIndexes_Plane0);
    t_in->SetBranchAddress("ConnOutputIndexes_Plane0", &ConnOutputIndexes_Plane0);
@@ -225,7 +228,6 @@ Event EventAssembler::GetEvent(int i){
    e.NMCTruthsInTPC = NMCTruthsInTPC;
 
    e.TruePrimaryVertex.clear();
-
    for(size_t i_v=0;i_v<TruePrimaryVertex_X->size();i_v++)
       e.TruePrimaryVertex.push_back(TVector3(TruePrimaryVertex_X->at(i_v),TruePrimaryVertex_Y->at(i_v),TruePrimaryVertex_Z->at(i_v)));
 
@@ -241,7 +243,6 @@ Event EventAssembler::GetEvent(int i){
    e.KaonDecay = *KaonDecay;
 
    e.DecayVertex.clear();
-
    for(size_t i_v=0;i_v<DecayVertex_X->size();i_v++)
       e.DecayVertex.push_back(TVector3(DecayVertex_X->at(i_v),DecayVertex_Y->at(i_v),DecayVertex_Z->at(i_v)));
 
@@ -251,6 +252,8 @@ Event EventAssembler::GetEvent(int i){
 
    e.TracklikePrimaryDaughters = *TracklikePrimaryDaughters;
    e.ShowerlikePrimaryDaughters = *ShowerlikePrimaryDaughters;
+   e.RepassTracklikePrimaryDaughters = *RepassTracklikePrimaryDaughters;
+   e.RepassShowerlikePrimaryDaughters = *RepassShowerlikePrimaryDaughters;
 
    e.ConnSeedIndexes_Plane0 = *ConnSeedIndexes_Plane0;
    e.ConnOutputIndexes_Plane0 = *ConnOutputIndexes_Plane0;

@@ -11,6 +11,8 @@
 using std::vector;
 using std::string;
 
+enum e_KaonDecayMode{kNONE,kMuNu,kPiPPi0,kOther};
+
 struct Event {
 
 	bool IsData=false;
@@ -42,7 +44,9 @@ struct Event {
         vector<bool> IsSignal;
         vector<bool> IsSignalSigmaZero;
         Bool_t GoodReco;
-                
+        Int_t KaonDecayMode = kNONE;
+        Bool_t IsKDAR = false;
+        
         vector<TVector3> TruePrimaryVertex;
 
 	//true variables
@@ -65,6 +69,8 @@ struct Event {
 
 	std::vector<RecoParticle> TracklikePrimaryDaughters;
 	std::vector<RecoParticle> ShowerlikePrimaryDaughters;
+	std::vector<RecoParticle> RepassTracklikePrimaryDaughters;
+	std::vector<RecoParticle> RepassShowerlikePrimaryDaughters;
 
 	int TrueMuonIndex;
 	int TrueDecayProtonIndex;

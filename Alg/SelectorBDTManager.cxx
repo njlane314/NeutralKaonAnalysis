@@ -95,7 +95,6 @@ void SelectorBDTManager::SetupTrainingTrees(){
    t_Background->Branch("proton_LLR",&v_proton_LLR);
    t_Background->Branch("pion_LLR",&v_pion_LLR);
 
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +124,6 @@ void SelectorBDTManager::FillTree(Event e){
 
       }
    }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,15 +198,12 @@ void SelectorBDTManager::SetupSelectorBDT(std::string WeightsDir){
       if (it->second) {
          TString methodName = TString(it->first) + TString(" method");
          TString weightfile = fWeightsDir + "/" + prefix + TString("_") + TString(it->first) + TString(".weights.xml");
-
          std::cout << "Opening weight file " << weightfile << std::endl; 
-
          reader->BookMVA( methodName, weightfile );
       }
    }
 
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 

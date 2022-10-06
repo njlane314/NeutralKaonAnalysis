@@ -20,6 +20,9 @@ SelectionParameters P_FHC_Tune_326;
 SelectionParameters P_FHC_Tune_325_NoBDT;
 SelectionParameters P_RHC_Tune_397_NoBDT;
 
+SelectionParameters P_FHC_Tune_Assoc_0;
+SelectionParameters P_RHC_Tune_Assoc_0;
+
 void BuildTunes(){
 
 /////////////////////
@@ -198,6 +201,24 @@ P_RHC_Tune_397_NoBDT.p_BeamMode = kRHC;
 P_RHC_Tune_397_NoBDT.p_W_Min = 1.09;
 P_RHC_Tune_397_NoBDT.p_W_Max = 1.14;
 P_RHC_Tune_397_NoBDT.p_Alpha_Cut = 14;
+
+//FHC Assoc Hyperon Tune
+P_FHC_Tune_Assoc_0.p_RunPeriod=1;
+P_FHC_Tune_Assoc_0.p_FV=FV::kWirecellPadded;
+P_FHC_Tune_Assoc_0.p_Padding=10;
+P_FHC_Tune_Assoc_0.p_Minimum_MIP_Length=10;
+P_FHC_Tune_Assoc_0.p_SecondaryTrackLengthCut=1000;
+P_FHC_Tune_Assoc_0.p_TertiaryTrackLengthCut=1000;
+P_FHC_Tune_Assoc_0.p_Max_Displacement=5;
+P_FHC_Tune_Assoc_0.p_PID_Cut=0.6;
+P_FHC_Tune_Assoc_0.p_Proton_PID_Cut = 1.0;
+P_FHC_Tune_Assoc_0.p_Pion_PID_Cut = -1.0;
+P_FHC_Tune_Assoc_0.p_Separation_Cut=10;
+P_FHC_Tune_Assoc_0.p_VertexPull=5;
+P_FHC_Tune_Assoc_0.p_SelectorBDT_WeightsDir="/home/lar/cthorpe/uboone/KaonAnalysis/HyperonAnalysis/TMVA/SelectorMVA/dataset/weights";
+P_FHC_Tune_Assoc_0.p_AnalysisBDT_WeightsDir="";
+P_FHC_Tune_Assoc_0.p_AnalysisBDT_Cut=0.15;
+P_FHC_Tune_Assoc_0.p_BeamMode = kFHC;
 
 }
 

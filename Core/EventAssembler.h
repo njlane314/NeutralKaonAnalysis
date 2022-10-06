@@ -96,6 +96,8 @@ class EventAssembler {
       Int_t NPrimaryShowerDaughters;
       std::vector<RecoParticle>* TracklikePrimaryDaughters=0;
       std::vector<RecoParticle>* ShowerlikePrimaryDaughters=0;
+      std::vector<RecoParticle>* RepassTracklikePrimaryDaughters=0;
+      std::vector<RecoParticle>* RepassShowerlikePrimaryDaughters=0;
 
       vector<vector<int>>* ConnSeedIndexes_Plane0=0;
       vector<vector<int>>* ConnOutputIndexes_Plane0=0;

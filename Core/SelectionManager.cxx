@@ -254,9 +254,10 @@ void SelectionManager::SetAssocSignal(Event &e){
 
       e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex.at(i_tr)); 
 
+      bool found_Lambda=false,found_Kaon=false,found_muon=false;
+      bool found_proton=false,found_pion=false;
       if(e.IsAssociatedHyperon.at(i_tr)){
-       
-         bool found_Lambda=false,found_Kaon=false,found_muon=false;
+
          for(size_t i_h=0;i_h<e.Hyperon.size();i_h++)
             if(e.Hyperon.at(i_h).MCTruthIndex == i_tr && e.Hyperon.at(i_h).PDG == 3122)
                found_Lambda = true;
@@ -269,19 +270,33 @@ void SelectionManager::SetAssocSignal(Event &e){
             if(e.Lepton.at(i_l).MCTruthIndex == i_tr && abs(e.Lepton.at(i_l).PDG) == 13)
                found_muon = true;
 
-         bool found_proton=false,found_pion=false;
-
          for(size_t i_d=0;i_d<e.Decay.size();i_d++){
-
             if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == 2212 && e.Decay.at(i_d).ModMomentum > 0.3) 
                found_proton = true;
-
             if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == -211 && e.Decay.at(i_d).ModMomentum > 0.1) 
                found_pion = true;
-
-         }                   
-         IsSignal_tmp.at(i_tr) = found_muon && found_Kaon && found_Lambda && found_proton && found_pion && e.InActiveTPC.at(i_tr) && e.IsAssociatedHyperon.at(i_tr);
+         }
       }
+
+      // Get the kaon decay products
+      bool has_kaon_decay = false;
+      if(e.KaonDecay.size() == 2){
+         bool has_mu=false,has_nu=false,has_piP=false,has_pi0=false;
+         for(size_t i_d=0;i_d<e.KaonDecay.size();i_d++){
+            if(e.KaonDecay.at(i_d).PDG == -13 && e.KaonDecay.at(i_d).ModMomentum > 0.1 && e.KaonDecay.at(i_d).MCTruthIndex == i_tr) has_mu = true;
+            else if(e.KaonDecay.at(i_d).PDG == 14 && e.KaonDecay.at(i_d).MCTruthIndex == i_tr) has_nu = true;
+            else if(e.KaonDecay.at(i_d).PDG == 211 && e.KaonDecay.at(i_d).ModMomentum > 0.1 && e.KaonDecay.at(i_d).MCTruthIndex == i_tr) has_piP = true;
+            else if(e.KaonDecay.at(i_d).PDG == 111 && e.KaonDecay.at(i_d).MCTruthIndex == i_tr) has_pi0 = true;        
+         }
+         if((has_mu && has_nu) || (has_piP && has_pi0)) has_kaon_decay = true;
+         if(has_mu && has_nu) e.KaonDecayMode = kMuNu;
+         if(has_piP && has_pi0) e.KaonDecayMode = kPiPPi0; 
+
+        if(has_kaon_decay)
+         for(size_t i_k=0;i_k<e.PrimaryKaon.size();i_k++)
+            if(e.PrimaryKaon.at(i_k).MCTruthIndex == i_tr && e.PrimaryKaon.at(i_k).EndModMomentum < 0.02) e.IsKDAR = true;
+      }
+      IsSignal_tmp.at(i_tr) = found_muon && found_Kaon && found_Lambda && found_proton && found_pion && e.InActiveTPC.at(i_tr) && e.IsAssociatedHyperon.at(i_tr) && has_kaon_decay;
    }
 
    e.IsSignal = IsSignal_tmp;
@@ -308,7 +323,7 @@ void SelectionManager::SetAssocSignal(Event &e){
          found_kaon = true; 
          e.TrueKaonIndex = e.TracklikePrimaryDaughters.at(i_tr).Index;
       }
-  }
+   }
 
    e.GoodReco = found_muon && found_proton && found_pion && found_kaon; 
 }
@@ -864,7 +879,7 @@ void SelectionManager::FillHistogramsSys(Event e,double variable,std::string nam
    if(thisSampleType == "Data") return;
 
    if(std::isnan(e.Weight) || std::isnan(weight) || std::isinf(e.Weight) || std::isinf(weight)){
-       //std::cout << "Nan weight detected for dial " << name << "  event " << e.run << " " << e.subrun << " " << e.event << " skipping" << std::endl;
+      //std::cout << "Nan weight detected for dial " << name << "  event " << e.run << " " << e.subrun << " " << e.event << " skipping" << std::endl;
       return;
    }
 
