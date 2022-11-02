@@ -18,7 +18,7 @@
 
 // Local includes
 #include "FluxWeight2.h"
-#include "GenG4WeightHandler.h"
+#include "GenG4WeightHandler3.h"
 #include "FiducialVolume.h"
 #include "Muon_ID.h"
 #include "TrackLengthCutManager.h"
@@ -93,7 +93,7 @@ class SelectionManager {
 
       // Flux and Generator/G4 weight calculators
       FluxWeighter a_FluxWeightCalc;
-      GenG4WeightHandler a_GenG4WeightCalc;
+      GenG4WeightHandler3 a_GenG4WeightCalc;
 
       // Selection Algs
       FV::FiducialVolume a_FiducialVolume;

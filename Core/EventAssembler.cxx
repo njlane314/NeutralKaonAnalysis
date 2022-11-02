@@ -148,6 +148,7 @@ void EventAssembler::SetFile(std::string infilename){
    t_in->SetBranchAddress("ConnOutputSizes_Plane2", &ConnOutputSizes_Plane2);
    t_in->SetBranchAddress("ConnSeedChannels_Plane2", &ConnSeedChannels_Plane2);
    t_in->SetBranchAddress("ConnSeedTicks_Plane2", &ConnSeedTicks_Plane2);
+
    t_in->SetBranchAddress("SysDials", &SysDials);
    t_in->SetBranchAddress("SysWeights", &SysWeights);
 
