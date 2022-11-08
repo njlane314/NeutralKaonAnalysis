@@ -18,7 +18,7 @@
 
 // Local includes
 #include "FluxWeight2.h"
-#include "GenG4WeightHandler.h"
+#include "GenG4WeightHandler2.h"
 #include "FiducialVolume.h"
 #include "Muon_ID.h"
 #include "TrackLengthCutManager.h"

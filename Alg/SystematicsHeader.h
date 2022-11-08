@@ -2,7 +2,7 @@
 #define _SystematicsHeader_h_
 
 #include "FluxWeight2.h"
-#include "GenG4WeightHandler.h"
+#include "GenG4WeightHandler2.h"
 
 enum Systemtic_Types {kMultisim,kSingleUnisim,kDualUnisim};
 

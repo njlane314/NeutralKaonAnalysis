@@ -473,8 +473,7 @@ bool SelectionManager::ConnectednessTest(Event e, int nplanes){
    if(a_CTTest_Plane0.DoTest(muon_index,proton_index,pion_index)) npassed++;
    if(a_CTTest_Plane1.DoTest(muon_index,proton_index,pion_index)) npassed++;
    if(a_CTTest_Plane2.DoTest(muon_index,proton_index,pion_index)) npassed++;
-
-
+ 
    bool passed = npassed >= nplanes; 
 
    UpdateCut(e,passed,"Connectedness");

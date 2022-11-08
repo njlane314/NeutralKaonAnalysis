@@ -46,18 +46,13 @@ int MuonID::SelectCandidate(std::vector<RecoParticle> P_v){
       if(P_v.at(i).Track_LLR_PID < fPIDCut || P_v.at(i).TrackLength < fMinLength || P_v.at(i).Displacement > fMaxSeparation) continue;
 
       if(P_v.at(i).TrackLength > length){
-
          i_longest = i;
          length = P_v.at(i).TrackLength;
-
       }
-
    }
-
 
    // Return -1 if no candidate was found
    return i_longest;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

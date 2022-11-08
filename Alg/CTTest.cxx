@@ -57,15 +57,13 @@ bool CTTest::DoTest(int muonindex,int protonindex,int pionindex){
 
    if(test_index == -1) return false;
 
-    int output_muonindex=-1;
-    int output_protonindex=-1;
-    int output_pionindex=-1;
+   int output_muonindex=-1;
+   int output_protonindex=-1;
+   int output_pionindex=-1;
 
-      for(int j=0;j<3;j++) if(SeedIndexes.at(test_index).at(j) == muonindex)  output_muonindex = j;
-      for(int j=0;j<3;j++) if(SeedIndexes.at(test_index).at(j) == protonindex)  output_protonindex = j;
-      for(int j=0;j<3;j++) if(SeedIndexes.at(test_index).at(j) == pionindex)  output_pionindex = j;
-
-
+   for(int j=0;j<3;j++) if(SeedIndexes.at(test_index).at(j) == muonindex)  output_muonindex = j;
+   for(int j=0;j<3;j++) if(SeedIndexes.at(test_index).at(j) == protonindex)  output_protonindex = j;
+   for(int j=0;j<3;j++) if(SeedIndexes.at(test_index).at(j) == pionindex)  output_pionindex = j;
 
    // Reject events with a -1
    if(OutputIndexes.at(test_index).at(0) == -1 || OutputIndexes.at(test_index).at(1) == -1 || OutputIndexes.at(test_index).at(2) == -1) return false;
@@ -77,26 +75,19 @@ bool CTTest::DoTest(int muonindex,int protonindex,int pionindex){
    // Check seeds are not separated by dead wires
    if(DeadWireCheck(SeedChannels.at(test_index))) return false;
 
+   // Fail if all three output indexes are the same = all three particles merged
+   if(OutputIndexes.at(test_index).at(0) == OutputIndexes.at(test_index).at(1) && OutputIndexes.at(test_index).at(1) == OutputIndexes.at(test_index).at(2)) return false;
 
-
-    // Fail if all three output indexes are the same = all three particles merged
-    if(OutputIndexes.at(test_index).at(0) == OutputIndexes.at(test_index).at(1) && OutputIndexes.at(test_index).at(1) == OutputIndexes.at(test_index).at(2)) return false;
-
-  
-   
    if(OutputIndexes.at(test_index).at(output_muonindex) != OutputIndexes.at(test_index).at(output_protonindex)
-   && OutputIndexes.at(test_index).at(output_muonindex) != OutputIndexes.at(test_index).at(output_pionindex)
-   && OutputIndexes.at(test_index).at(output_protonindex) == OutputIndexes.at(test_index).at(output_pionindex)) return true;
+         && OutputIndexes.at(test_index).at(output_muonindex) != OutputIndexes.at(test_index).at(output_pionindex)
+         && OutputIndexes.at(test_index).at(output_protonindex) == OutputIndexes.at(test_index).at(output_pionindex)) return true;
 
    return false;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 bool CTTest::DeadWireCheck(std::vector<int> seeds_channel){
-
-   //std::cout << "Checking if seeds are separated by dead channels" << std::endl;
 
    // if there is zero or 1 seed, this check is meaningless
    if(seeds_channel.size() < 2) return false;
@@ -106,25 +97,18 @@ bool CTTest::DeadWireCheck(std::vector<int> seeds_channel){
    int max_ch=seeds_channel.at(0);
 
    for(size_t i_s=1;i_s<seeds_channel.size();i_s++){
-
       if(seeds_channel.at(i_s) < min_ch) min_ch = seeds_channel.at(i_s);
       if(seeds_channel.at(i_s) > max_ch) max_ch = seeds_channel.at(i_s);
-
    }
 
    int ch=min_ch;
 
    while(ch <= max_ch){
-
-      // Search the list of dead channels
-      if(std::find(DeadChannels.begin(),DeadChannels.end(),ch) != DeadChannels.end()){ return true; }
-
+      if(std::find(DeadChannels.begin(),DeadChannels.end(),ch) != DeadChannels.end()) return true;
       ch++;
-
    }
 
-return false;
-
+   return false;
 }
 
 #endif

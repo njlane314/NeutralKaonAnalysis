@@ -3,17 +3,15 @@
 
 #include "GenG4WeightHandler2.h"
 
-using namespace GW2;
-
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-GenG4WeightHandler2::GenG4WeightHandler2(){
+GenG4WeightHandler::GenG4WeightHandler(){
 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void GenG4WeightHandler2::LoadEvent(Event e){
+void GenG4WeightHandler::LoadEvent(Event e){
 
    theWeightMap.clear();
 
@@ -38,7 +36,7 @@ void GenG4WeightHandler2::LoadEvent(Event e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void GenG4WeightHandler2::OrganiseWeights(){
+void GenG4WeightHandler::OrganiseWeights(){
 
    std::vector<std::string> Dials_tmp;
    std::vector<std::vector<std::vector<double>>> Weights_tmp(theWeights->size());
@@ -60,7 +58,7 @@ void GenG4WeightHandler2::OrganiseWeights(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-double GenG4WeightHandler2::GetCVWeight(){
+double GenG4WeightHandler::GetCVWeight(){
 
    double weight = 1.0;
 
@@ -90,7 +88,7 @@ double GenG4WeightHandler2::GetCVWeight(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<double> GenG4WeightHandler2::GetWeights(std::string dial){
+std::vector<double> GenG4WeightHandler::GetWeights(std::string dial){
 
    // which kind of weight are you trying to get?
    bool cv_dial = std::find(CV_Dials.begin(),CV_Dials.end(),dial) != CV_Dials.end(); 

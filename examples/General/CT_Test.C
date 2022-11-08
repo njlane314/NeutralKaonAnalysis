@@ -9,9 +9,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
 #include "CTTest.h"
 
-   // Run the 
-
-   // WILL NOT WORK with pre-october 2021 versions of ntuples
+   // Run the connectedness test as part of the selection 
 
    void CT_Test(){
 
@@ -38,7 +36,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       // Event Loop
       for(int i=0;i<E.GetNEvents();i++){
 
-         if(i % 2000 == 0) std::cout << "Processing event " << i << "/" << E.GetNEvents() << std::endl;
+         if(i % 10000 == 0) std::cout << "Processing event " << i << "/" << E.GetNEvents() << std::endl;
 
          Event e = E.GetEvent(i);
 

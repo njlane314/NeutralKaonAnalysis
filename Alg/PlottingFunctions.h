@@ -335,18 +335,18 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
       TCanvas *c2 = new TCanvas("c2","c2",800,750);
 
       // Setup split canvas
-      TPad *p_plot2 = new TPad("p_plot","p_plot2",0,0.25,1,0.9);
-      TPad *p_legend2 = new TPad("p_plot","p_plot2",0,0.9,1,1);
-      TPad *p_ratio2 = new TPad("p_ratio","p_ratio",0,0.0,1,0.25);
+      TPad *p_plot2 = new TPad("p_plot2","p_plot2",0,0.3,1,0.9);
+      TPad *p_legend2 = new TPad("p_legend2","p_plot2",0,0.9,1,1);
+      TPad *p_ratio2 = new TPad("p_ratio2","p_ratio2",0,0.0,1,0.3);
 
       p_legend2->SetBottomMargin(0);
       p_legend2->SetTopMargin(0.1);
-      p_ratio2->SetTopMargin(0.01);
+      p_ratio2->SetTopMargin(0.015);
       p_plot2->SetTopMargin(0.01);
-      //p_plot->SetBottomMargin(0.01);
+      p_plot2->SetBottomMargin(0.02);
 
       p_ratio2->SetGrid(0,1);
-      p_ratio2->SetBottomMargin(0.12);
+      p_ratio2->SetBottomMargin(0.22);
 
       TLegend *l2 = new TLegend(0.1,0.0,0.9,1.0);
       l2->SetBorderSize(0);
@@ -395,7 +395,11 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
       p_plot2->cd();
 
       h_errors->Draw("E2");
-      
+      h_errors->GetXaxis()->SetLabelSize(0);     
+      h_errors->GetYaxis()->SetLabelSize(0.05);
+      h_errors->GetYaxis()->SetTitleSize(0.056);
+      h_errors->GetYaxis()->SetTitleOffset(0.9);
+ 
       if(hasdata) hist_v.at(i_data)->Draw("e0 same");
       hs->Draw("HIST same");    
       h_errors->Draw("E2 same");
@@ -435,7 +439,6 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
             ratio_range.first = 1.0-h_errors_ratio->GetBinError(i);
             ratio_range.second = 1.0+h_errors_ratio->GetBinError(i);
          }
-
       }
 
       c2->cd();
@@ -446,14 +449,15 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
       h_errors_ratio->GetYaxis()->SetRangeUser(0.9*ratio_range.first,1.1*ratio_range.second);
 
       h_errors_ratio->SetStats(0);
-      h_errors_ratio->GetXaxis()->SetTitle("");
+      h_errors_ratio->GetXaxis()->SetTitle(hist_v.at(0)->GetXaxis()->GetTitle());
       h_errors_ratio->GetYaxis()->SetTitle("Data/MC");
       h_errors_ratio->GetYaxis()->SetTitleSize(0.12);
+      h_errors_ratio->GetXaxis()->SetTitleSize(0.12);
       h_errors_ratio->GetYaxis()->SetTitleOffset(0.43);
-      //h_errors_ratio->GetXaxis()->SetLabelSize(0.09);
-      //h_errors_ratio->GetYaxis()->SetLabelSize(0.09);
-      h_errors_ratio->GetXaxis()->SetLabelSize(0.12);
-      h_errors_ratio->GetYaxis()->SetLabelSize(0.12);
+      h_errors_ratio->GetXaxis()->SetLabelSize(0.1);
+      h_errors_ratio->GetYaxis()->SetLabelSize(0.1);   
+      h_errors_ratio->GetXaxis()->SetTitleOffset(0.8); 
+
 
       TH1D* h_Data_ratio = nullptr;
 
@@ -468,26 +472,24 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
             if(pred > 0){
                h_Data_ratio->SetBinContent(i,ratio);
                h_Data_ratio->SetBinError(i,error);
-
             }
             else{
                h_Data_ratio->SetBinContent(i,1.0); 
                h_Data_ratio->SetBinError(i,0.0); 
             }
-
-            //std::cout <<  h_Data_ratio->GetBinContent(i) << "  " << h_Data_ratio->GetBinError(i) << std::endl;
-
          }
 
+         std::cout << "Data/MC ratios and errors:" << std::endl;
+            for(int i_b=1;i_b<h_Data_ratio->GetNbinsX()+1;i_b++)
+               std::cout << h_Data_ratio->GetBinContent(i_b) << "  " << h_Data_ratio->GetBinError(i_b) << std::endl;
+
          h_Data_ratio->Draw("E0 same");
-
+         p_plot2->RedrawAxis();
  
-      // gSystem->Exec("mkdir -p Plots/");
-      c2->Print(("Plots/" + label + "_Complete_Ratio.pdf").c_str());
-   c2->Print(("Plots/" + label + "_Complete_Ratio.png").c_str());
-   c2->Print(("Plots/" + label + "_Complete_Ratio.C").c_str());
-   c2->Close();
-
+         c2->Print(("Plots/" + label + "_Complete_Ratio.pdf").c_str());
+         c2->Print(("Plots/" + label + "_Complete_Ratio.png").c_str());
+         c2->Print(("Plots/" + label + "_Complete_Ratio.C").c_str());
+         c2->Close();
    }
 
    c->Close();
