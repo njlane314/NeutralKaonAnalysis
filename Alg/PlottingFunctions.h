@@ -7,16 +7,32 @@
 #include "TLatex.h"
 #include "FluxWeight2.h"
 
+const bool DrawWatermark = true;
 const double _EPSILON_ = 1e-5;
 
+namespace hypplot {
+
+
+   // Single panel axis settings etc.
+
+
+
+   // Two panel axis settings etc.
+
+   // Matrix axis settings etc.
+
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Take set of histograms to be stacked together and compute the total stat error
 
 TH1D * MakeErrorBand(std::map<std::string,TH1D*> hists){
 
    TH1D *h_first = hists.begin()->second;
    TH1D *h_errors = new TH1D("h_errors","",h_first->GetNbinsX(),h_first->GetBinLowEdge(1),h_first->GetBinLowEdge(h_first->GetNbinsX()+1));
 
-   // iterate over the bins of the contributing histograms
+   // Iterate over the bins of the contributing histograms
    for(int i_b=0;i_b<h_first->GetNbinsX()+1;i_b++){
 
       std::map<std::string, TH1D*>::iterator it;
@@ -30,24 +46,18 @@ TH1D * MakeErrorBand(std::map<std::string,TH1D*> hists){
          events += it->second->GetBinContent(i_b);
          variance += it->second->GetBinError(i_b)*it->second->GetBinError(i_b);
       }
-
       h_errors->SetBinContent(i_b,events);
       h_errors->SetBinError(i_b,sqrt(variance));
-
    }
 
    return h_errors;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 TH1D * MakeRatioPlot(std::map<std::string,TH1D*> hists,TH1D* h_MCError){
 
-   //std::cout << "Setting histogram errors" << std::endl;
-
    TH1D *h_first = hists.begin()->second;
-
-   //std::cout << "Setting up error hist with params: " << "bins=" << h_first->GetNbinsX() << "  low edge=" << h_first->GetBinLowEdge(1) << "  high edge=" << h_first->GetBinLowEdge(h_first->GetNbinsX()+1) << std::endl;
 
    std::string x_axis_title = h_first->GetXaxis()->GetTitle();
 
@@ -62,7 +72,6 @@ TH1D * MakeRatioPlot(std::map<std::string,TH1D*> hists,TH1D* h_MCError){
          + hists["Dirt"]->GetBinContent(i_b)
          + hists["EXT"]->GetBinContent(i_b);
 
-
       double mc_variance = h_MCError->GetBinError(i_b)*h_MCError->GetBinError(i_b);
 
       double data_events = hists["Data"]->GetBinContent(i_b);
@@ -71,56 +80,54 @@ TH1D * MakeRatioPlot(std::map<std::string,TH1D*> hists,TH1D* h_MCError){
       double ratio = data_events/mc_events;
       double ratio_variance = ratio*ratio*(data_variance/data_events/data_events + mc_variance/mc_events/mc_events);
 
-
       if(data_events < _EPSILON_ || mc_events < _EPSILON_){ ratio = 1.0; ratio_variance = 0.0; }
-
-
-      //      std::cout << "Looing at bin " << i_b << "  events = "  << mc_events << " sigma = " << sqrt(mc_variance) << " Data = " << data_events << " sigma = " << sqrt(data_variance) <<  " data/mc = " << ratio <<  " sigma = " << sqrt(ratio_variance) << std::endl;
 
       h_Ratio->SetBinContent(i_b,ratio);
       h_Ratio->SetBinError(i_b,sqrt(ratio_variance));
-
    }
 
    return h_Ratio;
 
 }
-
+*/
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Get the maximum of a histogram including error bars
 
 double GetHistMaxError(TH1D *h){
 
    double max = -1e10;
 
-   for(int i_b=1;i_b<h->GetNbinsX()+1;i_b++){
-      if(h->GetBinContent(i_b)+h->GetBinError(i_b) > max){
+   for(int i_b=1;i_b<h->GetNbinsX()+1;i_b++)
+      if(h->GetBinContent(i_b)+h->GetBinError(i_b) > max)
          max = h->GetBinContent(i_b)+h->GetBinError(i_b);
-      }
-   }
+
    return max;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Get the maximum of a histogram not including the errors
 
 double GetHistMax(TH1D *h){
 
    double max = -1e10;
 
-   for(int i_b=1;i_b<h->GetNbinsX()+1;i_b++){
-      if(h->GetBinContent(i_b) > max){
+   for(int i_b=1;i_b<h->GetNbinsX()+1;i_b++)
+      if(h->GetBinContent(i_b) > max)
          max = h->GetBinContent(i_b);
-         //std::cout << "BinContent=" << h->GetBinContent(i_b) << "  max=" << max << std::endl;
-      }
-   }
 
    return max;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// Make a 2D histogram from a TMatrix object
+// Uses h_example for the bin widths, axis titles etc.
+
 TH2D* MakeHistogram(TMatrixD Mat,TH2D* h_example,std::string Name=""){
 
-   TH2D* h_Mat = (TH2D*)h_example->Clone(("h_" + Name).c_str());;
+   TH2D* h_Mat = (TH2D*)h_example->Clone(("h_" + Name).c_str());
    const int nbins = h_Mat->GetNbinsX();
 
    for(int i=1;i<nbins+1;i++)
@@ -131,6 +138,11 @@ TH2D* MakeHistogram(TMatrixD Mat,TH2D* h_example,std::string Name=""){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Draw a 2D matrix as a histogram
+// Uses h_example for the bin widths, axis titles etc.
+// Can import bin labels from h_example and write bin content on bins if corresponding bools
+// are set.
 
 void DrawMatrix(TMatrixD Mat,TH2D* h_example,std::string title,bool uselabels=false,bool usetext=false){
 
@@ -145,7 +157,6 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,std::string title,bool uselabels=fa
       h->GetYaxis()->SetLabelSize(0.07);
    }
 
-
    TLegend *l_Watermark = new TLegend(0.45,0.91,0.915,0.99);
    l_Watermark->SetBorderSize(0);
    l_Watermark->SetMargin(0.001);
@@ -153,18 +164,20 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,std::string title,bool uselabels=fa
    l_Watermark->SetTextFont(62);
    l_Watermark->SetTextSize(0.05);
    l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-   //l_Watermark->SetHeader("MicroBooNE Simulation, In Progress","R");
 
    h->SetContour(1000);
 
+   // Generates text with bin content, uses 3 sf
    if(usetext){
+
+      const int sf = 3;
       c->SetRightMargin(0.05);
       h->Draw("col");
       h->SetMarkerSize(3);
 
       for(int i=1;i<h->GetNbinsX()+1;i++){
          for(int j=1;j<h->GetNbinsX()+1;j++){
-            double content = setsf(h->GetBinContent(i,j),3);            
+            double content = setsf(h->GetBinContent(i,j),sf); 
             std::string text = std::to_string(content);        
             if(abs(content) < 1e-4 || abs(content) > 1e4){
                int OM = floor(log10(abs(content)));               
@@ -181,22 +194,39 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,std::string title,bool uselabels=fa
    else h->Draw("colz");
 
    h->SetStats(0);
-   l_Watermark->Draw();
+   if(DrawWatermark) l_Watermark->Draw();
 
    c->Print((title + ".png").c_str());
    c->Print((title + ".pdf").c_str());
    c->Print((title + ".C").c_str());
-
    c->Close();
-   delete h;
 
+   delete h;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::string> captions,std::string plotdir,std::string label,int mode,int run,double POT,double signalscale,bool hasdata,std::vector<int> colors,std::vector<std::string> binlabels,std::pair<double,int> chi2ndof){
+// Draw a stack of histograms
+// Inputs:
+// hist_v = the stack of histograms you want to draw (including data if applicable)
+// h_errors = the total MC prediction with uncertainties
+// captions = list of what should be added to the legend for each histogram
+// plotdir = the directory to write the plots into
+// label = label to be added the front of the plot
+// mode = FHC/RHC/BNB
+// run = 1,3 or 13 (for 1+3)
+// POT = the POT used 
+// signalscale = scaling for the signal
+// hasdata = flag indicating if there is data in the stack of histograms
+// colors = list of colors for the histograms
+// binlabels = bin labels
+// chi2ndof = chi2 and degrees of freedom if applicable
 
-  assert(mode == kFHC || mode == kRHC || mode == kBNB);
+//TODO: Enable multiple running periods
+
+void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::string> captions,std::string plotdir,std::string label,int mode,int run,double POT,double signalscale,bool hasdata,std::vector<int> colors,std::vector<std::string> binlabels,std::pair<double,int> chi2ndof){
+ 
+   assert(mode == kFHC || mode == kRHC || mode == kBNB);
 
    if(binlabels.size()){
       const int nbins = hist_v.at(0)->GetNbinsX();
@@ -227,9 +257,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
    l_Watermark->SetTextAlign(32);
    l_Watermark->SetTextSize(0.05);
    l_Watermark->SetTextFont(62);
-
    l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-   //l_Watermark->SetHeader("MicroBooNE Simulation, In Progress","R");
 
    TLegend *l_POT = new TLegend(0.55,0.820,0.89,0.900);
    l_POT->SetBorderSize(0);
@@ -316,7 +344,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
 
    if(hasdata && i_data != -1) hist_v.at(i_data)->Draw("E0 P0 same");
    if(POT > 0) l_POT->Draw();
-   l_Watermark->Draw();
+   if(DrawWatermark) l_Watermark->Draw();
    if(signalscale != 1.0) l_Scale->Draw();
    if(hasdata) l_DataMCRatio->Draw();
 
@@ -329,8 +357,6 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
 
    // Draw the ratio and get chi2 if there is data
    if(hasdata && i_data != -1){
-
-      std::cout << "Drawing data/MC with ratio" << std::endl;
 
       TCanvas *c2 = new TCanvas("c2","c2",800,750);
 
@@ -367,7 +393,6 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
       l_Watermark2->SetTextAlign(32);
       l_Watermark2->SetTextFont(62);
       l_Watermark2->SetTextSize(0.05);
-      //l_Watermark2->SetHeader("MicroBooNE Run 1 Preliminary","R");
       l_Watermark2->SetHeader(("MicroBooNE Run " + std::to_string(run) + " Preliminary").c_str(),"R");
       if(run == 13) l_Watermark2->SetHeader("MicroBooNE Run 1 + 3 Preliminary","R"); 
 
@@ -399,17 +424,17 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
       h_errors->GetYaxis()->SetLabelSize(0.05);
       h_errors->GetYaxis()->SetTitleSize(0.056);
       h_errors->GetYaxis()->SetTitleOffset(0.9);
- 
+
       if(hasdata) hist_v.at(i_data)->Draw("e0 same");
       hs->Draw("HIST same");    
       h_errors->Draw("E2 same");
       if(hasdata) hist_v.at(i_data)->Draw("e0 same");
 
-      l_Watermark2->Draw();
+      if(DrawWatermark) l_Watermark2->Draw();
       if(POT > 0) l_POT2->Draw();
-         
+
       //l_DataMCRatio->Draw();
-      
+
       // Calculate the chi2 score 
       TLegend *l_Chi2 = new TLegend(0.12,0.900,0.36,0.985);
       l_Chi2->SetBorderSize(0);
@@ -461,35 +486,31 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,std::vector<std::str
 
       TH1D* h_Data_ratio = nullptr;
 
-         h_Data_ratio = (TH1D*) hist_v.at(i_data)->Clone("h_Data_ratio");
-         for(int i=1;i<h_Data_ratio->GetNbinsX()+1;i++){
-            double pred = h_errors->GetBinContent(i);        
-            double Data = hist_v.at(i_data)->GetBinContent(i);
-            double error = h_Data_ratio->GetBinError(i);
-            double ratio = Data/pred;
-            error /= pred;
+      h_Data_ratio = (TH1D*) hist_v.at(i_data)->Clone("h_Data_ratio");
+      for(int i=1;i<h_Data_ratio->GetNbinsX()+1;i++){
+         double pred = h_errors->GetBinContent(i);        
+         double Data = hist_v.at(i_data)->GetBinContent(i);
+         double error = h_Data_ratio->GetBinError(i);
+         double ratio = Data/pred;
+         error /= pred;
+         h_Data_ratio->SetBinContent(i,ratio);
+         if(pred > 0){
             h_Data_ratio->SetBinContent(i,ratio);
-            if(pred > 0){
-               h_Data_ratio->SetBinContent(i,ratio);
-               h_Data_ratio->SetBinError(i,error);
-            }
-            else{
-               h_Data_ratio->SetBinContent(i,1.0); 
-               h_Data_ratio->SetBinError(i,0.0); 
-            }
+            h_Data_ratio->SetBinError(i,error);
          }
+         else{
+            h_Data_ratio->SetBinContent(i,1.0); 
+            h_Data_ratio->SetBinError(i,0.0); 
+         }
+      }
 
-         std::cout << "Data/MC ratios and errors:" << std::endl;
-            for(int i_b=1;i_b<h_Data_ratio->GetNbinsX()+1;i_b++)
-               std::cout << h_Data_ratio->GetBinContent(i_b) << "  " << h_Data_ratio->GetBinError(i_b) << std::endl;
+      h_Data_ratio->Draw("E0 same");
+      p_plot2->RedrawAxis();
 
-         h_Data_ratio->Draw("E0 same");
-         p_plot2->RedrawAxis();
- 
-         c2->Print(("Plots/" + label + "_Complete_Ratio.pdf").c_str());
-         c2->Print(("Plots/" + label + "_Complete_Ratio.png").c_str());
-         c2->Print(("Plots/" + label + "_Complete_Ratio.C").c_str());
-         c2->Close();
+      c2->Print(("Plots/" + label + "_Complete_Ratio.pdf").c_str());
+      c2->Print(("Plots/" + label + "_Complete_Ratio.png").c_str());
+      c2->Print(("Plots/" + label + "_Complete_Ratio.C").c_str());
+      c2->Close();
    }
 
    c->Close();
