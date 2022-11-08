@@ -10,7 +10,6 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so);
 #include "SampleSets_Nov21.h"
 
 #include "GetCovMatrix.h"
-//#include "HandScanning.h"
 
 #include "FluxWeight2.h"
 #include "GenG4WeightHandler2.h"

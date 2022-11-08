@@ -57,13 +57,8 @@ void BayesianCrossSection(){
    TEfficiency* Eff,*BG_Acc;
    f->GetObject("Efficiency",Eff);
    f->GetObject("Background_Acceptance",BG_Acc);
-
    Eff->SetDirectory(0);
    BG_Acc->SetDirectory(0);
-
-   TH2D* h_Cov_DirectHyp = nullptr;
-   TH2D* h_Cov_RESHyp = nullptr;
-   TH2D* h_Cov_DISHyp = nullptr;
 
    TMatrixDSym Cov(kMAX);
    TMatrixDSym FCov(kMAX);
@@ -89,7 +84,7 @@ void BayesianCrossSection(){
    TFile *f_out = TFile::Open(("rootfiles/" + label + "_PDFs.root").c_str(),"RECREATE");
 
    // Make the Posterior PDFs describing the statistical errors
-   TH1D *h_Eff = PosteriorPDF(Eff,1,"Efficiency");
+   TH1D *h_Eff = PosteriorPDF(Eff,1,"Efficiency",1.0/Eff->GetTotalHistogram()->GetBinContent(1));
    TH1D *h_BG = PosteriorPDF(BG_Acc,1,"BG");
    MultiVariateRNG* R_Cov = new MultiVariateRNG(1234,Cov,{0,0,0});
 
@@ -100,6 +95,8 @@ void BayesianCrossSection(){
    std::vector<TH1D*> h_Data_v(MAX_Obs+1);
    THStack *hs_Smeared = new THStack("hs",";#sigma (10^{-40} cm^{2});PDF (1/10^{-40} cm^{2})");
 
+   const int nthrows = 500000;
+
    for(int i_h=0;i_h<MAX_Obs+1;i_h++){
 
       std::cout << "Getting PDFs for obs = " << i_h << std::endl;
@@ -107,25 +104,26 @@ void BayesianCrossSection(){
       h_Data_v.at(i_h) = MakePosterior(0,5*MAX_Obs,i_h);
 
       double min = 1e10,max=0.0;
-      for(int i=0;i<1000;i++){
-         std::vector<double> cv = R_Cov->GetParameterSet();
+      for(int i=0;i<nthrows/100;i++){
+         std::vector<double> sys_fluc = R_Cov->GetParameterSet();
          double n = h_Data_v.at(i_h)->GetRandom();
-         double e = h_Eff->GetRandom() + cv.at(0);
-         double flux = Flux_CV + cv.at(1);
-         double bg = h_BG->GetRandom() + cv.at(2);
+         double e = h_Eff->GetRandom() + sys_fluc.at(0);
+         double flux = Flux_CV + sys_fluc.at(1);
+         double bg = h_BG->GetRandom() + sys_fluc.at(2);
          min = std::min(CrossSection(n,bg,flux,e),min);
          max = std::max(CrossSection(n,bg,flux,e),max);
       }
 
-      h_SmearedCrossSection_v.at(i_h) = new TH1D(("CrossSection_"+std::to_string(i_h)).c_str(),";#sigma (10^{40} cm^{2});PDF (1/10^{-40} cm^{2})",500,0.0,15);
+      h_SmearedCrossSection_v.at(i_h) = new TH1D(("CrossSection_"+std::to_string(i_h)).c_str(),";#sigma (10^{40} cm^{2});PDF (1/10^{-40} cm^{2})",500,std::max(0.0,min),max);
 
-      for(int i=0;i<4000000;i++){
-         if(i % 400000 == 0) std::cout << 100*i/4000000 << " \% " << std::endl;
-         std::vector<double> cv = R_Cov->GetParameterSet();
+      for(int i=0;i<nthrows;i++){
+         if(i % nthrows == 0) std::cout << 100*i/nthrows << " \% " << std::endl;
+         // Calculate systematic fluctuations
+         std::vector<double> sys_fluc = R_Cov->GetParameterSet();
          double n = h_Data_v.at(i_h)->GetRandom();
-         double e = h_Eff->GetRandom() + cv.at(0);
-         double flux = Flux_CV + cv.at(1);
-         double bg = h_BG->GetRandom() + cv.at(2);
+         double e = h_Eff->GetRandom() + sys_fluc.at(0);
+         double flux = Flux_CV + sys_fluc.at(1);
+         double bg = h_BG->GetRandom() + sys_fluc.at(2);
          h_SmearedCrossSection_v.at(i_h)->Fill(CrossSection(n,bg,flux,e));
       }
 
@@ -137,10 +135,9 @@ void BayesianCrossSection(){
 
       h_SmearedCrossSection_v.at(i_h)->Write();
       h_Data_v.at(i_h)->Write();     
-
-      //delete h_Data;
    }   
 
+   // Draw the plot
 
    TCanvas *c = new TCanvas("c","c",800,600);
 
@@ -231,8 +228,6 @@ void BayesianCrossSection(){
    c->Print(("Plots/" + label + "_PosteriorPDFs_BothRuns.png").c_str());
    c->Print(("Plots/" + label + "_PosteriorPDFs_BothRuns.pdf").c_str());
 
-   //h_SmearedCrossSection_v.at(0)->Draw("HIST");
-
    g_GENIE_xsec->Write("GENIE_xsec");
    g_NuWro_Default_xsec->Write("NuWro_Default_xsec");
    g_NuWro_NoFSI_xsec->Write("NuWro_NoFSI_xsec");
@@ -242,5 +237,4 @@ void BayesianCrossSection(){
    g_NuWro_MA1500_xsec->Write("NuWro_MA1500_xsec");
 
    f_out->Close();
-
 }
