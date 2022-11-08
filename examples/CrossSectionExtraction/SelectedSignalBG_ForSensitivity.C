@@ -119,9 +119,6 @@ void SelectedSignalBG_ForSensitivity(){
 
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
 
-         if(SampleTypes.at(i_s) == "Dirt" || SampleTypes.at(i_s) == "EXT") continue;
-         if(SampleTypes.at(i_s) != "Hyperon" && SampleTypes.at(i_s) != "Neutron") continue;
-
          E.SetFile(SampleFiles.at(i_s));
          double SamplePOT = ((SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") ? E.GetPOT() : SampleTypes.at(i_s) == "Data" ? Data_POT : EXT_POT)*Scales.at(i_s);
          M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),SamplePOT);

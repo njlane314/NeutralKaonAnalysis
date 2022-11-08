@@ -91,8 +91,6 @@ void Detector_Uncertainties_ForSensitivity(){
             std::string SampleType = SampleTypes_Detvar.at(i_var).at(i_s);
             std::string SampleFile = SampleFiles_Detvar.at(i_var).at(i_s);        
 
-            if(SampleType != "Hyperon" && SampleType != "Neutron") continue;
-
             E.SetFile(SampleFile);
             double POT = POTs.at(i_s)*Scales.at(i_s); 
             M.AddSample(SampleName,SampleType,POT);
