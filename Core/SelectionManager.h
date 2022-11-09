@@ -34,6 +34,7 @@
 #include "EventListFilter.h"
 #include "CTTest.h"
 #include "SystematicsHeader.h"
+#include "EventType.h"
 
 enum Generators {kGENIE,kNuWro};
 
@@ -80,7 +81,7 @@ class SelectionManager {
       double POT;
 
       // List of allowed sample types
-      std::vector<std::string> SampleTypes = { "Hyperon" , "Background" , "Dirt" , "EXT" , "Data" };
+      const std::vector<std::string> SampleTypes = { "Hyperon" , "Background" , "Dirt" , "EXT" , "Data" };
 
       // Parameters of current sample being processed
       double thisSampleWeight;
@@ -118,7 +119,7 @@ class SelectionManager {
    private:
 
       // Cut Data Management //
-      std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" , "InvariantMass" , "AlphaAngle" };
+      const std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" , "InvariantMass" , "AlphaAngle" };
       void DeclareCuts();
       std::vector<Cut> Cuts;
       void UpdateCut(Event e,bool Passed,std::string CutName);
@@ -165,10 +166,6 @@ class SelectionManager {
       std::map<std::string,std::map<std::string,std::vector<TH1D*>>> SingleUnisim_Sys_Hists; // histogram in different single univese unisims
       std::map<std::string,std::map<std::string,std::vector<TH1D*>>> DualUnisim_Sys_Hists;  // histogram in different two universe multisims
 
-      const std::vector<std::string> Types = { "Signal","OtherHYP","OtherNu","EXT","Dirt","All","Data" };
-      const std::vector<std::string> Types2 = {"DirectLambda","RESLambda","DISLambda","DirectHYP","RESHYP","DISHYP","Neutron","Other","Dirt","EXT","Data","All"};
-      const std::vector<std::string> Procs = { "Signal","OtherHYP","EXT","Dirt","Data","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","ElectronScattering","Diffractive","Other","All" };
-
       TFile *f_Hists = nullptr;
       void OpenHistFile(std::string label="Hists");
 
@@ -176,8 +173,8 @@ class SelectionManager {
 
    public:
 
-      std::string GetMode(Event e);
-      std::string GetMode2(Event e);
+      //std::string GetType(Event e);
+      //std::string GetType2(Event e);
 
       void AddSystematic(int systype,int universes,std::string name);
       void FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights);
@@ -202,6 +199,5 @@ class SelectionManager {
 
       void UseText(){ fUseText = true; }
 };
-
 
 #endif

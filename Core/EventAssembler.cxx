@@ -7,7 +7,9 @@
 
 // Load a file containing ntuples
 
-void EventAssembler::SetFile(std::string infilename){
+void EventAssembler::SetFile(string infilename,string sampletype){
+
+   SampleType = sampletype;
 
    DataDir = getenv("DATA_DIR");         
 
@@ -207,6 +209,12 @@ Event EventAssembler::GetEvent(int i){
 
    e.Weight = Weight;
    e.Mode = *Mode;
+
+   // Special cases of "interaction mode"
+   if(SampleType == "Data") e.Mode = {"Data"};
+   else if(SampleType == "EXT") e.Mode = {"EXT"};
+   else if(SampleType == "Dirt") e.Mode = {"Dirt"};
+
    e.CCNC = *CCNC;
    e.InActiveTPC = *InActiveTPC;
    e.IsHyperon = *IsHyperon;

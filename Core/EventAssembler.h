@@ -36,7 +36,7 @@ class EventAssembler {
    public:
 
       // Setters and getters
-      void SetFile(std::string infilename);
+      void SetFile(string infilename,string sampletype);
       void Close();
 
       Event GetEvent(int i);
@@ -44,6 +44,8 @@ class EventAssembler {
       double GetPOT();		
 
    private:
+
+      std::string SampleType;
 
       // General Info
       Bool_t          IsData;
