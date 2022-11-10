@@ -58,14 +58,22 @@ namespace HypPlot {
    const double Matrix_CanvasX = 800;
    const double Matrix_CanvasY = 600; 
 
+   const double Matrix_XaxisTitleSize = 0.05;
+   const double Matrix_YaxisTitleSize = 0.05;
+   const double Matrix_XaxisTitleOffset = 0.93;
+   const double Matrix_YaxisTitleOffset = 1.06;
+   const double Matrix_XaxisLabelSize = 0.045;
+   const double Matrix_YaxisLabelSize = 0.045;
+   const double Matrix_ZaxisLabelSize = 0.045;
+
    const double Matrix_TextLabelSize = 0.07;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 // Take set of histograms to be stacked together and compute the total stat error
-// TODO: Add the ability to pass the covariance matrix too
+// h_Cov = 2D histogram storing the covariance matrix, systematic errors only
 
-TH1D * MakeErrorBand(std::map<string,TH1D*> hists){
+TH1D * MakeErrorBand(std::map<string,TH1D*> hists,TH2D* h_Cov=nullptr){
 
    TH1D *h_first = hists.begin()->second;
    TH1D *h_errors = new TH1D("h_errors","",h_first->GetNbinsX(),h_first->GetBinLowEdge(1),h_first->GetBinLowEdge(h_first->GetNbinsX()+1));
@@ -84,6 +92,9 @@ TH1D * MakeErrorBand(std::map<string,TH1D*> hists){
          events += it->second->GetBinContent(i_b);
          variance += it->second->GetBinError(i_b)*it->second->GetBinError(i_b);
       }
+
+      if(h_Cov != nullptr) variance += h_Cov->GetBinContent(i_b,i_b);
+
       h_errors->SetBinContent(i_b,events);
       h_errors->SetBinError(i_b,sqrt(variance));
    }
@@ -148,6 +159,13 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,string title,bool uselabels=false,b
 
    TH2D* h = MakeHistogram(Mat,h_example);
    h->SetContour(1000);
+   h->GetXaxis()->SetTitleSize(Matrix_XaxisTitleSize);
+   h->GetYaxis()->SetTitleSize(Matrix_YaxisTitleSize);
+   h->GetXaxis()->SetTitleOffset(Matrix_XaxisTitleOffset);
+   h->GetYaxis()->SetTitleOffset(Matrix_YaxisTitleOffset);
+   h->GetXaxis()->SetLabelSize(Matrix_XaxisLabelSize);
+   h->GetYaxis()->SetLabelSize(Matrix_YaxisLabelSize);
+   h->GetZaxis()->SetLabelSize(Matrix_ZaxisLabelSize);
 
    TCanvas *c = new TCanvas("c","c",Matrix_CanvasX,Matrix_CanvasY);
    c->SetRightMargin(0.13);
@@ -221,13 +239,12 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,string title,bool uselabels=false,b
 // binlabels = bin labels
 // chi2ndof = chi2 and degrees of freedom if applicable
 
-//TODO: Enable multiple running periods
-
 void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,bool hasdata,vector<int> colors,vector<string> binlabels,std::pair<double,int> chi2ndof){
 
    assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
    for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
 
+   // Set the bin labels
    if(binlabels.size()){
       const int nbins = hist_v.at(0)->GetNbinsX();
       for(int i=1;i<nbins+1;i++){
@@ -293,11 +310,11 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
    else throw std::invalid_argument("PlottingFunctions::DrawHistogram: Currently maximum of two running periods supported");
 
    // Create the POT label
-   TLegend *l_POT = new TLegend(0.55,0.820,0.89,0.900);
+   TLegend *l_POT = new TLegend(0.54,0.820,0.89,0.900);
    l_POT->SetBorderSize(0);
    l_POT->SetMargin(0.005);
    l_POT->SetTextAlign(32);
-   TLegend *l_POT2 = new TLegend(0.55,0.74,0.89,0.82,NULL,"brNDC");
+   TLegend *l_POT2 = new TLegend(0.54,0.74,0.89,0.82,NULL,"brNDC");
    l_POT2->SetBorderSize(0);
    l_POT2->SetMargin(0.005);
    l_POT2->SetTextAlign(32);
@@ -354,9 +371,10 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
    if(hasdata) l_Chi2->Draw();
 
    c->cd();
-   c->Print((plotdir + label + ".png").c_str());
-   c->Print((plotdir + label + ".pdf").c_str());
-   c->Print((plotdir + label + ".C").c_str());
+   system(("mkdir -p " + plotdir).c_str());
+   c->Print((plotdir + "/" + label + ".png").c_str());
+   c->Print((plotdir + "/" + label + ".pdf").c_str());
+   c->Print((plotdir + "/" + label + ".C").c_str());
    c->Clear();
    c->Close();
 
@@ -450,13 +468,143 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
       h_data_ratio->Draw("E0 same");
       p_plot2->RedrawAxis();
 
-      c2->Print(("Plots/" + label + "_Complete_Ratio.pdf").c_str());
-      c2->Print(("Plots/" + label + "_Complete_Ratio.png").c_str());
-      c2->Print(("Plots/" + label + "_Complete_Ratio.C").c_str());
+      c2->Print((plotdir + "/" + label + "_Ratio.pdf").c_str());
+      c2->Print((plotdir + "/" + label + "_Ratio.png").c_str());
+      c2->Print((plotdir + "/" + label + "_Ratio.C").c_str());
       c2->Close();
-
    }
 
+   c->Close();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Draw a stack of histograms
+// If you anto to include systematic uncertainties in the MC, make sure they're already included
+// in the error of h_errors
+// Inputs:
+// hist_v = the stack of histograms you want to draw (including data if applicable)
+// h_errors = the total MC prediction with uncertainties
+// captions = list of what should be added to the legend for each histogram
+// plotdir = the directory to write the plots into
+// label = label to be added the front of the plot
+// mode = FHC/RHC/BNB
+// run = 1,3 or 13 (for 1+3)
+// POT = the POT used 
+// signalscale = scaling for the signal
+// binlabels = bin labels
+
+void DrawHistogramSys(vector<TH1D*> hist_v,TH1D* h_cv,string plotdir,string label,string type,string dialname,vector<int> mode,vector<int> run,vector<double> POT,vector<string> binlabels){
+
+   assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
+   for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
+
+   // Set the bin labels
+   if(binlabels.size())
+      for(size_t i_u=0;i_u<hist_v.size();i_u++)
+         for(int i=1;i<h_cv->GetNbinsX()+1;i++) hist_v.at(i_u)->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
+
+   // Setup the canvas and pads
+   TCanvas *c = new TCanvas("c","c",Single_CanvasX,Single_CanvasY);
+   TPad *p_plot = new TPad("pad1","pad1",0,0,1,Single_PadSplit);
+   TPad *p_legend = new TPad("pad2","pad2",0,Single_PadSplit,1,1);
+   p_legend->SetBottomMargin(0);
+   p_legend->SetTopMargin(0.1);
+   p_plot->SetTopMargin(0.01);
+
+   std::string title = ";" + string(h_cv->GetXaxis()->GetTitle()) + ";" + string(h_cv->GetYaxis()->GetTitle());
+   THStack *hs = new THStack("hs",title.c_str());
+
+   // Setup the legend
+   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
+   l->SetBorderSize(0);
+   l->SetNColumns(2);
+   l->AddEntry(h_cv,"Central Value","L");
+
+   // Prepare the histograms and add the right information to the legend
+   double maximum = 0.0;
+   for(size_t i=0;i<hist_v.size();i++){
+      if(hist_v.size() > 2){
+         hist_v.at(i)->SetLineColor(kGreen);
+         if(i == 0) l->AddEntry(hist_v.at(0),"Variations","L");
+      }
+      else if(hist_v.size() == 1){
+         hist_v.at(i)->SetLineColor(kRed);
+         l->AddEntry(hist_v.at(0),"Alternative Model","L");
+      }
+      else if(hist_v.size() == 2 && i == 0){
+         hist_v.at(i)->SetLineColor(kRed);
+         l->AddEntry(hist_v.at(i),"+ 1 #sigma","L");
+      }
+      else if(hist_v.size() == 2 && i == 1){
+         hist_v.at(i)->SetLineColor(kBlue); 
+         l->AddEntry(hist_v.at(i),"- 1 #sigma","L");
+      }
+      hs->Add(hist_v.at(i));
+      if(GetHistMax(hist_v.at(i)) > maximum) maximum = GetHistMax(hist_v.at(i));
+   }
+
+   // Prepare the CV histogram
+   if(GetHistMax(h_cv) > maximum) maximum = GetHistMax(h_cv);
+   h_cv->SetLineColor(1);
+   h_cv->SetLineWidth(2);
+   h_cv->SetFillColor(0);
+   h_cv->SetMaximum(maximum*1.25);
+   hs->Add(h_cv);
+
+   // Create the "MicroBooNE" watermark
+   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
+   l_Watermark->SetBorderSize(0);
+   l_Watermark->SetMargin(0.005);
+   l_Watermark->SetTextAlign(32);
+   l_Watermark->SetTextSize(0.05);
+   l_Watermark->SetTextFont(62);
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+
+   // Create the POT label
+   TLegend *l_POT = new TLegend(0.54,0.820,0.89,0.900);
+   l_POT->SetBorderSize(0);
+   l_POT->SetMargin(0.005);
+   l_POT->SetTextAlign(32);
+   TLegend *l_POT2 = new TLegend(0.54,0.74,0.89,0.82,NULL,"brNDC");
+   l_POT2->SetBorderSize(0);
+   l_POT2->SetMargin(0.005);
+   l_POT2->SetTextAlign(32);
+
+   p_legend->Draw();
+   p_legend->cd();
+   l->Draw();
+   c->cd();
+   p_plot->Draw();
+   p_plot->cd();
+
+   hs->Draw("HIST nostack");
+   hs->GetXaxis()->SetTitleSize(Single_XaxisTitleSize);
+   hs->GetYaxis()->SetTitleSize(Single_YaxisTitleSize);
+   hs->GetXaxis()->SetTitleOffset(Single_XaxisTitleOffset);
+   hs->GetYaxis()->SetTitleOffset(Single_YaxisTitleOffset);
+   hs->GetXaxis()->SetLabelSize(Single_XaxisLabelSize);
+   hs->GetYaxis()->SetLabelSize(Single_YaxisLabelSize);
+
+   h_cv->Draw("HIST same");
+
+   // Draw the various legends, labels etc.
+   if(POT.size() > 0) l_POT->Draw();
+   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC) l_POT2->Draw();
+   if(DrawWatermark) l_Watermark->Draw();
+
+   // If using text labels on the bins
+   if(binlabels.size()){
+      for(int i=1;i<h_cv->GetNbinsX()+1;i++) hs->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
+      hs->GetXaxis()->SetLabelSize(Single_TextLabelSize);
+   }
+
+   p_plot->Update(); 
+
+   system(("mkdir -p " + plotdir).c_str());
+   c->Print((plotdir + "/" + label + "_Sys_" + type + "_" +  dialname + ".png").c_str());
+   c->Print((plotdir + "/" + label + "_Sys_" + type + "_" +  dialname + ".pdf").c_str());
+   c->Print((plotdir + "/" + label + "_Sys_" + type + "_" +  dialname + ".C").c_str());
    c->Close();
 
 }
