@@ -588,7 +588,7 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
    std::cout << "Setting up systematic " << name << std::endl;
 
    const int arr_n = fHistBoundaries.size();
-   const Double_t arr_boundaries[arr_n];
+   Double_t arr_boundaries[arr_n];
    for(size_t i=0;i<arr_n;i++) arr_boundaries[i] = fHistBoundaries.at(i);
 
    if(systype == kMultisim){
@@ -694,12 +694,8 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
     Hists_ByType2[mode2]->Fill(variable,weight*e.Weight);
     Hists_ByProc[proc]->Fill(variable,weight*e.Weight);
 
-   if(mode != "Data"){
-      Hists_ByType["All"]->Fill(variable,weight*e.Weight);
-      Hists_ByProc["All"]->Fill(variable,weight*e.Weight);
-   }
-
-
+   if(mode != "Data") Hists_ByType["All"]->Fill(variable,weight*e.Weight);
+   
    /*
       if( thisSampleType == "Data" ) mode = "Data";
       else if( thisSampleType == "EXT" ) mode = "EXT";
@@ -822,17 +818,17 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    std::vector<TH1D*> Hists_ByType_v;
    for(size_t i_t=0;i_t<EventType::Types.size();i_t++) 
       if(EventType::Types.at(i_t) != "All") Hists_ByType_v.push_back(Hists_ByType[EventType::Types.at(i_t)]);
-   DrawHistogram(Hists_ByType_v,h_errors,EventType::Captions,PlotDir,label+"_ByType",BeamMode,Run,POT,SignalScale,fHasData,EventType::Colors,BinLabels,std::make_pair(0,0));
+   HypPlot::DrawHistogram(Hists_ByType_v,h_errors,EventType::Captions,PlotDir,label+"_ByType",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors,BinLabels,std::make_pair(0,0));
 
    std::vector<TH1D*> Hists_ByType2_v;
    for(size_t i_t=0;i_t<EventType::Types2.size();i_t++) 
       if(EventType::Types2.at(i_t) != "All") Hists_ByType2_v.push_back(Hists_ByType2[EventType::Types2.at(i_t)]);
-   DrawHistogram(Hists_ByType2_v,h_errors,EventType::Captions2,PlotDir,label+"_ByType2",BeamMode,Run,POT,SignalScale,fHasData,EventType::Colors2,BinLabels,std::make_pair(0,0));
+   HypPlot::DrawHistogram(Hists_ByType2_v,h_errors,EventType::Captions2,PlotDir,label+"_ByType2",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors2,BinLabels,std::make_pair(0,0));
 
    std::vector<TH1D*> Hists_ByProc_v;
    for(size_t i_t=0;i_t<EventType::Procs.size();i_t++) 
       if(EventType::Procs.at(i_t) != "All") Hists_ByProc_v.push_back(Hists_ByProc[EventType::Procs.at(i_t)]);
-   DrawHistogram(Hists_ByProc_v,h_errors,EventType::Captions3,PlotDir,label+"_ByProc",BeamMode,Run,POT,SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
+   HypPlot::DrawHistogram(Hists_ByProc_v,h_errors,EventType::Captions3,PlotDir,label+"_ByProc",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
 
    std::map<std::string,TH1D*>::iterator it;
    for (it = Hists_ByType.begin(); it != Hists_ByType.end(); it++)
@@ -848,6 +844,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 // Draw the systematics histograms
+// TODO: Move this to PlottingFunctions
 
 void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std::string type){
 
@@ -915,7 +912,7 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
 
       hs->Add(ToDraw.at(i));
 
-      if(GetHistMax(ToDraw.at(i)) > maximum) maximum = GetHistMax(ToDraw.at(i));
+      if(HypPlot::GetHistMax(ToDraw.at(i)) > maximum) maximum = HypPlot::GetHistMax(ToDraw.at(i));
 
       ToDraw.at(i)->SetDirectory(new TDirectory(name.c_str(),name.c_str()));      
       ToDraw.at(i)->Write();
@@ -933,7 +930,7 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
       return;
    }
 
-   if(GetHistMax(h_CV) > maximum) maximum = GetHistMax(h_CV);
+   if(HypPlot::GetHistMax(h_CV) > maximum) maximum = HypPlot::GetHistMax(h_CV);
    h_CV->SetLineColor(1);
    h_CV->SetLineWidth(2);
    h_CV->SetFillColor(0);
@@ -942,8 +939,8 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
 
    TCanvas *c = new TCanvas("c","c",800,600);
 
-   TPad *p_plot = new TPad("pad1","pad1",0,0,1,0.85);
-   TPad *p_legend = new TPad("pad2","pad2",0,0.85,1,1);
+   TPad *p_plot = new TPad("pad1","pad1",0,0,1,HypPlot::Single_PadSplit);
+   TPad *p_legend = new TPad("pad2","pad2",0,HypPlot::Single_PadSplit,1,1);
 
    p_legend->SetBottomMargin(0);
    p_legend->SetTopMargin(0.1);
@@ -1019,15 +1016,15 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
 
    std::vector<TH1D*> ToUse;
 
-   if (Multisim_Sys_Hists[type].find(name) != Multisim_Sys_Hists[type].end()){
+   if(Multisim_Sys_Hists[type].find(name) != Multisim_Sys_Hists[type].end()){
       ToUse = Multisim_Sys_Hists[type][name];
       systype = kMultisim;
    }
-   else if (SingleUnisim_Sys_Hists[type].find(name) != SingleUnisim_Sys_Hists[type].end()){
+   else if(SingleUnisim_Sys_Hists[type].find(name) != SingleUnisim_Sys_Hists[type].end()){
       ToUse = SingleUnisim_Sys_Hists[type][name];
       systype = kSingleUnisim;
    }
-   else if (DualUnisim_Sys_Hists[type].find(name) != DualUnisim_Sys_Hists[type].end()){
+   else if(DualUnisim_Sys_Hists[type].find(name) != DualUnisim_Sys_Hists[type].end()){
       ToUse = DualUnisim_Sys_Hists[type][name];
       systype = kDualUnisim;
    }
@@ -1056,7 +1053,6 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
       h_Cov->GetYaxis()->SetLabelSize(0.07);
       h_frac_Cov->GetXaxis()->SetLabelSize(0.07);
       h_frac_Cov->GetYaxis()->SetLabelSize(0.07);
-
    }
 
    for(int i_b=1;i_b<fHistNBins+1;i_b++){
@@ -1094,10 +1090,10 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
    }
 
    std::string plottitle = PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name;
-   DrawMatrix(Cov,h_Cov,plottitle,BinLabels.size(),fUseText);
+   HypPlot::DrawMatrix(Cov,h_Cov,plottitle,BinLabels.size(),fUseText);
 
    plottitle = PlotDir + label + "_FCovMatrix_Sys_" + type + "_" + name;
-   DrawMatrix(frac_Cov,h_frac_Cov,plottitle,BinLabels.size(),fUseText);
+   HypPlot::DrawMatrix(frac_Cov,h_frac_Cov,plottitle,BinLabels.size(),fUseText);
 
    h_Cov->Write(("Cov_" + type + "_" + name).c_str());
    h_frac_Cov->Write(("FCov_" + type + "_" + name).c_str());
@@ -1186,7 +1182,6 @@ void SelectionManager::WidthScaleHistograms(){
       }
    }
 
-
    for (it2=SingleUnisim_Sys_Hists.begin();it2!=SingleUnisim_Sys_Hists.end();it2++){
       std::map<std::string,std::vector<TH1D*>>::iterator it22;
       for (it22=it2->second.begin();it22!=it2->second.end();it22++){
@@ -1210,7 +1205,6 @@ void SelectionManager::WidthScaleHistograms(){
          }
       }
    }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

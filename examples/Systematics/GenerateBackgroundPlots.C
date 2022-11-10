@@ -40,6 +40,8 @@ void GenerateBackgroundPlots(){
    M.SetBeamMode(Mode);
    M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
    //M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
+   M.UseFluxWeight(false);
+   M.UseGenWeight(false); 
 
    M.SetupHistograms(20,1.05,1.5,";Invariant Mass (GeV/c^{2});Events");
 
