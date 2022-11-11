@@ -283,11 +283,8 @@ void SelectionManager::UpdateCut(Event e,bool Passed,std::string CutName){
 
 Cut SelectionManager::GetCut(std::string CutName){
 
-   for(size_t i_c=0;i_c<Cuts.size();i_c++){
-
+   for(size_t i_c=0;i_c<Cuts.size();i_c++)
       if(Cuts.at(i_c).fName == CutName) return Cuts.at(i_c);
-
-   }
 
    std::cout << "Cut " << CutName << " not found" << std::endl;
 
@@ -321,6 +318,7 @@ void SelectionManager::ImportAnalysisBDTWeights(std::string WeightDir){
 
    std::cout << "SelectionManager: Importing Analysis BDT Weights from " << WeightDir << std::endl;
    a_AnalysisBDTManager.SetupAnalysisBDT(WeightDir);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -473,7 +471,7 @@ bool SelectionManager::ConnectednessTest(Event e, int nplanes){
    if(a_CTTest_Plane0.DoTest(muon_index,proton_index,pion_index)) npassed++;
    if(a_CTTest_Plane1.DoTest(muon_index,proton_index,pion_index)) npassed++;
    if(a_CTTest_Plane2.DoTest(muon_index,proton_index,pion_index)) npassed++;
- 
+
    bool passed = npassed >= nplanes; 
 
    UpdateCut(e,passed,"Connectedness");
@@ -585,7 +583,7 @@ void SelectionManager::SetupHistograms(int n,double low,double high,std::string 
 
 void SelectionManager::AddSystematic(int systype,int universes,std::string name){
 
-   std::cout << "Setting up systematic " << name << std::endl;
+   std::cout << "Setting up systematic " << name << " with " << universes << " universes" << std::endl;
 
    const int arr_n = fHistBoundaries.size();
    Double_t arr_boundaries[arr_n];
@@ -597,7 +595,8 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
          for(size_t i=0;i<universes;i++) 
             Multisim_Sys_Hists[EventType::Types.at(i_type)][name].at(i) = new TH1D(("h_" + EventType::Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
       }
-      for(size_t i_type=0;i_type<EventType::Types2.size()-4;i_type++){
+      for(size_t i_type=0;i_type<EventType::Types2.size();i_type++){
+         if(std::find(EventType::Types.begin(),EventType::Types.end(),EventType::Types2.at(i_type)) != EventType::Types.end()) continue;
          Multisim_Sys_Hists[EventType::Types2.at(i_type)][name].resize(universes);
          for(size_t i=0;i<universes;i++) 
             Multisim_Sys_Hists[EventType::Types2.at(i_type)][name].at(i) = new TH1D(("h_" + EventType::Types2.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
@@ -609,7 +608,8 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
          for(size_t i=0;i<1;i++)
             SingleUnisim_Sys_Hists[EventType::Types.at(i_type)][name][i] = new TH1D(("h_" + EventType::Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
       }
-      for(size_t i_type=0;i_type<EventType::Types2.size()-4;i_type++){
+      for(size_t i_type=0;i_type<EventType::Types2.size();i_type++){
+         if(std::find(EventType::Types.begin(),EventType::Types.end(),EventType::Types2.at(i_type)) != EventType::Types.end()) continue;
          SingleUnisim_Sys_Hists[EventType::Types2.at(i_type)][name].resize(1);
          for(size_t i=0;i<1;i++)
             SingleUnisim_Sys_Hists[EventType::Types2.at(i_type)][name][i] = new TH1D(("h_" + EventType::Types2.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
@@ -621,7 +621,8 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
          for(size_t i=0;i<2;i++) 
             DualUnisim_Sys_Hists[EventType::Types.at(i_type)][name].at(i) = new TH1D(("h_" + EventType::Types.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
       }
-      for(size_t i_type=0;i_type<EventType::Types2.size()-4;i_type++){
+      for(size_t i_type=0;i_type<EventType::Types2.size();i_type++){
+         if(std::find(EventType::Types.begin(),EventType::Types.end(),EventType::Types2.at(i_type)) != EventType::Types.end()) continue;
          DualUnisim_Sys_Hists[EventType::Types2.at(i_type)][name].resize(2);
          for(size_t i=0;i<2;i++) 
             DualUnisim_Sys_Hists[EventType::Types2.at(i_type)][name].at(i) = new TH1D(("h_" + EventType::Types2.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
@@ -635,15 +636,15 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
 
 std::string SelectionManager::GetType(Event e){
 
-   std::string mode;
-   if(thisSampleType == "Data") mode = "Data";
-   else if(thisSampleType == "EXT") mode = "EXT";
-   else if(thisSampleType == "Dirt") mode = "Dirt";
-   else if(e.EventIsSignal) mode = "Signal";
-   else if(e.Mode.at(0) == "HYP") mode = "OtherHYP";
-   else mode = "OtherNu";
+std::string mode;
+if(thisSampleType == "Data") mode = "Data";
+else if(thisSampleType == "EXT") mode = "EXT";
+else if(thisSampleType == "Dirt") mode = "Dirt";
+else if(e.EventIsSignal) mode = "Signal";
+else if(e.Mode.at(0) == "HYP") mode = "OtherHYP";
+else mode = "OtherNu";
 
-   return mode;
+return mode;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -652,25 +653,25 @@ std::string SelectionManager::GetType(Event e){
 
 std::string SelectionManager::GetType2(Event e){
 
-   std::string mode;
+std::string mode;
 
-   if(thisSampleType == "Data") return "Data";
-   else if(thisSampleType == "EXT") return "EXT";
-   else if (thisSampleType == "Dirt") return "Dirt";
+if(thisSampleType == "Data") return "Data";
+else if(thisSampleType == "EXT") return "EXT";
+else if (thisSampleType == "Dirt") return "Dirt";
 
-   bool islambdacharged =  std::find(e.IsLambdaCharged.begin(),e.IsLambdaCharged.end(), true) != e.IsLambdaCharged.end();
-   //bool ishyperon = e.Hyperon.size(); 
+bool islambdacharged =  std::find(e.IsLambdaCharged.begin(),e.IsLambdaCharged.end(), true) != e.IsLambdaCharged.end();
+//bool ishyperon = e.Hyperon.size(); 
 
-   if(e.EventIsSignal) return "DirectLambda";
-   else if(e.Mode.at(0) == "HYP") return "DirectHYP"; 
-   else if(e.Mode.at(0) == "RES" && islambdacharged) return "RESLambda";
-   else if(e.Mode.at(0) == "RES" && e.Hyperon.size()) return "RESHYP"; 
-   else if(e.Mode.at(0) == "DIS" && islambdacharged) return "DISLambda";
-   else if(e.Mode.at(0) == "DIS" && e.Hyperon.size()) return "DISHYP"; 
-   else if(e.EventHasNeutronScatter) return "Neutron";
-   else return "Other";
+if(e.EventIsSignal) return "DirectLambda";
+else if(e.Mode.at(0) == "HYP") return "DirectHYP"; 
+else if(e.Mode.at(0) == "RES" && islambdacharged) return "RESLambda";
+else if(e.Mode.at(0) == "RES" && e.Hyperon.size()) return "RESHYP"; 
+else if(e.Mode.at(0) == "DIS" && islambdacharged) return "DISLambda";
+else if(e.Mode.at(0) == "DIS" && e.Hyperon.size()) return "DISHYP"; 
+else if(e.EventHasNeutronScatter) return "Neutron";
+else return "Other";
 
-   return mode;
+return mode;
 }
 */
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -679,23 +680,18 @@ std::string SelectionManager::GetType2(Event e){
 
 void SelectionManager::FillHistograms(Event e,double variable,double weight){
 
-   //std::cout << "Filling histograms" << std::endl;
-
    std::string mode,mode2,proc;
 
    mode = EventType::GetType(e);
    mode2 = EventType::GetType2(e);
    proc = EventType::GetProc(e);
-   //std::cout << "mode=" << mode << std::endl;
-   //std::cout << "mode2=" << mode2 << std::endl;
-   //std::cout << "proc=" << proc << std::endl;
 
-    Hists_ByType[mode]->Fill(variable,weight*e.Weight);
-    Hists_ByType2[mode2]->Fill(variable,weight*e.Weight);
-    Hists_ByProc[proc]->Fill(variable,weight*e.Weight);
+   Hists_ByType[mode]->Fill(variable,weight*e.Weight);
+   Hists_ByType2[mode2]->Fill(variable,weight*e.Weight);
+   Hists_ByProc[proc]->Fill(variable,weight*e.Weight);
 
    if(mode != "Data") Hists_ByType["All"]->Fill(variable,weight*e.Weight);
-   
+
    /*
       if( thisSampleType == "Data" ) mode = "Data";
       else if( thisSampleType == "EXT" ) mode = "EXT";
@@ -705,34 +701,34 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
       else { mode = e.Mode.at(0); isNuBackground = true; }
       */
 
-/*
-   if(mode != "OtherNu"){
+   /*
+      if(mode != "OtherNu"){
       std::cout << "Here" << std::endl; 
       Hists_ByType[mode]->Fill(variable,weight*e.Weight);
       Hists_ByProc[mode]->Fill(variable,weight*e.Weight);
-   }
-   else {
+      }
+      else {
 
       std::cout << "Here2" << std::endl;
       Hists_ByType[ "OtherNu" ]->Fill(variable,weight*e.Weight);
 
       if(mode != "Other"){
-         if(e.CCNC.at(0) == "CC") Hists_ByProc["CC"+mode]->Fill(variable,weight*e.Weight);
-         else Hists_ByProc["NC"]->Fill(variable,weight*e.Weight);
+      if(e.CCNC.at(0) == "CC") Hists_ByProc["CC"+mode]->Fill(variable,weight*e.Weight);
+      else Hists_ByProc["NC"]->Fill(variable,weight*e.Weight);
       }
       else Hists_ByProc["Other"]->Fill(variable,weight*e.Weight);
-   }
+      }
 
-   if(mode != "Data"){
+      if(mode != "Data"){
       Hists_ByType["All"]->Fill(variable,weight*e.Weight);
       Hists_ByProc["All"]->Fill(variable,weight*e.Weight);
-   }
+      }
 
    //std::string mode2 = EventType::GetType2(e);
 
    std::cout << "Here3" << std::endl; 
    Hists_ByType2[mode2]->Fill(variable,weight*e.Weight);
-*/
+   */
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -744,29 +740,30 @@ void SelectionManager::FillHistogramsSys(Event e,double variable,std::string nam
    if(e.Mode.at(0) == "Data") return;
 
    if(std::isnan(e.Weight) || std::isnan(weight) || std::isinf(e.Weight) || std::isinf(weight)){
-       //std::cout << "Nan weight detected for dial " << name << "  event " << e.run << " " << e.subrun << " " << e.event << " skipping" << std::endl;
+      //std::cout << "Nan weight detected for dial " << name << "  event " << e.run << " " << e.subrun << " " << e.event << " skipping" << std::endl;
       return;
    }
 
    std::string mode = EventType::GetType(e);
    std::string mode2 = EventType::GetType2(e);
+   bool fill2 = std::find(EventType::Types.begin(),EventType::Types.end(),mode2) == EventType::Types.end();
 
    if (Multisim_Sys_Hists[mode].find(name) != Multisim_Sys_Hists[mode].end()){
       Multisim_Sys_Hists[mode][name].at(universe)->Fill(variable,weight*e.Weight);
       Multisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
-      if(mode2 != "Dirt" && mode2 != "EXT" && mode2 != "Data") Multisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
+      if(fill2) Multisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
       return;
    }
    else if (SingleUnisim_Sys_Hists[mode].find(name) != SingleUnisim_Sys_Hists[mode].end()){
       SingleUnisim_Sys_Hists[mode][name].at(universe)->Fill(variable,weight*e.Weight);
       SingleUnisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
-      if(mode2 != "Dirt" && mode2 != "EXT" && mode2 != "Data") SingleUnisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
+      if(fill2) SingleUnisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
       return;
    }
    else if (DualUnisim_Sys_Hists[mode].find(name) != DualUnisim_Sys_Hists[mode].end()){
       DualUnisim_Sys_Hists[mode][name].at(universe)->Fill(variable,weight*e.Weight);
       DualUnisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
-      if(mode2 != "Dirt" && mode2 != "EXT" && mode2 != "Data") DualUnisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
+      if(fill2) DualUnisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
       return;
    }
 }
@@ -812,7 +809,7 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
    Hists_ByType2["DirectLambda"]->Scale(SignalScale);
 
    TH1D* h_errors = (TH1D*)Hists_ByType["All"]->Clone("h_errors");
-   
+
    std::vector<TH1D*> Hists_ByType_v;
    for(size_t i_t=0;i_t<EventType::Types.size();i_t++) 
       if(EventType::Types.at(i_t) != "All") Hists_ByType_v.push_back(Hists_ByType[EventType::Types.at(i_t)]);
@@ -894,16 +891,16 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    f_Hists->cd();
 
    /*
-   if(BinLabels.size())
+      if(BinLabels.size())
       for(size_t i_u=0;i_u<ToDraw.size();i_u++)
-         for(int i=1;i<fHistNBins+1;i++) ToDraw.at(i_u)->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
+      for(int i=1;i<fHistNBins+1;i++) ToDraw.at(i_u)->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
 
-   THStack *hs = new THStack("hs",fTitle.c_str());
+      THStack *hs = new THStack("hs",fTitle.c_str());
 
-   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
-   l->SetBorderSize(0);
-   l->SetNColumns(2);
-   l->AddEntry(Hists_ByType[type],"Central Value","L");
+      TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
+      l->SetBorderSize(0);
+      l->SetNColumns(2);
+      l->AddEntry(Hists_ByType[type],"Central Value","L");
 
    // Get the maximum of all the histograms
    double maximum = 0.0;
@@ -913,28 +910,28 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
 
    for(size_t i=0;i<ToDraw.size();i++){
 
-      if(systype == kMultisim){
-         ToDraw.at(i)->SetLineColor(kGreen);
-         if(i == 0) l->AddEntry(ToDraw.at(0),"Variations","L");
-      }
-      else if(systype == kSingleUnisim){
-         ToDraw.at(i)->SetLineColor(kRed);
-         l->AddEntry(ToDraw.at(0),"Alternative Model","L");
-      }
-      else if(systype == kDualUnisim && i == 0){
-         ToDraw.at(i)->SetLineColor(kRed);
-         l->AddEntry(ToDraw.at(i),"+ 1 #sigma","L");
-      }
-      else if(systype == kDualUnisim && i == 1){
-         ToDraw.at(i)->SetLineColor(kBlue); 
-         l->AddEntry(ToDraw.at(i),"- 1 #sigma","L");
-      }
+   if(systype == kMultisim){
+   ToDraw.at(i)->SetLineColor(kGreen);
+   if(i == 0) l->AddEntry(ToDraw.at(0),"Variations","L");
+   }
+   else if(systype == kSingleUnisim){
+   ToDraw.at(i)->SetLineColor(kRed);
+   l->AddEntry(ToDraw.at(0),"Alternative Model","L");
+   }
+   else if(systype == kDualUnisim && i == 0){
+   ToDraw.at(i)->SetLineColor(kRed);
+   l->AddEntry(ToDraw.at(i),"+ 1 #sigma","L");
+   }
+   else if(systype == kDualUnisim && i == 1){
+   ToDraw.at(i)->SetLineColor(kBlue); 
+   l->AddEntry(ToDraw.at(i),"- 1 #sigma","L");
+   }
 
-      hs->Add(ToDraw.at(i));
+   hs->Add(ToDraw.at(i));
 
-      if(HypPlot::GetHistMax(ToDraw.at(i)) > maximum) maximum = HypPlot::GetHistMax(ToDraw.at(i));
-      ToDraw.at(i)->SetDirectory(new TDirectory(name.c_str(),name.c_str()));      
-      ToDraw.at(i)->Write();
+   if(HypPlot::GetHistMax(ToDraw.at(i)) > maximum) maximum = HypPlot::GetHistMax(ToDraw.at(i));
+   ToDraw.at(i)->SetDirectory(new TDirectory(name.c_str(),name.c_str()));      
+   ToDraw.at(i)->Write();
 
    }
 
@@ -1009,7 +1006,7 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    c->Close();
 
    std::cout << "Done drawing systematic hists for dial " << name << std::endl;
-*/
+   */
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

@@ -28,7 +28,7 @@ namespace HypPlot {
    const double Single_XaxisLabelSize = 0.045;
    const double Single_YaxisLabelSize = 0.045;
 
-   const double Single_TextLabelSize = 0.02; // Label size if bin labels are used
+   const double Single_TextLabelSize = 0.07; // Label size if bin labels are used
 
    // Two panel axis settings etc.
 

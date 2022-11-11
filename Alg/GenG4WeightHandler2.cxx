@@ -13,6 +13,8 @@ GenG4WeightHandler::GenG4WeightHandler(){
 
 void GenG4WeightHandler::LoadEvent(Event e){
 
+   // TODO: Is there a way to make this faster for dirt/EXT?
+
    theWeightMap.clear();
 
    theDials = &e.SysDials;
@@ -45,15 +47,13 @@ void GenG4WeightHandler::OrganiseWeights(){
    for(size_t i_d=0;i_d<theDials->size();i_d++){
       for(size_t i_tr=0;i_tr<theWeights->size();i_tr++){
          for(size_t i_u=0;i_u<theWeights->at(i_tr).at(i_d).size();i_u++){
-
             if (std::isinf(theWeights->at(i_tr).at(i_d).at(i_u))) theWeights->at(i_tr).at(i_d).at(i_u) = 1.0; 
             if (std::isnan(theWeights->at(i_tr).at(i_d).at(i_u)) == 1) theWeights->at(i_tr).at(i_d).at(i_u) = 1.0;
             if (theWeights->at(i_tr).at(i_d).at(i_u) > 100) theWeights->at(i_tr).at(i_d).at(i_u) = 1.0;
-
-
          }
       }
    }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
