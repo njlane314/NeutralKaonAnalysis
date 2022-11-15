@@ -17,6 +17,7 @@ const int Flux_HP_Universes = 600;
 const int Beamline_Universes = 20;
 
 const std::vector<std::string> Beamline_Dials = {"HC","H1X","H1Y","BSS","H2X","H2Y","HW","BSX","BSY","TPZ"};
+const std::vector<std::string> Beamline_Captions = {"Horn Current","Horn 1 X","Horn 1 Y","Beam Spot Size","Horn 2 X","Horn 2 Y","Horn Water","Beam Spot X","Beam Spot Y","Target Pos. Z"};
 enum Beamline_Dials_enum {bHC,bH1X,bH1Y,bBSS,bH2X,bH2Y,bHW,bBSX,bBSY,bTPZ,bPOT,bMAX};
 
 ///////////////////////////////////////////////////////////////////////////////////////

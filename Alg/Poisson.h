@@ -21,7 +21,7 @@ double Poiss(int k,double lambda){
 
 // Denominator in Bayes' theorem
 
-const int n_inc = 1000;
+const int n_inc = 5000;
 
 double Norm(double a, double b,int N_Obs){
 

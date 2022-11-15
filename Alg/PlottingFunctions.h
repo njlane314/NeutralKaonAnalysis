@@ -1,6 +1,7 @@
 #ifndef _PlottingFunctions_h_
 #define _PlottingFunctions_h_
 
+#include "TFile.h"
 #include "TH1D.h"
 #include "Misc.h"
 #include "TText.h"
@@ -10,10 +11,11 @@
 using std::string;
 using std::vector;
 
-const bool DrawWatermark = true;
 const double _EPSILON_ = 1e-5;
 
 namespace HypPlot {
+
+   const bool DrawWatermark = true;
 
    // Single panel axis settings etc.
 
@@ -52,7 +54,7 @@ namespace HypPlot {
    const double Dual_RatioYaxisLabelSize = 0.1;
 
    const double Dual_TextLabelSize = 0.02; // Label size if bin labels are used
-   
+
    // Matrix axis settings etc.
 
    const double Matrix_CanvasX = 800;
@@ -67,6 +69,8 @@ namespace HypPlot {
    const double Matrix_ZaxisLabelSize = 0.045;
 
    const double Matrix_TextLabelSize = 0.07;
+
+   const int GoodLineColors[13] = {1,2,3,4,6,7,8,9,43,30,38,46,14};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -148,6 +152,16 @@ TH2D* MakeHistogram(TMatrixD Mat,TH2D* h_example,string Name=""){
 
    return h_Mat; 
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+/*
+void DrawMatrix(TMatrixD Mat,TH2D* h_example,string title,bool uselabels=false,bool usetext=false){
+
+   TH2D* h = MakeHistogram(Mat,h_example);
+   DrawMatrix(h,h_example,title,uselabels,usetext);
+
+}
+*/
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 // Draw a 2D matrix as a histogram
@@ -155,9 +169,8 @@ TH2D* MakeHistogram(TMatrixD Mat,TH2D* h_example,string Name=""){
 // Can import bin labels from h_example and write bin content on bins if corresponding bools
 // are set.
 
-void DrawMatrix(TMatrixD Mat,TH2D* h_example,string title,bool uselabels=false,bool usetext=false){
+void DrawMatrix(TH2D* h,TH2D* h_example,string title,bool uselabels=false,bool usetext=false){
 
-   TH2D* h = MakeHistogram(Mat,h_example);
    h->SetContour(1000);
    h->GetXaxis()->SetTitleSize(Matrix_XaxisTitleSize);
    h->GetYaxis()->SetTitleSize(Matrix_YaxisTitleSize);
@@ -176,13 +189,6 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,string title,bool uselabels=false,b
       h->GetYaxis()->SetLabelSize(Matrix_TextLabelSize);
    }
 
-   TLegend *l_Watermark = new TLegend(0.45,0.91,0.915,0.99);
-   l_Watermark->SetBorderSize(0);
-   l_Watermark->SetMargin(0.001);
-   l_Watermark->SetTextAlign(32);
-   l_Watermark->SetTextFont(62);
-   l_Watermark->SetTextSize(0.05);
-   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
 
    // Generates text with bin content, uses 3 sf
    if(usetext){
@@ -207,6 +213,16 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,string title,bool uselabels=false,b
       }
    }
    else h->Draw("colz");
+
+   TLegend *l_Watermark;
+   if(!usetext) l_Watermark = new TLegend(0.445,0.91,0.910,0.99);
+   else l_Watermark = new TLegend(0.485,0.91,0.950,0.99);
+   l_Watermark->SetBorderSize(0);
+   l_Watermark->SetMargin(0.001);
+   l_Watermark->SetTextAlign(32);
+   l_Watermark->SetTextFont(62);
+   l_Watermark->SetTextSize(0.05);
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
 
    h->SetStats(0);
    if(DrawWatermark) l_Watermark->Draw();
@@ -274,7 +290,7 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
    if(nhists > 6) ncols = 4;
    if(nhists > 12) ncols = 5;
    l->SetNColumns(ncols);
-   
+
    int i_data=-1;
    for(size_t i_h=0;i_h<hist_v.size();i_h++){
       if(captions.at(i_h) == "Data"){
@@ -446,7 +462,7 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
             h_data_ratio->SetBinError(i,0.0); 
          }
       }
-      
+
       // Draw the ratio plot
       c2->cd();
       p_ratio2->Draw();
@@ -607,6 +623,104 @@ void DrawHistogramSys(vector<TH1D*> hist_v,TH1D* h_cv,string plotdir,string labe
    c->Print((plotdir + "/" + label + "_Sys_" + type + "_" +  dialname + ".C").c_str());
    c->Close();
 
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void DrawSystematicBreakdown(TFile* f,TH1D* h_template,vector<string> dials,vector<string> captions,std::string plotdir,std::string label){
+
+   assert(dials.size() == captions.size());
+
+   // Get the covairance matrices and calculate the total covariance of the dials
+   std::vector<TH2D*> h_FCov_v(dials.size(),nullptr);
+   f->GetObject(("FCov_All_" + dials.at(0)).c_str(),h_FCov_v[0]);
+   TH2D* h_FCov = (TH2D*)h_FCov_v.at(0)->Clone("h_FCov");
+   for(size_t i_s=1;i_s<dials.size();i_s++){
+      f->GetObject(("FCov_All_" + dials.at(i_s)).c_str(),h_FCov_v[i_s]);
+      h_FCov->Add(h_FCov_v.at(i_s));      
+   }
+
+   // Calculate the fractional error of each dial
+   std::vector<TH1D*> h_FracError_v(dials.size(),nullptr);
+   for(size_t i_s=0;i_s<dials.size();i_s++){
+      h_FracError_v[i_s] = (TH1D*)h_template->Clone(("h_FE_" + dials.at(i_s)).c_str());
+      for(int i_b=1;i_b<h_template->GetNbinsX()+1;i_b++) h_FracError_v.at(i_s)->SetBinContent(i_b,sqrt(h_FCov_v.at(i_s)->GetBinContent(i_b,i_b)));
+      h_FracError_v.at(i_s)->SetLineColor(GoodLineColors[i_s+1]);
+      h_FracError_v.at(i_s)->SetFillStyle(0);
+   }
+
+   // Calculate the total fractional error
+   TH1D* h_FracError = (TH1D*)h_template->Clone("h_FracError");
+   h_FracError->Reset();
+  
+   double max = 0;  
+   for(int i_b=1;i_b<h_template->GetNbinsX()+1;i_b++){
+      h_FracError->SetBinContent(i_b,sqrt(h_FCov->GetBinContent(i_b,i_b)));
+      max = std::max(max,h_FracError->GetBinContent(i_b));
+   }
+
+   // Setup canvas    
+   TCanvas* c = new TCanvas("c","c",Single_CanvasX,Single_CanvasY);
+   TPad *p_plot = new TPad("p_plot","p_plot",0,0,1,Single_PadSplit);
+   TPad *p_legend = new TPad("p_legend","p_legend",0,Single_PadSplit,1,1);
+   p_legend->SetBottomMargin(0);
+   p_legend->SetTopMargin(0.1);
+   p_plot->SetTopMargin(0.01);
+
+   // Create the "MicroBooNE" watermark
+   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
+   l_Watermark->SetBorderSize(0);
+   l_Watermark->SetMargin(0.005);
+   l_Watermark->SetTextAlign(32);
+   l_Watermark->SetTextSize(0.05);
+   l_Watermark->SetTextFont(62);
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+
+   // Draw the beamline plot
+   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
+   l->SetBorderSize(0);
+
+   const int nhists = dials.size()+1;
+   int ncols = 3;
+   if(nhists > 6) ncols = 4;
+   if(nhists > 12) ncols = 5;
+   l->SetNColumns(ncols);
+
+   // Draw everything
+   p_legend->Draw();
+   p_legend->cd();
+   l->Draw();
+   c->cd();
+   p_plot->Draw();
+   p_plot->cd();
+
+   h_FracError->SetLineColor(GoodLineColors[0]);
+   h_FracError->SetLineWidth(3);
+   h_FracError->SetLineStyle(2);
+   h_FracError->SetFillStyle(0);
+   h_FracError->GetYaxis()->SetTitle("Frac. Unc.");
+   h_FracError->GetYaxis()->SetRangeUser(0.0,1.1*max);
+   h_FracError->Draw("HIST");
+   
+   for(size_t i_s=0;i_s<dials.size();i_s++){
+      h_FracError_v[i_s]->SetLineColor(GoodLineColors[i_s+1]);
+      h_FracError_v[i_s]->SetLineWidth(2);
+      l->AddEntry(h_FracError_v.at(i_s),captions.at(i_s).c_str(),"L");    
+      h_FracError_v[i_s]->Draw("HIST same");
+   }
+
+   l->AddEntry(h_FracError,"Total","L");
+   h_FracError->Draw("HIST same");
+
+   if(DrawWatermark) l_Watermark->Draw();
+      
+   system(("mkdir -p " + plotdir).c_str());
+   c->Print((plotdir + "/" + label + "_SysBreakdown.pdf").c_str());
+   c->Print((plotdir + "/" + label + "_SysBreakdown.C").c_str());
+   c->Print((plotdir + "/" + label + "_SysBreakdown.png").c_str());
+   c->Close();
+
+   DrawMatrix(h_FCov,h_FCov,plotdir + "/" + label + "FCov",true,true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
