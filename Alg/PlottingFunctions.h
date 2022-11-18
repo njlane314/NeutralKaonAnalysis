@@ -232,7 +232,7 @@ void DrawMatrix(TH2D* h,TH2D* h_example,string title,bool uselabels=false,bool u
    c->Print((title + ".C").c_str());
    c->Close();
 
-   delete h;
+   //delete h;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -382,7 +382,10 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
 
    // Draw the various legends, labels etc.
    if(POT.size() > 0) l_POT->Draw();
-   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC) l_POT2->Draw();
+   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
+      l_POT2->Draw();
+      h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.35);
+   }
    if(DrawWatermark) l_Watermark->Draw();
    if(hasdata) l_Chi2->Draw();
 
@@ -606,7 +609,10 @@ void DrawHistogramSys(vector<TH1D*> hist_v,TH1D* h_cv,string plotdir,string labe
 
    // Draw the various legends, labels etc.
    if(POT.size() > 0) l_POT->Draw();
-   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC) l_POT2->Draw();
+   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
+      l_POT2->Draw();
+      h_cv->SetMaximum(maximum*1.35);
+   }
    if(DrawWatermark) l_Watermark->Draw();
 
    // If using text labels on the bins
@@ -699,7 +705,7 @@ void DrawSystematicBreakdown(TFile* f,TH1D* h_template,vector<string> dials,vect
    h_FracError->SetLineStyle(2);
    h_FracError->SetFillStyle(0);
    h_FracError->GetYaxis()->SetTitle("Frac. Unc.");
-   h_FracError->GetYaxis()->SetRangeUser(0.0,1.1*max);
+   h_FracError->GetYaxis()->SetRangeUser(0.0,1.15*max);
    h_FracError->Draw("HIST");
    
    for(size_t i_s=0;i_s<dials.size();i_s++){
@@ -720,7 +726,7 @@ void DrawSystematicBreakdown(TFile* f,TH1D* h_template,vector<string> dials,vect
    c->Print((plotdir + "/" + label + "_SysBreakdown.png").c_str());
    c->Close();
 
-   DrawMatrix(h_FCov,h_FCov,plotdir + "/" + label + "FCov",true,true);
+   DrawMatrix(h_FCov,h_FCov,plotdir + "/" + label + "_FCov",true,true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
