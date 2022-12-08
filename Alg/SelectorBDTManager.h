@@ -23,7 +23,7 @@ class SelectorBDTManager {
       SelectorBDTManager(std::string Mode);
       ~SelectorBDTManager();
 
-      void FillTree(Event e);
+      void FillTree(const Event &e);
       void WriteTrainingTrees();    
 
       void SetCuts(double ProtonPIDCut,double PionPIDCut,double SelectionCut);

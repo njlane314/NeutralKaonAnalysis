@@ -22,7 +22,7 @@ const std::vector<int> Colors3 = {8,46,2,3,4,5,6,7,9,11,12,30,15,0};
 
 // Get the event category 
 
-std::string GetType(Event e){
+std::string GetType(const Event &e){
 
    if(!e.Mode.size()) throw std::invalid_argument("GetType: Event has Mode.size() = 0, should be at least 1");
 
@@ -39,7 +39,7 @@ std::string GetType(Event e){
 
 // Get the event category using different labelling convention
 
-std::string GetType2(Event e){
+std::string GetType2(const Event &e){
 
    if(!e.Mode.size()) throw std::invalid_argument("GetType2: Event has Mode.size() = 0, should be at least 1");
 
@@ -67,7 +67,7 @@ std::string GetType2(Event e){
 
 // Get the neutrino interaction process
 
-std::string GetProc(Event e){
+std::string GetProc(const Event &e){
 
    if(!e.Mode.size()) throw std::invalid_argument("GetType: Event has Mode.size() = 0, should be at least 1");
 

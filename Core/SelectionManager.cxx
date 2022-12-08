@@ -249,7 +249,7 @@ void SelectionManager::DeclareCuts(){
 
 // Add an event to a cut
 
-void SelectionManager::UpdateCut(Event e,bool Passed,std::string CutName){
+void SelectionManager::UpdateCut(const Event &e,bool Passed,std::string CutName){
 
    for(size_t i_c=0;i_c<Cuts.size();i_c++){
 
@@ -325,7 +325,7 @@ void SelectionManager::ImportAnalysisBDTWeights(std::string WeightDir){
 
 // Apply the fiducial volume cut
 
-bool SelectionManager::FiducialVolumeCut(Event e){
+bool SelectionManager::FiducialVolumeCut(const Event &e){
    bool passed = a_FiducialVolume.InFiducialVolume(e.RecoPrimaryVertex);
 
    UpdateCut(e,passed,"FV");
@@ -337,7 +337,7 @@ bool SelectionManager::FiducialVolumeCut(Event e){
 
 // Apply the three track cut
 
-bool SelectionManager::TrackCut(Event e){
+bool SelectionManager::TrackCut(const Event &e){
 
    bool passed = e.NPrimaryTrackDaughters > 2; 
 
@@ -350,7 +350,7 @@ bool SelectionManager::TrackCut(Event e){
 
 // Apply the zero shower cut
 
-bool SelectionManager::ShowerCut(Event e){
+bool SelectionManager::ShowerCut(const Event &e){
 
    bool passed = e.NPrimaryShowerDaughters < 1; 
 
@@ -385,7 +385,7 @@ bool SelectionManager::ChooseMuonCandidate(Event &e){
 
 // Apply the secondary track length cut
 
-bool SelectionManager::TrackLengthCut(Event e){
+bool SelectionManager::TrackLengthCut(const Event &e){
 
    bool passed = a_TrackLengthCutManager.ApplyCut(e.TracklikePrimaryDaughters);
 
@@ -444,7 +444,7 @@ bool SelectionManager::AnalysisBDTCut(Event &e){
 
 // Select events in the list already loaded
 
-bool SelectionManager::EventListCut(Event e){
+bool SelectionManager::EventListCut(const Event &e){
 
    bool passed = a_EventListFilter.EventPassed(e.run,e.subrun,e.event); 
 
@@ -457,7 +457,7 @@ bool SelectionManager::EventListCut(Event e){
 
 // Apply the connectedness test
 
-bool SelectionManager::ConnectednessTest(Event e, int nplanes){
+bool SelectionManager::ConnectednessTest(const Event &e, int nplanes){
 
    int muon_index = e.MuonCandidate.Index;
    int proton_index = e.DecayProtonCandidate.Index;
@@ -483,7 +483,7 @@ bool SelectionManager::ConnectednessTest(Event e, int nplanes){
 
 // Apply the invariant mass cut
 
-bool SelectionManager::WCut(Event e){
+bool SelectionManager::WCut(const Event &e){
 
    double W = ProtonPionInvariantMass(e.DecayProtonCandidate,e.DecayPionCandidate); 
    bool passed = W > TheParams.p_W_Min && W < TheParams.p_W_Max;
@@ -495,7 +495,7 @@ bool SelectionManager::WCut(Event e){
 
 // Apply the angle cut
 
-bool SelectionManager::AngleCut(Event e){
+bool SelectionManager::AngleCut(const Event &e){
 
    SecondaryVertex V = a_SecondaryVertexFitter.MakeVertex(e.DecayProtonCandidate,e.DecayPionCandidate);
    TVector3 GapVector = V.Vertex - e.RecoPrimaryVertex;
@@ -678,7 +678,7 @@ return mode;
 
 // Fill the histograms
 
-void SelectionManager::FillHistograms(Event e,double variable,double weight){
+void SelectionManager::FillHistograms(const Event &e,double variable,double weight){
 
    std::string mode,mode2,proc;
 
@@ -735,7 +735,7 @@ void SelectionManager::FillHistograms(Event e,double variable,double weight){
 
 // Fill systematics histogram for a single universe with a single weight
 
-void SelectionManager::FillHistogramsSys(Event e,double variable,std::string name,int universe,double weight){
+void SelectionManager::FillHistogramsSys(const Event &e,double variable,std::string name,int universe,double weight){
 
    if(e.Mode.at(0) == "Data") return;
 
@@ -773,7 +773,7 @@ void SelectionManager::FillHistogramsSys(Event e,double variable,std::string nam
 // Fill systematics histogram for all universes. Supply vector containing weights for different
 // universes
 
-void SelectionManager::FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights){
+void SelectionManager::FillHistogramsSys(const Event &e,double variable,std::string name,std::vector<double> weights){
 
    for(size_t i=0;i<weights.size();i++)
       FillHistogramsSys(e,variable,name,i,weights.at(i)); 

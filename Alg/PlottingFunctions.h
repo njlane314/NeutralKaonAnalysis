@@ -63,7 +63,7 @@ namespace HypPlot {
    const double Matrix_XaxisTitleSize = 0.05;
    const double Matrix_YaxisTitleSize = 0.05;
    const double Matrix_XaxisTitleOffset = 0.93;
-   const double Matrix_YaxisTitleOffset = 1.06;
+   const double Matrix_YaxisTitleOffset = 1.02;
    const double Matrix_XaxisLabelSize = 0.045;
    const double Matrix_YaxisLabelSize = 0.045;
    const double Matrix_ZaxisLabelSize = 0.045;
@@ -188,7 +188,6 @@ void DrawMatrix(TH2D* h,TH2D* h_example,string title,bool uselabels=false,bool u
       h->GetXaxis()->SetLabelSize(Matrix_TextLabelSize);
       h->GetYaxis()->SetLabelSize(Matrix_TextLabelSize);
    }
-
 
    // Generates text with bin content, uses 3 sf
    if(usetext){
@@ -384,7 +383,7 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
    if(POT.size() > 0) l_POT->Draw();
    if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
       l_POT2->Draw();
-      h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.35);
+      h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.4);
    }
    if(DrawWatermark) l_Watermark->Draw();
    if(hasdata) l_Chi2->Draw();

@@ -100,7 +100,7 @@ void SelectorBDTManager::SetupTrainingTrees(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void SelectorBDTManager::FillTree(Event e){
+void SelectorBDTManager::FillTree(const Event &e){
 
    // Check in the right running mode first
    assert(fMode == "Train");

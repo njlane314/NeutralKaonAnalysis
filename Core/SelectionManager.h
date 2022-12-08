@@ -122,7 +122,7 @@ class SelectionManager {
       const std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" , "InvariantMass" , "AlphaAngle" };
       void DeclareCuts();
       std::vector<Cut> Cuts;
-      void UpdateCut(Event e,bool Passed,std::string CutName);
+      void UpdateCut(const Event &e,bool Passed,std::string CutName);
 
    public:
 
@@ -133,17 +133,17 @@ class SelectionManager {
 
    public:
 
-      bool FiducialVolumeCut(Event e);
-      bool TrackCut(Event e);
-      bool ShowerCut(Event e);
+      bool FiducialVolumeCut(const Event &e);
+      bool TrackCut(const Event &e);
+      bool ShowerCut(const Event &e);
       bool ChooseMuonCandidate(Event &e);
-      bool TrackLengthCut(Event e);
+      bool TrackLengthCut(const Event &e);
       bool ChooseProtonPionCandidates(Event &e, bool cheat=false);
       bool AnalysisBDTCut(Event &e);
-      bool EventListCut(Event e);
-      bool ConnectednessTest(Event e, int nplanes=1);
-      bool WCut(Event e);
-      bool AngleCut(Event e);
+      bool EventListCut(const Event &e);
+      bool ConnectednessTest(const Event &e, int nplanes=1);
+      bool WCut(const Event &e);
+      bool AngleCut(const Event &e);
 
       // Histogram Functions //
 
@@ -173,18 +173,15 @@ class SelectionManager {
 
    public:
 
-      //std::string GetType(Event e);
-      //std::string GetType2(Event e);
-
       void AddSystematic(int systype,int universes,std::string name);
-      void FillHistogramsSys(Event e,double variable,std::string name,std::vector<double> weights);
-      void FillHistogramsSys(Event e,double variable,std::string name,int universe,double weight);
+      void FillHistogramsSys(const Event &e,double variable,std::string name,std::vector<double> weights);
+      void FillHistogramsSys(const Event &e,double variable,std::string name,int universe,double weight);
       void DrawHistogramsSys(std::string label,std::string name,std::string type="All");
       TMatrixD GetCovarianceMatrix(std::string label,std::string name,std::string type="All");
 
       void SetupHistograms(int n,double low,double high,std::string title="");
       void SetupHistograms(std::vector<double> boundaries,std::string title="");
-      void FillHistograms(Event e,double variable,double weight=1.0);
+      void FillHistograms(const Event &e,double variable,double weight=1.0);
       void DrawHistograms(std::string label="Hists",double Scale=1.0,double SignalScale=1.0);
 
       double GetPrediction(int bin,std::string type="");

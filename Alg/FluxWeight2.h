@@ -39,10 +39,10 @@ class FluxWeighter {
 
       // dial="" gives CV universe
       double GetFluxWeight(double nu_e,double nu_angle,int nu_pdg,std::string dial="",int univ=-1); 
-      double GetFluxWeight(Event e);
+      double GetFluxWeight(const Event &e);
 
       std::vector<double> GetSysWeightV(double nu_e,double nu_angle,int nu_pdg,std::string dial=""); 
-      std::vector<double> GetSysWeightV(Event e,std::string dial);
+      std::vector<double> GetSysWeightV(const Event &e,std::string dial);
 
    private:
 

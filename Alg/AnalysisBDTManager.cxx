@@ -87,7 +87,7 @@ void AnalysisBDTManager::SetupTrainingTrees(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void AnalysisBDTManager::FillTree(Event e){
+void AnalysisBDTManager::FillTree(const Event &e){
 
    // Check in the right running mode first
    assert(fMode == "Train");
@@ -101,7 +101,7 @@ void AnalysisBDTManager::FillTree(Event e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-bool AnalysisBDTManager::SetVariables(Event e){
+bool AnalysisBDTManager::SetVariables(const Event &e){
 
    SecondaryVertex V = Fitter.MakeVertex(e.DecayProtonCandidate,e.DecayPionCandidate);
 

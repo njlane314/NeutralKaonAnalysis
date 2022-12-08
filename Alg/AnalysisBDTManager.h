@@ -25,7 +25,7 @@ class AnalysisBDTManager {
       AnalysisBDTManager(std::string Mode);
       ~AnalysisBDTManager();
 
-      void FillTree(Event e);
+      void FillTree(const Event &e);
       void WriteTrainingTrees();    
 
       void SetupAnalysisBDT(std::string WeightsDir="");
@@ -36,7 +36,7 @@ class AnalysisBDTManager {
 
       std::string fMode;
 
-      bool SetVariables(Event e);
+      bool SetVariables(const Event &e);
 
       // Training trees
 

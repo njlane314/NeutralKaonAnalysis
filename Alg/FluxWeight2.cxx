@@ -109,7 +109,7 @@ double FluxWeighter::GetFluxWeight(double nu_e,double nu_angle,int nu_pdg,std::s
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-double FluxWeighter::GetFluxWeight(Event e){
+double FluxWeighter::GetFluxWeight(const Event &e){
 
    if(!e.Neutrino.size()) return 1.0;
 
@@ -209,7 +209,7 @@ std::vector<double> FluxWeighter::GetSysWeightV(double nu_e,double nu_angle,int 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<double> FluxWeighter::GetSysWeightV(Event e,std::string dial){
+std::vector<double> FluxWeighter::GetSysWeightV(const Event &e,std::string dial){
 
    std::vector<double> weights;
    if(dial == "Flux_HP") for(size_t i_univ=0;i_univ<Flux_HP_Universes;i_univ++) weights.push_back(1.0);

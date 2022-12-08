@@ -12,7 +12,6 @@ inline double PionMomentum(double TrackLength){ return 0.25798 + 0.0024088*Track
 
 inline double ProtonMomentum(double TrackLength){ return 14.96 + 0.0043489*TrackLength - 14.688*pow(TrackLength,-0.0053518); }
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 inline TLorentzVector ProtonPion4Momentum(RecoParticle Proton,RecoParticle Pion){
