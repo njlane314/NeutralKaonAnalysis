@@ -6,6 +6,8 @@
 #include "Misc.h"
 #include "TText.h"
 #include "TLatex.h"
+#include "TGraphAsymmErrors.h"
+#include "TGaxis.h"
 #include "FluxWeight2.h"
 
 using std::string;
@@ -726,6 +728,146 @@ void DrawSystematicBreakdown(TFile* f,TH1D* h_template,vector<string> dials,vect
    c->Close();
 
    DrawMatrix(h_FCov,h_FCov,plotdir + "/" + label + "_FCov",true,true);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string name,vector<int> mode,vector<double> POT){
+
+   TH1D* h_Before = (TH1D*)Efficiency->GetTotalHistogram()->Clone("h_Before");
+   TH1D* h_After = (TH1D*)Efficiency->GetPassedHistogram()->Clone("h_After");
+
+   TCanvas *c = new TCanvas("c1","c1",Single_CanvasX,Single_CanvasY);
+   TPad *p_plot = new TPad("pad1","pad1",0,0,1,Single_PadSplit);
+   TPad *p_legend = new TPad("pad2","pad2",0,Single_PadSplit,1,1);
+   p_legend->SetBottomMargin(0);
+   p_legend->SetTopMargin(0.1);
+   p_plot->SetTopMargin(0.01);
+
+   TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
+   l->SetBorderSize(0);
+   l->SetNColumns(2);
+
+   // Create the "MicroBooNE" watermark
+   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
+   l_Watermark->SetBorderSize(0);
+   l_Watermark->SetMargin(0.005);
+   l_Watermark->SetTextAlign(32);
+   l_Watermark->SetTextSize(0.05);
+   l_Watermark->SetTextFont(62);
+   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+
+   // Create the POT label
+   TLegend *l_POT = new TLegend(0.54,0.820,0.89,0.900);
+   l_POT->SetBorderSize(0);
+   l_POT->SetMargin(0.005);
+   l_POT->SetTextAlign(32);
+   TLegend *l_POT2 = new TLegend(0.54,0.74,0.89,0.82,NULL,"brNDC");
+   l_POT2->SetBorderSize(0);
+   l_POT2->SetMargin(0.005);
+   l_POT2->SetTextAlign(32);
+
+   if(mode.at(0) == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(mode.at(0) == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(mode.at(0) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
+
+   if(mode.size() == 2 && mode.at(1) == kFHC) l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(mode.size() == 2 && mode.at(1) == kRHC) l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
+   else if(mode.size() == 2 && mode.at(0) == kBNB && mode.at(1) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0) + POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
+
+   THStack *hs = new THStack("hs",title.c_str());
+
+   h_Before->SetLineWidth(2);
+   h_Before->SetLineColor(1);
+   hs->Add(h_Before);
+   h_After->SetLineWidth(2);
+   h_After->SetLineColor(3);
+   hs->Add(h_After);
+
+   // Draw everything
+   p_legend->Draw();
+   p_legend->cd();
+   l->Draw();
+   c->cd();
+   p_plot->Draw();
+   p_plot->cd();
+
+   hs->Draw("nostack E0");
+   hs->GetXaxis()->SetTitleSize(Single_XaxisTitleSize);
+   hs->GetYaxis()->SetTitleSize(Single_YaxisTitleSize);
+   hs->GetXaxis()->SetTitleOffset(Single_XaxisTitleOffset);
+   hs->GetYaxis()->SetTitleOffset(Single_YaxisTitleOffset);
+   hs->GetXaxis()->SetLabelSize(Single_XaxisLabelSize);
+   hs->GetYaxis()->SetLabelSize(Single_YaxisLabelSize);
+
+   hs->SetMaximum(1.25*hs->GetMaximum("nostack"));
+   if(POT.size() > 1) hs->SetMaximum(hs->GetMaximum("nostack")*1.5);
+
+   p_plot->Update(); 
+
+   // Calculate the efficiencies and their uncertainties
+   Efficiency->SetConfidenceLevel(0.68);
+   Efficiency->SetStatisticOption(TEfficiency::kBUniform);
+   Efficiency->SetPosteriorMode();
+
+   std::vector<double> Efficiency_X;
+   std::vector<double> Efficiency_CV;
+   std::vector<double> Efficiency_Low;
+   std::vector<double> Efficiency_High;
+
+   // Decide on a limit for the RH y axis
+   double effmax = 0.0;
+   for(size_t i=1;i<h_Before->GetNbinsX()+1;i++)
+        effmax = std::max(effmax,Efficiency->GetEfficiency(i)+Efficiency->GetEfficiencyErrorUp(i));
+
+   int binmax = h_Before->GetMaximumBin();
+   Float_t rightmax = 1.2*effmax;
+   if(POT.size() > 1) rightmax = 1.5*effmax;
+   double scale = p_plot->GetUymax()/rightmax;
+
+   for(size_t i=1;i<h_Before->GetNbinsX()+1;i++){
+      if(std::isnan(Efficiency->GetEfficiency(i))) continue;
+      Efficiency_X.push_back(h_Before->GetBinCenter(i));
+      Efficiency_CV.push_back(Efficiency->GetEfficiency(i)*scale);
+      Efficiency_Low.push_back(Efficiency->GetEfficiencyErrorLow(i)*scale);
+      Efficiency_High.push_back(Efficiency->GetEfficiencyErrorUp(i)*scale);
+   }
+
+   TGraphAsymmErrors *g_Efficiency = new  TGraphAsymmErrors(Efficiency_X.size(),&(Efficiency_X[0]),&(Efficiency_CV[0]),0,0,&(Efficiency_Low[0]),&(Efficiency_High[0]));
+   g_Efficiency->SetLineColor(kRed);
+   g_Efficiency->SetMarkerStyle(5);
+   g_Efficiency->SetMarkerSize(2);
+   g_Efficiency->SetMarkerColor(kRed);
+   g_Efficiency->SetLineWidth(2);
+
+   // Create the new axis object
+   TGaxis *axis = new TGaxis(p_plot->GetUxmax(),p_plot->GetUymin(),p_plot->GetUxmax(),p_plot->GetUymax(),0,rightmax,510,"+L");
+   axis->SetTitleColor(kRed);
+   axis->SetLabelColor(kRed);
+   axis->SetTitleSize(Single_YaxisTitleSize);
+   axis->SetTitleOffset(0.75*Single_YaxisTitleOffset);
+   axis->SetLabelSize(Single_YaxisLabelSize);
+   axis->SetTitle("Efficiency");
+   axis->Draw();
+
+   l->AddEntry(h_Before,"All Events","L");
+   l->AddEntry(g_Efficiency,"Selected/All","P");
+   l->AddEntry(h_After,"Selected","L");
+
+   g_Efficiency->Draw("P same");
+
+   // Draw the various legends, labels etc.
+   if(POT.size() > 0) l_POT->Draw();
+   if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC) l_POT2->Draw();   
+   if(DrawWatermark) l_Watermark->Draw();
+   
+   p_plot->Update(); 
+
+   system("mkdir -p Plots/");
+   c->Print(("Plots/Efficiency_" + name + "_Ratio.pdf").c_str());
+   c->Print(("Plots/Efficiency_" + name + "_Ratio.png").c_str());
+   c->Print(("Plots/Efficiency_" + name + "_Ratio.C").c_str());
+   c->Close();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
