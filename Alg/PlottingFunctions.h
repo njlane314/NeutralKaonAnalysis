@@ -851,7 +851,7 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    axis->Draw();
 
    l->AddEntry(h_Before,"All Events","L");
-   l->AddEntry(g_Efficiency,"Selected/All","P");
+   l->AddEntry(g_Efficiency,"Efficiency","P");
    l->AddEntry(h_After,"Selected","L");
 
    g_Efficiency->Draw("P same");
