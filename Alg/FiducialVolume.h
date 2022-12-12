@@ -24,9 +24,6 @@ namespace FV {
 
    class FiducialVolume {
 
-      public:
-
-
       private:
 
          // MCC8 Inclusive FV
@@ -36,7 +33,6 @@ namespace FV {
          const double FV_v1_ymax = 117.47 - 35;
          const double FV_v1_zmin = 0.1 + 25;
          const double FV_v1_zmax = 1036.9 - 85;
-
 
          // Wirecell FV
          const double YX_TOP_y1_array     = 116;
@@ -59,7 +55,6 @@ namespace FV {
          const double ZX_Dw_x1_array[11] = {0, 120.00, 115.24, 108.50, 110.67, 120.90, 126.43, 140.51, 157.15, 120.00, 120.00};
          const double ZX_Dw_z2_array[11] = {0, 1029.00, 1029.12, 1027.21, 1026.01, 1024.91, 1025.27, 1025.32, 1027.61, 1026.00, 1026.00};
          const double ZX_Dw_x2_array     = 256;
-
 
          std::vector<double> boundary_xy_x, boundary_xy_y;
          std::vector<double> boundary_xz_x, boundary_xz_z;
@@ -97,7 +92,6 @@ namespace FV {
 
    };
 
-
-
 }
+
 #endif

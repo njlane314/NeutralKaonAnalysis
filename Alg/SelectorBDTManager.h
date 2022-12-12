@@ -59,8 +59,6 @@ class SelectorBDTManager {
       const std::pair<double,double> pid_limits = { -10 , 10 };
       const std::pair<double,double> trkscore_limits = { 0 , 1.0 };
       const std::pair<double,double> dEdX_limits = { 0.0 , 20 };
-
-
       const std::pair<double,double> LLR_limits = { -1.0 , 1.0 };
 
       // Importing BDT and using in selection
@@ -76,7 +74,4 @@ class SelectorBDTManager {
 
 };
 
-
-
 #endif
-

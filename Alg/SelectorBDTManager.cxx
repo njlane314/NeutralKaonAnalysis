@@ -95,7 +95,6 @@ void SelectorBDTManager::SetupTrainingTrees(){
    t_Background->Branch("proton_LLR",&v_proton_LLR);
    t_Background->Branch("pion_LLR",&v_pion_LLR);
 
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,12 +119,12 @@ void SelectorBDTManager::FillTree(const Event &e){
          if(!SetVariables(e.TracklikePrimaryDaughters.at(i_tr),e.TracklikePrimaryDaughters.at(j_tr))) continue;
 
          // If these tracks are the correct pair of decay tracks, fill signal tree 
-         if(e.GoodReco && e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayProtonIndex && e.TracklikePrimaryDaughters.at(j_tr).Index == e.TrueDecayPionIndex) t_Signal->Fill();
+         if(e.GoodReco && e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayProtonIndex && e.TracklikePrimaryDaughters.at(j_tr).Index == e.TrueDecayPionIndex)
+            t_Signal->Fill();         
          else t_Background->Fill();
 
       }
    }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,22 +135,18 @@ bool SelectorBDTManager::SetVariables(RecoParticle thisProtonCandidate, RecoPart
    TVector3 PionPosition(thisPionCandidate.TrackStartX,thisPionCandidate.TrackStartY,thisPionCandidate.TrackStartZ);
 
    v_separation = Limit((ProtonPosition-PionPosition).Mag(),separation_limits);
-
    v_proton_trkscore = Limit(thisProtonCandidate.TrackShowerScore,trkscore_limits);
    v_pion_trkscore = Limit(thisPionCandidate.TrackShowerScore,trkscore_limits);
 
    // Catch default dEdX fills
    if(thisProtonCandidate.MeandEdX_ThreePlane < 0 || thisPionCandidate.MeandEdX_ThreePlane < 0) return false;
    if(std::isnan(thisProtonCandidate.MeandEdX_ThreePlane) || std::isnan(thisPionCandidate.MeandEdX_ThreePlane)) return false;
-   //if(thisProtonCandidate.MeandEdX_ThreePlane != thisProtonCandidate.MeandEdX_ThreePlane) return false;
-   //if(thisPionCandidate.MeandEdX_ThreePlane != thisPionCandidate.MeandEdX_ThreePlane) return false;
 
    v_proton_dEdX = Limit(thisProtonCandidate.MeandEdX_ThreePlane,dEdX_limits);
    v_pion_dEdX = Limit(thisPionCandidate.MeandEdX_ThreePlane,dEdX_limits);
 
    v_proton_LLR = Limit(thisProtonCandidate.Track_LLR_PID,LLR_limits);
    v_pion_LLR = Limit(thisPionCandidate.Track_LLR_PID,LLR_limits);
-
 
    // Proton PID Cut
    if(v_pion_LLR < fPionPIDCut) return false;
@@ -274,9 +269,9 @@ std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
 
 double SelectorBDTManager::GetScore(RecoParticle DecayProtonCandidate,RecoParticle DecayPionCandidate){
 
-         if(!SetVariables(DecayProtonCandidate,DecayPionCandidate)) return -1000;
+   if(!SetVariables(DecayProtonCandidate,DecayPionCandidate)) return -1000;
 
-         return reader->EvaluateMVA("BDT method");
+   return reader->EvaluateMVA("BDT method");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
