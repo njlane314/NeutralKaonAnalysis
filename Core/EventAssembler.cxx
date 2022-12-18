@@ -3,6 +3,18 @@
 
 #include "EventAssembler.h"
 
+EventAssembler::EventAssembler() :
+LoadWeights(true)
+{
+
+}
+
+EventAssembler::EventAssembler(bool loadweights) :
+LoadWeights(loadweights)
+{
+
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 // Load a file containing ntuples
@@ -80,9 +92,10 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchStatus("ConnOutputSizes_Plane2",1);
    t_in->SetBranchStatus("ConnSeedChannels_Plane2",1);
    t_in->SetBranchStatus("ConnSeedTicks_Plane2",1);
+   if(LoadWeights){
    t_in->SetBranchStatus("SysDials",1);
    t_in->SetBranchStatus("SysWeights",1);
-
+   }
    t_in->SetBranchAddress("IsData", &IsData);
    t_in->SetBranchAddress("EventID", &EventID);
    t_in->SetBranchAddress("run", &run);
@@ -130,7 +143,6 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchAddress("NPrimaryShowerDaughters", &NPrimaryShowerDaughters);
    t_in->SetBranchAddress("TracklikePrimaryDaughters",&TracklikePrimaryDaughters);
    t_in->SetBranchAddress("ShowerlikePrimaryDaughters",&ShowerlikePrimaryDaughters);
-
                
    t_in->SetBranchAddress("ConnSeedIndexes_Plane0", &ConnSeedIndexes_Plane0);
    t_in->SetBranchAddress("ConnOutputIndexes_Plane0", &ConnOutputIndexes_Plane0);
@@ -147,9 +159,10 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchAddress("ConnOutputSizes_Plane2", &ConnOutputSizes_Plane2);
    t_in->SetBranchAddress("ConnSeedChannels_Plane2", &ConnSeedChannels_Plane2);
    t_in->SetBranchAddress("ConnSeedTicks_Plane2", &ConnSeedTicks_Plane2);
+   if(LoadWeights){
    t_in->SetBranchAddress("SysDials", &SysDials);
    t_in->SetBranchAddress("SysWeights", &SysWeights);
-
+   }
    // Get the metadata tree
 
    f_in->GetObject("ana/MetaTree",t_meta);
@@ -276,8 +289,10 @@ Event EventAssembler::GetEvent(int i){
    e.ConnSeedChannels_Plane2 = *ConnSeedChannels_Plane2;
    e.ConnSeedTicks_Plane2 = *ConnSeedTicks_Plane2;
 
+   if(LoadWeights){
    e.SysDials = *SysDials;
    e.SysWeights = *SysWeights;
+   }
 
    return e;
 }

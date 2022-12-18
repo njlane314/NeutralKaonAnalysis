@@ -5,7 +5,7 @@
 
 namespace EventType {
 
-const std::vector<std::string> Types = { "Signal","OtherHYP","OtherNu","Dirt","EXT","All","Data" };
+const std::vector<std::string> Types = {"Signal","OtherHYP","OtherNu","Dirt","EXT","Data","All"};
 const std::vector<std::string> Captions = {"Signal","Other HYP","Other #nu","Dirt","EXT","Data"};
 const std::vector<int> Colors = {8,46,38,30,15,0};
 

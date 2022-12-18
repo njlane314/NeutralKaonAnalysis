@@ -9,6 +9,7 @@
 #include "TGraphAsymmErrors.h"
 #include "TGaxis.h"
 #include "FluxWeight2.h"
+#include "TMatrixDSym.h"
 
 using std::string;
 using std::vector;
@@ -32,7 +33,7 @@ namespace HypPlot {
    const double Single_XaxisLabelSize = 0.045;
    const double Single_YaxisLabelSize = 0.045;
 
-   const double Single_TextLabelSize = 0.07; // Label size if bin labels are used
+   const double Single_TextLabelSize = 0.09; // Label size if bin labels are used
 
    // Two panel axis settings etc.
 
@@ -55,7 +56,7 @@ namespace HypPlot {
    const double Dual_RatioXaxisLabelSize = 0.1;
    const double Dual_RatioYaxisLabelSize = 0.1;
 
-   const double Dual_TextLabelSize = 0.02; // Label size if bin labels are used
+   const double Dual_TextLabelSize = 0.17; // Label size if bin labels are used
 
    // Matrix axis settings etc.
 
@@ -70,10 +71,77 @@ namespace HypPlot {
    const double Matrix_YaxisLabelSize = 0.045;
    const double Matrix_ZaxisLabelSize = 0.045;
 
-   const double Matrix_TextLabelSize = 0.07;
+   const double Matrix_TextLabelSize = 0.09;
 
-   const int GoodLineColors[13] = {1,2,3,4,6,7,8,9,43,30,38,46,14};
+   const int GoodLineColors[13] = {1,3,4,6,7,9,2,43,30,38,46,14,8};
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+std::pair<double,int> Chi2(TH1D* h_Pred,TH1D* h_Data,TMatrixDSym cov=TMatrixDSym(0),std::vector<int> skip={}){
+ 
+   const int nbins = h_Data->GetNbinsX();
+
+   // Remove any bins with no events in
+   std::vector<int> nonzero_bins;
+   for(size_t i=1;i<nbins+1;i++)
+      if(h_Pred->GetBinContent(i) > 0 && std::find(skip.begin(),skip.end(),i) == skip.end()) nonzero_bins.push_back(i);
+
+   TMatrixDSym cov_nonzero(nonzero_bins.size());
+
+   if(cov.GetNcols()){
+      if(cov.GetNcols() != nbins) 
+         throw std::invalid_argument("PlottingFunctions: Attempting to get get chi2 score when covariance matrix has size " + std::to_string(cov.GetNcols()) + "x" + std::to_string(cov.GetNcols()) + " hists have size "  + std::to_string(nbins));
+      for(size_t i=0;i<nonzero_bins.size();i++)
+         for(size_t j=0;j<nonzero_bins.size();j++)
+            cov_nonzero[i][j] = cov[nonzero_bins.at(i)-1][nonzero_bins.at(j)-1];        
+   }
+
+   // Add the statistical uncertainty
+   TMatrixDSym cov_stat(nonzero_bins.size());
+   for(size_t i=0;i<nonzero_bins.size();i++)
+      cov_stat[i][i] = h_Pred->GetBinError(nonzero_bins.at(i))*h_Pred->GetBinError(nonzero_bins.at(i)) + h_Data->GetBinError(nonzero_bins.at(i))*h_Data->GetBinError(nonzero_bins.at(i));
+
+   cov_nonzero += cov_stat;
+   cov_nonzero.Invert();
+
+   double Chi2 = 0.0;
+   for(size_t i=0;i<nonzero_bins.size();i++)
+      for(size_t j=0;j<nonzero_bins.size();j++)
+         Chi2 += (h_Pred->GetBinContent(nonzero_bins.at(i)) - h_Data->GetBinContent(nonzero_bins.at(i)))*cov_nonzero[i][j]*(h_Pred->GetBinContent(nonzero_bins.at(j)) - h_Data->GetBinContent(nonzero_bins.at(j)));              
+
+   std::cout << "Chi2/ndof = " << Chi2 << "/" << nonzero_bins.size() << std::endl;
+
+   return {Chi2,nonzero_bins.size()};
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+/*
+// Calculate the chi2 score with a prediction, data, and covariance matrix describing any
+// systematic uncertainties
+
+std::pair<double,int> Chi2(const TH1D* h_pred,const TH1D* h_data,TMatrixDSym* cov=nullptr){
+
+   const int nbins = h_pred->GetNbinsX();
+   if(cov == nullptr) cov = new TMatrixDSym(nbins);
+
+   TMatrixDSym cov_stat(nbins);
+   for(int i=1;i<nbins+1;i++)
+      cov_stat[i-1][i-1] = h_pred->GetBinError(i)*h_pred->GetBinError(i) + h_data->GetBinError(i)*h_data->GetBinError(i);
+   cov_stat += *cov;
+   cov_stat.Invert();
+
+   double chi2 = 0.0;
+   for(int i=1;i<nbins+1;i++){
+      for(int j=1;j<nbins+1;j++){
+         double diff_i = h_pred->GetBinContent(i) - h_data->GetBinContent(i);
+         double diff_j = h_pred->GetBinContent(j) - h_data->GetBinContent(j);
+         chi2 += diff_i*diff_j*cov_stat[i-1][j-1];
+      }
+   }
+
+   return std::make_pair(chi2,nbins-1);
+}
+*/
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 // Take set of histograms to be stacked together and compute the total stat error
@@ -81,19 +149,19 @@ namespace HypPlot {
 
 TH1D * MakeErrorBand(std::map<string,TH1D*> hists,TH2D* h_Cov=nullptr){
 
-   TH1D *h_first = hists.begin()->second;
-   TH1D *h_errors = new TH1D("h_errors","",h_first->GetNbinsX(),h_first->GetBinLowEdge(1),h_first->GetBinLowEdge(h_first->GetNbinsX()+1));
+   //TH1D *h_first = hists.begin()->second;
+   //TH1D *h_errors = new TH1D("h_errors","",h_first->GetNbinsX(),h_first->GetBinLowEdge(1),h_first->GetBinLowEdge(h_first->GetNbinsX()+1));
+   TH1D *h_errors = (TH1D*)hists.begin()->second->Clone("h_errors");
 
    // Iterate over the bins of the contributing histograms
-   for(int i_b=0;i_b<h_first->GetNbinsX()+1;i_b++){
+   for(int i_b=0;i_b<h_errors->GetNbinsX()+1;i_b++){
 
       std::map<string, TH1D*>::iterator it;
 
       double events = 0.0;
       double variance = 0.0;
 
-      for (it = hists.begin(); it != hists.end(); it++)
-      {
+      for (it = hists.begin(); it != hists.end(); it++){
          if(it->first == "Data" || it->first == "All") continue;
          events += it->second->GetBinContent(i_b);
          variance += it->second->GetBinError(i_b)*it->second->GetBinError(i_b);
@@ -103,6 +171,7 @@ TH1D * MakeErrorBand(std::map<string,TH1D*> hists,TH2D* h_Cov=nullptr){
 
       h_errors->SetBinContent(i_b,events);
       h_errors->SetBinError(i_b,sqrt(variance));
+
    }
 
    return h_errors;
@@ -265,10 +334,8 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
    if(binlabels.size()){
       const int nbins = hist_v.at(0)->GetNbinsX();
       for(int i=1;i<nbins+1;i++){
-
          for(size_t i_h=0;i_h<hist_v.size();i_h++)
             hist_v.at(i_h)->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
-
          h_errors->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
       }
    }
@@ -484,6 +551,10 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
       h_errors_ratio->GetYaxis()->SetTitleOffset(Dual_RatioYaxisTitleOffset);
       h_errors_ratio->GetXaxis()->SetLabelSize(Dual_RatioXaxisLabelSize);
       h_errors_ratio->GetYaxis()->SetLabelSize(Dual_RatioYaxisLabelSize);
+      if(binlabels.size()){
+         h_errors_ratio->GetXaxis()->SetLabelOffset(0.02);
+         h_errors_ratio->GetXaxis()->SetLabelSize(Dual_TextLabelSize);
+      }
 
       h_data_ratio->Draw("E0 same");
       p_plot2->RedrawAxis();

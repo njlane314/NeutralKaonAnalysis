@@ -35,6 +35,9 @@ class EventAssembler {
 
    public:
 
+      EventAssembler();
+      EventAssembler(bool loadweights);
+
       // Setters and getters
       void SetFile(string infilename,string sampletype);
       void Close();
@@ -46,6 +49,7 @@ class EventAssembler {
    private:
 
       std::string SampleType;
+      const bool LoadWeights;
 
       // General Info
       Bool_t          IsData;
