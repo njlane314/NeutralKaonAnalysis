@@ -234,6 +234,21 @@ void DrawMatrix(TMatrixD Mat,TH2D* h_example,string title,bool uselabels=false,b
 }
 */
 ///////////////////////////////////////////////////////////////////////////////////////////////
+// Make a TGraph object from a vector containing the x positions of data events in 
+// some variable
+
+TGraph* MakeDataGraph(std::vector<double> data_v){
+
+   std::vector<Double_t> Y(data_v.size(),0.0); 
+
+   TGraph* g = new TGraph(data_v.size(),&(data_v[0]),&(Y[0]));
+   g->SetMarkerStyle(23);
+   g->SetMarkerSize(3);
+
+   return g;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 // Draw a 2D matrix as a histogram
 // Uses h_example for the bin widths, axis titles etc.
@@ -324,9 +339,10 @@ void DrawMatrix(TH2D* h,TH2D* h_example,string title,bool uselabels=false,bool u
 // colors = list of colors for the histograms
 // binlabels = bin labels
 // chi2ndof = chi2 and degrees of freedom if applicable
+// data_v list of x positions of individual data events (used for signal box plots only)
 
-void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,bool hasdata,vector<int> colors,vector<string> binlabels,std::pair<double,int> chi2ndof){
-
+void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,bool hasdata,vector<int> colors,vector<string> binlabels,std::pair<double,int> chi2ndof,std::vector<double> data_v={}){
+   
    assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
    for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
 
@@ -388,7 +404,7 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
    l_Watermark->SetTextAlign(32);
    l_Watermark->SetTextSize(0.05);
    l_Watermark->SetTextFont(62);
-   if(!hasdata) l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
+   if(!hasdata && !data_v.size()) l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
    else if(run.size() == 1) l_Watermark->SetHeader(("MicroBooNE Run " + std::to_string(run.at(0)) + ", Preliminary").c_str());
    else if(run.size() == 2) l_Watermark->SetHeader(("MicroBooNE Runs " + std::to_string(run.at(0)) + " + " + std::to_string(run.at(1)) + ", Preliminary").c_str());
    else throw std::invalid_argument("PlottingFunctions::DrawHistogram: Currently maximum of two running periods supported");
@@ -445,6 +461,15 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
    if(hasdata) hist_v.at(i_data)->Draw("E0 P0 same");
    h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.25);
    h_errors->SetStats(0);
+
+   // Draw the data graph if required
+   if(data_v.size()){
+      TGraph* g_data = MakeDataGraph(data_v);
+      double c_height = h_errors->GetMaximum();
+      for(int i=0;i<g_data->GetN();i++) g_data->GetY()[i] = c_height*0.03;
+      g_data->Draw("P same");   
+      l->AddEntry(g_data,"Data","P"); 
+   }
 
    p_plot->RedrawAxis();
 
@@ -931,7 +956,7 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    if(POT.size() > 0) l_POT->Draw();
    if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC) l_POT2->Draw();   
    if(DrawWatermark) l_Watermark->Draw();
-   
+
    p_plot->Update(); 
 
    system("mkdir -p Plots/");
@@ -941,7 +966,6 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    c->Close();
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////
 
 };
 

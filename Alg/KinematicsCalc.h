@@ -51,4 +51,14 @@ return sqrt(P.X()*P.X()+P.Y()*P.Y()+P.Z()*P.Z());
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+inline double OpeningAngle(RecoParticle Proton,RecoParticle Pion){
+
+   TVector3 ProtonDir(Proton.TrackDirectionX,Proton.TrackDirectionY,Proton.TrackDirectionZ);
+   TVector3 PionDir(Pion.TrackDirectionX,Pion.TrackDirectionY,Pion.TrackDirectionZ);
+
+   return (180/3.142)*ProtonDir.Angle(PionDir);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 #endif
