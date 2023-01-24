@@ -147,31 +147,21 @@ std::pair<double,int> Chi2(const TH1D* h_pred,const TH1D* h_data,TMatrixDSym* co
 // Take set of histograms to be stacked together and compute the total stat error
 // h_Cov = 2D histogram storing the covariance matrix, systematic errors only
 
-TH1D * MakeErrorBand(std::map<string,TH1D*> hists,TH2D* h_Cov=nullptr){
+TH1D * MakeErrorBand(std::vector<TH1D*> hists,TH2D* h_Cov=nullptr){
 
-   //TH1D *h_first = hists.begin()->second;
-   //TH1D *h_errors = new TH1D("h_errors","",h_first->GetNbinsX(),h_first->GetBinLowEdge(1),h_first->GetBinLowEdge(h_first->GetNbinsX()+1));
-   TH1D *h_errors = (TH1D*)hists.begin()->second->Clone("h_errors");
+   TH1D *h_errors = (TH1D*)hists.at(0)->Clone("h_errors");  
 
    // Iterate over the bins of the contributing histograms
    for(int i_b=0;i_b<h_errors->GetNbinsX()+1;i_b++){
-
-      std::map<string, TH1D*>::iterator it;
-
       double events = 0.0;
       double variance = 0.0;
-
-      for (it = hists.begin(); it != hists.end(); it++){
-         if(it->first == "Data" || it->first == "All") continue;
-         events += it->second->GetBinContent(i_b);
-         variance += it->second->GetBinError(i_b)*it->second->GetBinError(i_b);
+      for(size_t i_h=0;i_h<hists.size();i_h++){
+         events += hists.at(i_h)->GetBinContent(i_b);
+         variance += hists.at(i_h)->GetBinError(i_b)*hists.at(i_h)->GetBinError(i_b);
       }
-
       if(h_Cov != nullptr) variance += h_Cov->GetBinContent(i_b,i_b);
-
       h_errors->SetBinContent(i_b,events);
       h_errors->SetBinError(i_b,sqrt(variance));
-
    }
 
    return h_errors;
@@ -326,7 +316,7 @@ void DrawMatrix(TH2D* h,TH2D* h_example,string title,bool uselabels=false,bool u
 // If you anto to include systematic uncertainties in the MC, make sure they're already included
 // in the error of h_errors
 // Inputs:
-// hist_v = the stack of histograms you want to draw (including data if applicable)
+// hist_v = the stack of histograms you want to draw
 // h_errors = the total MC prediction with uncertainties
 // captions = list of what should be added to the legend for each histogram
 // plotdir = the directory to write the plots into
@@ -341,18 +331,21 @@ void DrawMatrix(TH2D* h,TH2D* h_example,string title,bool uselabels=false,bool u
 // chi2ndof = chi2 and degrees of freedom if applicable
 // data_v list of x positions of individual data events (used for signal box plots only)
 
-void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,bool hasdata,vector<int> colors,vector<string> binlabels,std::pair<double,int> chi2ndof,std::vector<double> data_v={}){
+void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,bool hasdata,vector<int> colors,vector<string> binlabels,std::pair<double,int> chi2ndof,std::vector<double> data_v={}){
    
    assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
    for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
+   if(hasdata && h_data == nullptr) throw std::invalid_argument("PlottingFunctions::DrawHistogram: hasdata flag set to true but data histogram is nullptr, exiting");
+
+   const int nbins = hist_v.at(0)->GetNbinsX();
 
    // Set the bin labels
    if(binlabels.size()){
-      const int nbins = hist_v.at(0)->GetNbinsX();
       for(int i=1;i<nbins+1;i++){
-         for(size_t i_h=0;i_h<hist_v.size();i_h++)
+         for(size_t i_h=0;i_h<hist_v.size();i_h++) 
             hist_v.at(i_h)->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
          h_errors->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
+         if(hasdata) h_data->GetXaxis()->SetBinLabel(i,binlabels.at(i-1).c_str());
       }
    }
 
@@ -369,14 +362,23 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
    // Create the empty legend
    TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
    l->SetBorderSize(0);
-   const int nhists = hist_v.size();
+   const int nhists = hist_v.size() + static_cast<int>(hasdata);
    int ncols = 3;
    if(nhists > 6) ncols = 4;
    if(nhists > 12) ncols = 5;
    l->SetNColumns(ncols);
 
+   for(size_t i_h=0;i_h<hist_v.size();i_h++){ 
+      hist_v.at(i_h)->SetFillColor(colors.at(i_h));
+      hs->Add(hist_v.at(i_h),"HIST");
+      if(hasdata) l->AddEntry(hist_v.at(i_h),(captions.at(i_h) + " = " + to_string_with_precision(hist_v.at(i_h)->Integral(),1)).c_str(),"F");
+      else l->AddEntry(hist_v.at(i_h),captions.at(i_h).c_str(),"F");
+   }
+ 
+/*
    int i_data=-1;
    for(size_t i_h=0;i_h<hist_v.size();i_h++){
+
       if(captions.at(i_h) == "Data"){
          i_data = i_h;
          continue;
@@ -386,15 +388,16 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
       if(hasdata) l->AddEntry(hist_v.at(i_h),(captions.at(i_h) + " = " + to_string_with_precision(hist_v.at(i_h)->Integral(),1)).c_str(),"F");
       else l->AddEntry(hist_v.at(i_h),captions.at(i_h).c_str(),"F");
    }
+*/
 
-   if(hasdata && i_data == -1) throw std::invalid_argument("PlottingFunctions::DrawHistogram: Trying to draw a histogram with data when no data was passed");
+   //if(hasdata && i_data == -1) throw std::invalid_argument("PlottingFunctions::DrawHistogram: Trying to draw a histogram with data when no data was passed");
 
    if(hasdata){
-      hist_v.at(i_data)->SetLineWidth(1);
-      hist_v.at(i_data)->SetLineColor(1);
-      hist_v.at(i_data)->SetMarkerStyle(20);
-      hist_v.at(i_data)->SetMarkerColor(1);
-      l->AddEntry(hist_v.at(i_data),("Data = "+ to_string_with_precision(hist_v.at(i_data)->Integral(),1)).c_str(),"P");
+      h_data->SetLineWidth(1);
+      h_data->SetLineColor(1);
+      h_data->SetMarkerStyle(20);
+      h_data->SetMarkerColor(1);
+      l->AddEntry(h_data,("Data = "+ to_string_with_precision(h_data->Integral(),1)).c_str(),"P");
    }
 
    // Create the "MicroBooNE" watermark
@@ -458,17 +461,25 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
    h_errors->Draw("E2");
    hs->Draw("HIST same");
    h_errors->Draw("E2 same");
-   if(hasdata) hist_v.at(i_data)->Draw("E0 P0 same");
+   if(hasdata) h_data->Draw("E0 P0 same");
    h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.25);
    h_errors->SetStats(0);
 
    // Draw the data graph if required
+   TGraph* g_data1;
+   TGraph* g_data2;
    if(data_v.size()){
-      TGraph* g_data = MakeDataGraph(data_v);
-      double c_height = h_errors->GetMaximum();
-      for(int i=0;i<g_data->GetN();i++) g_data->GetY()[i] = c_height*0.03;
-      g_data->Draw("P same");   
-      l->AddEntry(g_data,"Data","P"); 
+      std::vector<double> c_height1(data_v.size(),h_errors->GetMaximum()*0.03);
+      std::vector<double> c_height2(data_v.size(),h_errors->GetMaximum()*0.06);
+      TGraph* g_data1 = new TGraph(data_v.size(),&(data_v[0]),&(c_height1[0]));
+      TGraph* g_data2 = new TGraph(data_v.size(),&(data_v[0]),&(c_height2[0]));
+      g_data1->SetMarkerStyle(23);
+      g_data1->SetMarkerSize(3);
+      g_data2->SetMarkerStyle(2);
+      g_data2->SetMarkerSize(3);
+      g_data1->Draw("P same");   
+      g_data2->Draw("P same");   
+      l->AddEntry(g_data1,"Events","P"); 
    }
 
    p_plot->RedrawAxis();
@@ -522,7 +533,7 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
       h_errors->Draw("E2");
       hs->Draw("HIST same");    
       h_errors->Draw("E2 same");
-      hist_v.at(i_data)->Draw("e0 same");
+      h_data->Draw("e0 same");
 
       // Draw the various legends, labels etc.
       if(POT.size() > 0) l_POT->Draw();
@@ -532,7 +543,7 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
 
       // Make the raio plot
       TH1D *h_errors_ratio = (TH1D*)h_errors->Clone("h_errors_ratio");
-      TH1D* h_data_ratio = (TH1D*)hist_v.at(i_data)->Clone("h_data_ratio");
+      TH1D* h_data_ratio = (TH1D*)h_data->Clone("h_data_ratio");
 
       std::pair<double,double> minmax = {1.0,1.0};
 
@@ -540,8 +551,8 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
 
          double pred = h_errors->GetBinContent(i);
          double mc_error = h_errors->GetBinError(i)/pred;
-         double data_ratio = hist_v.at(i_data)->GetBinContent(i)/pred;
-         double data_ratio_error = hist_v.at(i_data)->GetBinError(i)/pred;
+         double data_ratio = h_data->GetBinContent(i)/pred;
+         double data_ratio_error = h_data->GetBinError(i)/pred;
 
          h_errors_ratio->SetBinContent(i,1.0);
 
@@ -591,6 +602,7 @@ void DrawHistogram(vector<TH1D*> hist_v,TH1D* h_errors,vector<string> captions,s
    }
 
    c->Close();
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -965,7 +977,6 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    c->Print(("Plots/Efficiency_" + name + "_Ratio.C").c_str());
    c->Close();
 }
-
 
 };
 

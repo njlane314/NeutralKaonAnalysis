@@ -1,6 +1,8 @@
 #ifndef _BayesianPosteriorPDF_h_
 #define _BayesianPosteriorPDF_h_
 
+#include "Math/PdfFuncMathCore.h"
+
 inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name="",double scale=1.0){
 
    // if scale is zero, posterior PDF is a delta function at x=0 
@@ -67,5 +69,33 @@ inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name="",double sca
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// New method that does not involve the TEfficiency class but uses the same
+// formulae
+// sumw = sum of weights of all events
+// sumw2 = sum of squares of weights of all events
+// sumselw = sum of weights of selected events
+// sumselw2 = sum of squares of weights of selected events
+
+// Beta distribution parameters for prior
+const double prior_beta_dist_alpha = 1.0;
+const double prior_beta_dist_beta = 1.0;
+
+inline TH1D* PosteriorPDF2(double sumw,double sumw2,double sumselw,double sumselw2,std::string name="",double scale=1.0){
+
+   TH1D* h_Posterior = new TH1D(("h_Posterior_" + name).c_str(),"PMF",10000,0.0,scale);
+
+   double norm = sumw/sumw2;
+   double aa = sumselw*norm + prior_beta_dist_alpha;
+   double bb = (sumw - sumselw)*norm + prior_beta_dist_beta;
+
+   for(int i=1;i<h_Posterior->GetNbinsX()+1;i++){
+      double x = h_Posterior->GetBinCenter(i)/scale;
+      double P = ROOT::Math::beta_pdf(x,aa,bb);
+      h_Posterior->SetBinContent(i,P);
+   }  
+
+  return h_Posterior;
+
+}
 
 #endif

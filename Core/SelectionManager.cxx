@@ -543,6 +543,9 @@ void SelectionManager::SetupHistograms(std::vector<double> boundaries,std::strin
       std::string histname = "h_ByType2_" + EventType::Types2.at(i_type);
       Hists_ByType2[EventType::Types2.at(i_type)] = new TH1D(histname.c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
    }
+
+   Hist_All = new TH1D("All",fTitle.c_str(),fHistNBins,arr_boundaries);
+   Hist_Data = new TH1D("Data",fTitle.c_str(),fHistNBins,arr_boundaries);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -571,6 +574,9 @@ void SelectionManager::SetupHistograms(int n,double low,double high,std::string 
       std::string histname = "h_ByType2_" + EventType::Types2.at(i_type);
       Hists_ByType2[EventType::Types2.at(i_type)] = new TH1D(histname.c_str(),fTitle.c_str(),n,low,high);
    }
+
+   Hist_All = new TH1D("All",fTitle.c_str(),n,low,high);
+   Hist_Data = new TH1D("Data",fTitle.c_str(),n,low,high);
 
    double width = (high-low)/n;
    for(int i=0;i<n+1;i++) fHistBoundaries.push_back(low+width*i); 
@@ -601,6 +607,9 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
          for(size_t i=0;i<universes;i++) 
             Multisim_Sys_Hists[EventType::Types2.at(i_type)][name].at(i) = new TH1D(("h_" + EventType::Types2.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
       }
+      Multisim_Sys_Hists_All[name].resize(universes);
+      for(size_t i=0;i<universes;i++) 
+         Multisim_Sys_Hists_All[name].at(i) = new TH1D(("h_All_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
    }
    else if(systype == kSingleUnisim){
       for(size_t i_type=0;i_type<EventType::Types.size();i_type++){
@@ -614,6 +623,9 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
          for(size_t i=0;i<1;i++)
             SingleUnisim_Sys_Hists[EventType::Types2.at(i_type)][name][i] = new TH1D(("h_" + EventType::Types2.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
       }
+      SingleUnisim_Sys_Hists_All[name].resize(1);
+      for(size_t i=0;i<1;i++) 
+         SingleUnisim_Sys_Hists_All[name].at(i) = new TH1D(("h_All_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
    }
    else if(systype == kDualUnisim){
       for(size_t i_type=0;i_type<EventType::Types.size();i_type++){
@@ -627,6 +639,9 @@ void SelectionManager::AddSystematic(int systype,int universes,std::string name)
          for(size_t i=0;i<2;i++) 
             DualUnisim_Sys_Hists[EventType::Types2.at(i_type)][name].at(i) = new TH1D(("h_" + EventType::Types2.at(i_type) + "_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
       }
+      DualUnisim_Sys_Hists_All[name].resize(2);
+      for(size_t i=0;i<2;i++) 
+         DualUnisim_Sys_Hists_All[name].at(i) = new TH1D(("h_All_" + name + "_u_" + std::to_string(i)).c_str(),fTitle.c_str(),fHistNBins,arr_boundaries);
    }
 }
 
@@ -686,12 +701,16 @@ void SelectionManager::FillHistograms(const Event &e,double variable,double weig
    mode2 = EventType::GetType2(e);
    proc = EventType::GetProc(e);
 
-   Hists_ByType[mode]->Fill(variable,weight*e.Weight);
-   Hists_ByType2[mode2]->Fill(variable,weight*e.Weight);
-   Hists_ByProc[proc]->Fill(variable,weight*e.Weight);
+   if(mode != "Data"){
+      Hist_All->Fill(variable,weight*e.Weight);
+      Hists_ByType[mode]->Fill(variable,weight*e.Weight);
+      Hists_ByType2[mode2]->Fill(variable,weight*e.Weight);
+      Hists_ByProc[proc]->Fill(variable,weight*e.Weight);
+   }
+   else Hist_Data->Fill(variable,weight*e.Weight);
 
-   if(mode != "Data") Hists_ByType["All"]->Fill(variable,weight*e.Weight);
-
+   //if(mode != "Data") Hists_ByType["All"]->Fill(variable,weight*e.Weight);
+    
    /*
       if( thisSampleType == "Data" ) mode = "Data";
       else if( thisSampleType == "EXT" ) mode = "EXT";
@@ -747,25 +766,27 @@ void SelectionManager::FillHistogramsSys(const Event &e,double variable,std::str
    std::string mode = EventType::GetType(e);
    std::string mode2 = EventType::GetType2(e);
    bool fill2 = std::find(EventType::Types.begin(),EventType::Types.end(),mode2) == EventType::Types.end();
+   if(!fill2) std::cout << mode2 << std::endl;
 
    if (Multisim_Sys_Hists[mode].find(name) != Multisim_Sys_Hists[mode].end()){
       Multisim_Sys_Hists[mode][name].at(universe)->Fill(variable,weight*e.Weight);
-      Multisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
       if(fill2) Multisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
+      Multisim_Sys_Hists_All[name].at(universe)->Fill(variable,weight*e.Weight);
       return;
    }
    else if (SingleUnisim_Sys_Hists[mode].find(name) != SingleUnisim_Sys_Hists[mode].end()){
       SingleUnisim_Sys_Hists[mode][name].at(universe)->Fill(variable,weight*e.Weight);
-      SingleUnisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
       if(fill2) SingleUnisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
+      SingleUnisim_Sys_Hists_All[name].at(universe)->Fill(variable,weight*e.Weight);
       return;
    }
    else if (DualUnisim_Sys_Hists[mode].find(name) != DualUnisim_Sys_Hists[mode].end()){
       DualUnisim_Sys_Hists[mode][name].at(universe)->Fill(variable,weight*e.Weight);
-      DualUnisim_Sys_Hists["All"][name].at(universe)->Fill(variable,weight*e.Weight);
       if(fill2) DualUnisim_Sys_Hists[mode2][name].at(universe)->Fill(variable,weight*e.Weight);
+      DualUnisim_Sys_Hists_All[name].at(universe)->Fill(variable,weight*e.Weight);
       return;
    }
+  
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -803,36 +824,38 @@ void SelectionManager::DrawHistograms(std::string label,double Scale,double Sign
       Hists_ByType2[EventType::Types2.at(i_type)]->Scale(Scale);
       Hists_ByType2[EventType::Types2.at(i_type)]->Sumw2();
    }
+   Hist_All->Sumw2();   
 
    Hists_ByProc["Signal"]->Scale(SignalScale);
    Hists_ByType["Signal"]->Scale(SignalScale);
    Hists_ByType2["DirectLambda"]->Scale(SignalScale);
 
-   TH1D* h_errors = (TH1D*)Hists_ByType["All"]->Clone("h_errors");
+   TH1D* h_errors = (TH1D*)Hist_All->Clone("h_errors");
 
    std::vector<TH1D*> Hists_ByType_v;
-   for(size_t i_t=0;i_t<EventType::Types.size();i_t++) 
-      if(EventType::Types.at(i_t) != "All") Hists_ByType_v.push_back(Hists_ByType[EventType::Types.at(i_t)]);
-   HypPlot::DrawHistogram(Hists_ByType_v,h_errors,EventType::Captions,PlotDir,label+"_ByType",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors,BinLabels,std::make_pair(0,0));
-
    std::vector<TH1D*> Hists_ByType2_v;
-   for(size_t i_t=0;i_t<EventType::Types2.size();i_t++) 
-      if(EventType::Types2.at(i_t) != "All") Hists_ByType2_v.push_back(Hists_ByType2[EventType::Types2.at(i_t)]);
-   HypPlot::DrawHistogram(Hists_ByType2_v,h_errors,EventType::Captions2,PlotDir,label+"_ByType2",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors2,BinLabels,std::make_pair(0,0));
-
    std::vector<TH1D*> Hists_ByProc_v;
+   for(size_t i_t=0;i_t<EventType::Types.size();i_t++) 
+      Hists_ByType_v.push_back(Hists_ByType[EventType::Types.at(i_t)]); 
+   for(size_t i_t=0;i_t<EventType::Types2.size();i_t++) 
+      Hists_ByType2_v.push_back(Hists_ByType2[EventType::Types2.at(i_t)]); 
    for(size_t i_t=0;i_t<EventType::Procs.size();i_t++) 
-      if(EventType::Procs.at(i_t) != "All") Hists_ByProc_v.push_back(Hists_ByProc[EventType::Procs.at(i_t)]);
-   HypPlot::DrawHistogram(Hists_ByProc_v,h_errors,EventType::Captions3,PlotDir,label+"_ByProc",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
+      Hists_ByProc_v.push_back(Hists_ByProc[EventType::Procs.at(i_t)]); 
+
+   HypPlot::DrawHistogram(Hists_ByType_v,h_errors,Hist_Data,EventType::Captions,PlotDir,label+"_ByType",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors,BinLabels,std::make_pair(0,0));
+   HypPlot::DrawHistogram(Hists_ByType2_v,h_errors,Hist_Data,EventType::Captions2,PlotDir,label+"_ByType2",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors2,BinLabels,std::make_pair(0,0));
+   HypPlot::DrawHistogram(Hists_ByProc_v,h_errors,Hist_Data,EventType::Captions3,PlotDir,label+"_ByProc",{BeamMode},{Run},{POT},SignalScale,fHasData,EventType::Colors3,BinLabels,std::make_pair(0,0));
 
    std::map<std::string,TH1D*>::iterator it;
    for (it = Hists_ByType.begin(); it != Hists_ByType.end(); it++)
       it->second->Write(it->first.c_str());
    for (it = Hists_ByType2.begin(); it != Hists_ByType2.end(); it++){
-      if(it->first == "Data" || it->first == "All" || it->first == "EXT" || it->first == "Dirt") continue;
+      if(/*it->first == "Data" || it->first == "All" || */it->first == "EXT" || it->first == "Dirt") continue;
       it->second->Write(it->first.c_str());
    }
 
+   Hist_All->Write("All");
+   Hist_Data->Write("Data");
    h_errors->Write("ErrorBand");
 }
 
@@ -851,7 +874,21 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    int systype=-1;
    std::vector<TH1D*> ToDraw;
 
-   if (Multisim_Sys_Hists[type].find(name) != Multisim_Sys_Hists[type].end()){
+   if(type == "All"){
+      if(Multisim_Sys_Hists_All.find(name) != Multisim_Sys_Hists_All.end()){
+         ToDraw = Multisim_Sys_Hists_All[name];
+         systype = kMultisim;
+      }
+      else if(SingleUnisim_Sys_Hists_All.find(name) != SingleUnisim_Sys_Hists_All.end()){
+         ToDraw = SingleUnisim_Sys_Hists_All[name];
+         systype = kSingleUnisim;
+      }
+      else if(DualUnisim_Sys_Hists_All.find(name) != DualUnisim_Sys_Hists_All.end()){
+         ToDraw = DualUnisim_Sys_Hists_All[name];
+         systype = kDualUnisim;
+      }
+   }
+   else if (Multisim_Sys_Hists[type].find(name) != Multisim_Sys_Hists[type].end()){
       ToDraw = Multisim_Sys_Hists[type][name]; 
       systype = kMultisim;
    }
@@ -870,19 +907,16 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    }
 
    TH1D* h_CV = nullptr;
-   if(std::find(EventType::Types.begin(),EventType::Types.end(),type) != EventType::Types.end())
-      h_CV = Hists_ByType[type];
-   else if(std::find(EventType::Types2.begin(),EventType::Types2.end(),type) != EventType::Types2.end())
-      h_CV = Hists_ByType2[type];   
-   else {
-      std::cout << "Can't find histogram for channel " << type << std::endl;
-      return;
-   }
+   if(type == "All") h_CV = Hist_All;
+   else if(std::find(EventType::Types.begin(),EventType::Types.end(),type) != EventType::Types.end()) h_CV = Hists_ByType[type];
+   else if(std::find(EventType::Types2.begin(),EventType::Types2.end(),type) != EventType::Types2.end()) h_CV = Hists_ByType2[type];   
+   else throw std::invalid_argument("Trying to draw systematics histograms for unknown event type " + type + ", exiting");  
 
-   HypPlot::DrawHistogramSys(ToDraw,h_CV,PlotDir,label,"All",name,{BeamMode},{Run},{POT},BinLabels);
+   HypPlot::DrawHistogramSys(ToDraw,h_CV,PlotDir,label,type,name,{BeamMode},{Run},{POT},BinLabels);
 
    // Write everything to file
-   f_Hists->mkdir(name.c_str()); 
+   if(!f_Hists->GetDirectory(name.c_str()))
+      f_Hists->mkdir(name.c_str()); 
    f_Hists->GetDirectory(name.c_str())->cd();
    for(size_t i=0;i<ToDraw.size();i++){
       ToDraw.at(i)->SetDirectory(new TDirectory(name.c_str(),name.c_str()));      
@@ -890,123 +924,6 @@ void SelectionManager::DrawHistogramsSys(std::string label,std::string name,std:
    }
    f_Hists->cd();
 
-   /*
-      if(BinLabels.size())
-      for(size_t i_u=0;i_u<ToDraw.size();i_u++)
-      for(int i=1;i<fHistNBins+1;i++) ToDraw.at(i_u)->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
-
-      THStack *hs = new THStack("hs",fTitle.c_str());
-
-      TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
-      l->SetBorderSize(0);
-      l->SetNColumns(2);
-      l->AddEntry(Hists_ByType[type],"Central Value","L");
-
-   // Get the maximum of all the histograms
-   double maximum = 0.0;
-
-   f_Hists->mkdir(name.c_str()); 
-   f_Hists->GetDirectory(name.c_str())->cd();
-
-   for(size_t i=0;i<ToDraw.size();i++){
-
-   if(systype == kMultisim){
-   ToDraw.at(i)->SetLineColor(kGreen);
-   if(i == 0) l->AddEntry(ToDraw.at(0),"Variations","L");
-   }
-   else if(systype == kSingleUnisim){
-   ToDraw.at(i)->SetLineColor(kRed);
-   l->AddEntry(ToDraw.at(0),"Alternative Model","L");
-   }
-   else if(systype == kDualUnisim && i == 0){
-   ToDraw.at(i)->SetLineColor(kRed);
-   l->AddEntry(ToDraw.at(i),"+ 1 #sigma","L");
-   }
-   else if(systype == kDualUnisim && i == 1){
-   ToDraw.at(i)->SetLineColor(kBlue); 
-   l->AddEntry(ToDraw.at(i),"- 1 #sigma","L");
-   }
-
-   hs->Add(ToDraw.at(i));
-
-   if(HypPlot::GetHistMax(ToDraw.at(i)) > maximum) maximum = HypPlot::GetHistMax(ToDraw.at(i));
-   ToDraw.at(i)->SetDirectory(new TDirectory(name.c_str(),name.c_str()));      
-   ToDraw.at(i)->Write();
-
-   }
-
-   f_Hists->cd();
-
-
-   if(HypPlot::GetHistMax(h_CV) > maximum) maximum = HypPlot::GetHistMax(h_CV);
-   h_CV->SetLineColor(1);
-   h_CV->SetLineWidth(2);
-   h_CV->SetFillColor(0);
-   h_CV->SetMaximum(maximum*1.25);
-   hs->Add(h_CV);
-
-   TCanvas *c = new TCanvas("c","c",800,600);
-
-   TPad *p_plot = new TPad("pad1","pad1",0,0,1,HypPlot::Single_PadSplit);
-   TPad *p_legend = new TPad("pad2","pad2",0,HypPlot::Single_PadSplit,1,1);
-
-   p_legend->SetBottomMargin(0);
-   p_legend->SetTopMargin(0.1);
-   p_plot->SetTopMargin(0.01);
-
-   TLegend *l_Watermark = new TLegend(0.45,0.900,0.89,0.985);
-   l_Watermark->SetBorderSize(0);
-   l_Watermark->SetMargin(0.005);
-   l_Watermark->SetTextAlign(32);
-   l_Watermark->SetTextSize(0.05);
-   l_Watermark->SetTextFont(62);
-   l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
-
-   TLegend *l_POT = new TLegend(0.55,0.820,0.89,0.900);
-   l_POT->SetBorderSize(0);
-   l_POT->SetMargin(0.005);
-   l_POT->SetTextAlign(32);
-   l_POT->SetTextSize(0.05);
-   if(BeamMode == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
-   if(BeamMode == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
-   if(BeamMode == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT/1e20,1) + " #times 10^{20} POT").c_str());
-
-   p_legend->Draw();
-   p_legend->cd();
-   l->Draw();
-   c->cd();
-   p_plot->Draw();
-   p_plot->cd();
-
-   hs->Draw("HIST nostack");
-   hs->GetXaxis()->SetTitleSize(0.05);
-   hs->GetYaxis()->SetTitleSize(0.05);
-   hs->GetXaxis()->SetTitleOffset(0.9);
-   hs->GetYaxis()->SetTitleOffset(0.9);
-
-   hs->GetXaxis()->SetLabelSize(0.045);
-   hs->GetYaxis()->SetLabelSize(0.045);
-
-   h_CV->Draw("HIST same");
-
-   if(BinLabels.size()){
-      for(int i=1;i<fHistNBins+1;i++) hs->GetXaxis()->SetBinLabel(i,BinLabels.at(i-1).c_str());
-      hs->GetXaxis()->SetLabelSize(0.07);
-   }
-
-   p_plot->Update(); 
-
-   if(POT > 0) l_POT->Draw();
-   l_Watermark->Draw();
-
-   c->Print((PlotDir + label + "_Sys_" + type + "_" +  name + ".png").c_str());
-   c->Print((PlotDir + label + "_Sys_" + type + "_" +  name + ".pdf").c_str());
-   c->Print((PlotDir + label + "_Sys_" + type + "_" +  name + ".C").c_str());
-
-   c->Close();
-
-   std::cout << "Done drawing systematic hists for dial " << name << std::endl;
-   */
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1025,7 +942,21 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
 
    std::vector<TH1D*> ToUse;
 
-   if(Multisim_Sys_Hists[type].find(name) != Multisim_Sys_Hists[type].end()){
+   if(type == "All"){
+      if(Multisim_Sys_Hists_All.find(name) != Multisim_Sys_Hists_All.end()){
+         ToUse = Multisim_Sys_Hists_All[name];
+         systype = kMultisim;
+      }
+      else if(SingleUnisim_Sys_Hists_All.find(name) != SingleUnisim_Sys_Hists_All.end()){
+         ToUse = SingleUnisim_Sys_Hists_All[name];
+         systype = kSingleUnisim;
+      }
+      else if(DualUnisim_Sys_Hists_All.find(name) != DualUnisim_Sys_Hists_All.end()){
+         ToUse = DualUnisim_Sys_Hists_All[name];
+         systype = kDualUnisim;
+      }
+   }
+   else if(Multisim_Sys_Hists[type].find(name) != Multisim_Sys_Hists[type].end()){
       ToUse = Multisim_Sys_Hists[type][name];
       systype = kMultisim;
    }
@@ -1038,11 +969,17 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
       systype = kDualUnisim;
    }
 
+   TH1D* h_CV = nullptr;
+   if(type == "All") h_CV = Hist_All;
+   else if(std::find(EventType::Types.begin(),EventType::Types.end(),type) != EventType::Types.end()) h_CV = Hists_ByType[type];
+   else if(std::find(EventType::Types2.begin(),EventType::Types2.end(),type) != EventType::Types2.end()) h_CV = Hists_ByType2[type];   
+   else throw std::invalid_argument("Trying to calculate covariance matrix for unknown event type " + type + ", exiting");  
+
    const int arr_n = fHistBoundaries.size();
    Double_t arr_boundaries[arr_n];
    for(size_t i=0;i<arr_n;i++) arr_boundaries[i] = fHistBoundaries.at(i);
 
-   std::string title = ";" + std::string(Hists_ByType["All"]->GetXaxis()->GetTitle()) + ";" + std::string(Hists_ByType["All"]->GetXaxis()->GetTitle());
+   std::string title = ";" + std::string(Hist_All->GetXaxis()->GetTitle()) + ";" + std::string(Hist_All->GetXaxis()->GetTitle());
 
    TMatrixD Cov(fHistNBins,fHistNBins);
    TH2D *h_Cov = new TH2D("h_Cov",title.c_str(),fHistNBins,arr_boundaries,fHistNBins,arr_boundaries);
@@ -1067,7 +1004,7 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
    for(int i_b=1;i_b<fHistNBins+1;i_b++){
       for(int j_b=1;j_b<fHistNBins+1;j_b++){
 
-         if(!(Hists_ByType[type]->GetBinContent(i_b) > 0 && Hists_ByType[type]->GetBinContent(j_b) > 0)) continue;
+         if(!(h_CV->GetBinContent(i_b) > 0 && h_CV->GetBinContent(j_b) > 0)) continue;
 
          Cov[i_b-1][j_b-1] = 0.0;        
          frac_Cov[i_b-1][j_b-1] = 0.0; 
@@ -1082,13 +1019,13 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
             for(size_t i_u=0;i_u<ToUse.size();i_u++) Cov_ij += (ToUse.at(i_u)->GetBinContent(i_b) - Mean_i)*(ToUse.at(i_u)->GetBinContent(j_b) - Mean_j)/(ToUse.size()-1);
          }
          if(systype == kSingleUnisim){
-            Mean_i = Hists_ByType[type]->GetBinContent(i_b);
-            Mean_j = Hists_ByType[type]->GetBinContent(j_b);
+            Mean_i = h_CV->GetBinContent(i_b);
+            Mean_j = h_CV->GetBinContent(j_b);
             Cov_ij = (ToUse.at(0)->GetBinContent(i_b) - Mean_i)*(ToUse.at(0)->GetBinContent(j_b) - Mean_j);
          } 
          if(systype == kDualUnisim){
-            Mean_i = Hists_ByType[type]->GetBinContent(i_b);
-            Mean_j = Hists_ByType[type]->GetBinContent(j_b);
+            Mean_i = h_CV->GetBinContent(i_b);
+            Mean_j = h_CV->GetBinContent(j_b);
             Cov_ij = (ToUse.at(1)->GetBinContent(i_b) - ToUse.at(0)->GetBinContent(i_b))*(ToUse.at(1)->GetBinContent(j_b) - ToUse.at(0)->GetBinContent(j_b))/4;
          } 
          frac_Cov[i_b-1][j_b-1] = Cov_ij/Mean_i/Mean_j; 
@@ -1116,7 +1053,8 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
 
 double SelectionManager::GetPrediction(int bin,std::string type){
 
-   if(type=="") return Hists_ByType["All"]->GetBinContent(bin);
+   if(type=="" || type == "All") return Hist_All->GetBinContent(bin);
+   else if(type == "Data") return Hist_Data->GetBinContent(bin);
    else if(Hists_ByType.find(type) != Hists_ByType.end()) return Hists_ByType[type]->GetBinContent(bin);
    else if(Hists_ByProc.find(type) != Hists_ByProc.end()) return Hists_ByProc[type]->GetBinContent(bin);
 

@@ -48,7 +48,7 @@ const std::vector<int> ReintU_SysTypes = {kMultisim,kMultisim,kMultisim,kMultisi
 // Detector systematics
 enum DetectorU{duLYAttenuation,duLYDown,duLYRayleigh,duSCE,duRecomb2,duWireModX,duWireModYZ,duWireModThetaXZ,duWireModThetaYZ,duMAX};
 const std::vector<std::string> DetectorU_Str = {"LYAttenuation","LYDown","LYRayleigh","SCE","Recomb2","WireModX","WireModYZ","WireModThetaXZ","WireModThetaYZ"};
-const std::vector<std::string> DetectorU_Str_Long = {"LY Att.","LY Down","LY Rayleigh","SCE","Recomb.","Wire Mod X","Wire Mod YZ","Wire Mod #theta XZ","Wire Mod #theta YZ"};
+const std::vector<std::string> DetectorU_Str_Long = {"LY Att.","Red. LY","Pos. Dep. LY","SC Map","Recomb.","x Wire Res.","y-z Wire Res.","x-z Dir. Wire Res.","y-z Dir. Wire Res."};
 const std::vector<int> DetectorU_Universes = {1,1,1,1,1,1,1,1,1};
 const std::vector<int> DetectorU_SysTypes = {kSingleUnisim,kSingleUnisim,kSingleUnisim,kSingleUnisim,kSingleUnisim,kSingleUnisim,kSingleUnisim,kSingleUnisim,kSingleUnisim};
 

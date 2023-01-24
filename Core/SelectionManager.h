@@ -158,10 +158,15 @@ class SelectionManager {
       bool fHasData=false;
       bool fUseText=false;
 
-      std::map< std::string , TH1D* > Hists_ByProc;
-      std::map< std::string , TH1D* > Hists_ByType;
-      std::map< std::string , TH1D* > Hists_ByType2;
+      TH1D* Hist_Data=nullptr;
+      TH1D* Hist_All=nullptr;
+      std::map<std::string,TH1D*> Hists_ByProc;
+      std::map<std::string,TH1D*> Hists_ByType;
+      std::map<std::string,TH1D*> Hists_ByType2;
 
+      std::map<std::string,std::vector<TH1D*>> Multisim_Sys_Hists_All;
+      std::map<std::string,std::vector<TH1D*>> SingleUnisim_Sys_Hists_All;
+      std::map<std::string,std::vector<TH1D*>> DualUnisim_Sys_Hists_All;
       std::map<std::string,std::map<std::string,std::vector<TH1D*>>> Multisim_Sys_Hists; // histogram in different multisim universes
       std::map<std::string,std::map<std::string,std::vector<TH1D*>>> SingleUnisim_Sys_Hists; // histogram in different single univese unisims
       std::map<std::string,std::map<std::string,std::vector<TH1D*>>> DualUnisim_Sys_Hists;  // histogram in different two universe multisims

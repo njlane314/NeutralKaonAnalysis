@@ -64,6 +64,9 @@ lib/MultiVariateRNG.o: Alg/MultiVariateRNG.cxx
 
 lib/StatisticsManager.o: Alg/StatisticsManager.cxx Alg/BayesianPosteriorPDF.h
 	g++ $(CFLAGS) -c $(INC)  $< -o $@	
+
+lib/SidebandFitter.o: Alg/SidebandFitter.cxx
+	g++ $(CFLAGS) -c $(INC)  $< -o $@	
 	
-lib/libHyperon.so: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight2.o Muon_ID.o TrackLengthCutManager.o SelectorBDTManager.o SecondaryVertexFitter.o EventListFilter.o ForwardFolder2.o GenG4WeightHandler2.o EventAssembler.o SelectionManager.o MultiVariateRNG.o StatisticsManager.o)
-	g++ -shared `${ROOTSYS}/bin/root-config --libs` lib/FiducialVolume.o lib/FluxWeight2.o lib/Muon_ID.o lib/TrackLengthCutManager.o lib/SelectorBDTManager.o lib/SecondaryVertexFitter.o lib/AnalysisBDTManager.o lib/EventListFilter.o lib/ForwardFolder2.o lib/CTTest.o lib/GenG4WeightHandler2.o lib/EventAssembler.o lib/SelectionManager.o lib/MultiVariateRNG.o lib/StatisticsManager.o -o lib/libHyperon.so
+lib/libHyperon.so: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight2.o Muon_ID.o TrackLengthCutManager.o SelectorBDTManager.o SecondaryVertexFitter.o EventListFilter.o ForwardFolder2.o GenG4WeightHandler2.o EventAssembler.o SelectionManager.o MultiVariateRNG.o StatisticsManager.o SidebandFitter.o)
+	g++ -shared `${ROOTSYS}/bin/root-config --libs` lib/FiducialVolume.o lib/FluxWeight2.o lib/Muon_ID.o lib/TrackLengthCutManager.o lib/SelectorBDTManager.o lib/SecondaryVertexFitter.o lib/AnalysisBDTManager.o lib/EventListFilter.o lib/ForwardFolder2.o lib/CTTest.o lib/GenG4WeightHandler2.o lib/EventAssembler.o lib/SelectionManager.o lib/MultiVariateRNG.o lib/StatisticsManager.o lib/SidebandFitter.o -o lib/libHyperon.so
