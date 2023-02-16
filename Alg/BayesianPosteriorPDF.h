@@ -3,6 +3,8 @@
 
 #include "Math/PdfFuncMathCore.h"
 
+////////////////////////////////////////////////////////////////////////////////
+
 inline TH1D* PosteriorPDF(TEfficiency * E,int bin,std::string name="",double scale=1.0){
 
    // if scale is zero, posterior PDF is a delta function at x=0 
@@ -94,8 +96,54 @@ inline TH1D* PosteriorPDF2(double sumw,double sumw2,double sumselw,double sumsel
       h_Posterior->SetBinContent(i,P);
    }  
 
-  return h_Posterior;
+   return h_Posterior;
 
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Produce histogram with Bayesian credible interval
+// Inputs:
+// h_pdf = Bayesian posterior probabiity distribution
+// conflev = confidence level
+
+TH1D* GetCredInt(TH1D* h_pdf,double conflev=0.68){
+
+   std::vector<int> bins;
+   double P = 0.0;
+   int low_bin=h_pdf->GetNbinsX()+1,high_bin=0,center_bin;   
+
+   while(P<conflev){
+      double max = 0.0;
+      int max_bin = -1;
+      for(int i_b=1;i_b<h_pdf->GetNbinsX()+1;i_b++)
+         if(h_pdf->GetBinContent(i_b) > max && std::find(bins.begin(), bins.end(),i_b) == bins.end()){
+            max = h_pdf->GetBinContent(i_b);
+            max_bin = i_b;
+         }      
+      if(!bins.size()) center_bin = max_bin;     
+      if(max_bin < low_bin) low_bin = max_bin;
+      if(max_bin > high_bin) high_bin = max_bin;
+      bins.push_back(max_bin);
+      P += h_pdf->GetBinContent(max_bin)*h_pdf->GetBinWidth(max_bin);
+   }  
+
+   // Print measured cross section
+   double xsec = h_pdf->GetBinCenter(center_bin);
+   double xsec_error_low = xsec - h_pdf->GetBinCenter(low_bin);
+   double xsec_error_high = h_pdf->GetBinCenter(high_bin) - xsec;
+
+   std::cout << std::endl << "Measured cross section: " << xsec << " 10^-40 cm^2" << std::endl;
+   std::cout << "Confidence region: " << h_pdf->GetBinCenter(low_bin) << " - " << h_pdf->GetBinCenter(high_bin) << std::endl;
+   std::cout << "Uncertainty: + " << xsec_error_high << " - " << xsec_error_low << " 10^-40 cm^2" << std::endl << std::endl; 
+   std::cout << "Fractional Error = " << (xsec_error_high+xsec_error_low)/xsec/2 << std::endl;
+
+   TH1D* h_cr = (TH1D*)h_pdf->Clone("h_CR");
+   for(int i=1;i<h_cr->GetNbinsX()+1;i++)
+      if(std::find(bins.begin(), bins.end(),i) == bins.end()) h_cr->SetBinContent(i,0); 
+
+   return h_cr;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 #endif

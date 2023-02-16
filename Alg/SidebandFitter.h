@@ -26,7 +26,6 @@ class SidebandFitter {
       void AddFixedHistograms(std::vector<TH1D*> h_fixed_v);
       void AddVariedHistograms(std::vector<TH1D*> h_tovar_v);
       void AddDataHistogram(TH1D* h_data);
-      void AddCovMatrix(TMatrixDSym covsys);
 
       FitResult DoFit();
       void Clear();
@@ -36,9 +35,6 @@ class SidebandFitter {
       std::vector<TH1D*> h_ToVar_v;
       std::vector<TH1D*> h_Fixed_v;
       TH1D* h_Data = nullptr;
-
-      bool HasSys = false;
-      TMatrixDSym CovSys; 
 
       std::unique_ptr< ROOT::Math::Minimizer > Minimizer = std::unique_ptr<ROOT::Math::Minimizer>
          (ROOT::Math::Factory::CreateMinimizer("Minuit2","Migrad"));

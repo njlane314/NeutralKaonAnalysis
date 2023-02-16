@@ -6,10 +6,9 @@ INC=-I${HYP_TOP}/Core  -I${HYP_TOP}/Alg
 
 all: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight2.o Muon_ID.o\
 	TrackLengthCutManager.o SelectorBDTManager.o AnalysisBDTManager.o StatisticsManager.o\
-	EventListFilter.o ForwardFolder2.o GenG4WeightHandler2.o\
+	EventListFilter.o ForwardFolder2.o GenG4WeightHandler2.o Reweighter.o\
 	SecondaryVertexFitter.o SelectionManager.o EventAssembler.o MultiVariateRNG.o libParticleDict.rootmap\
 	libParticleDict.so libHyperon.so) 
-
 
 lib/libParticleDict.rootmap: Core/LinkDef.h
 	rootcling -v4 -f ${HYP_TOP}/lib/ParticleDict.cxx  -rmf ${HYP_TOP}/lib/libParticleDict.rootmap -rml ${HYP_TOP}/lib/libParticleDict.so  ${HYP_TOP}/Core/LinkDef.h
@@ -67,6 +66,9 @@ lib/StatisticsManager.o: Alg/StatisticsManager.cxx Alg/BayesianPosteriorPDF.h
 
 lib/SidebandFitter.o: Alg/SidebandFitter.cxx
 	g++ $(CFLAGS) -c $(INC)  $< -o $@	
+
+lib/Reweighter.o: Alg/Reweighter.cxx
+	g++ $(CFLAGS) -c $(INC)  $< -o $@	
 	
-lib/libHyperon.so: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight2.o Muon_ID.o TrackLengthCutManager.o SelectorBDTManager.o SecondaryVertexFitter.o EventListFilter.o ForwardFolder2.o GenG4WeightHandler2.o EventAssembler.o SelectionManager.o MultiVariateRNG.o StatisticsManager.o SidebandFitter.o)
-	g++ -shared `${ROOTSYS}/bin/root-config --libs` lib/FiducialVolume.o lib/FluxWeight2.o lib/Muon_ID.o lib/TrackLengthCutManager.o lib/SelectorBDTManager.o lib/SecondaryVertexFitter.o lib/AnalysisBDTManager.o lib/EventListFilter.o lib/ForwardFolder2.o lib/CTTest.o lib/GenG4WeightHandler2.o lib/EventAssembler.o lib/SelectionManager.o lib/MultiVariateRNG.o lib/StatisticsManager.o lib/SidebandFitter.o -o lib/libHyperon.so
+lib/libHyperon.so: $(addprefix lib/, AnalysisBDTManager.o CTTest.o FiducialVolume.o FluxWeight2.o Muon_ID.o TrackLengthCutManager.o SelectorBDTManager.o SecondaryVertexFitter.o EventListFilter.o ForwardFolder2.o GenG4WeightHandler2.o EventAssembler.o SelectionManager.o MultiVariateRNG.o StatisticsManager.o SidebandFitter.o Reweighter.o)
+	g++ -shared `${ROOTSYS}/bin/root-config --libs` lib/FiducialVolume.o lib/FluxWeight2.o lib/Muon_ID.o lib/TrackLengthCutManager.o lib/SelectorBDTManager.o lib/SecondaryVertexFitter.o lib/AnalysisBDTManager.o lib/EventListFilter.o lib/ForwardFolder2.o lib/CTTest.o lib/GenG4WeightHandler2.o lib/EventAssembler.o lib/SelectionManager.o lib/MultiVariateRNG.o lib/StatisticsManager.o lib/SidebandFitter.o lib/Reweighter.o -o lib/libHyperon.so

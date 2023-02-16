@@ -3,8 +3,10 @@
 
 #include "SidebandFitter.h"
 
-SidebandFitter::SidebandFitter():
-CovSys(0)
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Constructor
+
+SidebandFitter::SidebandFitter()
 {
 
    Minimizer->SetMaxFunctionCalls(100);
@@ -13,6 +15,10 @@ CovSys(0)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+// Add the histograms with MC and data to be used in the fit
+// h_fixed_v = vector of histograms to be kept fixed in the fit
+// h_tovar_v = vector of histograms to be varied in the fit to find optimal scaling on each
+// h_data = data to be used in the fit
 
 void SidebandFitter::AddHistograms(std::vector<TH1D*> h_fixed_v,std::vector<TH1D*> h_tovar_v,TH1D* h_data){
 
@@ -23,6 +29,7 @@ void SidebandFitter::AddHistograms(std::vector<TH1D*> h_fixed_v,std::vector<TH1D
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+// Add the histograms to be kept fixed in the fit
 
 void SidebandFitter::AddFixedHistograms(std::vector<TH1D*> h_fixed_v){
 
@@ -34,6 +41,7 @@ void SidebandFitter::AddFixedHistograms(std::vector<TH1D*> h_fixed_v){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+// Add the histograms to be varied in the fit to find optimal scaling on each
 
 void SidebandFitter::AddVariedHistograms(std::vector<TH1D*> h_tovar_v){
 
@@ -45,6 +53,7 @@ void SidebandFitter::AddVariedHistograms(std::vector<TH1D*> h_tovar_v){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+// Add the histogram containing the data to be used in the fit
 
 void SidebandFitter::AddDataHistogram(TH1D* h_data){
 
@@ -54,15 +63,7 @@ void SidebandFitter::AddDataHistogram(TH1D* h_data){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-
-void SidebandFitter::AddCovMatrix(TMatrixDSym covsys){
-   
-   HasSys = true;
-   CovSys = covsys;
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////
+// Perform the fit
 
 FitResult SidebandFitter::DoFit(){
 
@@ -72,9 +73,6 @@ FitResult SidebandFitter::DoFit(){
       throw std::invalid_argument("SidebandFitter: No histograms set to be varied in fit");
 
    const int nbins = h_Data->GetNbinsX();
-   
-   // If no covariance matrix added, create a blank one
-   if(!HasSys) CovSys.ResizeTo((Int_t)nbins,(Int_t)nbins);
 
    // Calculate the total contribution from the non-varied histograms
    TH1D* h_tot_fixed = (TH1D*)h_Data->Clone("h_tot_fixed");
@@ -91,8 +89,7 @@ FitResult SidebandFitter::DoFit(){
          covstat[i_b-1][i_b-1] += h_ToVar_v.at(i_h)->GetBinError(i_b)*h_ToVar_v.at(i_h)->GetBinError(i_b)*coeff[i_h]*coeff[i_h];
    }
 
-   TMatrixDSym cov = covstat + CovSys;
-   TMatrixDSym covinv = cov;
+   TMatrixDSym covinv = covstat;
    covinv.Invert();
 
    double chi2 = 0;
@@ -131,6 +128,9 @@ FitResult SidebandFitter::DoFit(){
    return result;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+// Reset the fitter (not the same as destructor)
+
 void SidebandFitter::Clear(){
 
    h_ToVar_v.clear();
@@ -138,5 +138,7 @@ void SidebandFitter::Clear(){
    delete h_Data;
 
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif

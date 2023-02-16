@@ -462,15 +462,17 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
    hs->Draw("HIST same");
    h_errors->Draw("E2 same");
    if(hasdata) h_data->Draw("E0 P0 same");
-   h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.25);
+   double maximum = GetHistMaxError(h_errors);
+   if(hasdata) maximum = std::max(maximum,GetHistMaxError(h_data));
+   h_errors->GetYaxis()->SetRangeUser(0.0,maximum*1.25);
    h_errors->SetStats(0);
 
    // Draw the data graph if required
    TGraph* g_data1;
    TGraph* g_data2;
    if(data_v.size()){
-      std::vector<double> c_height1(data_v.size(),h_errors->GetMaximum()*0.03);
-      std::vector<double> c_height2(data_v.size(),h_errors->GetMaximum()*0.06);
+      std::vector<double> c_height1(data_v.size(),maximum*0.039);
+      std::vector<double> c_height2(data_v.size(),maximum*0.075);
       TGraph* g_data1 = new TGraph(data_v.size(),&(data_v[0]),&(c_height1[0]));
       TGraph* g_data2 = new TGraph(data_v.size(),&(data_v[0]),&(c_height2[0]));
       g_data1->SetMarkerStyle(23);
@@ -488,7 +490,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
    if(POT.size() > 0) l_POT->Draw();
    if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC){
       l_POT2->Draw();
-      h_errors->GetYaxis()->SetRangeUser(0.0,GetHistMaxError(h_errors)*1.4);
+      h_errors->GetYaxis()->SetRangeUser(0.0,maximum*1.4);
    }
    if(DrawWatermark) l_Watermark->Draw();
    if(hasdata) l_Chi2->Draw();
