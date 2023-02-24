@@ -245,7 +245,7 @@ TGraph* MakeDataGraph(std::vector<double> data_v){
 // Can import bin labels from h_example and write bin content on bins if corresponding bools
 // are set.
 
-void DrawMatrix(TH2D* h,TH2D* h_example,string title,bool uselabels=false,bool usetext=false){
+void DrawMatrix(TH2D* h,TH2D* h_example,string title,std::string plotdir,bool uselabels=false,bool usetext=false){
 
    h->SetContour(1000);
    h->GetXaxis()->SetTitleSize(Matrix_XaxisTitleSize);
@@ -302,9 +302,10 @@ void DrawMatrix(TH2D* h,TH2D* h_example,string title,bool uselabels=false,bool u
    h->SetStats(0);
    if(DrawWatermark) l_Watermark->Draw();
 
-   c->Print((title + ".png").c_str());
-   c->Print((title + ".pdf").c_str());
-   c->Print((title + ".C").c_str());
+   system(("mkdir -p " + plotdir).c_str());   
+   c->Print((plotdir + "/" + title + ".png").c_str());
+   c->Print((plotdir + "/" + title + ".pdf").c_str());
+   c->Print((plotdir + "/" + title + ".C").c_str());
    c->Close();
 
    //delete h;
@@ -837,7 +838,7 @@ void DrawSystematicBreakdown(TFile* f,TH1D* h_template,vector<string> dials,vect
    c->Print((plotdir + "/" + label + "_SysBreakdown.png").c_str());
    c->Close();
 
-   DrawMatrix(h_FCov,h_FCov,plotdir + "/" + label + "_FCov",true,true);
+   DrawMatrix(h_FCov,h_FCov,label+"_FCov",plotdir,true,true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

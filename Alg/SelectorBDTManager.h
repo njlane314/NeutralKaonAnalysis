@@ -30,6 +30,10 @@ class SelectorBDTManager {
 
    private:
 
+      enum e_Algs{kLD,kBDT,kBDTG,kKNN,kLikelihood,kMLPBNN,kAlgMAX};
+      const std::vector<std::string> Algs_str = {"LD","BDT","BDTG","KNN","Likelihood","MLPBNN"};
+      std::string Alg = "BDT";
+
       std::string fMode;
 
       double fProtonPIDCut;
@@ -67,7 +71,8 @@ class SelectorBDTManager {
 
    public:
 
-      void SetupSelectorBDT(std::string WeightsDir="");
+      void SetupSelectorBDT(std::string WeightsDir="",std::string alg="BDT");
+      void SetAlg(std::string alg);
       std::pair<int,int> NominateTracks(Event &e);      
       std::pair<int,int> NominateTracksCheat(Event &e);
       double GetScore(RecoParticle DecayProtonCandidate,RecoParticle DecayPionCandidate);

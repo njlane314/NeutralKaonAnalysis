@@ -30,17 +30,11 @@ SelectorBDTManager::SelectorBDTManager(std::string Mode){
 SelectorBDTManager::~SelectorBDTManager(){
 
    if(fMode == "Train"){
-
       f_Trees->Close();
-
       delete f_Trees;
-
    }
-
    else if(fMode == "Test"){
-
       if(reader != nullptr)  delete reader;
-
    }
 
 }
@@ -163,7 +157,7 @@ bool SelectorBDTManager::SetVariables(RecoParticle thisProtonCandidate, RecoPart
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void SelectorBDTManager::SetupSelectorBDT(std::string WeightsDir){
+void SelectorBDTManager::SetupSelectorBDT(std::string WeightsDir,std::string alg){
 
    assert(fMode == "Test");
 
@@ -186,8 +180,8 @@ void SelectorBDTManager::SetupSelectorBDT(std::string WeightsDir){
    reader->AddVariable("pion_LLR",&v_pion_LLR);
 
    std::map<std::string,int> Use;
-   Use["BDT"] = 1;
-   Use["BDTG"] = 1;
+   for(size_t i_a=0;i_a<Algs_str.size();i_a++)
+      Use[Algs_str.at(i_a)] = 1;
 
    TString prefix = "TMVAClassification";
 
@@ -195,15 +189,26 @@ void SelectorBDTManager::SetupSelectorBDT(std::string WeightsDir){
       if (it->second) {
          TString methodName = TString(it->first) + TString(" method");
          TString weightfile = fWeightsDir + "/" + prefix + TString("_") + TString(it->first) + TString(".weights.xml");
-
          std::cout << "Opening weight file " << weightfile << std::endl; 
-
          reader->BookMVA( methodName, weightfile );
       }
    }
 
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+void SelectorBDTManager::SetAlg(std::string alg){
+
+   bool found_alg = false;
+   for(size_t i_a=0;i_a<Algs_str.size();i_a++)
+      if(alg == Algs_str.at(i_a)) found_alg = true;
+
+   if(!found_alg) throw std::invalid_argument("SelectorBDTManager: Classifier " + alg + " not found, exiting");
+
+   Alg = alg;
+
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -224,7 +229,8 @@ std::pair<int,int> SelectorBDTManager::NominateTracks(Event &e){
          if(!SetVariables(e.TracklikePrimaryDaughters.at(i_tr),e.TracklikePrimaryDaughters.at(j_tr))) continue;
 
          //calculate BDT Score
-         double BDT_Score = reader->EvaluateMVA("BDT method");
+         //double BDT_Score = reader->EvaluateMVA("BDT method");
+         double BDT_Score = reader->EvaluateMVA(Alg + " method");
 
          if( BDT_Score > BDT_Best){
             i_proton_candidate = i_tr;
@@ -260,7 +266,8 @@ std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
 
    //if(!SetVariables(e.TracklikePrimaryDaughters.at(i_proton_candidate),e.TracklikePrimaryDaughters.at(i_pion_candidate))) return {-1,-1};
 
-   e.SelectorBDTScore = reader->EvaluateMVA("BDT method"); 
+   //e.SelectorBDTScore = reader->EvaluateMVA("BDT method"); 
+   e.SelectorBDTScore = reader->EvaluateMVA(Alg + " method"); 
 
    return std::make_pair(i_proton_candidate,i_pion_candidate);
 }
@@ -271,7 +278,7 @@ double SelectorBDTManager::GetScore(RecoParticle DecayProtonCandidate,RecoPartic
 
    if(!SetVariables(DecayProtonCandidate,DecayPionCandidate)) return -1000;
 
-   return reader->EvaluateMVA("BDT method");
+   return reader->EvaluateMVA(Alg+ " method");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

@@ -1035,11 +1035,11 @@ TMatrixD SelectionManager::GetCovarianceMatrix(std::string label,std::string nam
       }
    }
 
-   std::string plottitle = PlotDir + label + "_CovMatrix_Sys_" + type + "_" + name;
-   HypPlot::DrawMatrix(h_Cov,h_Cov,plottitle,BinLabels.size(),fUseText);
+   std::string plottitle = label + "_CovMatrix_Sys_" + type + "_" + name;
+   HypPlot::DrawMatrix(h_Cov,h_Cov,plottitle,PlotDir,BinLabels.size(),fUseText);
 
-   plottitle = PlotDir + label + "_FCovMatrix_Sys_" + type + "_" + name;
-   HypPlot::DrawMatrix(h_frac_Cov,h_frac_Cov,plottitle,BinLabels.size(),fUseText);
+   plottitle = label + "_FCovMatrix_Sys_" + type + "_" + name;
+   HypPlot::DrawMatrix(h_frac_Cov,h_frac_Cov,plottitle,PlotDir,BinLabels.size(),fUseText);
 
    h_Cov->Write(("Cov_" + type + "_" + name).c_str());
    h_frac_Cov->Write(("FCov_" + type + "_" + name).c_str());
