@@ -29,7 +29,7 @@ void SecondaryVertexFitter::SetPull(double Pull){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-SecondaryVertex SecondaryVertexFitter::MakeVertex(RecoParticle P1,RecoParticle P2){
+SecondaryVertex SecondaryVertexFitter::MakeVertex(RecoParticle P1,RecoParticle P2,bool useclosestapproach){
 
    // Make an initial guess, point of closest approach of tracks
    TVector3 V_in = PointOfClosestApproach(P1,P2);
@@ -37,11 +37,8 @@ SecondaryVertex SecondaryVertexFitter::MakeVertex(RecoParticle P1,RecoParticle P
    SecondaryVertex V;
    V.Vertex = V_in;
 
-//   std::cout << "Starting Fit" << std::endl;
-
    TVector3 ProtonDirection(P1.TrackDirectionX,P1.TrackDirectionY,P1.TrackDirectionZ);
    TVector3 PionDirection(P2.TrackDirectionX,P2.TrackDirectionY,P2.TrackDirectionZ);
-
    TVector3 ProtonStart(P1.TrackStartX,P1.TrackStartY,P1.TrackStartZ);
    TVector3 PionStart(P2.TrackStartX,P2.TrackStartY,P2.TrackStartZ);
 
@@ -66,7 +63,7 @@ SecondaryVertex SecondaryVertexFitter::MakeVertex(RecoParticle P1,RecoParticle P
 
    ROOT::Math::Functor min = ROOT::Math::Functor( [&] (const double *coeff ){
 
-         TVector3 FitVertex( coeff[2] , coeff[3] , coeff[4] );
+         TVector3 FitVertex(coeff[2],coeff[3],coeff[4]);
 
          //direction of proton track in fitted V
          TVector3 FitProtonDir = ProtonDirection;
@@ -76,17 +73,11 @@ SecondaryVertex SecondaryVertexFitter::MakeVertex(RecoParticle P1,RecoParticle P
          FitProtonDir.Rotate(coeff[0],Norm);
          FitPionDir.Rotate(coeff[0]+coeff[1],Norm);
 
-
-         //double FitVal = DoFit(ProtonStart,ProtonDirection,PionStart,PionDirection,ProtonLength,PionLength,Vertex,FitProtonDir,FitPionDir);
          double FitVal = DoFit(P1,P2,FitVertex,FitProtonDir,FitPionDir);
-
-         //std::cout << "Fit Value=" << FitVal << std::endl;
 
          return FitVal;
 
          } , 5);
-
-
 
    std::unique_ptr< ROOT::Math::Minimizer > fMinimizer = std::unique_ptr<ROOT::Math::Minimizer>
       ( ROOT::Math::Factory::CreateMinimizer( "Minuit2", "Migrad" ) );
@@ -101,9 +92,7 @@ SecondaryVertex SecondaryVertexFitter::MakeVertex(RecoParticle P1,RecoParticle P
    fMinimizer->SetVariable(4,"vz",V.Vertex.Z(),0.1);
 
    fMinimizer->SetFunction(min);
-   V.fitStatus = fMinimizer->Minimize();
-
-   //std::cout << V.fitStatus << std::endl;
+   if(!useclosestapproach) V.fitStatus = fMinimizer->Minimize();
 
    //get final proton/pion direction vectors
    double theta = fMinimizer->X()[0];
@@ -111,7 +100,6 @@ SecondaryVertex SecondaryVertexFitter::MakeVertex(RecoParticle P1,RecoParticle P
 
    V.ProtonDirection = ProtonDirection;
    V.ProtonDirection.Rotate( theta,Norm );
-
    V.PionDirection = ProtonDirection;
    V.PionDirection.Rotate( theta+opening_angle,Norm );
 
@@ -148,7 +136,6 @@ double SecondaryVertexFitter::DoFit(RecoParticle P1, RecoParticle P2, TVector3 V
    double TrackLength1 = P1.TrackLength;
    double TrackLength2 = P2.TrackLength;
 
-
    double total_d_1 = 0.0;
    double total_d_2 = 0.0;
 
@@ -183,7 +170,6 @@ double SecondaryVertexFitter::DoFit(RecoParticle P1, RecoParticle P2, TVector3 V
    }
 
    return total_d_1 + total_d_2;
-
 
 }
 
