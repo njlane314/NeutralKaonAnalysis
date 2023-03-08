@@ -18,7 +18,7 @@ const double _EPSILON_ = 1e-5;
 
 namespace HypPlot {
 
-   const bool DrawWatermark = true;
+   bool DrawWatermark = true;
 
    // Single panel axis settings etc.
 
@@ -71,11 +71,27 @@ namespace HypPlot {
    const double Matrix_YaxisLabelSize = 0.045;
    const double Matrix_ZaxisLabelSize = 0.045;
 
-   const double Matrix_TextLabelSize = 0.09;
+   const double Matrix_TextLabelSize = 0.07;
 
    const int GoodLineColors[13] = {1,3,4,6,7,9,2,43,30,38,46,14,8};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+void DontDrawWatermark(){
+
+   DrawWatermark = false;
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+// Calculate the chi2 score comparing h_Pred to h_Data with cov encoding any systematic
+// uncertainties.
+// Inputs:
+// h_Pred = 1D hist holding predictions
+// h_Data = 1D hist with data
+// cov = covariance matrix with systematic uncertainties only
+// skip = any bins not to be included in calculation 
 
 std::pair<double,int> Chi2(TH1D* h_Pred,TH1D* h_Data,TMatrixDSym cov=TMatrixDSym(0),std::vector<int> skip={}){
  
@@ -665,11 +681,11 @@ void DrawHistogramSys(vector<TH1D*> hist_v,TH1D* h_cv,string plotdir,string labe
       }
       else if(hist_v.size() == 2 && i == 0){
          hist_v.at(i)->SetLineColor(kRed);
-         l->AddEntry(hist_v.at(i),"+ 1 #sigma","L");
+         l->AddEntry(hist_v.at(i),"- 1 #sigma","L");
       }
       else if(hist_v.size() == 2 && i == 1){
          hist_v.at(i)->SetLineColor(kBlue); 
-         l->AddEntry(hist_v.at(i),"- 1 #sigma","L");
+         l->AddEntry(hist_v.at(i),"+ 1 #sigma","L");
       }
       hs->Add(hist_v.at(i));
       if(GetHistMax(hist_v.at(i)) > maximum) maximum = GetHistMax(hist_v.at(i));
@@ -956,7 +972,7 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    axis->SetTitleColor(kRed);
    axis->SetLabelColor(kRed);
    axis->SetTitleSize(Single_YaxisTitleSize);
-   axis->SetTitleOffset(0.75*Single_YaxisTitleOffset);
+   axis->SetTitleOffset(0.9*Single_YaxisTitleOffset);
    axis->SetLabelSize(Single_YaxisLabelSize);
    axis->SetTitle("Efficiency");
    axis->Draw();
@@ -980,6 +996,8 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    c->Print(("Plots/Efficiency_" + name + "_Ratio.C").c_str());
    c->Close();
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 };
 

@@ -49,7 +49,6 @@ std::string GetType2(const Event &e,int tr=-1){
    else if(e.Mode.at(0) == "EXT") return "EXT";
    else if(e.Mode.at(0) == "Dirt") return "Dirt";
 
-   // TODO: Try changing this to only look at the MC truth being inspected
    bool islambdacharged = std::find(e.IsLambdaCharged.begin(),e.IsLambdaCharged.end(), true) != e.IsLambdaCharged.end();
    
    if(e.EventIsSignal) return "DirectLambda";
