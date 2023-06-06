@@ -4,6 +4,7 @@
 struct SelectionParameters {
 
 std::string Name;
+bool HasBeenSetup = false;
 
 // Preselection Parameters
 int p_FV;

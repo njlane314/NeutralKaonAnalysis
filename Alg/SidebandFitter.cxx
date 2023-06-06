@@ -67,8 +67,6 @@ void SidebandFitter::AddDataHistogram(TH1D* h_data){
 
 FitResult SidebandFitter::DoFit(){
 
-   std::cout << "h_ToVar_v.size()=" << h_ToVar_v.size() <<  std::endl;
-
    if(h_Data == nullptr) 
       throw std::invalid_argument("SidebandFitter: Data histogram not loaded!");
    if(!h_ToVar_v.size()) 
@@ -81,6 +79,13 @@ FitResult SidebandFitter::DoFit(){
    TH1D* h_tot_fixed = (TH1D*)h_Data->Clone("h_tot_fixed");
    h_tot_fixed->Reset();
    for(int i=0;i<h_Fixed_v.size();i++) h_tot_fixed->Add(h_Fixed_v.at(i));     
+/*
+   TH1D* h_tot_varied = (TH1D*)h_ToVar_v.at(0)->Clone("h_tot_varied");
+   for(size_t i=1;i<h_ToVar_v.size();i++) h_tot_varied->Add(h_ToVar_v.at(i));
+   std::cout << "Before Fit" << std::endl;
+   for(int i=1;i<h_Data->GetNbinsX()+1;i++)
+      std::cout << "Data = " << h_Data->GetBinContent(i) << "  Fixed = " << h_tot_fixed->GetBinContent(i) << " Varied = " << h_tot_varied->GetBinContent(i) << std::endl; 
+  */
 
    // Set function
    ROOT::Math::Functor min = ROOT::Math::Functor([&](const double *coeff){

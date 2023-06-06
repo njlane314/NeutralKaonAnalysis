@@ -27,6 +27,7 @@ void BuildTunes(){
 /////////////////////
 
 //FHC Tune 325
+P_FHC_Tune_325.Name = "FHC Tune 325";
 P_FHC_Tune_325.p_RunPeriod=1;
 P_FHC_Tune_325.p_FV=FV::kWirecellPadded;
 P_FHC_Tune_325.p_Padding=10;
@@ -43,12 +44,14 @@ P_FHC_Tune_325.p_SelectorBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelecti
 P_FHC_Tune_325.p_AnalysisBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelection/TMVA/AnalysisMVA/Tunes/FHC_Tune_325/dataset/weights";
 P_FHC_Tune_325.p_AnalysisBDT_Cut=0.15;
 P_FHC_Tune_325.p_BeamMode = kFHC;
+P_FHC_Tune_325.HasBeenSetup = true;
 
 /////////////////////
 // FROZEN RHC TUNE //
 /////////////////////
 
 // RHC Tune 397
+P_RHC_Tune_397.Name = "RHC Tune 397";
 P_RHC_Tune_397.p_RunPeriod=3;
 P_RHC_Tune_397.p_FV=FV::kWirecellPadded;
 P_RHC_Tune_397.p_Padding=10;
@@ -65,8 +68,12 @@ P_RHC_Tune_397.p_SelectorBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelecti
 P_RHC_Tune_397.p_AnalysisBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelection/TMVA/AnalysisMVA/Tunes/RHC_Tune_397/dataset/weights";
 P_RHC_Tune_397.p_AnalysisBDT_Cut=0.2;
 P_RHC_Tune_397.p_BeamMode = kRHC;
+P_RHC_Tune_397.HasBeenSetup = true;
+
+/////////////////////
 
 //FHC test tune
+P_FHC_Tune_test.Name = "FHC Tune test";
 P_FHC_Tune_test.p_RunPeriod=1;
 P_FHC_Tune_test.p_FV=FV::kWirecellPadded;
 P_FHC_Tune_test.p_Padding=0;
@@ -83,9 +90,10 @@ P_FHC_Tune_test.p_SelectorBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelect
 P_FHC_Tune_test.p_AnalysisBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelection/TMVA/AnalysisMVA/Tunes/FHC_Tune_test/dataset/weights";
 P_FHC_Tune_test.p_AnalysisBDT_Cut=0.15;
 P_FHC_Tune_test.p_BeamMode = kFHC;
-
+P_FHC_Tune_test.HasBeenSetup = true;
 
 //FHC test2 tune2
+P_FHC_Tune_test2.Name = "FHC Tune test 2";
 P_FHC_Tune_test2.p_RunPeriod=1;
 P_FHC_Tune_test2.p_FV=FV::kWirecellPadded;
 P_FHC_Tune_test2.p_Padding=10;
@@ -102,8 +110,10 @@ P_FHC_Tune_test2.p_SelectorBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelec
 P_FHC_Tune_test2.p_AnalysisBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelection/TMVA/AnalysisMVA/Tunes/FHC_Tune_test2/dataset/weights";
 P_FHC_Tune_test2.p_AnalysisBDT_Cut=0.15;
 P_FHC_Tune_test2.p_BeamMode = kFHC;
+P_FHC_Tune_test2.HasBeenSetup = true;
 
 //FHC Tune 1000
+P_FHC_Tune_1000.Name = "FHC Tune 1000";
 P_FHC_Tune_1000.p_RunPeriod=1;
 P_FHC_Tune_1000.p_FV=FV::kWirecellPadded;
 P_FHC_Tune_1000.p_Padding=5;
@@ -120,8 +130,10 @@ P_FHC_Tune_1000.p_SelectorBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelect
 P_FHC_Tune_1000.p_AnalysisBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelection/TMVA/AnalysisMVA/Tunes/FHC_Tune_1000/dataset/weights";
 P_FHC_Tune_1000.p_AnalysisBDT_Cut=0.15;
 P_FHC_Tune_1000.p_BeamMode = kFHC;
+P_FHC_Tune_1000.HasBeenSetup = true;
 
 //FHC Tune 325 without using selector BDT score in analysis BDT
+P_FHC_Tune_325_Alt.Name = "FHC Tune 325 Alt";
 P_FHC_Tune_325_Alt.p_RunPeriod=1;
 P_FHC_Tune_325_Alt.p_FV=FV::kWirecellPadded;
 P_FHC_Tune_325_Alt.p_Padding=10;
@@ -138,8 +150,10 @@ P_FHC_Tune_325_Alt.p_SelectorBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSel
 P_FHC_Tune_325_Alt.p_AnalysisBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelection/TMVA/AnalysisMVA/Tunes/FHC_Tune_325_Alt/dataset/weights";
 P_FHC_Tune_325_Alt.p_AnalysisBDT_Cut=0.2;
 P_FHC_Tune_325_Alt.p_BeamMode = kFHC;
+P_FHC_Tune_325_Alt.HasBeenSetup = true;
 
 //FHC Tune 326
+P_FHC_Tune_326.Name = "FHC Tune 326";
 P_FHC_Tune_326.p_RunPeriod=1;
 P_FHC_Tune_326.p_FV=FV::kWirecellPadded;
 P_FHC_Tune_326.p_Padding=10;
@@ -156,8 +170,10 @@ P_FHC_Tune_326.p_SelectorBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelecti
 P_FHC_Tune_326.p_AnalysisBDT_WeightsDir="/home/lar/cthorpe/uboone/HyperonSelection/TMVA/AnalysisMVA/Tunes/FHC_Tune_326/dataset/weights";
 P_FHC_Tune_326.p_AnalysisBDT_Cut=0.1;
 P_FHC_Tune_326.p_BeamMode = kFHC;
+P_FHC_Tune_326.HasBeenSetup = true;
 
 //FHC Tune 325 No BDT
+P_FHC_Tune_325_NoBDT.Name = "FHC Tune 325 NoBDT";
 P_FHC_Tune_325_NoBDT.p_RunPeriod=1;
 P_FHC_Tune_325_NoBDT.p_FV=FV::kWirecellPadded;
 P_FHC_Tune_325_NoBDT.p_Padding=10;
@@ -177,8 +193,10 @@ P_FHC_Tune_325_NoBDT.p_BeamMode = kFHC;
 P_FHC_Tune_325_NoBDT.p_W_Min = 1.09;
 P_FHC_Tune_325_NoBDT.p_W_Max = 1.14;
 P_FHC_Tune_325_NoBDT.p_Alpha_Cut = 14;
+P_FHC_Tune_325_NoBDT.HasBeenSetup = true;
 
 // RHC Tune 397 No BDT
+P_RHC_Tune_397_NoBDT.Name = "RHC Tune 397 NoBDT";
 P_RHC_Tune_397_NoBDT.p_RunPeriod=3;
 P_RHC_Tune_397_NoBDT.p_FV=FV::kWirecellPadded;
 P_RHC_Tune_397_NoBDT.p_Padding=10;
@@ -198,6 +216,7 @@ P_RHC_Tune_397_NoBDT.p_BeamMode = kRHC;
 P_RHC_Tune_397_NoBDT.p_W_Min = 1.09;
 P_RHC_Tune_397_NoBDT.p_W_Max = 1.14;
 P_RHC_Tune_397_NoBDT.p_Alpha_Cut = 14;
+P_RHC_Tune_397_NoBDT.HasBeenSetup = true;
 
 }
 

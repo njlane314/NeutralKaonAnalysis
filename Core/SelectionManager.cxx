@@ -21,6 +21,7 @@ SelectionManager::SelectionManager() :
    a_CTTest_Plane1(1) ,
    a_CTTest_Plane2(2) 
 {
+   std::cout << "Calling default constructor for SelectionManager" << std::endl;
    DeclareCuts();
 }
 
@@ -52,6 +53,9 @@ SelectionManager::SelectionManager(SelectionParameters p) :
    a_CTTest_Plane2(2) 
 {
    std::cout << "Building SelectionManager" << std::endl;
+
+   if(!p.HasBeenSetup)
+      throw std::invalid_argument("SelectionManager: Selection parameters " + p.Name + " have not been loaded. Run BuildTunes() first");
 
    // Set the selection parameters
    TheParams = p;
@@ -127,8 +131,6 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
 void SelectionManager::AddEvent(Event &e){
 
    // Sample Orthogonality
-   //if(thisSampleType == "Hyperon" && !e.EventHasHyperon){ e.Weight = 0.0; return; }
-   //if(thisSampleType == "Background" && e.EventHasHyperon){ e.Weight = 0.0; return; }
 
    if(thisSampleType == "Neutron" && !e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
    if(thisSampleType != "Neutron" && e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
@@ -174,6 +176,7 @@ void SelectionManager::UseGenWeight(bool usegenweight){
 // Apply the signal definition
 
 void SelectionManager::SetSignal(Event &e){
+
 
    e.EventIsSignal = false;
    e.EventIsSignalSigmaZero = false;
@@ -326,6 +329,7 @@ void SelectionManager::ImportAnalysisBDTWeights(std::string WeightDir){
 // Apply the fiducial volume cut
 
 bool SelectionManager::FiducialVolumeCut(const Event &e){
+
    bool passed = a_FiducialVolume.InFiducialVolume(e.RecoPrimaryVertex);
 
    UpdateCut(e,passed,"FV");
@@ -710,7 +714,7 @@ void SelectionManager::FillHistograms(const Event &e,double variable,double weig
    else Hist_Data->Fill(variable,weight*e.Weight);
 
    //if(mode != "Data") Hists_ByType["All"]->Fill(variable,weight*e.Weight);
-    
+
    /*
       if( thisSampleType == "Data" ) mode = "Data";
       else if( thisSampleType == "EXT" ) mode = "EXT";
@@ -766,7 +770,6 @@ void SelectionManager::FillHistogramsSys(const Event &e,double variable,std::str
    std::string mode = EventType::GetType(e);
    std::string mode2 = EventType::GetType2(e);
    bool fill2 = std::find(EventType::Types.begin(),EventType::Types.end(),mode2) == EventType::Types.end();
-   if(!fill2) std::cout << mode2 << std::endl;
 
    if (Multisim_Sys_Hists[mode].find(name) != Multisim_Sys_Hists[mode].end()){
       Multisim_Sys_Hists[mode][name].at(universe)->Fill(variable,weight*e.Weight);
@@ -786,7 +789,7 @@ void SelectionManager::FillHistogramsSys(const Event &e,double variable,std::str
       DualUnisim_Sys_Hists_All[name].at(universe)->Fill(variable,weight*e.Weight);
       return;
    }
-  
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1152,6 +1155,11 @@ void SelectionManager::WidthScaleHistograms(){
          }
       }
    }
+
+   for(size_t i_b=1;i_b<Hist_Data->GetNbinsX()+1;i_b++) Hist_Data->SetBinContent(i_b,Hist_Data->GetBinContent(i_b)/Hist_Data->GetBinWidth(i_b));
+   for(size_t i_b=1;i_b<Hist_All->GetNbinsX()+1;i_b++) Hist_All->SetBinContent(i_b,Hist_All->GetBinContent(i_b)/Hist_All->GetBinWidth(i_b));
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

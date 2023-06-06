@@ -73,7 +73,7 @@ namespace HypPlot {
 
    const double Matrix_TextLabelSize = 0.07;
 
-   const int GoodLineColors[13] = {1,3,4,6,7,9,2,43,30,38,46,14,8};
+   const int GoodLineColors[13] = {1,2,8,4,6,38,46,43,30,9,7,14,3};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -121,9 +121,11 @@ std::pair<double,int> Chi2(TH1D* h_Pred,TH1D* h_Data,TMatrixDSym cov=TMatrixDSym
    cov_nonzero.Invert();
 
    double Chi2 = 0.0;
-   for(size_t i=0;i<nonzero_bins.size();i++)
-      for(size_t j=0;j<nonzero_bins.size();j++)
+   for(size_t i=0;i<nonzero_bins.size();i++){
+      for(size_t j=0;j<nonzero_bins.size();j++){
          Chi2 += (h_Pred->GetBinContent(nonzero_bins.at(i)) - h_Data->GetBinContent(nonzero_bins.at(i)))*cov_nonzero[i][j]*(h_Pred->GetBinContent(nonzero_bins.at(j)) - h_Data->GetBinContent(nonzero_bins.at(j)));              
+}
+}
 
    std::cout << "Chi2/ndof = " << Chi2 << "/" << nonzero_bins.size() << std::endl;
 
@@ -166,9 +168,10 @@ std::pair<double,int> Chi2(const TH1D* h_pred,const TH1D* h_data,TMatrixDSym* co
 TH1D * MakeErrorBand(std::vector<TH1D*> hists,TH2D* h_Cov=nullptr){
 
    TH1D *h_errors = (TH1D*)hists.at(0)->Clone("h_errors");  
+   h_errors->Reset();
 
    // Iterate over the bins of the contributing histograms
-   for(int i_b=0;i_b<h_errors->GetNbinsX()+1;i_b++){
+   for(int i_b=1;i_b<h_errors->GetNbinsX()+1;i_b++){
       double events = 0.0;
       double variance = 0.0;
       for(size_t i_h=0;i_h<hists.size();i_h++){
@@ -349,7 +352,9 @@ void DrawMatrix(TH2D* h,TH2D* h_example,string title,std::string plotdir,bool us
 // data_v list of x positions of individual data events (used for signal box plots only)
 
 void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<string> captions,string plotdir,string label,vector<int> mode,vector<int> run,vector<double> POT,double signalscale,bool hasdata,vector<int> colors,vector<string> binlabels,std::pair<double,int> chi2ndof,std::vector<double> data_v={}){
-   
+
+   bool drawchi2 = chi2ndof.second != 0;
+ 
    assert(mode.size() == run.size() && run.size() == POT.size() && mode.size() < 3);   
    for(size_t i_r=0;i_r<run.size();i_r++) assert(mode.at(i_r) == kFHC || mode.at(i_r) == kRHC || mode.at(i_r) == kBNB);
    if(hasdata && h_data == nullptr) throw std::invalid_argument("PlottingFunctions::DrawHistogram: hasdata flag set to true but data histogram is nullptr, exiting");
@@ -380,7 +385,8 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
    TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
    l->SetBorderSize(0);
    const int nhists = hist_v.size() + static_cast<int>(hasdata);
-   int ncols = 3;
+   int ncols = 2;
+   if(nhists > 4) ncols = 3;
    if(nhists > 6) ncols = 4;
    if(nhists > 12) ncols = 5;
    l->SetNColumns(ncols);
@@ -391,23 +397,6 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
       if(hasdata) l->AddEntry(hist_v.at(i_h),(captions.at(i_h) + " = " + to_string_with_precision(hist_v.at(i_h)->Integral(),1)).c_str(),"F");
       else l->AddEntry(hist_v.at(i_h),captions.at(i_h).c_str(),"F");
    }
- 
-/*
-   int i_data=-1;
-   for(size_t i_h=0;i_h<hist_v.size();i_h++){
-
-      if(captions.at(i_h) == "Data"){
-         i_data = i_h;
-         continue;
-      }
-      hist_v.at(i_h)->SetFillColor(colors.at(i_h));
-      hs->Add(hist_v.at(i_h),"HIST");
-      if(hasdata) l->AddEntry(hist_v.at(i_h),(captions.at(i_h) + " = " + to_string_with_precision(hist_v.at(i_h)->Integral(),1)).c_str(),"F");
-      else l->AddEntry(hist_v.at(i_h),captions.at(i_h).c_str(),"F");
-   }
-*/
-
-   //if(hasdata && i_data == -1) throw std::invalid_argument("PlottingFunctions::DrawHistogram: Trying to draw a histogram with data when no data was passed");
 
    if(hasdata){
       h_data->SetLineWidth(1);
@@ -424,17 +413,29 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
    l_Watermark->SetTextAlign(32);
    l_Watermark->SetTextSize(0.05);
    l_Watermark->SetTextFont(62);
+
    if(!hasdata && !data_v.size()) l_Watermark->SetHeader("MicroBooNE Simulation, Preliminary","R");
    else if(run.size() == 1) l_Watermark->SetHeader(("MicroBooNE Run " + std::to_string(run.at(0)) + ", Preliminary").c_str());
    else if(run.size() == 2) l_Watermark->SetHeader(("MicroBooNE Runs " + std::to_string(run.at(0)) + " + " + std::to_string(run.at(1)) + ", Preliminary").c_str());
    else throw std::invalid_argument("PlottingFunctions::DrawHistogram: Currently maximum of two running periods supported");
+/*
+   if(!hasdata && !data_v.size()) l_Watermark->SetHeader("MicroBooNE Simulation","R");
+   else if(run.size() == 1) l_Watermark->SetHeader(("MicroBooNE Run " + std::to_string(run.at(0))).c_str());
+   else if(run.size() == 2) l_Watermark->SetHeader(("MicroBooNE Runs " + std::to_string(run.at(0)) + " + " + std::to_string(run.at(1))).c_str());
+   else throw std::invalid_argument("PlottingFunctions::DrawHistogram: Currently maximum of two running periods supported");
+*/
 
    // Create the POT label
-   TLegend *l_POT = new TLegend(0.54,0.820,0.89,0.900);
+   //TLegend *l_POT = new TLegend(0.54,0.815,0.885,0.900);
+   TLegend *l_POT,*l_POT2;
+   if(DrawWatermark) l_POT = new TLegend(0.54,0.815,0.885,0.900);
+   else l_POT = new TLegend(0.54,0.900,0.885,0.985);
    l_POT->SetBorderSize(0);
    l_POT->SetMargin(0.005);
    l_POT->SetTextAlign(32);
-   TLegend *l_POT2 = new TLegend(0.54,0.74,0.89,0.82,NULL,"brNDC");
+   if(DrawWatermark) l_POT2 = new TLegend(0.536,0.735,0.886,0.815,NULL,"brNDC");
+   else l_POT2 = new TLegend(0.536,0.815,0.886,0.900,NULL,"brNDC");
+   //TLegend *l_POT2 = new TLegend(0.54,0.735,0.89,0.815,NULL,"brNDC");
    l_POT2->SetBorderSize(0);
    l_POT2->SetMargin(0.005);
    l_POT2->SetTextAlign(32);
@@ -510,7 +511,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
       h_errors->GetYaxis()->SetRangeUser(0.0,maximum*1.4);
    }
    if(DrawWatermark) l_Watermark->Draw();
-   if(hasdata) l_Chi2->Draw();
+   if(hasdata && drawchi2) l_Chi2->Draw();
 
    c->cd();
    system(("mkdir -p " + plotdir).c_str());
@@ -558,7 +559,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
       if(POT.size() > 0) l_POT->Draw();
       if(POT.size() == 2 && mode.at(0) == kFHC && mode.at(1) == kRHC) l_POT2->Draw();
       if(DrawWatermark) l_Watermark->Draw();
-      l_Chi2->Draw();
+      if(drawchi2) l_Chi2->Draw();
 
       // Make the raio plot
       TH1D *h_errors_ratio = (TH1D*)h_errors->Clone("h_errors_ratio");
@@ -597,7 +598,7 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
       h_errors_ratio->GetYaxis()->SetRangeUser(0.95*minmax.first,1.05*minmax.second);
 
       h_errors_ratio->SetStats(0);
-      h_errors_ratio->GetXaxis()->SetTitle(hist_v.at(0)->GetXaxis()->GetTitle());
+      //h_errors_ratio->GetXaxis()->SetTitle(hist_v.at(0)->GetXaxis()->GetTitle());
       h_errors_ratio->GetYaxis()->SetTitle("Data/MC");
 
       h_errors_ratio->GetXaxis()->SetTitleSize(Dual_RatioXaxisTitleSize);
@@ -847,6 +848,8 @@ void DrawSystematicBreakdown(TFile* f,TH1D* h_template,vector<string> dials,vect
    h_FracError->Draw("HIST same");
 
    if(DrawWatermark) l_Watermark->Draw();
+
+   p_plot->RedrawAxis();
       
    system(("mkdir -p " + plotdir).c_str());
    c->Print((plotdir + "/" + label + "_SysBreakdown.pdf").c_str());

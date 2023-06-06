@@ -18,9 +18,6 @@ enum Components2{k2DirectLambda,k2DirectHYP,k2Neutron,k2Dirt,k2RESLambda,k2RESHY
 const std::vector<std::string> Components_Str2 = {"DirectLambda","DirectHYP","Neutron","Dirt","RESLambda","RESHYP","Other","EXT","DISLambda","DISHYP"};
 const std::vector<std::string> Captions_Str2 = {"Direct #Lambda","Direct Hyp","Neutron","Dirt","RES #Lambda","RES Hyp","Other #nu","EXT","DIS #Lambda","DIS Hyp"};
 
-// Different systematic categories
-enum Systematics{sFlux,sGenerator,sReint,sDetector,sMisc,sMAX};
-const std::vector<std::string> Systematics_Str = {"Flux","Gen","G4","Detector","Misc"};
 
 // Group the systematics together, setup emums, labels, figure captions, number of universes and type of systematic
 
@@ -59,7 +56,9 @@ const std::vector<std::string> MiscU_Str_Long = {"Dirt Scaling"};
 const std::vector<int> MiscU_Universes = {2};
 const std::vector<int> MiscU_SysTypes = {kDualUnisim};
 
-// Giant array with everything
+// Different systematic categories
+enum Systematics{sFlux,sGenerator,sReint,sMisc,sDetector,sMAX};
+const std::vector<std::string> Systematics_Str = {"Flux","Gen","G4","Misc","Detector"};
 const std::vector<std::vector<std::string>> AllU_Str = {FluxU_Str,GeneratorU_Str,ReintU_Str,MiscU_Str,DetectorU_Str};
 const std::vector<std::vector<std::string>> AllU_Str_Long = {FluxU_Str_Long,GeneratorU_Str_Long,ReintU_Str_Long,MiscU_Str_Long,DetectorU_Str_Long};
 const std::vector<std::vector<int>> AllU_Universes = {FluxU_Universes,GeneratorU_Universes,ReintU_Universes,MiscU_Universes,DetectorU_Universes};
