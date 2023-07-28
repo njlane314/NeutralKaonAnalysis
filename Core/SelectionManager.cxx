@@ -131,11 +131,10 @@ void SelectionManager::AddSample(std::string Name,std::string Type,double Sample
 void SelectionManager::AddEvent(Event &e){
 
    // Sample Orthogonality
-
-   if(thisSampleType == "Neutron" && !e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
-   if(thisSampleType != "Neutron" && e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
-   if(thisSampleType != "Hyperon" &&  e.EventHasHyperon){ e.Weight = 0.0; return; }
-   if(thisSampleType == "Hyperon" &&  !e.EventHasHyperon){ e.Weight = 0.0; return; }
+   //if(thisSampleType == "Neutron" && !e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
+   //if(thisSampleType != "Neutron" && e.EventHasNeutronScatter){ e.Weight = 0.0; return; }
+   //if(thisSampleType != "Hyperon" &&  e.EventHasHyperon){ e.Weight = 0.0; return; }
+   //if(thisSampleType == "Hyperon" &&  !e.EventHasHyperon){ e.Weight = 0.0; return; }
 
    // Set flux weight if setup
    if(thisSampleType != "Data" && thisSampleType != "EXT"){

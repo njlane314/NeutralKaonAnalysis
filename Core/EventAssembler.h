@@ -88,6 +88,7 @@ class EventAssembler {
       std::vector<SimParticle>* SigmaZeroDecayLambda=0;
       std::vector<SimParticle>* SigmaZeroDecayPhoton=0;
       std::vector<SimParticle>* KaonDecay=0;
+      std::vector<SimParticle>* NeutralKaonDecayK0SL=0;
 
       vector<double>  *TruePrimaryVertex_X=0;
       vector<double>  *TruePrimaryVertex_Y=0;
@@ -121,7 +122,7 @@ class EventAssembler {
 
       // Systematics
       vector<string>* SysDials=0;
-      vector<vector<vector<double>>>* SysWeights=0;
+      vector<vector<double>>* SysWeights=0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

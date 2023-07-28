@@ -133,6 +133,7 @@ void EventAssembler::SetFile(string infilename,string sampletype){
    t_in->SetBranchAddress("SigmaZeroDecayLambda",&SigmaZeroDecayLambda);
    t_in->SetBranchAddress("SigmaZeroDecayPhoton",&SigmaZeroDecayPhoton);
    t_in->SetBranchAddress("KaonDecay",&KaonDecay);
+   t_in->SetBranchAddress("NeutralKaonDecayK0SL",&NeutralKaonDecayK0SL);
 
    t_in->SetBranchAddress("DecayVertex_X", &DecayVertex_X);
    t_in->SetBranchAddress("DecayVertex_Y", &DecayVertex_Y);
@@ -260,6 +261,7 @@ Event EventAssembler::GetEvent(int i){
    e.SigmaZeroDecayLambda = *SigmaZeroDecayLambda;
    e.SigmaZeroDecayPhoton = *SigmaZeroDecayPhoton;
    e.KaonDecay = *KaonDecay;
+   e.NeutralKaonDecayK0SL = *NeutralKaonDecayK0SL;
 
    e.DecayVertex.clear();
 
