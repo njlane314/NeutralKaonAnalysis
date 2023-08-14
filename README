@@ -6,7 +6,7 @@ of the other algs and Alg/ storing the individual selection algorithms.
 To get set up and build the code:
 
 source setup.sh
-source Build.sh 
+make
 
 This code uses the ntuples created by the HyperonSelection_module.cc LArSoft module
 and is designed to be run with root macros. 
