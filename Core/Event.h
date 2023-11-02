@@ -56,6 +56,7 @@ struct Event {
 	std::vector<SimParticle> SigmaZeroDecayLambda;
 	std::vector<SimParticle> SigmaZeroDecayPhoton;
 	std::vector<SimParticle> KaonDecay;
+        std::vector<SimParticle> NeutralKaonDecayK0SL;
 
         vector<TVector3> DecayVertex;
 
@@ -95,7 +96,7 @@ struct Event {
         vector<vector<int>> ConnSeedTicks_Plane2;
     
         vector<string> SysDials;
-        vector<vector<vector<double>>> SysWeights;
+        vector<vector<double>> SysWeights;
 
         void Print(){ std::cout << run << "  " << subrun << "  " << event << std::endl; }
 
