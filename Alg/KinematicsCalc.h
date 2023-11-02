@@ -31,6 +31,41 @@ inline TLorentzVector ProtonPion4Momentum(RecoParticle Proton,RecoParticle Pion)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+inline TLorentzVector KaonDecayPionPair4Momentum(RecoParticle PionPlus, RecoParticle PionMinus){
+   
+   double momentum_pionPlus = PionMomentum(PionPlus.TrackLength);
+   double momentum_pionMinus = PionMomentum(PionMinus.TrackLength);
+
+   double energy_pionPlus = sqrt(momentum_pionPlus*momentum_pionPlus + 0.1396*0.1396);
+   double energy_pionMinus = sqrt(momentum_pionMinus*momentum_pionMinus + 0.1396*0.1396);
+
+   TLorentzVector PionPlus4Momentum(PionPlus.TrackDirectionX*momentum_pionPlus, PionPlus.TrackDirectionY*momentum_pionPlus, PionPlus.TrackDirectionZ*momentum_pionPlus, energy_pionPlus);
+   TLorentzVector PionMinus4Momentum(PionMinus.TrackDirectionX*momentum_pionMinus, PionMinus.TrackDirectionY*momentum_pionMinus, PionMinus.TrackDirectionZ*momentum_pionMinus, energy_pionMinus);
+
+   return PionPlus4Momentum + PionMinus4Momentum;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+inline double KaonDecayPionPairInvariantMass(RecoParticle PionPlus, RecoParticle PionMinus){
+
+   TLorentzVector P = KaonDecayPionPair4Momentum(PionPlus, PionMinus);
+
+   return sqrt(P*P);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+inline double KaonDecayPionPairOpeningAngle(RecoParticle PionPlus, RecoParticle PionMinus){
+
+   TVector3 PionPlusDir(PionPlus.TrackDirectionX, PionPlus.TrackDirectionY, PionPlus.TrackDirectionZ);
+   TVector3 PionMinusDir(PionMinus.TrackDirectionX, PionMinus.TrackDirectionY, PionMinus.TrackDirectionZ);
+
+   return (180/3.142)*PionPlusDir.Angle(PionMinusDir);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 inline double ProtonPionInvariantMass(RecoParticle Proton,RecoParticle Pion){
 
     TLorentzVector P = ProtonPion4Momentum(Proton,Pion); 
