@@ -113,7 +113,7 @@ void SelectorBDTManager::FillTree(const Event &e){
          if(!SetVariables(e.TracklikePrimaryDaughters.at(i_tr),e.TracklikePrimaryDaughters.at(j_tr))) continue;
 
          // If these tracks are the correct pair of decay tracks, fill signal tree 
-         if(e.GoodReco && e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayProtonIndex && e.TracklikePrimaryDaughters.at(j_tr).Index == e.TrueDecayPionIndex)
+         if(e.GoodReco && e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionPlusIndex && e.TracklikePrimaryDaughters.at(j_tr).Index == e.TrueDecayPionMinusIndex)
             t_Signal->Fill();         
          else t_Background->Fill();
 
@@ -252,24 +252,23 @@ std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
 
    // Use truth information to choose the proton/pion candidates
 
+   std::cout << "Good recon. " << e.GoodReco << std::endl;
    if(!e.GoodReco) return {-1,-1};
 
-   int i_proton_candidate=-1;
-   int i_pion_candidate=-1;
+   int i_pion_plus_candidate=-1;
+   int i_pion_minus_candidate=-1;
 
-   for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
-      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayProtonIndex) i_proton_candidate = i_tr;
-      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionIndex) i_pion_candidate = i_tr;
+   for(size_t i_tr = 0; i_tr < e.TracklikePrimaryDaughters.size(); i_tr++){
+      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionPlusIndex) i_pion_plus_candidate = i_tr;
+      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionMinusIndex) i_pion_minus_candidate = i_tr;
    }
 
-   if(i_proton_candidate == -1 || i_pion_candidate == -1) return {-1,-1};
+   if(i_pion_plus_candidate == -1 || i_pion_minus_candidate == -1) return {-1,-1};
 
-   //if(!SetVariables(e.TracklikePrimaryDaughters.at(i_proton_candidate),e.TracklikePrimaryDaughters.at(i_pion_candidate))) return {-1,-1};
 
-   //e.SelectorBDTScore = reader->EvaluateMVA("BDT method"); 
    e.SelectorBDTScore = reader->EvaluateMVA(Alg + " method"); 
 
-   return std::make_pair(i_proton_candidate,i_pion_candidate);
+   return std::make_pair(i_pion_plus_candidate, i_pion_minus_candidate);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

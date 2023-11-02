@@ -420,9 +420,10 @@ bool SelectionManager::ChoosePionPairCandidates(Event &e, bool cheat){
 
     if(cheat) candidates = a_SelectorBDTManager.NominateTracksCheat(e);
     else candidates = a_SelectorBDTManager.NominateTracks(e);
+    std::cout << "Passed candidate selection..." << std::endl;
 
     bool passed = candidates.first != -1 && candidates.second != -1;
-
+    std::cout << "First " << candidates.first << "   Second " << candidates.second << std::endl;
     if(!passed){
         UpdateCut(e, passed, "DecaySelector");
         return false;
