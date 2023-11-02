@@ -210,7 +210,7 @@ void SelectionManager::SetSignal(Event &e){
                 if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == -211 && e.Decay.at(i_d).ModMomentum > 0.1) found_pion_minus = true;
             }                   
 
-            IsSignal_tmp.at(i_tr) = found_proton && found_pion && e.InActiveTPC.at(i_tr) && e.IsSignal.at(i_tr);
+            IsSignal_tmp.at(i_tr) = found_pion_plus && found_pion_minus && e.InActiveTPC.at(i_tr) && e.IsSignal.at(i_tr);
         }
     }
 
@@ -228,7 +228,7 @@ void SelectionManager::SetSignal(Event &e){
             e.TrueDecayPionPlusIndex= i_tr; 
         }
         if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 7){
-            found_pion = true;
+            found_pion_minus = true;
             e.TrueDecayPionMinusIndex = i_tr; 
         }
     }
@@ -480,8 +480,8 @@ bool SelectionManager::EventListCut(const Event &e){
 bool SelectionManager::ConnectednessTest(const Event &e, int nplanes){
 
     int muon_index = e.MuonCandidate.Index;
-    int pion_plus_index = e.DecayProtonCandidate.Index;
-    int pion_minus_index = e.DecayPionCandidate.Index;
+    int pion_plus_index = e.DecayPionPlusCandidate.Index;
+    int pion_minus_index = e.DecayPionMinusCandidate.Index;
 
     a_CTTest_Plane0.LoadInfo(e.ConnSeedIndexes_Plane0, e.ConnOutputIndexes_Plane0, e.ConnOutputSizes_Plane0, e.ConnSeedChannels_Plane0);
     a_CTTest_Plane1.LoadInfo(e.ConnSeedIndexes_Plane1, e.ConnOutputIndexes_Plane1, e.ConnOutputSizes_Plane1, e.ConnSeedChannels_Plane1);
@@ -529,7 +529,7 @@ bool SelectionManager::AngleCut(const Event &e){
     TLorentzVector NeutralKaon4Momentum = PionPair4Momentum(e.DecayPionPlusCandidate, e.DecayPionMinusCandidate);
 
     TVector3 NeutralKaonDirection(NeutralKaon4Momentum.X(), NeutralKaon4Momentum.Y(), NeutralKaon4Momentum.Z());
-    double alpha = (180/3.1415) * NeutralKaonDirectionDirection.Angle(GapVector);
+    double alpha = (180/3.1415) * NeutralKaonDirection.Angle(GapVector);
 
     bool passed = alpha < TheParams.p_Alpha_Cut;
 
@@ -1109,7 +1109,7 @@ void SelectionManager::WidthScaleHistograms(){
 
     for (it2 = Multisim_Sys_Hists.begin(); it2 != Multisim_Sys_Hists.end(); it2++){
         std::map<std::string,std::vector<TH1D*>>::iterator it22;
-        for (it22 = it2->second.begin(); it22! = it2->second.end(); it22++){
+        for (it22 = it2->second.begin(); it22 != it2->second.end(); it22++){
             for(size_t i = 0; i < it22->second.size(); i++){
                 for(size_t i_b = 1; i_b < it22->second.at(i)->GetNbinsX()+1; i_b++){        
                     it22->second.at(i)->SetBinContent(i_b, it22->second.at(i)->GetBinContent(i_b)/it22->second.at(i)->GetBinWidth(i_b));
@@ -1121,7 +1121,7 @@ void SelectionManager::WidthScaleHistograms(){
 
    for (it2 = SingleUnisim_Sys_Hists.begin(); it2 != SingleUnisim_Sys_Hists.end(); it2++){
         std::map<std::string,std::vector<TH1D*>>::iterator it22;
-        for (it22 = it2->second.begin(); it22! = it2->second.end(); it22++){
+        for (it22 = it2->second.begin(); it22 != it2->second.end(); it22++){
             for(size_t i = 0; i < it22->second.size(); i++){
                 for(size_t i_b = 1; i_b < it22->second.at(i)->GetNbinsX()+1; i_b++){        
                     it22->second.at(i)->SetBinContent(i_b, it22->second.at(i)->GetBinContent(i_b)/it22->second.at(i)->GetBinWidth(i_b));

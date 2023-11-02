@@ -138,7 +138,7 @@ class SelectionManager {
       bool ShowerCut(const Event &e);
       bool ChooseMuonCandidate(Event &e);
       bool TrackLengthCut(const Event &e);
-      bool ChooseProtonPionCandidates(Event &e, bool cheat=false);
+      bool ChoosePionPairCandidates(Event &e, bool cheat=false);
       bool AnalysisBDTCut(Event &e);
       bool EventListCut(const Event &e);
       bool ConnectednessTest(const Event &e, int nplanes=1);
