@@ -7,4 +7,5 @@
 #pragma link C++ class RecoParticle+;
 #pragma link C++ class vector<SimParticle>+;
 #pragma link C++ class vector<RecoParticle>+;
+
 #endif

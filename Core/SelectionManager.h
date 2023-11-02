@@ -200,6 +200,7 @@ class SelectionManager {
       void WidthScaleHistograms();
 
       void UseText(){ fUseText = true; }
+      
 };
 
 #endif
