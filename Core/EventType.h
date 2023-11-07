@@ -5,9 +5,9 @@
 
 namespace EventType {
 
-    const std::vector<std::string> Types = {"Signal","OtherHYP","OtherNu","Dirt","EXT"/*,"Data","All"*/};
-    const std::vector<std::string> Captions = {"Signal","Other HYP","Other #nu","Dirt","Cosmic"/*,"Data"*/};
-    const std::vector<int> Colors = {8,46,38,30,15,0};
+    const std::vector<std::string> Types = {"Signal",/*"OtherHYP",*/"OtherNu","Dirt","EXT"/*,"Data","All"*/};
+    const std::vector<std::string> Captions = {"Signal",/*"Other HYP",*/"Other #nu","Dirt","Cosmic"/*,"Data"*/};
+    const std::vector<int> Colors = {8,/*46,*/38,30,15,0};
 
     //const std::vector<std::string> Types2 = {"DirectLambda","RESLambda","DISLambda","DirectHYP","RESHYP","DISHYP","Neutron","Other","Dirt","EXT","Data","All"};
     const std::vector<std::string> Types2 = {"DirectLambda","DirectHYP","Neutron","Dirt","RESLambda","RESHYP","Other","EXT","DISLambda","DISHYP"/*,"Data"*/};
@@ -17,6 +17,10 @@ namespace EventType {
     const std::vector<std::string> Procs = {"Signal","OtherHYP","EXT","Dirt","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","Other"/*,"Data"*/};
     const std::vector<std::string> Captions3 = {"Signal","Other HYP","Cosmic","Dirt","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","Other"/*,"Data"*/};
     const std::vector<int> Colors3 = {8,46,2,3,4,5,6,7,9,11,12,30,15,0};
+
+    const std::vector<std::string> KaonTypes = {"KaonSHORT", "KaonLONG", "Other"};
+    const std::vector<std::string> KaonCaptions = {"Kaon K^{0}_{S}", "Kaon K^{0}_{L}", "Other"};
+    const std::vector<int> KaonColours = {8, kGreen+3, 38};
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -30,7 +34,7 @@ namespace EventType {
         else if(e.Mode.at(0) == "EXT") return "EXT";
         else if(e.Mode.at(0) == "Dirt") return "Dirt";
         else if(e.EventIsSignal) return "Signal";
-        else if(e.Mode.at(0) == "HYP") return "OtherHYP";
+        //else if(e.Mode.at(0) == "HYP") return "OtherHYP";
 
         return "OtherNu";
     }
@@ -122,6 +126,19 @@ namespace EventType {
         return type;
     }
 
-};
+////////////////
+//
 
+	std::string GetKaonType(const Event &e){
+		
+		std::string type;
+		
+		if(e.EventHasKaonShort) return "KaonSHORT";
+		else if(e.EventHasKaonLong) return "KaonLONG";
+		else return "Other";
+	
+		return type;
+	}
+};	
+		
 #endif

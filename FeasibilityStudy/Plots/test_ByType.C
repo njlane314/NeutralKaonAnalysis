@@ -1,7 +1,7 @@
 void test_ByType()
 {
 //=========Macro generated from canvas: c/c
-//=========  (Mon Nov  6 14:57:02 2023) by ROOT version 6.12/06
+//=========  (Tue Nov  7 06:47:21 2023) by ROOT version 6.12/06
    TCanvas *c = new TCanvas("c", "c",0,0,800,600);
    c->Range(0,0,1,1);
    c->SetFillColor(0);
@@ -97,7 +97,7 @@ void test_ByType()
    TPad *p_plot = new TPad("p_plot", "p_plot",0,0,1,0.85);
    p_plot->Draw();
    p_plot->cd();
-   p_plot->Range(-1.25,-0.1874576,11.25,1.687118);
+   p_plot->Range(-1.25,-7.464777,11.25,67.18299);
    p_plot->SetFillColor(0);
    p_plot->SetBorderMode(0);
    p_plot->SetBorderSize(2);
@@ -106,36 +106,38 @@ void test_ByType()
    p_plot->SetFrameBorderMode(0);
    
    TH1D *h_errors__1 = new TH1D("h_errors__1","",20,0,10);
-   h_errors__1->SetBinContent(4,0.4151147);
-   h_errors__1->SetBinContent(5,0.1383716);
-   h_errors__1->SetBinContent(6,0.8302294);
-   h_errors__1->SetBinContent(7,0.968601);
-   h_errors__1->SetBinContent(8,0.8302294);
-   h_errors__1->SetBinContent(9,0.968601);
-   h_errors__1->SetBinContent(10,0.6918579);
-   h_errors__1->SetBinContent(12,0.1383716);
-   h_errors__1->SetBinContent(13,0.1383716);
-   h_errors__1->SetBinContent(14,0.2767431);
-   h_errors__1->SetBinError(4,0.2396666);
-   h_errors__1->SetBinError(5,0.1383716);
-   h_errors__1->SetBinError(6,0.3389397);
-   h_errors__1->SetBinError(7,0.3660968);
-   h_errors__1->SetBinError(8,0.3389397);
-   h_errors__1->SetBinError(9,0.3660968);
-   h_errors__1->SetBinError(10,0.3094082);
-   h_errors__1->SetBinError(12,0.1383716);
-   h_errors__1->SetBinError(13,0.1383716);
-   h_errors__1->SetBinError(14,0.195687);
+   h_errors__1->SetBinContent(1,10.10112);
+   h_errors__1->SetBinContent(3,39.98938);
+   h_errors__1->SetBinContent(5,50.50562);
+   h_errors__1->SetBinContent(7,45.80099);
+   h_errors__1->SetBinContent(9,41.09636);
+   h_errors__1->SetBinContent(11,29.1964);
+   h_errors__1->SetBinContent(13,15.77436);
+   h_errors__1->SetBinContent(15,6.365092);
+   h_errors__1->SetBinContent(17,2.213945);
+   h_errors__1->SetBinContent(19,0.4151147);
+   h_errors__1->SetBinContent(21,0.1383716);
+   h_errors__1->SetBinError(1,1.182247);
+   h_errors__1->SetBinError(3,2.352317);
+   h_errors__1->SetBinError(5,2.643585);
+   h_errors__1->SetBinError(7,2.51745);
+   h_errors__1->SetBinError(9,2.384652);
+   h_errors__1->SetBinError(11,2.009963);
+   h_errors__1->SetBinError(13,1.477404);
+   h_errors__1->SetBinError(15,0.9384817);
+   h_errors__1->SetBinError(17,0.5534863);
+   h_errors__1->SetBinError(19,0.2396666);
+   h_errors__1->SetBinError(21,0.1383716);
    h_errors__1->SetMinimum(0);
-   h_errors__1->SetMaximum(1.668372);
-   h_errors__1->SetEntries(39);
+   h_errors__1->SetMaximum(66.43651);
+   h_errors__1->SetEntries(1746);
    h_errors__1->SetStats(0);
    h_errors__1->SetFillColor(1);
    h_errors__1->SetFillStyle(3253);
 
    ci = TColor::GetColor("#000099");
    h_errors__1->SetLineColor(ci);
-   h_errors__1->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   h_errors__1->GetXaxis()->SetTitle("Tracks");
    h_errors__1->GetXaxis()->SetLabelFont(42);
    h_errors__1->GetXaxis()->SetLabelSize(0.045);
    h_errors__1->GetXaxis()->SetTitleSize(0.05);
@@ -159,7 +161,7 @@ void test_ByType()
    
    TH1F *hs_stack_1 = new TH1F("hs_stack_1","",20,0,10);
    hs_stack_1->SetMinimum(0);
-   hs_stack_1->SetMaximum(1.401433);
+   hs_stack_1->SetMaximum(53.86802);
    hs_stack_1->SetDirectory(0);
    hs_stack_1->SetStats(0);
 
@@ -182,14 +184,30 @@ void test_ByType()
    
    
    TH1D *h_ByType_Signal_stack_1 = new TH1D("h_ByType_Signal_stack_1","",20,0,10);
-   h_ByType_Signal_stack_1->SetBinContent(7,0.2767431);
-   h_ByType_Signal_stack_1->SetBinError(7,0.195687);
-   h_ByType_Signal_stack_1->SetEntries(2);
+   h_ByType_Signal_stack_1->SetBinContent(1,0.1383716);
+   h_ByType_Signal_stack_1->SetBinContent(3,1.522087);
+   h_ByType_Signal_stack_1->SetBinContent(5,1.660459);
+   h_ByType_Signal_stack_1->SetBinContent(7,1.937202);
+   h_ByType_Signal_stack_1->SetBinContent(9,1.106973);
+   h_ByType_Signal_stack_1->SetBinContent(11,1.79883);
+   h_ByType_Signal_stack_1->SetBinContent(13,0.8302294);
+   h_ByType_Signal_stack_1->SetBinContent(15,0.4151147);
+   h_ByType_Signal_stack_1->SetBinContent(17,0.4151147);
+   h_ByType_Signal_stack_1->SetBinError(1,0.1383716);
+   h_ByType_Signal_stack_1->SetBinError(3,0.4589266);
+   h_ByType_Signal_stack_1->SetBinError(5,0.4793332);
+   h_ByType_Signal_stack_1->SetBinError(7,0.517739);
+   h_ByType_Signal_stack_1->SetBinError(9,0.3913739);
+   h_ByType_Signal_stack_1->SetBinError(11,0.4989058);
+   h_ByType_Signal_stack_1->SetBinError(13,0.3389397);
+   h_ByType_Signal_stack_1->SetBinError(15,0.2396666);
+   h_ByType_Signal_stack_1->SetBinError(17,0.2396666);
+   h_ByType_Signal_stack_1->SetEntries(71);
    h_ByType_Signal_stack_1->SetFillColor(8);
 
    ci = TColor::GetColor("#000099");
    h_ByType_Signal_stack_1->SetLineColor(ci);
-   h_ByType_Signal_stack_1->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   h_ByType_Signal_stack_1->GetXaxis()->SetTitle("Tracks");
    h_ByType_Signal_stack_1->GetXaxis()->SetLabelFont(42);
    h_ByType_Signal_stack_1->GetXaxis()->SetLabelSize(0.035);
    h_ByType_Signal_stack_1->GetXaxis()->SetTitleSize(0.035);
@@ -207,11 +225,14 @@ void test_ByType()
    hs->Add(h_ByType_Signal_stack_1,"HIST");
    
    TH1D *h_ByType_OtherHYP_stack_2 = new TH1D("h_ByType_OtherHYP_stack_2","",20,0,10);
+   h_ByType_OtherHYP_stack_2->SetBinContent(5,0.1383716);
+   h_ByType_OtherHYP_stack_2->SetBinError(5,0.1383716);
+   h_ByType_OtherHYP_stack_2->SetEntries(1);
    h_ByType_OtherHYP_stack_2->SetFillColor(46);
 
    ci = TColor::GetColor("#000099");
    h_ByType_OtherHYP_stack_2->SetLineColor(ci);
-   h_ByType_OtherHYP_stack_2->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   h_ByType_OtherHYP_stack_2->GetXaxis()->SetTitle("Tracks");
    h_ByType_OtherHYP_stack_2->GetXaxis()->SetLabelFont(42);
    h_ByType_OtherHYP_stack_2->GetXaxis()->SetLabelSize(0.035);
    h_ByType_OtherHYP_stack_2->GetXaxis()->SetTitleSize(0.035);
@@ -229,32 +250,34 @@ void test_ByType()
    hs->Add(h_ByType_OtherHYP_stack_2,"HIST");
    
    TH1D *h_ByType_OtherNu_stack_3 = new TH1D("h_ByType_OtherNu_stack_3","",20,0,10);
-   h_ByType_OtherNu_stack_3->SetBinContent(4,0.4151147);
-   h_ByType_OtherNu_stack_3->SetBinContent(5,0.1383716);
-   h_ByType_OtherNu_stack_3->SetBinContent(6,0.8302294);
-   h_ByType_OtherNu_stack_3->SetBinContent(7,0.6918579);
-   h_ByType_OtherNu_stack_3->SetBinContent(8,0.8302294);
-   h_ByType_OtherNu_stack_3->SetBinContent(9,0.968601);
-   h_ByType_OtherNu_stack_3->SetBinContent(10,0.6918579);
-   h_ByType_OtherNu_stack_3->SetBinContent(12,0.1383716);
-   h_ByType_OtherNu_stack_3->SetBinContent(13,0.1383716);
-   h_ByType_OtherNu_stack_3->SetBinContent(14,0.2767431);
-   h_ByType_OtherNu_stack_3->SetBinError(4,0.2396666);
-   h_ByType_OtherNu_stack_3->SetBinError(5,0.1383716);
-   h_ByType_OtherNu_stack_3->SetBinError(6,0.3389397);
-   h_ByType_OtherNu_stack_3->SetBinError(7,0.3094082);
-   h_ByType_OtherNu_stack_3->SetBinError(8,0.3389397);
-   h_ByType_OtherNu_stack_3->SetBinError(9,0.3660968);
-   h_ByType_OtherNu_stack_3->SetBinError(10,0.3094082);
-   h_ByType_OtherNu_stack_3->SetBinError(12,0.1383716);
-   h_ByType_OtherNu_stack_3->SetBinError(13,0.1383716);
-   h_ByType_OtherNu_stack_3->SetBinError(14,0.195687);
-   h_ByType_OtherNu_stack_3->SetEntries(37);
+   h_ByType_OtherNu_stack_3->SetBinContent(1,9.962753);
+   h_ByType_OtherNu_stack_3->SetBinContent(3,38.4673);
+   h_ByType_OtherNu_stack_3->SetBinContent(5,48.70679);
+   h_ByType_OtherNu_stack_3->SetBinContent(7,43.86379);
+   h_ByType_OtherNu_stack_3->SetBinContent(9,39.98938);
+   h_ByType_OtherNu_stack_3->SetBinContent(11,27.39757);
+   h_ByType_OtherNu_stack_3->SetBinContent(13,14.94413);
+   h_ByType_OtherNu_stack_3->SetBinContent(15,5.949978);
+   h_ByType_OtherNu_stack_3->SetBinContent(17,1.79883);
+   h_ByType_OtherNu_stack_3->SetBinContent(19,0.4151147);
+   h_ByType_OtherNu_stack_3->SetBinContent(21,0.1383716);
+   h_ByType_OtherNu_stack_3->SetBinError(1,1.174122);
+   h_ByType_OtherNu_stack_3->SetBinError(3,2.307115);
+   h_ByType_OtherNu_stack_3->SetBinError(5,2.596081);
+   h_ByType_OtherNu_stack_3->SetBinError(7,2.463636);
+   h_ByType_OtherNu_stack_3->SetBinError(9,2.352317);
+   h_ByType_OtherNu_stack_3->SetBinError(11,1.947061);
+   h_ByType_OtherNu_stack_3->SetBinError(13,1.438);
+   h_ByType_OtherNu_stack_3->SetBinError(15,0.9073631);
+   h_ByType_OtherNu_stack_3->SetBinError(17,0.4989058);
+   h_ByType_OtherNu_stack_3->SetBinError(19,0.2396666);
+   h_ByType_OtherNu_stack_3->SetBinError(21,0.1383716);
+   h_ByType_OtherNu_stack_3->SetEntries(1674);
    h_ByType_OtherNu_stack_3->SetFillColor(38);
 
    ci = TColor::GetColor("#000099");
    h_ByType_OtherNu_stack_3->SetLineColor(ci);
-   h_ByType_OtherNu_stack_3->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   h_ByType_OtherNu_stack_3->GetXaxis()->SetTitle("Tracks");
    h_ByType_OtherNu_stack_3->GetXaxis()->SetLabelFont(42);
    h_ByType_OtherNu_stack_3->GetXaxis()->SetLabelSize(0.035);
    h_ByType_OtherNu_stack_3->GetXaxis()->SetTitleSize(0.035);
@@ -276,7 +299,7 @@ void test_ByType()
 
    ci = TColor::GetColor("#000099");
    h_ByType_Dirt_stack_4->SetLineColor(ci);
-   h_ByType_Dirt_stack_4->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   h_ByType_Dirt_stack_4->GetXaxis()->SetTitle("Tracks");
    h_ByType_Dirt_stack_4->GetXaxis()->SetLabelFont(42);
    h_ByType_Dirt_stack_4->GetXaxis()->SetLabelSize(0.035);
    h_ByType_Dirt_stack_4->GetXaxis()->SetTitleSize(0.035);
@@ -298,7 +321,7 @@ void test_ByType()
 
    ci = TColor::GetColor("#000099");
    h_ByType_EXT_stack_5->SetLineColor(ci);
-   h_ByType_EXT_stack_5->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   h_ByType_EXT_stack_5->GetXaxis()->SetTitle("Tracks");
    h_ByType_EXT_stack_5->GetXaxis()->SetLabelFont(42);
    h_ByType_EXT_stack_5->GetXaxis()->SetLabelSize(0.035);
    h_ByType_EXT_stack_5->GetXaxis()->SetTitleSize(0.035);
@@ -317,36 +340,38 @@ void test_ByType()
    hs->Draw("hist same");
    
    TH1D *h_errors__2 = new TH1D("h_errors__2","",20,0,10);
-   h_errors__2->SetBinContent(4,0.4151147);
-   h_errors__2->SetBinContent(5,0.1383716);
-   h_errors__2->SetBinContent(6,0.8302294);
-   h_errors__2->SetBinContent(7,0.968601);
-   h_errors__2->SetBinContent(8,0.8302294);
-   h_errors__2->SetBinContent(9,0.968601);
-   h_errors__2->SetBinContent(10,0.6918579);
-   h_errors__2->SetBinContent(12,0.1383716);
-   h_errors__2->SetBinContent(13,0.1383716);
-   h_errors__2->SetBinContent(14,0.2767431);
-   h_errors__2->SetBinError(4,0.2396666);
-   h_errors__2->SetBinError(5,0.1383716);
-   h_errors__2->SetBinError(6,0.3389397);
-   h_errors__2->SetBinError(7,0.3660968);
-   h_errors__2->SetBinError(8,0.3389397);
-   h_errors__2->SetBinError(9,0.3660968);
-   h_errors__2->SetBinError(10,0.3094082);
-   h_errors__2->SetBinError(12,0.1383716);
-   h_errors__2->SetBinError(13,0.1383716);
-   h_errors__2->SetBinError(14,0.195687);
+   h_errors__2->SetBinContent(1,10.10112);
+   h_errors__2->SetBinContent(3,39.98938);
+   h_errors__2->SetBinContent(5,50.50562);
+   h_errors__2->SetBinContent(7,45.80099);
+   h_errors__2->SetBinContent(9,41.09636);
+   h_errors__2->SetBinContent(11,29.1964);
+   h_errors__2->SetBinContent(13,15.77436);
+   h_errors__2->SetBinContent(15,6.365092);
+   h_errors__2->SetBinContent(17,2.213945);
+   h_errors__2->SetBinContent(19,0.4151147);
+   h_errors__2->SetBinContent(21,0.1383716);
+   h_errors__2->SetBinError(1,1.182247);
+   h_errors__2->SetBinError(3,2.352317);
+   h_errors__2->SetBinError(5,2.643585);
+   h_errors__2->SetBinError(7,2.51745);
+   h_errors__2->SetBinError(9,2.384652);
+   h_errors__2->SetBinError(11,2.009963);
+   h_errors__2->SetBinError(13,1.477404);
+   h_errors__2->SetBinError(15,0.9384817);
+   h_errors__2->SetBinError(17,0.5534863);
+   h_errors__2->SetBinError(19,0.2396666);
+   h_errors__2->SetBinError(21,0.1383716);
    h_errors__2->SetMinimum(0);
-   h_errors__2->SetMaximum(1.668372);
-   h_errors__2->SetEntries(39);
+   h_errors__2->SetMaximum(66.43651);
+   h_errors__2->SetEntries(1746);
    h_errors__2->SetStats(0);
    h_errors__2->SetFillColor(1);
    h_errors__2->SetFillStyle(3253);
 
    ci = TColor::GetColor("#000099");
    h_errors__2->SetLineColor(ci);
-   h_errors__2->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   h_errors__2->GetXaxis()->SetTitle("Tracks");
    h_errors__2->GetXaxis()->SetLabelFont(42);
    h_errors__2->GetXaxis()->SetLabelSize(0.045);
    h_errors__2->GetXaxis()->SetTitleSize(0.05);
@@ -365,29 +390,31 @@ void test_ByType()
    h_errors__2->Draw("E2 same");
    
    TH1D *h_errors_copy__3 = new TH1D("h_errors_copy__3","",20,0,10);
-   h_errors_copy__3->SetBinContent(4,0.4151147);
-   h_errors_copy__3->SetBinContent(5,0.1383716);
-   h_errors_copy__3->SetBinContent(6,0.8302294);
-   h_errors_copy__3->SetBinContent(7,0.968601);
-   h_errors_copy__3->SetBinContent(8,0.8302294);
-   h_errors_copy__3->SetBinContent(9,0.968601);
-   h_errors_copy__3->SetBinContent(10,0.6918579);
-   h_errors_copy__3->SetBinContent(12,0.1383716);
-   h_errors_copy__3->SetBinContent(13,0.1383716);
-   h_errors_copy__3->SetBinContent(14,0.2767431);
-   h_errors_copy__3->SetBinError(4,0.2396666);
-   h_errors_copy__3->SetBinError(5,0.1383716);
-   h_errors_copy__3->SetBinError(6,0.3389397);
-   h_errors_copy__3->SetBinError(7,0.3660968);
-   h_errors_copy__3->SetBinError(8,0.3389397);
-   h_errors_copy__3->SetBinError(9,0.3660968);
-   h_errors_copy__3->SetBinError(10,0.3094082);
-   h_errors_copy__3->SetBinError(12,0.1383716);
-   h_errors_copy__3->SetBinError(13,0.1383716);
-   h_errors_copy__3->SetBinError(14,0.195687);
+   h_errors_copy__3->SetBinContent(1,10.10112);
+   h_errors_copy__3->SetBinContent(3,39.98938);
+   h_errors_copy__3->SetBinContent(5,50.50562);
+   h_errors_copy__3->SetBinContent(7,45.80099);
+   h_errors_copy__3->SetBinContent(9,41.09636);
+   h_errors_copy__3->SetBinContent(11,29.1964);
+   h_errors_copy__3->SetBinContent(13,15.77436);
+   h_errors_copy__3->SetBinContent(15,6.365092);
+   h_errors_copy__3->SetBinContent(17,2.213945);
+   h_errors_copy__3->SetBinContent(19,0.4151147);
+   h_errors_copy__3->SetBinContent(21,0.1383716);
+   h_errors_copy__3->SetBinError(1,1.182247);
+   h_errors_copy__3->SetBinError(3,2.352317);
+   h_errors_copy__3->SetBinError(5,2.643585);
+   h_errors_copy__3->SetBinError(7,2.51745);
+   h_errors_copy__3->SetBinError(9,2.384652);
+   h_errors_copy__3->SetBinError(11,2.009963);
+   h_errors_copy__3->SetBinError(13,1.477404);
+   h_errors_copy__3->SetBinError(15,0.9384817);
+   h_errors_copy__3->SetBinError(17,0.5534863);
+   h_errors_copy__3->SetBinError(19,0.2396666);
+   h_errors_copy__3->SetBinError(21,0.1383716);
    h_errors_copy__3->SetMinimum(0);
-   h_errors_copy__3->SetMaximum(1.668372);
-   h_errors_copy__3->SetEntries(39);
+   h_errors_copy__3->SetMaximum(66.43651);
+   h_errors_copy__3->SetEntries(1746);
    h_errors_copy__3->SetDirectory(0);
    h_errors_copy__3->SetStats(0);
    h_errors_copy__3->SetFillColor(1);
@@ -395,7 +422,7 @@ void test_ByType()
 
    ci = TColor::GetColor("#000099");
    h_errors_copy__3->SetLineColor(ci);
-   h_errors_copy__3->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   h_errors_copy__3->GetXaxis()->SetTitle("Tracks");
    h_errors_copy__3->GetXaxis()->SetLabelFont(42);
    h_errors_copy__3->GetXaxis()->SetLabelSize(0.045);
    h_errors_copy__3->GetXaxis()->SetTitleSize(0.05);

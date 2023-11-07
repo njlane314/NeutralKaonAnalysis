@@ -26,6 +26,9 @@ struct Event {
     Bool_t EventHasHyperon = false;
     Bool_t EventHasNeutronScatter = false;
     Bool_t EventIsSignalSigmaZero = false;
+    
+    Bool_t EventHasKaonShort = false;
+    Bool_t EventHasKaonLong = false;
 
     // Flags for each MCTruth
     vector<string> Mode;
@@ -70,6 +73,8 @@ struct Event {
     int TrueMuonIndex;
     int TrueDecayPionPlusIndex; 
     int TrueDecayPionMinusIndex;
+
+    int TrueNeutralKaonIndex;
 
     // Muon, proton and pion candidates
     RecoParticle MuonCandidate;

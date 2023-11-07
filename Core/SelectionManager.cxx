@@ -191,6 +191,9 @@ void SelectionManager::SetSignal(Event &e){
     	e.EventIsSignal = false;
     	e.GoodReco = false;
 
+	e.EventHasKaonShort = false;
+	e.EventHasKaonLong = false;
+
 	std::vector<int> primaryNeutralKaonIndices;
 	for (const SimParticle& primaryKaon : e.PrimaryKaon) {
     		if (primaryKaon.PDG == 311 || primaryKaon.PDG == -311) { 
@@ -218,12 +221,17 @@ void SelectionManager::SetSignal(Event &e){
 			if (kaonDecayProduct.PDG == 310 || kaonDecayProduct.PDG == -310) { 
 				isKaonShort = true;
 				kaonShortModMomentum = kaonDecayProduct.ModMomentum;
+				e.TrueNeutralKaonIndex = kaonDecayProduct.neutralIndex;
 			}
 			if (kaonDecayProduct.PDG == 130 || kaonDecayProduct.PDG == -130) { 
 				isKaonLong = true;
+				e.TrueNeutralKaonIndex = kaonDecayProduct.neutralIndex;
 			}
 		}
 	}
+
+	e.EventHasKaonLong = isKaonLong;
+	e.EventHasKaonShort = isKaonShort;
 	
 	bool isPionPlus = false;
 	bool isPionMinus = false;
@@ -601,6 +609,11 @@ void SelectionManager::SetupHistograms(std::vector<double> boundaries, std::stri
         Hists_ByType2[EventType::Types2.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), fHistNBins, arr_boundaries);
     }
 
+   for(size_t i_type = 0; i_type < EventType::KaonTypes.size(); i_type++) {
+	std::string histname = "h_ByKaonType_" + EventType::KaonTypes.at(i_type);
+	Hists_ByKaonType[EventType::KaonTypes.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), fHistNBins, arr_boundaries);
+    }
+
     Hist_All = new TH1D("All", fTitle.c_str(), fHistNBins, arr_boundaries);
     Hist_Data = new TH1D("Data", fTitle.c_str(), fHistNBins, arr_boundaries);
 }
@@ -613,6 +626,7 @@ void SelectionManager::SetupHistograms(std::vector<double> boundaries, std::stri
 void SelectionManager::SetupHistograms(int n, double low, double high, std::string title){
 
    fTitle = title;
+
    fHistNBins = n;
    fHistLow = low;
    fHistHigh = high;
@@ -630,6 +644,11 @@ void SelectionManager::SetupHistograms(int n, double low, double high, std::stri
    for(size_t i_type = 0; i_type < EventType::Types2.size(); i_type++){
       std::string histname = "h_ByType2_" + EventType::Types2.at(i_type);
       Hists_ByType2[EventType::Types2.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), n, low, high);
+   }
+
+   for(size_t i_type = 0; i_type < EventType::KaonTypes.size(); i_type++){
+	std::string histname = "h_ByKaonType_" + EventType::KaonTypes.at(i_type);
+	Hists_ByKaonType[EventType::KaonTypes.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), n, low, high);
    }
 
    Hist_All = new TH1D("All", fTitle.c_str(), n, low, high);
@@ -736,17 +755,22 @@ void SelectionManager::AddSystematic(int systype, int universes, std::string nam
 
 void SelectionManager::FillHistograms(const Event &e, double variable, double weight){
 
-    std::string mode, mode2, proc;
+    std::string mode, mode2, proc, kaon;
 
     mode = EventType::GetType(e);
     mode2 = EventType::GetType2(e);
     proc = EventType::GetProc(e);
+    kaon = EventType::GetKaonType(e);
+    std::cout << "Kaon type..." << kaon << std::endl;
 
     if(mode != "Data"){
         Hist_All->Fill(variable, weight*e.Weight);
         Hists_ByType[mode]->Fill(variable, weight*e.Weight);
         Hists_ByType2[mode2]->Fill(variable, weight*e.Weight);
         Hists_ByProc[proc]->Fill(variable, weight*e.Weight);
+        std::cout << "Filling kaon type hist" << std::endl;
+        Hists_ByKaonType[kaon]->Fill(variable, weight*e.Weight);
+	std::cout << "Fille kaon type hist" << std::endl;
     }
     else Hist_Data->Fill(variable, weight*e.Weight);
 
@@ -834,17 +858,23 @@ void SelectionManager::DrawHistograms(std::string label, double Scale, double Si
         Hists_ByType2[EventType::Types2.at(i_type)]->Scale(Scale);
         Hists_ByType2[EventType::Types2.at(i_type)]->Sumw2();
     }
+    for(size_t i_type = 0; i_type < EventType::KaonTypes.size(); i_type++){
+	Hists_ByKaonType[EventType::KaonTypes.at(i_type)]->Scale(Scale);
+	Hists_ByKaonType[EventType::KaonTypes.at(i_type)]->Sumw2();
+    }
     Hist_All->Sumw2();   
 
     Hists_ByProc["Signal"]->Scale(SignalScale);
     Hists_ByType["Signal"]->Scale(SignalScale);
     Hists_ByType2["DirectLambda"]->Scale(SignalScale);
+    Hists_ByKaonType["KaonSHORT"]->Scale(SignalScale);
 
     TH1D* h_errors = (TH1D*)Hist_All->Clone("h_errors");
 
     std::vector<TH1D*> Hists_ByType_v;
     std::vector<TH1D*> Hists_ByType2_v;
     std::vector<TH1D*> Hists_ByProc_v;
+    std::vector<TH1D*> Hists_ByKaonType_v;
 
     for(size_t i_t = 0; i_t < EventType::Types.size(); i_t++) Hists_ByType_v.push_back(Hists_ByType[EventType::Types.at(i_t)]); 
 
@@ -852,9 +882,12 @@ void SelectionManager::DrawHistograms(std::string label, double Scale, double Si
     
     for(size_t i_t = 0; i_t < EventType::Procs.size(); i_t++) Hists_ByProc_v.push_back(Hists_ByProc[EventType::Procs.at(i_t)]); 
 
+    for(size_t i_t = 0; i_t < EventType::KaonTypes.size(); i_t++) Hists_ByKaonType_v.push_back(Hists_ByKaonType[EventType::KaonTypes.at(i_t)]);
+
     HypPlot::DrawHistogram(Hists_ByType_v, h_errors, Hist_Data, EventType::Captions,PlotDir, label+"_ByType", {BeamMode}, {Run}, {POT}, SignalScale, fHasData, EventType::Colors, BinLabels, std::make_pair(0,0));
     HypPlot::DrawHistogram(Hists_ByType2_v, h_errors, Hist_Data, EventType::Captions2,PlotDir, label+"_ByType2", {BeamMode}, {Run}, {POT}, SignalScale, fHasData, EventType::Colors2, BinLabels, std::make_pair(0,0));
     HypPlot::DrawHistogram(Hists_ByProc_v, h_errors, Hist_Data, EventType::Captions3,PlotDir, label+"_ByProc", {BeamMode}, {Run}, {POT}, SignalScale, fHasData, EventType::Colors3, BinLabels, std::make_pair(0,0));
+    HypPlot::DrawHistogram(Hists_ByKaonType_v, h_errors, Hist_Data, EventType::KaonCaptions, PlotDir, label+"_ByKaonType", {BeamMode}, {Run}, {POT}, SignalScale, fHasData, EventType::KaonColours, BinLabels, std::make_pair(0,0));
 
     std::map<std::string,TH1D*>::iterator it;
     for (it = Hists_ByType.begin(); it != Hists_ByType.end(); it++) it->second->Write(it->first.c_str());
