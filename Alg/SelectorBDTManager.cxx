@@ -253,20 +253,25 @@ std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
    // Use truth information to choose the proton/pion candidates
 
    std::cout << "Good recon. " << e.GoodReco << std::endl;
-   if(!e.GoodReco) return {-1,-1};
+   //if(!e.GoodReco) return {-1,-1};
 
    int i_pion_plus_candidate=-1;
    int i_pion_minus_candidate=-1;
+
+	std::cout << "True index..." << e.TrueDecayPionPlusIndex << " " << e.TrueDecayPionMinusIndex << std::endl;
 
    for(size_t i_tr = 0; i_tr < e.TracklikePrimaryDaughters.size(); i_tr++){
       if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionPlusIndex) i_pion_plus_candidate = i_tr;
       if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionMinusIndex) i_pion_minus_candidate = i_tr;
    }
+   std::cout << "Pion candidates " << i_pion_plus_candidate << " " << i_pion_minus_candidate << std::endl;
 
    if(i_pion_plus_candidate == -1 || i_pion_minus_candidate == -1) return {-1,-1};
 
 
-   e.SelectorBDTScore = reader->EvaluateMVA(Alg + " method"); 
+   //e.SelectorBDTScore = reader->EvaluateMVA(Alg + " method"); 
+	
+	std::cout << "Finished nominate tracks cheat..." << std::endl;
 
    return std::make_pair(i_pion_plus_candidate, i_pion_minus_candidate);
 }

@@ -188,52 +188,78 @@ void SelectionManager::UseGenWeight(bool usegenweight){
 
 void SelectionManager::SetSignal(Event &e){
 
-    e.EventIsSignal = false;
-    e.GoodReco = false;
+    	e.EventIsSignal = false;
+    	e.GoodReco = false;
 
-    std::vector<bool> IsSignal_tmp = e.IsSignal;
+	std::vector<int> primaryNeutralKaonIndices;
+	for (const SimParticle& primaryKaon : e.PrimaryKaon) {
+    		if (primaryKaon.PDG == 311 || primaryKaon.PDG == -311) { 
+			primaryNeutralKaonIndices.push_back(primaryKaon.MCTruthIndex); 
+		}
+	}
 
-    for(size_t i_tr = 0; i_tr < e.NMCTruths; i_tr++){
+	bool isNeutralPrimaryKaon = false;
+	bool isKaonShort = false;
+	bool isKaonLong = false;
 
-        IsSignal_tmp.at(i_tr) = false;
+	double kaonShortModMomentum = -1;
+	
+	for (size_t i = 0; i < e.KaonDecay.size(); ++i) {
+		const SimParticle kaonDecayProduct = e.KaonDecay.at(i);
+		
+		for (int neutralIndex : primaryNeutralKaonIndices) {
+			if (kaonDecayProduct.MCTruthIndex == neutralIndex) {
+				isNeutralPrimaryKaon = true;
+				break;
+			}
+		}
+		
+		if (isNeutralPrimaryKaon) {
+			if (kaonDecayProduct.PDG == 310 || kaonDecayProduct.PDG == -310) { 
+				isKaonShort = true;
+				kaonShortModMomentum = kaonDecayProduct.ModMomentum;
+			}
+			if (kaonDecayProduct.PDG == 130 || kaonDecayProduct.PDG == -130) { 
+				isKaonLong = true;
+			}
+		}
+	}
+	
+	bool isPionPlus = false;
+	bool isPionMinus = false;
 
-        e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex.at(i_tr)); 
+	if (isNeutralPrimaryKaon == true) {
+		for (size_t i = 0; i < e.KaonDecay.size(); ++i) {
+			const SimParticle kaonDecayProduct = e.KaonDecay.at(i);
+			
+			if (kaonDecayProduct.PDG == 211 && kaonDecayProduct.ModMomentum > 0.1) {
+				isPionPlus = true;
+			}
+			if (kaonDecayProduct.PDG == -211 && kaonDecayProduct.ModMomentum > 0.1) {
+				isPionMinus = true;
+			}
+		}
+	}
 
-        if(e.IsSignal.at(i_tr)){
+	if (isKaonShort && isPionPlus && isPionMinus) e.EventIsSignal = true;
+	
+	if(!e.EventIsSignal) { return; }
 
-            bool found_pion_plus=false, found_pion_minus=false;
+	bool isPionPlusFound = false;
+	bool isPionMinusFound = false;
 
-            for(size_t i_d = 0; i_d < e.Decay.size(); i_d++){
+	for(size_t i = 0; i < e.TracklikePrimaryDaughters.size(); i++) {
+		if(e.TracklikePrimaryDaughters.at(i).TrackTruePDG == 211) {
+			isPionPlusFound = true;
+			e.TrueDecayPionPlusIndex = i;
+		}
+		if(e.TracklikePrimaryDaughters.at(i).TrackTruePDG == -211) {
+			isPionMinusFound = true;
+			e.TrueDecayPionMinusIndex = i;
+		}
+	}		
 
-                if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == +211 && e.Decay.at(i_d).ModMomentum > 0.1) found_pion_plus = true; 
-
-                if(e.Decay.at(i_d).MCTruthIndex == i_tr && e.Decay.at(i_d).PDG == -211 && e.Decay.at(i_d).ModMomentum > 0.1) found_pion_minus = true;
-            }                   
-
-            IsSignal_tmp.at(i_tr) = found_pion_plus && found_pion_minus && e.InActiveTPC.at(i_tr) && e.IsSignal.at(i_tr);
-        }
-    }
-
-    e.IsSignal = IsSignal_tmp;
-
-    e.EventIsSignal = std::find(e.IsSignal.begin(),e.IsSignal.end(), true) != e.IsSignal.end();
-
-    bool found_pion_plus = false, found_pion_minus = false;
-
-    if(!e.EventIsSignal) return;
-
-    for(size_t i_tr=0;i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
-        if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == 211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 7){ 
-            found_pion_plus = true; 
-            e.TrueDecayPionPlusIndex= i_tr; 
-        }
-        if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 7){
-            found_pion_minus = true;
-            e.TrueDecayPionMinusIndex = i_tr; 
-        }
-    }
-
-    e.GoodReco = e.EventIsSignal && found_pion_plus && found_pion_minus;
+	if(e.EventIsSignal && isPionPlusFound && isPionMinusFound) e.GoodReco = true;
 
 }
 
@@ -256,6 +282,7 @@ void SelectionManager::DeclareCuts(){
 // Add an event to a cut
 
 void SelectionManager::UpdateCut(const Event &e, bool Passed, std::string CutName){
+    std::cout << "Updating cut..." << std::endl;
 
     for(size_t i_c = 0; i_c < Cuts.size(); i_c++){
 
