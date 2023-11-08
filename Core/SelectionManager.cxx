@@ -221,11 +221,11 @@ void SelectionManager::SetSignal(Event &e){
 			if (kaonDecayProduct.PDG == 310 || kaonDecayProduct.PDG == -310) { 
 				isKaonShort = true;
 				kaonShortModMomentum = kaonDecayProduct.ModMomentum;
-				e.TrueNeutralKaonIndex = kaonDecayProduct.neutralIndex;
+				e.TrueNeutralKaonIndex = kaonDecayProduct.MCTruthIndex;
 			}
 			if (kaonDecayProduct.PDG == 130 || kaonDecayProduct.PDG == -130) { 
 				isKaonLong = true;
-				e.TrueNeutralKaonIndex = kaonDecayProduct.neutralIndex;
+				e.TrueNeutralKaonIndex = kaonDecayProduct.MCTruthIndex;
 			}
 		}
 	}
@@ -463,6 +463,8 @@ bool SelectionManager::ChoosePionPairCandidates(Event &e, bool cheat){
         UpdateCut(e, passed, "DecaySelector");
         return false;
     }
+
+    std::cout << "Choosing pion pair candidates..." << std::endl;
 
     e.DecayPionPlusCandidate = e.TracklikePrimaryDaughters.at(candidates.first);
     e.DecayPionMinusCandidate = e.TracklikePrimaryDaughters.at(candidates.second);
