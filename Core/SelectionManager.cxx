@@ -188,8 +188,8 @@ void SelectionManager::UseGenWeight(bool usegenweight){
 
 void SelectionManager::SetSignal(Event &e){
 
-    	e.EventIsSignal = false;
-    	e.GoodReco = false;
+    e.EventIsSignal = false;
+    e.GoodReco = false;
 
 	e.EventHasKaonShort = false;
 	e.EventHasKaonLong = false;
@@ -455,16 +455,13 @@ bool SelectionManager::ChoosePionPairCandidates(Event &e, bool cheat){
 
     if(cheat) candidates = a_SelectorBDTManager.NominateTracksCheat(e);
     else candidates = a_SelectorBDTManager.NominateTracks(e);
-    std::cout << "Passed candidate selection..." << std::endl;
 
     bool passed = candidates.first != -1 && candidates.second != -1;
-    std::cout << "First " << candidates.first << "   Second " << candidates.second << std::endl;
+    
     if(!passed){
         UpdateCut(e, passed, "DecaySelector");
         return false;
     }
-
-    std::cout << "Choosing pion pair candidates..." << std::endl;
 
     e.DecayPionPlusCandidate = e.TracklikePrimaryDaughters.at(candidates.first);
     e.DecayPionMinusCandidate = e.TracklikePrimaryDaughters.at(candidates.second);

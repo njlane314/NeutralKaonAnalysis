@@ -38,18 +38,18 @@ struct Cut {
     double SignalPurityErrorLow() { return PurityError_Low(fSignalEventsOut,fEventsOut-fSignalEventsOut,sqrt(fSignalEventsOutVar),sqrt(fEventsOutVar-fSignalEventsOutVar)); }
     double SignalPurityErrorHigh() { return PurityError_High(fSignalEventsOut,fEventsOut-fSignalEventsOut,sqrt(fSignalEventsOutVar),sqrt(fEventsOutVar-fSignalEventsOutVar)); }
 
-   double GoodRecoEfficiency(){ return fGoodRecoEventsOut/fGoodRecoEvents; }
-   double GoodRecoPurity(){ return fGoodRecoEventsOut/fEventsOut; }
+    double GoodRecoEfficiency(){ return fGoodRecoEventsOut/fGoodRecoEvents; }
+    double GoodRecoPurity(){ return fGoodRecoEventsOut/fEventsOut; }
 
-   double Significance(){ return fSignalEventsOut/sqrt(fEventsOut); }
+    double Significance(){ return fSignalEventsOut/sqrt(fEventsOut); }
 
-   double BackgroundAcceptance(){ return (fEventsOut-fSignalEventsOut)/(fTotalEvents - fSignalEvents); }
+    double BackgroundAcceptance(){ return (fEventsOut-fSignalEventsOut)/(fTotalEvents - fSignalEvents); }
 
-   double PredictedSignal(){ return fSignalEventsOut; };
-   double PredictedSignalError(){ return sqrt(fSignalEventsOutVar); };
-   
-   double PredictedBackground(){ return fEventsOut-fSignalEventsOut; };
-   double PredictedBackgroundError(){ return sqrt(fEventsOutVar-fSignalEventsOutVar); };
+    double PredictedSignal(){ return fSignalEventsOut; };
+    double PredictedSignalError(){ return sqrt(fSignalEventsOutVar); };
+    
+    double PredictedBackground(){ return fEventsOut-fSignalEventsOut; };
+    double PredictedBackgroundError(){ return sqrt(fEventsOutVar-fSignalEventsOutVar); };
     
     void Reset(){
         fTotalEvents=0;
