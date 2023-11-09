@@ -188,87 +188,36 @@ void SelectionManager::UseGenWeight(bool usegenweight){
 
 void SelectionManager::SetSignal(Event &e){
 
-    e.EventIsSignal = false;
-    e.GoodReco = false;
+    	e.GoodReco = false;
 
-	e.EventHasKaonShort = false;
-	e.EventHasKaonLong = false;
+	std::vector<bool> IsSignal_tmp = e.IsSignal;
+	for(size_t i_tr = 0; i_tr < e.NMCTruths; i_tr++){
 
-	std::vector<int> primaryNeutralKaonIndices;
-	for (const SimParticle& primaryKaon : e.PrimaryKaon) {
-    		if (primaryKaon.PDG == 311 || primaryKaon.PDG == -311) { 
-			primaryNeutralKaonIndices.push_back(primaryKaon.MCTruthIndex); 
-		}
+		e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex.at(i_tr));
+		IsSignal_tmp.at(i_tr) = e.IsK0SCharged.at(i_tr) && e.InActiveTPC.at(i_tr);
 	}
-
-	bool isNeutralPrimaryKaon = false;
-	bool isKaonShort = false;
-	bool isKaonLong = false;
-
-	double kaonShortModMomentum = -1;
 	
-	for (size_t i = 0; i < e.KaonDecay.size(); ++i) {
-		const SimParticle kaonDecayProduct = e.KaonDecay.at(i);
-		
-		for (int neutralIndex : primaryNeutralKaonIndices) {
-			if (kaonDecayProduct.MCTruthIndex == neutralIndex) {
-				isNeutralPrimaryKaon = true;
-				break;
-			}
-		}
-		
-		if (isNeutralPrimaryKaon) {
-			if (kaonDecayProduct.PDG == 310 || kaonDecayProduct.PDG == -310) { 
-				isKaonShort = true;
-				kaonShortModMomentum = kaonDecayProduct.ModMomentum;
-				e.TrueNeutralKaonIndex = kaonDecayProduct.MCTruthIndex;
-			}
-			if (kaonDecayProduct.PDG == 130 || kaonDecayProduct.PDG == -130) { 
-				isKaonLong = true;
-				e.TrueNeutralKaonIndex = kaonDecayProduct.MCTruthIndex;
-			}
-		}
-	}
+	e.IsSignal = IsSignal_tmp;
 
-	e.EventHasKaonLong = isKaonLong;
-	e.EventHasKaonShort = isKaonShort;
+	e.EventIsSignal = std::find(e.IsSignal.begin(), e.IsSignal.end(), true) != e.IsSignal.end();
+
+	bool found_pion_plus = false;
+	bool found_pion_minus = false;
 	
-	bool isPionPlus = false;
-	bool isPionMinus = false;
+	if(!e.EventIsSignal) return;
 
-	if (isNeutralPrimaryKaon == true) {
-		for (size_t i = 0; i < e.KaonDecay.size(); ++i) {
-			const SimParticle kaonDecayProduct = e.KaonDecay.at(i);
-			
-			if (kaonDecayProduct.PDG == 211 && kaonDecayProduct.ModMomentum > 0.1) {
-				isPionPlus = true;
-			}
-			if (kaonDecayProduct.PDG == -211 && kaonDecayProduct.ModMomentum > 0.1) {
-				isPionMinus = true;
-			}
-		}
-	}
+	for(size_t i_tr = 0; i_tr < e.TracklikePrimaryDaughters.size(); i_tr++){
+      		if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == +211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 7){ 
+         		found_pion_plus = true; 
+         		e.TrueDecayPionPlusIndex = i_tr; 
+      		}
+      		if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 7){
+         		found_pion_minus = true;
+         		e.TrueDecayPionMinusIndex = i_tr; 
+      		}
+  	 }
 
-	if (isKaonShort && isPionPlus && isPionMinus) e.EventIsSignal = true;
-	
-	if(!e.EventIsSignal) { return; }
-
-	bool isPionPlusFound = false;
-	bool isPionMinusFound = false;
-
-	for(size_t i = 0; i < e.TracklikePrimaryDaughters.size(); i++) {
-		if(e.TracklikePrimaryDaughters.at(i).TrackTruePDG == 211) {
-			isPionPlusFound = true;
-			e.TrueDecayPionPlusIndex = i;
-		}
-		if(e.TracklikePrimaryDaughters.at(i).TrackTruePDG == -211) {
-			isPionMinusFound = true;
-			e.TrueDecayPionMinusIndex = i;
-		}
-	}		
-
-	if(e.EventIsSignal && isPionPlusFound && isPionMinusFound) e.GoodReco = true;
-
+   	e.GoodReco = e.EventIsSignal && found_pion_plus && found_pion_minus;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -290,7 +239,6 @@ void SelectionManager::DeclareCuts(){
 // Add an event to a cut
 
 void SelectionManager::UpdateCut(const Event &e, bool Passed, std::string CutName){
-    std::cout << "Updating cut..." << std::endl;
 
     for(size_t i_c = 0; i_c < Cuts.size(); i_c++){
 
@@ -476,6 +424,8 @@ bool SelectionManager::ChoosePionPairCandidates(Event &e, bool cheat){
 
     UpdateCut(e,passed,"DecaySelector");
 
+
+    std::cout << "Passed the pion pair candidate selection" << std::endl;
     return true;
 
 }

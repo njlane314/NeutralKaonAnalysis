@@ -26,6 +26,8 @@ struct Event {
     Bool_t EventHasHyperon = false;
     Bool_t EventHasNeutronScatter = false;
     Bool_t EventIsSignalSigmaZero = false;
+    Bool_t EventHasKaon = false;
+    Bool_t EventHasK0S = false;
     
     Bool_t EventHasKaonShort = false;
     Bool_t EventHasKaonLong = false;
@@ -44,6 +46,9 @@ struct Event {
     vector<bool> IsAssociatedHyperon;
     vector<bool> IsSignal;
     vector<bool> IsSignalSigmaZero;
+    vector<bool> IsKaon;
+    vector<bool> IsK0S;
+    vector<bool> IsK0SCharged;
     Bool_t GoodReco;
             
     vector<TVector3> TruePrimaryVertex;

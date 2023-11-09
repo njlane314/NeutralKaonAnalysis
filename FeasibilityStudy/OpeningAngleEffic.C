@@ -19,7 +19,7 @@ void OpeningAngleEffic(){
 	
 	SampleNames.push_back("GENIE Background");
 	SampleTypes.push_back("Background");
-	SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Kaon_Test.root");
+	SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Kaon.root");
 
 	SelectionParameters P = P_FHC_Tune_325_NoBDT;
 	SelectionManager M(P);
@@ -45,7 +45,7 @@ void OpeningAngleEffic(){
 			
 			bool bPassed = false;
 
-			if(!M.FiducialVolumeCut(evt) && !M.TrackCut(evt) && !M.ShowerCut(evt) && !M.ChooseMuonCandidate(evt) && !M.ChoosePionPairCandidates(evt)) bPassed = true;
+			if(!M.FiducialVolumeCut(evt) && !M.ChoosePionPairCandidates(evt, true)) bPassed = true;
 
 			double openingAngle = PionPairOpeningAngle(evt.DecayPionPlusCandidate, evt.DecayPionMinusCandidate);
 			std::cout << "Opening angle " << openingAngle << std::endl;

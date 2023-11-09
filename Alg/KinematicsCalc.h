@@ -37,7 +37,6 @@ inline double PionPairInvariantMass(RecoParticle PionPlus, RecoParticle PionMinu
 
 inline double PionPairOpeningAngle(RecoParticle PionPlus, RecoParticle PionMinus){
 
-   std::cout << PionPlus.TrackDirectionX << std::endl;
    TVector3 PionPlusDir(PionPlus.TrackDirectionX, PionPlus.TrackDirectionY, PionPlus.TrackDirectionZ);
    TVector3 PionMinusDir(PionMinus.TrackDirectionX, PionMinus.TrackDirectionY, PionMinus.TrackDirectionZ);
 

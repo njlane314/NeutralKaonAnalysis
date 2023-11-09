@@ -9,7 +9,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so);
 #include "Parameters.h"
 #include "SampleSets_Example.h"
 
-void RunSelection(){
+void EstimateStats(){
 
   double POT = 1.0e21; // POT to scale samples to
 
@@ -30,7 +30,8 @@ void RunSelection(){
   double Signal = 0.0;
   double Signal_var = 0.0;
 
-  E.SetFile("analysisOutputFHC_GENIE_Background_Overlay_prodgenie_numi_uboone_overlay_fhc_mcc9_run1_v28_v2_sample0.root","Background");
+  E.SetFile("analysisOutputFHC_GENIE_Overlay_Kaon.root", "Background");
+  //E.SetFile("analysisOutputFHC_GENIE_Background_Overlay_prodgenie_numi_uboone_overlay_fhc_mcc9_run1_v28_v2_sample0.root","Background");
   M.AddSample("Background","Background",E.GetPOT());
 
   // Event Loop

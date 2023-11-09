@@ -73,9 +73,14 @@ class EventAssembler {
         vector<bool>* IsAssociatedHyperon=0;
         vector<bool>* IsSignal=0;
         vector<bool>* IsSignalSigmaZero=0;
+	vector<bool>* IsKaon=0;
+	vector<bool>* IsK0S=0;
+	vector<bool>* IsK0SCharged=0;
         Bool_t GoodReco;
         Bool_t EventHasNeutronScatter;
         Bool_t EventHasHyperon;
+	Bool_t EventHasKaon;
+	Bool_t EventHasK0S;
 
         // Truth variables
         std::vector<SimParticle>* Neutrino=0;

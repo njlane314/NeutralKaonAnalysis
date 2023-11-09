@@ -1,7 +1,7 @@
-void Efficiency__Ratio()
+void Efficiency_openingangle_Ratio()
 {
 //=========Macro generated from canvas: c1/c1
-//=========  (Thu Nov  9 05:45:46 2023) by ROOT version 6.12/06
+//=========  (Thu Nov  9 06:15:31 2023) by ROOT version 6.12/06
    TCanvas *c1 = new TCanvas("c1", "c1",0,0,800,600);
    c1->Range(0,0,1,1);
    c1->SetFillColor(0);
@@ -63,7 +63,7 @@ void Efficiency__Ratio()
    TPad *pad1 = new TPad("pad1", "pad1",0,0,1,0.85);
    pad1->Draw();
    pad1->cd();
-   pad1->Range(-0.125,-624.5787,1.125,5621.208);
+   pad1->Range(-22.5,-97.75281,202.5,879.7753);
    pad1->SetFillColor(0);
    pad1->SetBorderMode(0);
    pad1->SetBorderSize(2);
@@ -74,21 +74,23 @@ void Efficiency__Ratio()
    THStack *hs = new THStack();
    hs->SetName("hs");
    hs->SetTitle("");
-   hs->SetMaximum(5558.75);
+   hs->SetMaximum(870);
    
-   TH1F *hs_stack_1 = new TH1F("hs_stack_1","",10,0,1);
+   TH1F *hs_stack_1 = new TH1F("hs_stack_1","",18,0,180);
    hs_stack_1->SetMinimum(0);
-   hs_stack_1->SetMaximum(5558.75);
+   hs_stack_1->SetMaximum(870);
    hs_stack_1->SetDirectory(0);
    hs_stack_1->SetStats(0);
 
    ci = TColor::GetColor("#000099");
    hs_stack_1->SetLineColor(ci);
+   hs_stack_1->GetXaxis()->SetTitle("Opening Angle (deg)");
    hs_stack_1->GetXaxis()->SetLabelFont(42);
    hs_stack_1->GetXaxis()->SetLabelSize(0.045);
    hs_stack_1->GetXaxis()->SetTitleSize(0.05);
    hs_stack_1->GetXaxis()->SetTitleOffset(0.93);
    hs_stack_1->GetXaxis()->SetTitleFont(42);
+   hs_stack_1->GetYaxis()->SetTitle(" Events");
    hs_stack_1->GetYaxis()->SetLabelFont(42);
    hs_stack_1->GetYaxis()->SetLabelSize(0.045);
    hs_stack_1->GetYaxis()->SetTitleSize(0.05);
@@ -101,17 +103,32 @@ void Efficiency__Ratio()
    hs->SetHistogram(hs_stack_1);
    
    
-   TH1D *h_Before_stack_1 = new TH1D("h_Before_stack_1"," (total)",10,0,1);
-   h_Before_stack_1->SetBinContent(1,4447);
-   h_Before_stack_1->SetBinContent(11,17);
-   h_Before_stack_1->SetEntries(4464);
+   TH1D *h_Before_stack_1 = new TH1D("h_Before_stack_1"," (total)",18,0,180);
+   h_Before_stack_1->SetBinContent(1,193);
+   h_Before_stack_1->SetBinContent(2,532);
+   h_Before_stack_1->SetBinContent(3,696);
+   h_Before_stack_1->SetBinContent(4,649);
+   h_Before_stack_1->SetBinContent(5,515);
+   h_Before_stack_1->SetBinContent(6,359);
+   h_Before_stack_1->SetBinContent(7,230);
+   h_Before_stack_1->SetBinContent(8,156);
+   h_Before_stack_1->SetBinContent(9,89);
+   h_Before_stack_1->SetBinContent(10,50);
+   h_Before_stack_1->SetBinContent(11,43);
+   h_Before_stack_1->SetBinContent(12,19);
+   h_Before_stack_1->SetBinContent(13,18);
+   h_Before_stack_1->SetBinContent(14,11);
+   h_Before_stack_1->SetBinContent(15,4);
+   h_Before_stack_1->SetBinContent(16,5);
+   h_Before_stack_1->SetBinContent(17,3);
+   h_Before_stack_1->SetEntries(3572);
    h_Before_stack_1->SetLineWidth(2);
-   h_Before_stack_1->GetXaxis()->SetTitle("Neutrino Enery [GeV]");
+   h_Before_stack_1->GetXaxis()->SetTitle("Opening Angle (deg)");
    h_Before_stack_1->GetXaxis()->SetLabelFont(42);
    h_Before_stack_1->GetXaxis()->SetLabelSize(0.035);
    h_Before_stack_1->GetXaxis()->SetTitleSize(0.035);
    h_Before_stack_1->GetXaxis()->SetTitleFont(42);
-   h_Before_stack_1->GetYaxis()->SetTitle(" Efficiency");
+   h_Before_stack_1->GetYaxis()->SetTitle(" Events");
    h_Before_stack_1->GetYaxis()->SetLabelFont(42);
    h_Before_stack_1->GetYaxis()->SetLabelSize(0.035);
    h_Before_stack_1->GetYaxis()->SetTitleSize(0.035);
@@ -123,17 +140,30 @@ void Efficiency__Ratio()
    h_Before_stack_1->GetZaxis()->SetTitleFont(42);
    hs->Add(h_Before_stack_1,"");
    
-   TH1D *h_After_stack_2 = new TH1D("h_After_stack_2"," (passed)",10,0,1);
-   h_After_stack_2->SetBinContent(1,799);
-   h_After_stack_2->SetEntries(799);
+   TH1D *h_After_stack_2 = new TH1D("h_After_stack_2"," (passed)",18,0,180);
+   h_After_stack_2->SetBinContent(1,10);
+   h_After_stack_2->SetBinContent(2,47);
+   h_After_stack_2->SetBinContent(3,65);
+   h_After_stack_2->SetBinContent(4,64);
+   h_After_stack_2->SetBinContent(5,42);
+   h_After_stack_2->SetBinContent(6,35);
+   h_After_stack_2->SetBinContent(7,33);
+   h_After_stack_2->SetBinContent(8,10);
+   h_After_stack_2->SetBinContent(9,10);
+   h_After_stack_2->SetBinContent(10,7);
+   h_After_stack_2->SetBinContent(11,8);
+   h_After_stack_2->SetBinContent(12,1);
+   h_After_stack_2->SetBinContent(13,4);
+   h_After_stack_2->SetBinContent(17,1);
+   h_After_stack_2->SetEntries(337);
    h_After_stack_2->SetLineColor(3);
    h_After_stack_2->SetLineWidth(2);
-   h_After_stack_2->GetXaxis()->SetTitle("Neutrino Enery [GeV]");
+   h_After_stack_2->GetXaxis()->SetTitle("Opening Angle (deg)");
    h_After_stack_2->GetXaxis()->SetLabelFont(42);
    h_After_stack_2->GetXaxis()->SetLabelSize(0.035);
    h_After_stack_2->GetXaxis()->SetTitleSize(0.035);
    h_After_stack_2->GetXaxis()->SetTitleFont(42);
-   h_After_stack_2->GetYaxis()->SetTitle(" Efficiency");
+   h_After_stack_2->GetYaxis()->SetTitle(" Events");
    h_After_stack_2->GetYaxis()->SetLabelFont(42);
    h_After_stack_2->GetYaxis()->SetLabelSize(0.035);
    h_After_stack_2->GetYaxis()->SetTitleSize(0.035);
@@ -145,7 +175,7 @@ void Efficiency__Ratio()
    h_After_stack_2->GetZaxis()->SetTitleFont(42);
    hs->Add(h_After_stack_2,"");
    hs->Draw("nostack e0");
-   TGaxis *gaxis = new TGaxis(1,0,1,5558.75,0,1.008,510,"+L");
+   TGaxis *gaxis = new TGaxis(180,0,180,870,0,1.008,510,"+L");
    gaxis->SetLabelOffset(0.005);
    gaxis->SetLabelSize(0.045);
    gaxis->SetTickSize(0.03);
@@ -160,29 +190,53 @@ void Efficiency__Ratio()
    gaxis->SetLabelColor(ci);
    gaxis->Draw();
    
-   Double_t Graph0_fx3001[10] = {
-   0.05,
-   0.15,
-   0.25,
-   0.35,
-   0.45,
-   0.55,
-   0.65,
-   0.75,
-   0.85,
-   0.95};
-   Double_t Graph0_fy3001[10] = {
-   990.8234,
-   2757.316,
-   2757.316,
-   2757.316,
-   2757.316,
-   2757.316,
-   2757.316,
-   2757.316,
-   2757.316,
-   2757.316};
-   Double_t Graph0_felx3001[10] = {
+   Double_t Graph0_fx3001[18] = {
+   5,
+   15,
+   25,
+   35,
+   45,
+   55,
+   65,
+   75,
+   85,
+   95,
+   105,
+   115,
+   125,
+   135,
+   145,
+   155,
+   165,
+   175};
+   Double_t Graph0_fy3001[18] = {
+   44.71996,
+   76.25089,
+   80.60516,
+   85.11263,
+   70.38835,
+   84.14577,
+   123.8354,
+   55.32662,
+   96.97699,
+   120.8333,
+   160.5759,
+   45.42606,
+   191.7989,
+   0,
+   0,
+   0,
+   287.6984,
+   431.5476};
+   Double_t Graph0_felx3001[18] = {
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
    0,
    0,
    0,
@@ -193,18 +247,34 @@ void Efficiency__Ratio()
    0,
    0,
    0};
-   Double_t Graph0_fely3001[10] = {
-   31.30539,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975};
-   Double_t Graph0_fehx3001[10] = {
+   Double_t Graph0_fely3001[18] = {
+   12.42576,
+   10.11964,
+   9.132848,
+   9.690353,
+   9.88993,
+   12.79368,
+   18.91626,
+   15.28446,
+   26.17371,
+   37.68631,
+   46.09786,
+   31.93146,
+   72.5345,
+   0,
+   0,
+   0,
+   162.8307,
+   293.4524};
+   Double_t Graph0_fehx3001[18] = {
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
    0,
    0,
    0,
@@ -215,18 +285,26 @@ void Efficiency__Ratio()
    0,
    0,
    0};
-   Double_t Graph0_fehy3001[10] = {
-   31.82898,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975,
-   1874.975};
-   TGraphAsymmErrors *grae = new TGraphAsymmErrors(10,Graph0_fx3001,Graph0_fy3001,Graph0_felx3001,Graph0_fehx3001,Graph0_fely3001,Graph0_fehy3001);
+   Double_t Graph0_fehy3001[18] = {
+   15.0789,
+   10.99947,
+   9.797168,
+   10.3935,
+   10.81403,
+   14.06738,
+   20.67161,
+   18.46816,
+   31.08389,
+   45.70247,
+   54.14892,
+   59.60471,
+   88.74498,
+   78.18279,
+   175.8864,
+   149.2834,
+   202.9973,
+   293.4524};
+   TGraphAsymmErrors *grae = new TGraphAsymmErrors(18,Graph0_fx3001,Graph0_fy3001,Graph0_felx3001,Graph0_fehx3001,Graph0_fely3001,Graph0_fehy3001);
    grae->SetName("Graph0");
    grae->SetTitle("Graph");
    grae->SetFillStyle(1000);
@@ -240,9 +318,9 @@ void Efficiency__Ratio()
    grae->SetMarkerStyle(5);
    grae->SetMarkerSize(2);
    
-   TH1F *Graph_Graph3001 = new TH1F("Graph_Graph3001","Graph",100,0,1.04);
-   Graph_Graph3001->SetMinimum(507.3462);
-   Graph_Graph3001->SetMaximum(5007.287);
+   TH1F *Graph_Graph3001 = new TH1F("Graph_Graph3001","Graph",100,0,192);
+   Graph_Graph3001->SetMinimum(0);
+   Graph_Graph3001->SetMaximum(797.5);
    Graph_Graph3001->SetDirectory(0);
    Graph_Graph3001->SetStats(0);
 

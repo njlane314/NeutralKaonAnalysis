@@ -929,6 +929,8 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    hs->GetYaxis()->SetTitleOffset(Single_YaxisTitleOffset);
    hs->GetXaxis()->SetLabelSize(Single_XaxisLabelSize);
    hs->GetYaxis()->SetLabelSize(Single_YaxisLabelSize);
+   hs->GetXaxis()->SetTitle(h_Before->GetXaxis()->GetTitle());
+   hs->GetYaxis()->SetTitle(h_Before->GetYaxis()->GetTitle());
 
    hs->SetMaximum(1.25*hs->GetMaximum("nostack"));
    if(POT.size() > 1) hs->SetMaximum(hs->GetMaximum("nostack")*1.5);

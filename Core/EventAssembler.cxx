@@ -61,9 +61,14 @@ void EventAssembler::SetFile(string infilename, string sampletype){
     t_in->SetBranchStatus("IsAssociatedHyperon",1);
     t_in->SetBranchStatus("IsSignal",1);
     t_in->SetBranchStatus("IsSignalSigmaZero",1);
+    t_in->SetBranchStatus("IsKaon",1);
+    t_in->SetBranchStatus("IsK0S",1);
+    t_in->SetBranchStatus("IsK0SCharged",1);
     t_in->SetBranchStatus("GoodReco",1);
     t_in->SetBranchStatus("EventHasNeutronScatter",1);
     t_in->SetBranchStatus("EventHasHyperon",1);
+    t_in->SetBranchStatus("EventHasKaon",1);
+    t_in->SetBranchStatus("EventHasK0S",1);
     t_in->SetBranchStatus("TruePrimaryVertex_X",1);
     t_in->SetBranchStatus("TruePrimaryVertex_Y",1);
     t_in->SetBranchStatus("TruePrimaryVertex_Z",1);
@@ -111,9 +116,14 @@ void EventAssembler::SetFile(string infilename, string sampletype){
     t_in->SetBranchAddress("IsAssociatedHyperon", &IsAssociatedHyperon);
     t_in->SetBranchAddress("IsSignal", &IsSignal);
     t_in->SetBranchAddress("IsSignalSigmaZero", &IsSignalSigmaZero);
+    t_in->SetBranchAddress("IsKaon", &IsKaon);
+    t_in->SetBranchAddress("IsK0S", &IsK0S);
+    t_in->SetBranchAddress("IsK0SCharged", &IsK0SCharged);
     t_in->SetBranchAddress("GoodReco", &GoodReco);
     t_in->SetBranchAddress("EventHasNeutronScatter", &EventHasNeutronScatter);
     t_in->SetBranchAddress("EventHasHyperon", &EventHasHyperon);
+    t_in->SetBranchAddress("EventHasKaon", &EventHasKaon);
+    t_in->SetBranchAddress("EventHasK0S", &EventHasK0S);
 
     t_in->SetBranchAddress("TruePrimaryVertex_X", &TruePrimaryVertex_X);
     t_in->SetBranchAddress("TruePrimaryVertex_Y", &TruePrimaryVertex_Y);
@@ -239,14 +249,19 @@ Event EventAssembler::GetEvent(int i){
     e.IsSignal = *IsSignal;
     e.IsSignalSigmaZero = *IsSignalSigmaZero;
     e.IsAssociatedHyperon = *IsAssociatedHyperon;
+    e.IsKaon = *IsKaon;
+    e.IsK0S = *IsK0S;
+    e.IsK0SCharged = *IsK0SCharged;
     e.GoodReco = GoodReco;
     e.EventHasNeutronScatter = EventHasNeutronScatter;
     e.EventHasHyperon = EventHasHyperon;
+    e.EventHasKaon = EventHasKaon;
+    e.EventHasK0S = EventHasK0S;
 
     e.NMCTruths = NMCTruths;
     e.NMCTruthsInTPC = NMCTruthsInTPC;
 
-   e.TruePrimaryVertex.clear();
+    e.TruePrimaryVertex.clear();
 
     for(size_t i_v = 0; i_v < TruePrimaryVertex_X->size(); i_v++)
         e.TruePrimaryVertex.push_back(TVector3(TruePrimaryVertex_X->at(i_v), TruePrimaryVertex_Y->at(i_v), TruePrimaryVertex_Z->at(i_v)));

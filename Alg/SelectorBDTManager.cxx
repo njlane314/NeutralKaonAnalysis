@@ -265,8 +265,6 @@ std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
    if(i_pion_plus_candidate == -1 || i_pion_minus_candidate == -1) return {-1,-1};
 
    //e.SelectorBDTScore = reader->EvaluateMVA(Alg + " method"); 
-	
-	std::cout << "Finished nominate tracks cheat..." << std::endl;
 
    return std::make_pair(i_pion_plus_candidate, i_pion_minus_candidate);
 }
