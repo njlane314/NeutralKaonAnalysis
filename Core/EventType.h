@@ -4,23 +4,41 @@
 #include "Event.h"
 
 namespace EventType {
+	
+    const std::vector<std::string> KaonProductionTypes = {
+        "DIRECT", "HYPERON_DECAY_LAMBDA", "HYPERON_DECAY_SIGMA", "ASSOCIATED", "SECONDARY", "EXT", "DIRT"
+    };
+    const std::vector<std::string> KaonProductionCaption = {
+        "Direct", "Lambda Decay", "Sigma Decay", "Associated", "Secondary", "Cosmic", "Dirt"
+    };
+    const std::vector<int> KaonProductionColours = {
+        8, 46, 38, 30, 15, 0, 2, 3
+    };
 
-    const std::vector<std::string> Types = {"Signal",/*"OtherHYP",*/"OtherNu","Dirt","EXT"/*,"Data","All"*/};
-    const std::vector<std::string> Captions = {"Signal",/*"Other HYP",*/"Other #nu","Dirt","Cosmic"/*,"Data"*/};
-    const std::vector<int> Colors = {8,/*46,*/38,30,15,0};
-
-    //const std::vector<std::string> Types2 = {"DirectLambda","RESLambda","DISLambda","DirectHYP","RESHYP","DISHYP","Neutron","Other","Dirt","EXT","Data","All"};
-    const std::vector<std::string> Types2 = {"DirectLambda","DirectHYP","Neutron","Dirt","RESLambda","RESHYP","Other","EXT","DISLambda","DISHYP"/*,"Data"*/};
-    const std::vector<std::string> Captions2 = {"Direct #Lambda","Direct Hyp","Neutron","Dirt","RES #Lambda","RES Hyp","Other #nu","Cosmic","DIS #Lambda","DIS Hyp"/*,"Data"*/};
-    const std::vector<int> Colors2 = {8,kBlue-7,kRed-7,kCyan+3,kGreen+3,kBlue-10,kRed-10,kMagenta-7,30,15,0};
-
-    const std::vector<std::string> Procs = {"Signal","OtherHYP","EXT","Dirt","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","Other"/*,"Data"*/};
-    const std::vector<std::string> Captions3 = {"Signal","Other HYP","Cosmic","Dirt","CCQEL","CCRES","CCDIS","CCMEC","CCCOH","NC","Other"/*,"Data"*/};
-    const std::vector<int> Colors3 = {8,46,2,3,4,5,6,7,9,11,12,30,15,0};
-
-    const std::vector<std::string> KaonTypes = {"KaonSHORT", "KaonLONG", "Other"};
-    const std::vector<std::string> KaonCaptions = {"Kaon K^{0}_{S}", "Kaon K^{0}_{L}", "Other"};
-    const std::vector<int> KaonColours = {8, kGreen+3, 38};
+    const std::vector<std::string> NeutrinoInteractionTypes = {
+        "CCQE", "NCQE", "CCRES", "NCRES", "CCDIS", "NCDIS", "CCMEC", "NCMEC", "CCCOH", "NCCOH", "NC", "EXT", "DIRT", "NEUTRON", "OTHER"
+    };
+    const std::vector<std::string> NeutrinoInteractionCaptions = {
+        "Charged Current Quasi-Elastic", "Neutral Current Quasi-Elastic",
+        "Charged Current Resonance", "Neutral Current Resonance",
+        "Charged Current Deep Inelastic Scattering", "Neutral Current Deep Inelastic Scattering",
+        "Charged Current Meson Exchange Current", "Neutral Current Meson Exchange Current",
+        "Charged Current Coherent", "Neutral Current Coherent",
+        "Neutral Current", "External", "Dirt", "Neutron Interaction", "Other"
+    };
+    
+    const std::vector<int> NeutrinoInteractionColors = {
+        kBlue, kAzure, // Colors for CCQE, NCQE
+        kGreen, kSpring, // Colors for CCRES, NCRES
+        kRed, kOrange, // Colors for CCDIS, NCDIS
+        kMagenta, kViolet, // Colors for CCMEC, NCMEC
+        kYellow, kTeal, // Colors for CCCOH, NCCOH
+        kGray, // Color for NC
+        kBlack, // Color for EXT
+        kBrown, // Color for DIRT
+        kCyan, // Color for NEUTRON
+        kPink // Color for OTHER
+    };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
