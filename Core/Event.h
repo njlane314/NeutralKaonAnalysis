@@ -28,9 +28,6 @@ struct Event {
     Bool_t EventIsSignalSigmaZero = false;
     Bool_t EventHasKaon = false;
     Bool_t EventHasK0S = false;
-    
-    Bool_t EventHasKaonShort = false;
-    Bool_t EventHasKaonLong = false;
 
     // Flags for each MCTruth
     vector<string> Mode;

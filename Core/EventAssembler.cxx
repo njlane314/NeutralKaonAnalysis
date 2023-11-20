@@ -252,6 +252,7 @@ Event EventAssembler::GetEvent(int i){
     e.IsKaon = *IsKaon;
     e.IsK0S = *IsK0S;
     e.IsK0SCharged = *IsK0SCharged;
+    
     e.GoodReco = GoodReco;
     e.EventHasNeutronScatter = EventHasNeutronScatter;
     e.EventHasHyperon = EventHasHyperon;

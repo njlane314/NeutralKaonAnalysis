@@ -25,8 +25,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
-      M.UseFluxWeight(false);
-      M.UseGenWeight(false);
+      //M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
 
       // Setup the histograms
       M.SetupHistograms(100,0.0,5.0,";Neutrino Energy (GeV);Events");

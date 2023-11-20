@@ -257,11 +257,9 @@ std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
    int i_pion_plus_candidate=-1;
    int i_pion_minus_candidate=-1;
 
-   for(size_t i_tr = 0; i_tr < e.TracklikePrimaryDaughters.size(); i_tr++){
-      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionPlusIndex) i_pion_plus_candidate = i_tr;
-      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionMinusIndex) i_pion_minus_candidate = i_tr;
-   }
-
+   i_pion_plus_candidate = e.TrueDecayPionPlusIndex;
+   i_pion_minus_candidate = e.TrueDecayPionMinusIndex;
+   
    if(i_pion_plus_candidate == -1 || i_pion_minus_candidate == -1) return {-1,-1};
 
    //e.SelectorBDTScore = reader->EvaluateMVA(Alg + " method"); 

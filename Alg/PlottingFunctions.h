@@ -873,6 +873,7 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    p_legend->SetBottomMargin(0);
    p_legend->SetTopMargin(0.1);
    p_plot->SetTopMargin(0.01);
+   //p_plot->SetLogy();
 
    TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
    l->SetBorderSize(0);

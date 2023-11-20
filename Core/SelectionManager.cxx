@@ -188,13 +188,11 @@ void SelectionManager::UseGenWeight(bool usegenweight){
 
 void SelectionManager::SetSignal(Event &e){
 
-    	e.GoodReco = false;
+    e.GoodReco = false;
 
 	std::vector<bool> IsSignal_tmp = e.IsSignal;
 	for(size_t i_tr = 0; i_tr < e.NMCTruths; i_tr++){
-
-		e.InActiveTPC.at(i_tr) = a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex.at(i_tr));
-		IsSignal_tmp.at(i_tr) = e.IsK0SCharged.at(i_tr) && e.InActiveTPC.at(i_tr);
+		IsSignal_tmp.at(i_tr) = e.IsK0SCharged.at(i_tr) && e.CCNC.at(0) == "CC" && abs(e.Neutrino.at(0).PDG) == 14;
 	}
 	
 	e.IsSignal = IsSignal_tmp;
@@ -206,16 +204,16 @@ void SelectionManager::SetSignal(Event &e){
 	
 	if(!e.EventIsSignal) return;
 
-	for(size_t i_tr = 0; i_tr < e.TracklikePrimaryDaughters.size(); i_tr++){
-      		if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == +211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 7){ 
-         		found_pion_plus = true; 
-         		e.TrueDecayPionPlusIndex = i_tr; 
-      		}
-      		if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 7){
-         		found_pion_minus = true;
-         		e.TrueDecayPionMinusIndex = i_tr; 
-      		}
-  	 }
+	for(int i_tr = 0; i_tr < e.TracklikePrimaryDaughters.size(); i_tr++){
+        if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == +211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 7){ 
+            found_pion_plus = true; 
+            e.TrueDecayPionPlusIndex = i_tr; 
+        }
+        if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 7){
+            found_pion_minus = true;
+            e.TrueDecayPionMinusIndex = i_tr; 
+        }
+  	}
 
    	e.GoodReco = e.EventIsSignal && found_pion_plus && found_pion_minus;
 }
@@ -297,6 +295,7 @@ void SelectionManager::Reset(){
 // Load the track selector BDT weights
 
 void SelectionManager::ImportSelectorBDTWeights(std::string WeightDir){
+
 
     std::cout << "SelectionManager: Importing Selector BDT Weights from " << WeightDir << std::endl;
     a_SelectorBDTManager.SetupSelectorBDT(WeightDir);
@@ -411,21 +410,31 @@ bool SelectionManager::ChoosePionPairCandidates(Event &e, bool cheat){
         return false;
     }
 
-    e.DecayPionPlusCandidate = e.TracklikePrimaryDaughters.at(candidates.first);
-    e.DecayPionMinusCandidate = e.TracklikePrimaryDaughters.at(candidates.second);
+    if (candidates.first < e.TracklikePrimaryDaughters.size()) {
+        e.DecayPionPlusCandidate = e.TracklikePrimaryDaughters.at(candidates.first);
+    } else {
+        std::cout << "Tried to access TracklikePrimaryDaughters index " << candidates.first << " -- the range is " << e.TracklikePrimaryDaughters.size() << std::endl;
+        return false;
+    }
+
+    if (candidates.second < e.TracklikePrimaryDaughters.size()) {
+        e.DecayPionMinusCandidate = e.TracklikePrimaryDaughters.at(candidates.second);
+    } else {
+        std::cout << "Tried to access TracklikePrimaryDaughters index " << candidates.second << " -- the range is " << e.TracklikePrimaryDaughters.size() << std::endl;
+        return false;
+    }
 
     // Erase from track vector
     std::vector<RecoParticle> TracklikePrimaryDaughters_tmp;
 
-    for(size_t i = 0; i < e.TracklikePrimaryDaughters.size(); i++)
+    for(size_t i = 0; i < e.TracklikePrimaryDaughters.size(); i++) {
         if(i != candidates.first && i != candidates.second) TracklikePrimaryDaughters_tmp.push_back(e.TracklikePrimaryDaughters.at(i));
+    }
 
     e.TracklikePrimaryDaughters = TracklikePrimaryDaughters_tmp;
 
     UpdateCut(e,passed,"DecaySelector");
 
-
-    std::cout << "Passed the pion pair candidate selection" << std::endl;
     return true;
 
 }
@@ -558,9 +567,19 @@ void SelectionManager::SetupHistograms(std::vector<double> boundaries, std::stri
         Hists_ByType2[EventType::Types2.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), fHistNBins, arr_boundaries);
     }
 
-   for(size_t i_type = 0; i_type < EventType::KaonTypes.size(); i_type++) {
-	std::string histname = "h_ByKaonType_" + EventType::KaonTypes.at(i_type);
-	Hists_ByKaonType[EventType::KaonTypes.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), fHistNBins, arr_boundaries);
+    for(size_t i_type=0;i_type<EventType::KaonFinalStates.size();i_type++){
+        std::string histname = "h_ByKaonFinalStates_" + EventType::KaonFinalStates.at(i_type);
+        Hists_ByKaonFinalStates[EventType::KaonFinalStates.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), fHistNBins, arr_boundaries);
+    }
+
+    for(size_t i_type=0;i_type<EventType::KaonDecayChannels.size();i_type++){
+        std::string histname = "h_ByKaonDecayChannels_" + EventType::KaonDecayChannels.at(i_type);
+        Hists_ByKaonDecayChannels[EventType::KaonDecayChannels.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), fHistNBins, arr_boundaries);
+    }
+
+    for(size_t i_type=0;i_type<EventType::HyperonFinalStateProc.size();i_type++){
+        std::string histname = "h_ByHyperonFinalStates_" + EventType::HyperonFinalStateProc.at(i_type);
+        Hists_ByHyperonFinalStates[EventType::HyperonFinalStateProc.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), fHistNBins, arr_boundaries);
     }
 
     Hist_All = new TH1D("All", fTitle.c_str(), fHistNBins, arr_boundaries);
@@ -595,10 +614,20 @@ void SelectionManager::SetupHistograms(int n, double low, double high, std::stri
       Hists_ByType2[EventType::Types2.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), n, low, high);
    }
 
-   for(size_t i_type = 0; i_type < EventType::KaonTypes.size(); i_type++){
-	std::string histname = "h_ByKaonType_" + EventType::KaonTypes.at(i_type);
-	Hists_ByKaonType[EventType::KaonTypes.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), n, low, high);
-   }
+   for(size_t i_type=0;i_type<EventType::KaonFinalStates.size();i_type++){
+        std::string histname = "h_ByKaonFinalStates_" + EventType::KaonFinalStates.at(i_type);
+        Hists_ByKaonFinalStates[EventType::KaonFinalStates.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), n, low, high);
+    }
+
+    for(size_t i_type=0;i_type<EventType::KaonDecayChannels.size();i_type++){
+        std::string histname = "h_ByKaonDecayChannel_" + EventType::KaonDecayChannels.at(i_type);
+        Hists_ByKaonDecayChannels[EventType::KaonDecayChannels.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), n, low, high);
+    }
+
+    for(size_t i_type=0;i_type<EventType::HyperonFinalStateProc.size();i_type++){
+        std::string histname = "h_ByHyperonDecayChannel_" + EventType::HyperonFinalStateProc.at(i_type);
+        Hists_ByHyperonFinalStates[EventType::HyperonFinalStateProc.at(i_type)] = new TH1D(histname.c_str(), fTitle.c_str(), n, low, high);
+    }
 
    Hist_All = new TH1D("All", fTitle.c_str(), n, low, high);
    Hist_Data = new TH1D("Data", fTitle.c_str(), n, low, high);
@@ -703,26 +732,25 @@ void SelectionManager::AddSystematic(int systype, int universes, std::string nam
 // Fill the histograms
 
 void SelectionManager::FillHistograms(const Event &e, double variable, double weight){
-
-    std::string mode, mode2, proc, kaon;
+    std::string mode, mode2, proc, kaonfinalstates, kaondecaychannel, hyperonfinalstates;
 
     mode = EventType::GetType(e);
     mode2 = EventType::GetType2(e);
     proc = EventType::GetProc(e);
-    kaon = EventType::GetKaonType(e);
-    std::cout << "Kaon type..." << kaon << std::endl;
+    kaonfinalstates = EventType::GetKaonFinalStates(e);
+    kaondecaychannel = EventType::GetNeutralKaonDecayType(e);
+    hyperonfinalstates = EventType::GetHyperonFinalStates(e);
 
     if(mode != "Data"){
         Hist_All->Fill(variable, weight*e.Weight);
         Hists_ByType[mode]->Fill(variable, weight*e.Weight);
         Hists_ByType2[mode2]->Fill(variable, weight*e.Weight);
         Hists_ByProc[proc]->Fill(variable, weight*e.Weight);
-        std::cout << "Filling kaon type hist" << std::endl;
-        Hists_ByKaonType[kaon]->Fill(variable, weight*e.Weight);
-	std::cout << "Fille kaon type hist" << std::endl;
+        Hists_ByKaonFinalStates[kaonfinalstates]->Fill(variable, weight*e.Weight);
+        Hists_ByKaonDecayChannels[kaondecaychannel]->Fill(variable, weight*e.Weight);
+        Hists_ByHyperonFinalStates[hyperonfinalstates]->Fill(variable, weight*e.Weight);
     }
     else Hist_Data->Fill(variable, weight*e.Weight);
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -794,6 +822,7 @@ void SelectionManager::DrawHistograms(std::string label, double Scale, double Si
 
     system(("mkdir -p " + PlotDir).c_str());
 
+
     // Create weight sums
     for(size_t i_proc = 0; i_proc < EventType::Procs.size(); i_proc++){
         Hists_ByProc[EventType::Procs.at(i_proc)]->Scale(Scale);
@@ -807,23 +836,34 @@ void SelectionManager::DrawHistograms(std::string label, double Scale, double Si
         Hists_ByType2[EventType::Types2.at(i_type)]->Scale(Scale);
         Hists_ByType2[EventType::Types2.at(i_type)]->Sumw2();
     }
-    for(size_t i_type = 0; i_type < EventType::KaonTypes.size(); i_type++){
-	Hists_ByKaonType[EventType::KaonTypes.at(i_type)]->Scale(Scale);
-	Hists_ByKaonType[EventType::KaonTypes.at(i_type)]->Sumw2();
+    for(size_t i_type = 0; i_type < EventType::KaonFinalStates.size(); i_type++){
+        Hists_ByKaonFinalStates[EventType::KaonFinalStates.at(i_type)]->Scale(Scale);
+        Hists_ByKaonFinalStates[EventType::KaonFinalStates.at(i_type)]->Sumw2();
     }
+    for(size_t i_type = 0; i_type < EventType::KaonDecayChannels.size(); i_type++){
+        Hists_ByKaonDecayChannels[EventType::KaonDecayChannels.at(i_type)]->Scale(Scale);
+        Hists_ByKaonDecayChannels[EventType::KaonDecayChannels.at(i_type)]->Sumw2();
+    }
+    for(size_t i_type = 0; i_type < EventType::HyperonFinalStateProc.size(); i_type++){
+        Hists_ByHyperonFinalStates[EventType::HyperonFinalStateProc.at(i_type)]->Scale(Scale);
+        Hists_ByHyperonFinalStates[EventType::HyperonFinalStateProc.at(i_type)]->Sumw2();
+    }
+    
+
     Hist_All->Sumw2();   
 
     Hists_ByProc["Signal"]->Scale(SignalScale);
     Hists_ByType["Signal"]->Scale(SignalScale);
     Hists_ByType2["DirectLambda"]->Scale(SignalScale);
-    Hists_ByKaonType["KaonSHORT"]->Scale(SignalScale);
 
     TH1D* h_errors = (TH1D*)Hist_All->Clone("h_errors");
 
     std::vector<TH1D*> Hists_ByType_v;
     std::vector<TH1D*> Hists_ByType2_v;
     std::vector<TH1D*> Hists_ByProc_v;
-    std::vector<TH1D*> Hists_ByKaonType_v;
+    std::vector<TH1D*> Hists_ByKaonFinalStates_v;
+    std::vector<TH1D*> Hists_ByKaonDecayChannels_v;
+    std::vector<TH1D*> Hists_ByHyperonFinalStates_v;
 
     for(size_t i_t = 0; i_t < EventType::Types.size(); i_t++) Hists_ByType_v.push_back(Hists_ByType[EventType::Types.at(i_t)]); 
 
@@ -831,12 +871,18 @@ void SelectionManager::DrawHistograms(std::string label, double Scale, double Si
     
     for(size_t i_t = 0; i_t < EventType::Procs.size(); i_t++) Hists_ByProc_v.push_back(Hists_ByProc[EventType::Procs.at(i_t)]); 
 
-    for(size_t i_t = 0; i_t < EventType::KaonTypes.size(); i_t++) Hists_ByKaonType_v.push_back(Hists_ByKaonType[EventType::KaonTypes.at(i_t)]);
+    for(size_t i_t = 0; i_t < EventType::KaonFinalStates.size(); i_t++) Hists_ByKaonFinalStates_v.push_back(Hists_ByKaonFinalStates[EventType::KaonFinalStates.at(i_t)]);
+
+    for(size_t i_t = 0; i_t < EventType::KaonDecayChannels.size(); i_t++) Hists_ByKaonDecayChannels_v.push_back(Hists_ByKaonDecayChannels[EventType::KaonDecayChannels.at(i_t)]);
+
+    for(size_t i_t = 0; i_t < EventType::HyperonFinalStateProc.size(); i_t++) Hists_ByHyperonFinalStates_v.push_back(Hists_ByHyperonFinalStates[EventType::HyperonFinalStateProc.at(i_t)]);
 
     HypPlot::DrawHistogram(Hists_ByType_v, h_errors, Hist_Data, EventType::Captions,PlotDir, label+"_ByType", {BeamMode}, {Run}, {POT}, SignalScale, fHasData, EventType::Colors, BinLabels, std::make_pair(0,0));
     HypPlot::DrawHistogram(Hists_ByType2_v, h_errors, Hist_Data, EventType::Captions2,PlotDir, label+"_ByType2", {BeamMode}, {Run}, {POT}, SignalScale, fHasData, EventType::Colors2, BinLabels, std::make_pair(0,0));
     HypPlot::DrawHistogram(Hists_ByProc_v, h_errors, Hist_Data, EventType::Captions3,PlotDir, label+"_ByProc", {BeamMode}, {Run}, {POT}, SignalScale, fHasData, EventType::Colors3, BinLabels, std::make_pair(0,0));
-    HypPlot::DrawHistogram(Hists_ByKaonType_v, h_errors, Hist_Data, EventType::KaonCaptions, PlotDir, label+"_ByKaonType", {BeamMode}, {Run}, {POT}, SignalScale, fHasData, EventType::KaonColours, BinLabels, std::make_pair(0,0));
+    HypPlot::DrawHistogram(Hists_ByKaonFinalStates_v, h_errors, Hist_Data, EventType::KaonFinalStatesCaptions,PlotDir, label+"_ByKaonFinalStates", {BeamMode}, {Run}, {POT}, SignalScale, fHasData, EventType::KaonFinalStatesColors, BinLabels, std::make_pair(0,0));
+    HypPlot::DrawHistogram(Hists_ByKaonDecayChannels_v, h_errors, Hist_Data, EventType::KaonDecayCaption,PlotDir, label+"_ByKaonDecayChannel", {BeamMode}, {Run}, {POT}, SignalScale, fHasData, EventType::KaonDecayColours, BinLabels, std::make_pair(0,0));
+    HypPlot::DrawHistogram(Hists_ByHyperonFinalStates_v, h_errors, Hist_Data, EventType::HyperonFinalStateCaptions,PlotDir, label+"_ByHyperonFinalStates", {BeamMode}, {Run}, {POT}, SignalScale, fHasData, EventType::HyperonFinalStateColors, BinLabels, std::make_pair(0,0));
 
     std::map<std::string,TH1D*>::iterator it;
     for (it = Hists_ByType.begin(); it != Hists_ByType.end(); it++) it->second->Write(it->first.c_str());
