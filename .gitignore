@@ -33,3 +33,6 @@ sites
 
 *.root
 lib/*
+
+*.png
+*.pdf
