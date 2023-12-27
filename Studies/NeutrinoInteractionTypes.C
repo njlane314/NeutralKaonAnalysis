@@ -41,7 +41,7 @@ void NeutrinoInteractionTypes(){
                       150, 0, 1.5, 150, 0, 1.5);
     TH2F *hPionMinusRecoMomenta = new TH2F("hPionMinusRecoMomenta", ";#pi^{-} True Momentum (GeV/c);#pi^{-} Reconstructed Momentum (GeV/c)", 
                       150, 0, 1.5, 150, 0, 1.5);
-    TH2F *hReconDecayLength = new TH2F("hReconDecayLength", ";True K^{0} Decay Length (cm);Reconstructed K^{0} Decay Length (cm);",
+    TH2F *hReconDecayLength = new TH2F("hReconDecayLength", ";True #pi^{+} Travel (cm);Reconstructed #pi^{0} Travel (cm);",
                         1000, 0.1, 100, 1000, 0.1, 100);
 
     TH1F *hFracDecayLength = new TH1F("hFracDecayLength", ";Frac;Events", 1000, -1, 5);
@@ -100,6 +100,7 @@ void NeutrinoInteractionTypes(){
                             TrueDecayVertex.SetX(decayProduct.StartX); TrueDecayVertex.SetY(decayProduct.StartY); TrueDecayVertex.SetZ(decayProduct.StartZ);
                             hPionMinusRecoMomenta->Fill(piminusmom, PionMomentum(decayProduct.Travel));
                             Momentum1.SetX(decayProduct.Px); Momentum1.SetY(decayProduct.Py); Momentum1.SetZ(decayProduct.Pz);
+                            hReconDecayLength->Fill(decayProduct.Travel, decayProduct.TrackTrueLength);
                         } else if (decayProduct.PDG == 211) {
                             piplusmom = decayProduct.ModMomentum;
                             hPionPlusRecoMomenta->Fill(piplusmom, PionMomentum(decayProduct.Travel));
@@ -126,9 +127,8 @@ void NeutrinoInteractionTypes(){
                         //M.FillHistograms(e, RecoDecayLength, e.Weight);
 
                         double TrueDecayLength = (TrueDecayVertex - e.DecayVertex.at(0)).Mag();
-                        hReconDecayLength->Fill(TrueDecayLength, RecoDecayLength);
-                        hFracDecayLength->Fill((RecoDecayLength - TrueDecayLength)/TrueDecayLength);
-
+                        //hReconDecayLength->Fill(TrueDecayLength, RecoDecayLength);
+                        
                         TLorentzVector NeutralKaon4Momentum = PionPair4Momentum(e.DecayPionPlusCandidate, e.DecayPionMinusCandidate);
 
                         TVector3 NeutralKaonDirection(NeutralKaon4Momentum.X(), NeutralKaon4Momentum.Y(), NeutralKaon4Momentum.Z());

@@ -180,7 +180,7 @@ P_FHC_Tune_325_NoBDT.p_Padding=10;
 P_FHC_Tune_325_NoBDT.p_Minimum_MIP_Length=10;
 P_FHC_Tune_325_NoBDT.p_SecondaryTrackLengthCut=1000;
 P_FHC_Tune_325_NoBDT.p_TertiaryTrackLengthCut=1000;
-P_FHC_Tune_325_NoBDT.p_Max_Displacement=1;
+P_FHC_Tune_325_NoBDT.p_Max_Displacement=10;
 P_FHC_Tune_325_NoBDT.p_PID_Cut=0.6;
 P_FHC_Tune_325_NoBDT.p_Proton_PID_Cut = 0.1;
 P_FHC_Tune_325_NoBDT.p_Pion_PID_Cut = -0.1;
@@ -192,7 +192,6 @@ P_FHC_Tune_325_NoBDT.p_AnalysisBDT_Cut=0.15;
 P_FHC_Tune_325_NoBDT.p_BeamMode = kFHC;
 P_FHC_Tune_325_NoBDT.p_W_Min = 1.09;
 P_FHC_Tune_325_NoBDT.p_W_Max = 1.14;
-P_FHC_Tune_325_NoBDT.p_Alpha_Cut = 14;
 P_FHC_Tune_325_NoBDT.HasBeenSetup = true;
 
 // RHC Tune 397 No BDT

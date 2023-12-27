@@ -249,7 +249,7 @@ std::pair<int,int> SelectorBDTManager::NominateTracks(Event &e){
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
-
+   
    // Use truth information to choose the proton/pion candidates
 
    if(!e.GoodReco) return {-1,-1};
@@ -257,9 +257,17 @@ std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
    int i_pion_plus_candidate=-1;
    int i_pion_minus_candidate=-1;
 
-   i_pion_plus_candidate = e.TrueDecayPionPlusIndex;
-   i_pion_minus_candidate = e.TrueDecayPionMinusIndex;
-   
+   for(size_t i_tr=0; i_tr<e.TracklikePrimaryDaughters.size();i_tr++){
+      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionMinusIndex) {
+         i_pion_minus_candidate = e.TracklikePrimaryDaughters.at(i_tr).Index;
+         //std::cout << "Track length " << e.TracklikePrimaryDaughters.at(i_tr).TrackLength << std::endl;
+      }
+      if(e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionPlusIndex) {
+         i_pion_plus_candidate = e.TracklikePrimaryDaughters.at(i_tr).Index;
+         //std::cout << "Track length " << e.TracklikePrimaryDaughters.at(i_tr).TrackLength << std::endl;
+      }
+   }
+
    if(i_pion_plus_candidate == -1 || i_pion_minus_candidate == -1) return {-1,-1};
 
    //e.SelectorBDTScore = reader->EvaluateMVA(Alg + " method"); 

@@ -1,7 +1,7 @@
 void Efficiency_Fiducial_Ratio()
 {
 //=========Macro generated from canvas: c1/c1
-//=========  (Sun Nov 19 15:01:36 2023) by ROOT version 6.12/06
+//=========  (Wed Nov 29 08:56:46 2023) by ROOT version 6.12/06
    TCanvas *c1 = new TCanvas("c1", "c1",0,0,800,600);
    c1->Range(0,0,1,1);
    c1->SetFillColor(0);
@@ -63,7 +63,7 @@ void Efficiency_Fiducial_Ratio()
    TPad *pad1 = new TPad("pad1", "pad1",0,0,1,0.85);
    pad1->Draw();
    pad1->cd();
-   pad1->Range(-1.25,-7.809939,11.25,70.28945);
+   pad1->Range(-125,-1.518599,1125,13.66739);
    pad1->SetFillColor(0);
    pad1->SetBorderMode(0);
    pad1->SetBorderSize(2);
@@ -74,17 +74,17 @@ void Efficiency_Fiducial_Ratio()
    THStack *hs = new THStack();
    hs->SetName("hs");
    hs->SetTitle("Fiducial");
-   hs->SetMaximum(69.50845);
+   hs->SetMaximum(13.51553);
    
-   TH1F *hs_stack_1 = new TH1F("hs_stack_1","Fiducial",10,0,10);
+   TH1F *hs_stack_1 = new TH1F("hs_stack_1","Fiducial",12,0,1000);
    hs_stack_1->SetMinimum(0);
-   hs_stack_1->SetMaximum(69.50845);
+   hs_stack_1->SetMaximum(13.51553);
    hs_stack_1->SetDirectory(0);
    hs_stack_1->SetStats(0);
 
    ci = TColor::GetColor("#000099");
    hs_stack_1->SetLineColor(ci);
-   hs_stack_1->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   hs_stack_1->GetXaxis()->SetTitle("Neutrino Interaction Vertex (cm)");
    hs_stack_1->GetXaxis()->SetLabelFont(42);
    hs_stack_1->GetXaxis()->SetLabelSize(0.045);
    hs_stack_1->GetXaxis()->SetTitleSize(0.05);
@@ -103,32 +103,39 @@ void Efficiency_Fiducial_Ratio()
    hs->SetHistogram(hs_stack_1);
    
    
-   TH1D *h_Before_stack_1 = new TH1D("h_Before_stack_1"," (total)",10,0,10);
-   h_Before_stack_1->SetBinContent(1,1.844337);
-   h_Before_stack_1->SetBinContent(2,14.8008);
-   h_Before_stack_1->SetBinContent(3,51.61838);
-   h_Before_stack_1->SetBinContent(4,55.60676);
-   h_Before_stack_1->SetBinContent(5,40.06822);
-   h_Before_stack_1->SetBinContent(6,26.44318);
-   h_Before_stack_1->SetBinContent(7,14.82386);
-   h_Before_stack_1->SetBinContent(8,7.700107);
-   h_Before_stack_1->SetBinContent(9,3.342861);
-   h_Before_stack_1->SetBinContent(10,1.198819);
-   h_Before_stack_1->SetBinContent(11,1.590741);
-   h_Before_stack_1->SetBinError(1,0.2062031);
-   h_Before_stack_1->SetBinError(2,0.5841412);
-   h_Before_stack_1->SetBinError(3,1.090881);
-   h_Before_stack_1->SetBinError(4,1.132241);
-   h_Before_stack_1->SetBinError(5,0.9611146);
-   h_Before_stack_1->SetBinError(6,0.780786);
-   h_Before_stack_1->SetBinError(7,0.5845959);
-   h_Before_stack_1->SetBinError(8,0.4213311);
-   h_Before_stack_1->SetBinError(9,0.2776095);
-   h_Before_stack_1->SetBinError(10,0.1662463);
-   h_Before_stack_1->SetBinError(11,0.1915027);
-   h_Before_stack_1->SetEntries(9501);
+   TH1D *h_Before_stack_1 = new TH1D("h_Before_stack_1"," (total)",12,0,1000);
+   h_Before_stack_1->SetBinContent(0,0.06916264);
+   h_Before_stack_1->SetBinContent(1,4.680005);
+   h_Before_stack_1->SetBinContent(2,8.829764);
+   h_Before_stack_1->SetBinContent(3,9.544444);
+   h_Before_stack_1->SetBinContent(4,9.429173);
+   h_Before_stack_1->SetBinContent(5,9.475282);
+   h_Before_stack_1->SetBinContent(6,10.69715);
+   h_Before_stack_1->SetBinContent(7,9.52139);
+   h_Before_stack_1->SetBinContent(8,10.14385);
+   h_Before_stack_1->SetBinContent(9,0.9913312);
+   h_Before_stack_1->SetBinContent(10,6.939318);
+   h_Before_stack_1->SetBinContent(11,10.81243);
+   h_Before_stack_1->SetBinContent(12,9.821095);
+   h_Before_stack_1->SetBinContent(13,0.1152711);
+   h_Before_stack_1->SetBinError(0,0.03993107);
+   h_Before_stack_1->SetBinError(1,0.328472);
+   h_Before_stack_1->SetBinError(2,0.4511798);
+   h_Before_stack_1->SetBinError(3,0.4690838);
+   h_Before_stack_1->SetBinError(4,0.4662426);
+   h_Before_stack_1->SetBinError(5,0.4673812);
+   h_Before_stack_1->SetBinError(6,0.4966029);
+   h_Before_stack_1->SetBinError(7,0.468517);
+   h_Before_stack_1->SetBinError(8,0.4835893);
+   h_Before_stack_1->SetBinError(9,0.1511766);
+   h_Before_stack_1->SetBinError(10,0.3999756);
+   h_Before_stack_1->SetBinError(11,0.4992714);
+   h_Before_stack_1->SetBinError(12,0.4758336);
+   h_Before_stack_1->SetBinError(13,0.05155079);
+   h_Before_stack_1->SetEntries(4384);
    h_Before_stack_1->SetLineWidth(2);
-   h_Before_stack_1->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   h_Before_stack_1->GetXaxis()->SetTitle("Neutrino Interaction Vertex (cm)");
+   h_Before_stack_1->GetXaxis()->SetRange(1,12);
    h_Before_stack_1->GetXaxis()->SetLabelFont(42);
    h_Before_stack_1->GetXaxis()->SetLabelSize(0.035);
    h_Before_stack_1->GetXaxis()->SetTitleSize(0.035);
@@ -145,33 +152,40 @@ void Efficiency_Fiducial_Ratio()
    h_Before_stack_1->GetZaxis()->SetTitleFont(42);
    hs->Add(h_Before_stack_1,"");
    
-   TH1D *h_After_stack_2 = new TH1D("h_After_stack_2"," (passed)",10,0,10);
-   h_After_stack_2->SetBinContent(1,0.5994095);
-   h_After_stack_2->SetBinContent(2,4.034487);
-   h_After_stack_2->SetBinContent(3,15.81519);
-   h_After_stack_2->SetBinContent(4,17.31371);
-   h_After_stack_2->SetBinContent(5,11.84987);
-   h_After_stack_2->SetBinContent(6,8.64533);
-   h_After_stack_2->SetBinContent(7,3.94227);
-   h_After_stack_2->SetBinContent(8,2.259313);
-   h_After_stack_2->SetBinContent(9,0.9221685);
-   h_After_stack_2->SetBinContent(10,0.2074879);
-   h_After_stack_2->SetBinContent(11,0.4610843);
-   h_After_stack_2->SetBinError(1,0.1175539);
-   h_After_stack_2->SetBinError(2,0.3049786);
-   h_After_stack_2->SetBinError(3,0.6038268);
-   h_After_stack_2->SetBinError(4,0.6317864);
-   h_After_stack_2->SetBinError(5,0.5226752);
-   h_After_stack_2->SetBinError(6,0.4464429);
-   h_After_stack_2->SetBinError(7,0.301473);
-   h_After_stack_2->SetBinError(8,0.2282251);
-   h_After_stack_2->SetBinError(9,0.1458076);
-   h_After_stack_2->SetBinError(10,0.06916264);
-   h_After_stack_2->SetBinError(11,0.1031016);
-   h_After_stack_2->SetEntries(2865);
+   TH1D *h_After_stack_2 = new TH1D("h_After_stack_2"," (passed)",12,0,1000);
+   h_After_stack_2->SetBinContent(0,0.02305421);
+   h_After_stack_2->SetBinContent(1,3.688674);
+   h_After_stack_2->SetBinContent(2,6.962372);
+   h_After_stack_2->SetBinContent(3,7.469565);
+   h_After_stack_2->SetBinContent(4,7.861487);
+   h_After_stack_2->SetBinContent(5,8.322571);
+   h_After_stack_2->SetBinContent(6,9.336956);
+   h_After_stack_2->SetBinContent(7,8.2073);
+   h_After_stack_2->SetBinContent(8,8.945035);
+   h_After_stack_2->SetBinContent(9,0.645518);
+   h_After_stack_2->SetBinContent(10,5.486903);
+   h_After_stack_2->SetBinContent(11,8.576167);
+   h_After_stack_2->SetBinContent(12,7.215969);
+   h_After_stack_2->SetBinContent(13,0.09221685);
+   h_After_stack_2->SetBinError(0,0.02305421);
+   h_After_stack_2->SetBinError(1,0.2916153);
+   h_After_stack_2->SetBinError(2,0.4006395);
+   h_After_stack_2->SetBinError(3,0.4149758);
+   h_After_stack_2->SetBinError(4,0.4257234);
+   h_After_stack_2->SetBinError(5,0.43803);
+   h_After_stack_2->SetBinError(6,0.4639571);
+   h_After_stack_2->SetBinError(7,0.434986);
+   h_After_stack_2->SetBinError(8,0.4541153);
+   h_After_stack_2->SetBinError(9,0.1219914);
+   h_After_stack_2->SetBinError(10,0.3556631);
+   h_After_stack_2->SetBinError(11,0.4446536);
+   h_After_stack_2->SetBinError(12,0.4078707);
+   h_After_stack_2->SetBinError(13,0.04610843);
+   h_After_stack_2->SetEntries(3593);
    h_After_stack_2->SetLineColor(3);
    h_After_stack_2->SetLineWidth(2);
-   h_After_stack_2->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   h_After_stack_2->GetXaxis()->SetTitle("Neutrino Interaction Vertex (cm)");
+   h_After_stack_2->GetXaxis()->SetRange(1,12);
    h_After_stack_2->GetXaxis()->SetLabelFont(42);
    h_After_stack_2->GetXaxis()->SetLabelSize(0.035);
    h_After_stack_2->GetXaxis()->SetTitleSize(0.035);
@@ -197,7 +211,7 @@ void Efficiency_Fiducial_Ratio()
    pt->SetTextFont(42);
    TText *pt_LaTex = pt->AddText("Fiducial");
    pt->Draw();
-   TGaxis *gaxis = new TGaxis(10,0,10,69.50845,0,0.453467,510,"+L");
+   TGaxis *gaxis = new TGaxis(1000,0,1000,13.51553,0,1.075847,510,"+L");
    gaxis->SetLabelOffset(0.005);
    gaxis->SetLabelSize(0.045);
    gaxis->SetTickSize(0.03);
@@ -212,51 +226,35 @@ void Efficiency_Fiducial_Ratio()
    gaxis->SetLabelColor(ci);
    gaxis->Draw();
    
-   Double_t Graph0_fx3001[10] = {
-   0.5,
-   1.5,
-   2.5,
-   3.5,
-   4.5,
-   5.5,
-   6.5,
-   7.5,
-   8.5,
-   9.5};
-   Double_t Graph0_fy3001[10] = {
-   49.81674,
-   41.78256,
-   46.96367,
-   47.72595,
-   45.33205,
-   50.11409,
-   40.76403,
-   44.97504,
-   42.28477,
-   26.52963};
-   Double_t Graph0_felx3001[10] = {
+   Double_t Graph0_fx3001[12] = {
+   41.66667,
+   125,
+   208.3333,
+   291.6667,
+   375,
+   458.3333,
+   541.6667,
+   625,
+   708.3333,
+   791.6667,
+   875,
+   958.3333};
+   Double_t Graph0_fy3001[12] = {
+   9.901631,
+   9.905832,
+   9.831673,
+   10.47403,
+   11.03439,
+   10.96528,
+   10.82886,
+   11.07801,
+   8.180359,
+   9.933293,
+   9.964439,
+   9.230336};
+   Double_t Graph0_felx3001[12] = {
    0,
    0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0,
-   0};
-   Double_t Graph0_fely3001[10] = {
-   7.674089,
-   2.639502,
-   1.475722,
-   1.428753,
-   1.655954,
-   2.094389,
-   2.615726,
-   3.725306,
-   5.46914,
-   7.277783};
-   Double_t Graph0_fehx3001[10] = {
    0,
    0,
    0,
@@ -267,18 +265,46 @@ void Efficiency_Fiducial_Ratio()
    0,
    0,
    0};
-   Double_t Graph0_fehy3001[10] = {
-   8.106967,
-   2.710916,
-   1.493186,
-   1.444547,
-   1.679685,
-   2.124839,
-   2.689114,
-   3.849699,
-   5.778077,
-   8.517027};
-   TGraphAsymmErrors *grae = new TGraphAsymmErrors(10,Graph0_fx3001,Graph0_fy3001,Graph0_felx3001,Graph0_fehx3001,Graph0_fely3001,Graph0_fehy3001);
+   Double_t Graph0_fely3001[12] = {
+   0.3685884,
+   0.2663744,
+   0.2584099,
+   0.2363716,
+   0.2088496,
+   0.1996747,
+   0.2190143,
+   0.1992765,
+   0.9165036,
+   0.3001529,
+   0.2384322,
+   0.2712198};
+   Double_t Graph0_fehx3001[12] = {
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0};
+   Double_t Graph0_fehy3001[12] = {
+   0.3452434,
+   0.2539442,
+   0.247143,
+   0.2228973,
+   0.1936362,
+   0.1863929,
+   0.2045342,
+   0.184932,
+   0.8605296,
+   0.2842329,
+   0.2281094,
+   0.2621264};
+   TGraphAsymmErrors *grae = new TGraphAsymmErrors(12,Graph0_fx3001,Graph0_fy3001,Graph0_felx3001,Graph0_fehx3001,Graph0_fely3001,Graph0_fehy3001);
    grae->SetName("Graph0");
    grae->SetTitle("Graph");
    grae->SetFillStyle(1000);
@@ -292,9 +318,9 @@ void Efficiency_Fiducial_Ratio()
    grae->SetMarkerStyle(5);
    grae->SetMarkerSize(2);
    
-   TH1F *Graph_Graph3001 = new TH1F("Graph_Graph3001","Graph",100,0,10.4);
-   Graph_Graph3001->SetMinimum(15.38466);
-   Graph_Graph3001->SetMaximum(61.7909);
+   TH1F *Graph_Graph3001 = new TH1F("Graph_Graph3001","Graph",100,0,1050);
+   Graph_Graph3001->SetMinimum(6.863946);
+   Graph_Graph3001->SetMaximum(11.66285);
    Graph_Graph3001->SetDirectory(0);
    Graph_Graph3001->SetStats(0);
 

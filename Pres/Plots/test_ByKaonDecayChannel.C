@@ -1,7 +1,7 @@
 void test_ByKaonDecayChannel()
 {
 //=========Macro generated from canvas: c/c
-//=========  (Sun Nov 19 15:01:37 2023) by ROOT version 6.12/06
+//=========  (Mon Dec 11 06:05:23 2023) by ROOT version 6.12/06
    TCanvas *c = new TCanvas("c", "c",0,0,800,600);
    c->Range(0,0,1,1);
    c->SetFillColor(0);
@@ -79,7 +79,7 @@ void test_ByKaonDecayChannel()
    TPad *p_plot = new TPad("p_plot", "p_plot",0,0,1,0.85);
    p_plot->Draw();
    p_plot->cd();
-   p_plot->Range(-0.1,-0.1123596,0.9,1.011236);
+   p_plot->Range(-0.1,-0.6177168,0.9,5.559451);
    p_plot->SetFillColor(0);
    p_plot->SetBorderMode(0);
    p_plot->SetBorderSize(2);
@@ -87,9 +87,32 @@ void test_ByKaonDecayChannel()
    p_plot->SetFrameBorderMode(0);
    p_plot->SetFrameBorderMode(0);
    
-   TH1D *h_errors__13 = new TH1D("h_errors__13","",8,0,0.8);
+   TH1D *h_errors__13 = new TH1D("h_errors__13","",16,0,0.8);
+   h_errors__13->SetBinContent(6,0.6078599);
+   h_errors__13->SetBinContent(7,3.97872);
+   h_errors__13->SetBinContent(8,4.263521);
+   h_errors__13->SetBinContent(9,2.291164);
+   h_errors__13->SetBinContent(10,0.9691753);
+   h_errors__13->SetBinContent(11,0.2763);
+   h_errors__13->SetBinContent(12,0.05526);
+   h_errors__13->SetBinContent(13,0.01275231);
+   h_errors__13->SetBinContent(14,0.02975538);
+   h_errors__13->SetBinContent(16,0.01700308);
+   h_errors__13->SetBinContent(17,89.89101);
+   h_errors__13->SetBinError(6,0.0508318);
+   h_errors__13->SetBinError(7,0.1300485);
+   h_errors__13->SetBinError(8,0.1346226);
+   h_errors__13->SetBinError(9,0.09868744);
+   h_errors__13->SetBinError(10,0.0641852);
+   h_errors__13->SetBinError(11,0.03427079);
+   h_errors__13->SetBinError(12,0.01532637);
+   h_errors__13->SetBinError(13,0.007362548);
+   h_errors__13->SetBinError(14,0.01124648);
+   h_errors__13->SetBinError(16,0.008501538);
+   h_errors__13->SetBinError(17,0.6181472);
    h_errors__13->SetMinimum(0);
-   h_errors__13->SetMaximum(0);
+   h_errors__13->SetMaximum(5.49768);
+   h_errors__13->SetEntries(24088);
    h_errors__13->SetStats(0);
    h_errors__13->SetFillColor(1);
    h_errors__13->SetFillStyle(3253);
@@ -118,31 +141,54 @@ void test_ByKaonDecayChannel()
    hs->SetName("hs");
    hs->SetTitle("");
    
-   TH1F *hs_stack_10 = new TH1F("hs_stack_10","",8,0,0.8);
-   hs_stack_10->SetMinimum(0);
-   hs_stack_10->SetMaximum(0);
-   hs_stack_10->SetDirectory(0);
-   hs_stack_10->SetStats(0);
+   TH1F *hs_stack_5 = new TH1F("hs_stack_5","",16,0,0.8);
+   hs_stack_5->SetMinimum(0);
+   hs_stack_5->SetMaximum(4.476697);
+   hs_stack_5->SetDirectory(0);
+   hs_stack_5->SetStats(0);
 
    ci = TColor::GetColor("#000099");
-   hs_stack_10->SetLineColor(ci);
-   hs_stack_10->GetXaxis()->SetLabelFont(42);
-   hs_stack_10->GetXaxis()->SetLabelSize(0.035);
-   hs_stack_10->GetXaxis()->SetTitleSize(0.035);
-   hs_stack_10->GetXaxis()->SetTitleFont(42);
-   hs_stack_10->GetYaxis()->SetLabelFont(42);
-   hs_stack_10->GetYaxis()->SetLabelSize(0.035);
-   hs_stack_10->GetYaxis()->SetTitleSize(0.035);
-   hs_stack_10->GetYaxis()->SetTitleOffset(0);
-   hs_stack_10->GetYaxis()->SetTitleFont(42);
-   hs_stack_10->GetZaxis()->SetLabelFont(42);
-   hs_stack_10->GetZaxis()->SetLabelSize(0.035);
-   hs_stack_10->GetZaxis()->SetTitleSize(0.035);
-   hs_stack_10->GetZaxis()->SetTitleFont(42);
-   hs->SetHistogram(hs_stack_10);
+   hs_stack_5->SetLineColor(ci);
+   hs_stack_5->GetXaxis()->SetLabelFont(42);
+   hs_stack_5->GetXaxis()->SetLabelSize(0.035);
+   hs_stack_5->GetXaxis()->SetTitleSize(0.035);
+   hs_stack_5->GetXaxis()->SetTitleFont(42);
+   hs_stack_5->GetYaxis()->SetLabelFont(42);
+   hs_stack_5->GetYaxis()->SetLabelSize(0.035);
+   hs_stack_5->GetYaxis()->SetTitleSize(0.035);
+   hs_stack_5->GetYaxis()->SetTitleOffset(0);
+   hs_stack_5->GetYaxis()->SetTitleFont(42);
+   hs_stack_5->GetZaxis()->SetLabelFont(42);
+   hs_stack_5->GetZaxis()->SetLabelSize(0.035);
+   hs_stack_5->GetZaxis()->SetTitleSize(0.035);
+   hs_stack_5->GetZaxis()->SetTitleFont(42);
+   hs->SetHistogram(hs_stack_5);
    
    
-   TH1D *h_ByKaonDecayChannel_mI211_211_stack_1 = new TH1D("h_ByKaonDecayChannel_mI211_211_stack_1","",8,0,0.8);
+   TH1D *h_ByKaonDecayChannel_mI211_211_stack_1 = new TH1D("h_ByKaonDecayChannel_mI211_211_stack_1","",16,0,0.8);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinContent(6,0.5440984);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinContent(7,3.519637);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinContent(8,3.842695);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinContent(9,2.023366);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinContent(10,0.8756584);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinContent(11,0.2635477);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinContent(12,0.05526);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinContent(13,0.01275231);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinContent(14,0.02550461);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinContent(16,0.01700308);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinContent(17,77.96335);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinError(6,0.04809196);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinError(7,0.1223158);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinError(8,0.1278061);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinError(9,0.09274083);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinError(10,0.06101001);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinError(11,0.03347059);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinError(12,0.01532637);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinError(13,0.007362548);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinError(14,0.01041221);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinError(16,0.008501538);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetBinError(17,0.5756772);
+   h_ByKaonDecayChannel_mI211_211_stack_1->SetEntries(20971);
 
    ci = TColor::GetColor("#3333ff");
    h_ByKaonDecayChannel_mI211_211_stack_1->SetFillColor(ci);
@@ -166,7 +212,7 @@ void test_ByKaonDecayChannel()
    h_ByKaonDecayChannel_mI211_211_stack_1->GetZaxis()->SetTitleFont(42);
    hs->Add(h_ByKaonDecayChannel_-211_211_stack_1,"HIST");
    
-   TH1D *h_ByKaonDecayChannel_111_111_stack_2 = new TH1D("h_ByKaonDecayChannel_111_111_stack_2","",8,0,0.8);
+   TH1D *h_ByKaonDecayChannel_111_111_stack_2 = new TH1D("h_ByKaonDecayChannel_111_111_stack_2","",16,0,0.8);
 
    ci = TColor::GetColor("#ffcc00");
    h_ByKaonDecayChannel_111_111_stack_2->SetFillColor(ci);
@@ -190,7 +236,24 @@ void test_ByKaonDecayChannel()
    h_ByKaonDecayChannel_111_111_stack_2->GetZaxis()->SetTitleFont(42);
    hs->Add(h_ByKaonDecayChannel_111_111_stack_2,"HIST");
    
-   TH1D *h_ByKaonDecayChannel__stack_3 = new TH1D("h_ByKaonDecayChannel__stack_3","",8,0,0.8);
+   TH1D *h_ByKaonDecayChannel__stack_3 = new TH1D("h_ByKaonDecayChannel__stack_3","",16,0,0.8);
+   h_ByKaonDecayChannel__stack_3->SetBinContent(6,0.06376153);
+   h_ByKaonDecayChannel__stack_3->SetBinContent(7,0.459083);
+   h_ByKaonDecayChannel__stack_3->SetBinContent(8,0.4208261);
+   h_ByKaonDecayChannel__stack_3->SetBinContent(9,0.2677984);
+   h_ByKaonDecayChannel__stack_3->SetBinContent(10,0.09351691);
+   h_ByKaonDecayChannel__stack_3->SetBinContent(11,0.01275231);
+   h_ByKaonDecayChannel__stack_3->SetBinContent(14,0.004250769);
+   h_ByKaonDecayChannel__stack_3->SetBinContent(17,11.92766);
+   h_ByKaonDecayChannel__stack_3->SetBinError(6,0.01646316);
+   h_ByKaonDecayChannel__stack_3->SetBinError(7,0.04417529);
+   h_ByKaonDecayChannel__stack_3->SetBinError(8,0.04229462);
+   h_ByKaonDecayChannel__stack_3->SetBinError(9,0.03373943);
+   h_ByKaonDecayChannel__stack_3->SetBinError(10,0.01993787);
+   h_ByKaonDecayChannel__stack_3->SetBinError(11,0.007362548);
+   h_ByKaonDecayChannel__stack_3->SetBinError(14,0.004250769);
+   h_ByKaonDecayChannel__stack_3->SetBinError(17,0.2251704);
+   h_ByKaonDecayChannel__stack_3->SetEntries(3117);
 
    ci = TColor::GetColor("#ff00ff");
    h_ByKaonDecayChannel__stack_3->SetFillColor(ci);
@@ -215,9 +278,32 @@ void test_ByKaonDecayChannel()
    hs->Add(h_ByKaonDecayChannel__stack_3,"HIST");
    hs->Draw("hist same");
    
-   TH1D *h_errors__14 = new TH1D("h_errors__14","",8,0,0.8);
+   TH1D *h_errors__14 = new TH1D("h_errors__14","",16,0,0.8);
+   h_errors__14->SetBinContent(6,0.6078599);
+   h_errors__14->SetBinContent(7,3.97872);
+   h_errors__14->SetBinContent(8,4.263521);
+   h_errors__14->SetBinContent(9,2.291164);
+   h_errors__14->SetBinContent(10,0.9691753);
+   h_errors__14->SetBinContent(11,0.2763);
+   h_errors__14->SetBinContent(12,0.05526);
+   h_errors__14->SetBinContent(13,0.01275231);
+   h_errors__14->SetBinContent(14,0.02975538);
+   h_errors__14->SetBinContent(16,0.01700308);
+   h_errors__14->SetBinContent(17,89.89101);
+   h_errors__14->SetBinError(6,0.0508318);
+   h_errors__14->SetBinError(7,0.1300485);
+   h_errors__14->SetBinError(8,0.1346226);
+   h_errors__14->SetBinError(9,0.09868744);
+   h_errors__14->SetBinError(10,0.0641852);
+   h_errors__14->SetBinError(11,0.03427079);
+   h_errors__14->SetBinError(12,0.01532637);
+   h_errors__14->SetBinError(13,0.007362548);
+   h_errors__14->SetBinError(14,0.01124648);
+   h_errors__14->SetBinError(16,0.008501538);
+   h_errors__14->SetBinError(17,0.6181472);
    h_errors__14->SetMinimum(0);
-   h_errors__14->SetMaximum(0);
+   h_errors__14->SetMaximum(5.49768);
+   h_errors__14->SetEntries(24088);
    h_errors__14->SetStats(0);
    h_errors__14->SetFillColor(1);
    h_errors__14->SetFillStyle(3253);
@@ -242,9 +328,32 @@ void test_ByKaonDecayChannel()
    h_errors__14->GetZaxis()->SetTitleFont(42);
    h_errors__14->Draw("E2 same");
    
-   TH1D *h_errors_copy__15 = new TH1D("h_errors_copy__15","",8,0,0.8);
+   TH1D *h_errors_copy__15 = new TH1D("h_errors_copy__15","",16,0,0.8);
+   h_errors_copy__15->SetBinContent(6,0.6078599);
+   h_errors_copy__15->SetBinContent(7,3.97872);
+   h_errors_copy__15->SetBinContent(8,4.263521);
+   h_errors_copy__15->SetBinContent(9,2.291164);
+   h_errors_copy__15->SetBinContent(10,0.9691753);
+   h_errors_copy__15->SetBinContent(11,0.2763);
+   h_errors_copy__15->SetBinContent(12,0.05526);
+   h_errors_copy__15->SetBinContent(13,0.01275231);
+   h_errors_copy__15->SetBinContent(14,0.02975538);
+   h_errors_copy__15->SetBinContent(16,0.01700308);
+   h_errors_copy__15->SetBinContent(17,89.89101);
+   h_errors_copy__15->SetBinError(6,0.0508318);
+   h_errors_copy__15->SetBinError(7,0.1300485);
+   h_errors_copy__15->SetBinError(8,0.1346226);
+   h_errors_copy__15->SetBinError(9,0.09868744);
+   h_errors_copy__15->SetBinError(10,0.0641852);
+   h_errors_copy__15->SetBinError(11,0.03427079);
+   h_errors_copy__15->SetBinError(12,0.01532637);
+   h_errors_copy__15->SetBinError(13,0.007362548);
+   h_errors_copy__15->SetBinError(14,0.01124648);
+   h_errors_copy__15->SetBinError(16,0.008501538);
+   h_errors_copy__15->SetBinError(17,0.6181472);
    h_errors_copy__15->SetMinimum(0);
-   h_errors_copy__15->SetMaximum(0);
+   h_errors_copy__15->SetMaximum(5.49768);
+   h_errors_copy__15->SetEntries(24088);
    h_errors_copy__15->SetDirectory(0);
    h_errors_copy__15->SetStats(0);
    h_errors_copy__15->SetFillColor(1);

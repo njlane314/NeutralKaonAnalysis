@@ -1,7 +1,7 @@
 void test_ByHyperonFinalStates()
 {
 //=========Macro generated from canvas: c/c
-//=========  (Sun Nov 19 15:01:37 2023) by ROOT version 6.12/06
+//=========  (Mon Dec 11 06:05:23 2023) by ROOT version 6.12/06
    TCanvas *c = new TCanvas("c", "c",0,0,800,600);
    c->Range(0,0,1,1);
    c->SetFillColor(0);
@@ -107,7 +107,7 @@ void test_ByHyperonFinalStates()
    TPad *p_plot = new TPad("p_plot", "p_plot",0,0,1,0.85);
    p_plot->Draw();
    p_plot->cd();
-   p_plot->Range(-0.1,-0.1123596,0.9,1.011236);
+   p_plot->Range(-0.1,-0.6177168,0.9,5.559451);
    p_plot->SetFillColor(0);
    p_plot->SetBorderMode(0);
    p_plot->SetBorderSize(2);
@@ -115,9 +115,32 @@ void test_ByHyperonFinalStates()
    p_plot->SetFrameBorderMode(0);
    p_plot->SetFrameBorderMode(0);
    
-   TH1D *h_errors__16 = new TH1D("h_errors__16","",8,0,0.8);
+   TH1D *h_errors__16 = new TH1D("h_errors__16","",16,0,0.8);
+   h_errors__16->SetBinContent(6,0.6078599);
+   h_errors__16->SetBinContent(7,3.97872);
+   h_errors__16->SetBinContent(8,4.263521);
+   h_errors__16->SetBinContent(9,2.291164);
+   h_errors__16->SetBinContent(10,0.9691753);
+   h_errors__16->SetBinContent(11,0.2763);
+   h_errors__16->SetBinContent(12,0.05526);
+   h_errors__16->SetBinContent(13,0.01275231);
+   h_errors__16->SetBinContent(14,0.02975538);
+   h_errors__16->SetBinContent(16,0.01700308);
+   h_errors__16->SetBinContent(17,89.89101);
+   h_errors__16->SetBinError(6,0.0508318);
+   h_errors__16->SetBinError(7,0.1300485);
+   h_errors__16->SetBinError(8,0.1346226);
+   h_errors__16->SetBinError(9,0.09868744);
+   h_errors__16->SetBinError(10,0.0641852);
+   h_errors__16->SetBinError(11,0.03427079);
+   h_errors__16->SetBinError(12,0.01532637);
+   h_errors__16->SetBinError(13,0.007362548);
+   h_errors__16->SetBinError(14,0.01124648);
+   h_errors__16->SetBinError(16,0.008501538);
+   h_errors__16->SetBinError(17,0.6181472);
    h_errors__16->SetMinimum(0);
-   h_errors__16->SetMaximum(0);
+   h_errors__16->SetMaximum(5.49768);
+   h_errors__16->SetEntries(24088);
    h_errors__16->SetStats(0);
    h_errors__16->SetFillColor(1);
    h_errors__16->SetFillStyle(3253);
@@ -146,31 +169,54 @@ void test_ByHyperonFinalStates()
    hs->SetName("hs");
    hs->SetTitle("");
    
-   TH1F *hs_stack_11 = new TH1F("hs_stack_11","",8,0,0.8);
-   hs_stack_11->SetMinimum(0);
-   hs_stack_11->SetMaximum(0);
-   hs_stack_11->SetDirectory(0);
-   hs_stack_11->SetStats(0);
+   TH1F *hs_stack_6 = new TH1F("hs_stack_6","",16,0,0.8);
+   hs_stack_6->SetMinimum(0);
+   hs_stack_6->SetMaximum(4.476697);
+   hs_stack_6->SetDirectory(0);
+   hs_stack_6->SetStats(0);
 
    ci = TColor::GetColor("#000099");
-   hs_stack_11->SetLineColor(ci);
-   hs_stack_11->GetXaxis()->SetLabelFont(42);
-   hs_stack_11->GetXaxis()->SetLabelSize(0.035);
-   hs_stack_11->GetXaxis()->SetTitleSize(0.035);
-   hs_stack_11->GetXaxis()->SetTitleFont(42);
-   hs_stack_11->GetYaxis()->SetLabelFont(42);
-   hs_stack_11->GetYaxis()->SetLabelSize(0.035);
-   hs_stack_11->GetYaxis()->SetTitleSize(0.035);
-   hs_stack_11->GetYaxis()->SetTitleOffset(0);
-   hs_stack_11->GetYaxis()->SetTitleFont(42);
-   hs_stack_11->GetZaxis()->SetLabelFont(42);
-   hs_stack_11->GetZaxis()->SetLabelSize(0.035);
-   hs_stack_11->GetZaxis()->SetTitleSize(0.035);
-   hs_stack_11->GetZaxis()->SetTitleFont(42);
-   hs->SetHistogram(hs_stack_11);
+   hs_stack_6->SetLineColor(ci);
+   hs_stack_6->GetXaxis()->SetLabelFont(42);
+   hs_stack_6->GetXaxis()->SetLabelSize(0.035);
+   hs_stack_6->GetXaxis()->SetTitleSize(0.035);
+   hs_stack_6->GetXaxis()->SetTitleFont(42);
+   hs_stack_6->GetYaxis()->SetLabelFont(42);
+   hs_stack_6->GetYaxis()->SetLabelSize(0.035);
+   hs_stack_6->GetYaxis()->SetTitleSize(0.035);
+   hs_stack_6->GetYaxis()->SetTitleOffset(0);
+   hs_stack_6->GetYaxis()->SetTitleFont(42);
+   hs_stack_6->GetZaxis()->SetLabelFont(42);
+   hs_stack_6->GetZaxis()->SetLabelSize(0.035);
+   hs_stack_6->GetZaxis()->SetTitleSize(0.035);
+   hs_stack_6->GetZaxis()->SetTitleFont(42);
+   hs->SetHistogram(hs_stack_6);
    
    
-   TH1D *h_ByHyperonDecayChannel_SigmaPlus_stack_1 = new TH1D("h_ByHyperonDecayChannel_SigmaPlus_stack_1","",8,0,0.8);
+   TH1D *h_ByHyperonDecayChannel_SigmaPlus_stack_1 = new TH1D("h_ByHyperonDecayChannel_SigmaPlus_stack_1","",16,0,0.8);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinContent(6,0.2082877);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinContent(7,1.287983);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinContent(8,1.402754);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinContent(9,0.7863922);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinContent(10,0.2720492);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinContent(11,0.08076461);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinContent(12,0.01275231);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinContent(13,0.008501538);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinContent(14,0.004250769);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinContent(16,0.008501538);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinContent(17,24.96051);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinError(6,0.02975538);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinError(7,0.07399269);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinError(8,0.07721905);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinError(9,0.05781671);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinError(10,0.03400615);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinError(11,0.01852867);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinError(12,0.007362548);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinError(13,0.006011495);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinError(14,0.004250769);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinError(16,0.006011495);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetBinError(17,0.3257321);
+   h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetEntries(6830);
 
    ci = TColor::GetColor("#3333ff");
    h_ByHyperonDecayChannel_SigmaPlus_stack_1->SetFillColor(ci);
@@ -194,7 +240,30 @@ void test_ByHyperonFinalStates()
    h_ByHyperonDecayChannel_SigmaPlus_stack_1->GetZaxis()->SetTitleFont(42);
    hs->Add(h_ByHyperonDecayChannel_SigmaPlus_stack_1,"HIST");
    
-   TH1D *h_ByHyperonDecayChannel_Lambda_stack_2 = new TH1D("h_ByHyperonDecayChannel_Lambda_stack_2","",8,0,0.8);
+   TH1D *h_ByHyperonDecayChannel_Lambda_stack_2 = new TH1D("h_ByHyperonDecayChannel_Lambda_stack_2","",16,0,0.8);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinContent(6,0.2465446);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinContent(7,1.611041);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinContent(8,1.687555);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinContent(9,0.8799092);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinContent(10,0.4463307);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinContent(11,0.1190215);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinContent(12,0.02125384);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinContent(13,0.004250769);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinContent(14,0.01700308);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinContent(16,0.004250769);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinContent(17,39.41738);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinError(6,0.03237289);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinError(7,0.08275364);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinError(8,0.08469597);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinError(9,0.06115791);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinError(10,0.04355742);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinError(11,0.02249295);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinError(12,0.009505008);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinError(13,0.004250769);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinError(14,0.008501538);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinError(16,0.004250769);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetBinError(17,0.4093338);
+   h_ByHyperonDecayChannel_Lambda_stack_2->SetEntries(10458);
 
    ci = TColor::GetColor("#ffcc00");
    h_ByHyperonDecayChannel_Lambda_stack_2->SetFillColor(ci);
@@ -218,7 +287,24 @@ void test_ByHyperonFinalStates()
    h_ByHyperonDecayChannel_Lambda_stack_2->GetZaxis()->SetTitleFont(42);
    hs->Add(h_ByHyperonDecayChannel_Lambda_stack_2,"HIST");
    
-   TH1D *h_ByHyperonDecayChannel_SigmaMinus_stack_3 = new TH1D("h_ByHyperonDecayChannel_SigmaMinus_stack_3","",8,0,0.8);
+   TH1D *h_ByHyperonDecayChannel_SigmaMinus_stack_3 = new TH1D("h_ByHyperonDecayChannel_SigmaMinus_stack_3","",16,0,0.8);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinContent(6,0.05526);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinContent(7,0.4930892);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinContent(8,0.5738538);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinContent(9,0.2635477);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinContent(10,0.11052);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinContent(11,0.05100923);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinContent(12,0.02125384);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinContent(17,8.323005);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinError(6,0.01532637);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinError(7,0.04578218);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinError(8,0.04938947);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinError(9,0.03347059);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinError(10,0.02167475);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinError(11,0.0147251);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinError(12,0.009505008);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetBinError(17,0.1880935);
+   h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetEntries(2327);
 
    ci = TColor::GetColor("#ff00ff");
    h_ByHyperonDecayChannel_SigmaMinus_stack_3->SetFillColor(ci);
@@ -242,7 +328,26 @@ void test_ByHyperonFinalStates()
    h_ByHyperonDecayChannel_SigmaMinus_stack_3->GetZaxis()->SetTitleFont(42);
    hs->Add(h_ByHyperonDecayChannel_SigmaMinus_stack_3,"HIST");
    
-   TH1D *h_ByHyperonDecayChannel_Kaon_stack_4 = new TH1D("h_ByHyperonDecayChannel_Kaon_stack_4","",8,0,0.8);
+   TH1D *h_ByHyperonDecayChannel_Kaon_stack_4 = new TH1D("h_ByHyperonDecayChannel_Kaon_stack_4","",16,0,0.8);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinContent(6,0.08926615);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinContent(7,0.5015907);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinContent(8,0.4845877);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinContent(9,0.3018046);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinContent(10,0.1190215);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinContent(11,0.02550461);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinContent(14,0.008501538);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinContent(16,0.004250769);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinContent(17,13.92977);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinError(6,0.01947947);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinError(7,0.04617517);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinError(8,0.04538579);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinError(9,0.03581762);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinError(10,0.02249295);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinError(11,0.01041221);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinError(14,0.006011495);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinError(16,0.004250769);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetBinError(17,0.2433356);
+   h_ByHyperonDecayChannel_Kaon_stack_4->SetEntries(3638);
 
    ci = TColor::GetColor("#00cccc");
    h_ByHyperonDecayChannel_Kaon_stack_4->SetFillColor(ci);
@@ -266,7 +371,20 @@ void test_ByHyperonFinalStates()
    h_ByHyperonDecayChannel_Kaon_stack_4->GetZaxis()->SetTitleFont(42);
    hs->Add(h_ByHyperonDecayChannel_Kaon_stack_4,"HIST");
    
-   TH1D *h_ByHyperonDecayChannel_Other_stack_5 = new TH1D("h_ByHyperonDecayChannel_Other_stack_5","",8,0,0.8);
+   TH1D *h_ByHyperonDecayChannel_Other_stack_5 = new TH1D("h_ByHyperonDecayChannel_Other_stack_5","",16,0,0.8);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinContent(6,0.008501538);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinContent(7,0.08501538);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinContent(8,0.1147708);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinContent(9,0.05951076);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinContent(10,0.02125384);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinContent(17,3.26034);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinError(6,0.006011495);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinError(7,0.01901002);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinError(8,0.02208764);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinError(9,0.01590492);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinError(10,0.009505008);
+   h_ByHyperonDecayChannel_Other_stack_5->SetBinError(17,0.117724);
+   h_ByHyperonDecayChannel_Other_stack_5->SetEntries(835);
 
    ci = TColor::GetColor("#ff99cc");
    h_ByHyperonDecayChannel_Other_stack_5->SetFillColor(ci);
@@ -291,9 +409,32 @@ void test_ByHyperonFinalStates()
    hs->Add(h_ByHyperonDecayChannel_Other_stack_5,"HIST");
    hs->Draw("hist same");
    
-   TH1D *h_errors__17 = new TH1D("h_errors__17","",8,0,0.8);
+   TH1D *h_errors__17 = new TH1D("h_errors__17","",16,0,0.8);
+   h_errors__17->SetBinContent(6,0.6078599);
+   h_errors__17->SetBinContent(7,3.97872);
+   h_errors__17->SetBinContent(8,4.263521);
+   h_errors__17->SetBinContent(9,2.291164);
+   h_errors__17->SetBinContent(10,0.9691753);
+   h_errors__17->SetBinContent(11,0.2763);
+   h_errors__17->SetBinContent(12,0.05526);
+   h_errors__17->SetBinContent(13,0.01275231);
+   h_errors__17->SetBinContent(14,0.02975538);
+   h_errors__17->SetBinContent(16,0.01700308);
+   h_errors__17->SetBinContent(17,89.89101);
+   h_errors__17->SetBinError(6,0.0508318);
+   h_errors__17->SetBinError(7,0.1300485);
+   h_errors__17->SetBinError(8,0.1346226);
+   h_errors__17->SetBinError(9,0.09868744);
+   h_errors__17->SetBinError(10,0.0641852);
+   h_errors__17->SetBinError(11,0.03427079);
+   h_errors__17->SetBinError(12,0.01532637);
+   h_errors__17->SetBinError(13,0.007362548);
+   h_errors__17->SetBinError(14,0.01124648);
+   h_errors__17->SetBinError(16,0.008501538);
+   h_errors__17->SetBinError(17,0.6181472);
    h_errors__17->SetMinimum(0);
-   h_errors__17->SetMaximum(0);
+   h_errors__17->SetMaximum(5.49768);
+   h_errors__17->SetEntries(24088);
    h_errors__17->SetStats(0);
    h_errors__17->SetFillColor(1);
    h_errors__17->SetFillStyle(3253);
@@ -318,9 +459,32 @@ void test_ByHyperonFinalStates()
    h_errors__17->GetZaxis()->SetTitleFont(42);
    h_errors__17->Draw("E2 same");
    
-   TH1D *h_errors_copy__18 = new TH1D("h_errors_copy__18","",8,0,0.8);
+   TH1D *h_errors_copy__18 = new TH1D("h_errors_copy__18","",16,0,0.8);
+   h_errors_copy__18->SetBinContent(6,0.6078599);
+   h_errors_copy__18->SetBinContent(7,3.97872);
+   h_errors_copy__18->SetBinContent(8,4.263521);
+   h_errors_copy__18->SetBinContent(9,2.291164);
+   h_errors_copy__18->SetBinContent(10,0.9691753);
+   h_errors_copy__18->SetBinContent(11,0.2763);
+   h_errors_copy__18->SetBinContent(12,0.05526);
+   h_errors_copy__18->SetBinContent(13,0.01275231);
+   h_errors_copy__18->SetBinContent(14,0.02975538);
+   h_errors_copy__18->SetBinContent(16,0.01700308);
+   h_errors_copy__18->SetBinContent(17,89.89101);
+   h_errors_copy__18->SetBinError(6,0.0508318);
+   h_errors_copy__18->SetBinError(7,0.1300485);
+   h_errors_copy__18->SetBinError(8,0.1346226);
+   h_errors_copy__18->SetBinError(9,0.09868744);
+   h_errors_copy__18->SetBinError(10,0.0641852);
+   h_errors_copy__18->SetBinError(11,0.03427079);
+   h_errors_copy__18->SetBinError(12,0.01532637);
+   h_errors_copy__18->SetBinError(13,0.007362548);
+   h_errors_copy__18->SetBinError(14,0.01124648);
+   h_errors_copy__18->SetBinError(16,0.008501538);
+   h_errors_copy__18->SetBinError(17,0.6181472);
    h_errors_copy__18->SetMinimum(0);
-   h_errors_copy__18->SetMaximum(0);
+   h_errors_copy__18->SetMaximum(5.49768);
+   h_errors_copy__18->SetEntries(24088);
    h_errors_copy__18->SetDirectory(0);
    h_errors_copy__18->SetStats(0);
    h_errors_copy__18->SetFillColor(1);

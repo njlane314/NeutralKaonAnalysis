@@ -11,7 +11,7 @@ SelectionManager::SelectionManager() :
     a_FluxWeightCalc(0) ,
     a_GenG4WeightCalc() ,
     a_FiducialVolume(1,0.0) ,
-    a_MuonID(-0.35,18.0,0.0) ,
+    a_MuonID(0.9,200.0,0.0) ,
     a_TrackLengthCutManager(1000.0,1000.0) , 
     a_SelectorBDTManager("Test") ,
     a_AnalysisBDTManager("Test") ,
@@ -191,31 +191,78 @@ void SelectionManager::SetSignal(Event &e){
     e.GoodReco = false;
 
 	std::vector<bool> IsSignal_tmp = e.IsSignal;
+
+    /*bool found_muon = false;
+    for(size_t i_tr = 0; i_tr < e.NMCTruths; i_tr){
+        if(abs(e.Lepton.at(i_tr).PDG) == 13) found_muon = true;
+    }
+
+    if(!found_muon) return;*/
+
+    bool found_Ks = false;
+    //bool found_lambda = false;
 	for(size_t i_tr = 0; i_tr < e.NMCTruths; i_tr++){
-		IsSignal_tmp.at(i_tr) = e.IsK0SCharged.at(i_tr) && e.CCNC.at(0) == "CC" && abs(e.Neutrino.at(0).PDG) == 14;
+		found_Ks = e.IsK0SCharged.at(i_tr) && a_FiducialVolume.InFiducialVolume(e.TruePrimaryVertex.at(i_tr));
+        //found_lambda = e.IsLambdaCharged.at(i_tr) && e.InActiveTPC.at(i_tr);
 	}
 	
 	e.IsSignal = IsSignal_tmp;
 
-	e.EventIsSignal = std::find(e.IsSignal.begin(), e.IsSignal.end(), true) != e.IsSignal.end();
+	e.EventIsSignal = found_Ks; //&& found_lambda;
 
 	bool found_pion_plus = false;
 	bool found_pion_minus = false;
 	
 	if(!e.EventIsSignal) return;
 
-	for(int i_tr = 0; i_tr < e.TracklikePrimaryDaughters.size(); i_tr++){
+    //std::cout << std::endl;    
+
+    std::vector<RecoParticle> PionPlusCandidatesVector;
+    std::vector<RecoParticle> PionMinusCandidatesVector;
+	for(size_t i_tr = 0; i_tr < e.TracklikePrimaryDaughters.size(); i_tr++){
         if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == +211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 7){ 
             found_pion_plus = true; 
-            e.TrueDecayPionPlusIndex = i_tr; 
+            PionPlusCandidatesVector.push_back(e.TracklikePrimaryDaughters.at(i_tr));
         }
         if(e.TracklikePrimaryDaughters.at(i_tr).HasTruth && e.TracklikePrimaryDaughters.at(i_tr).TrackTruePDG == -211 && e.TracklikePrimaryDaughters.at(i_tr).TrackTrueOrigin == 7){
             found_pion_minus = true;
-            e.TrueDecayPionMinusIndex = i_tr; 
+            PionMinusCandidatesVector.push_back(e.TracklikePrimaryDaughters.at(i_tr));
         }
   	}
 
+    if(found_pion_plus && found_pion_minus) {
+        std::sort(PionPlusCandidatesVector.begin(), PionPlusCandidatesVector.end(), [](const RecoParticle& a, const RecoParticle& b) { return a.Displacement < b.Displacement; });
+        std::sort(PionMinusCandidatesVector.begin(), PionMinusCandidatesVector.end(), [](const RecoParticle& a, const RecoParticle& b) { return a.Displacement < b.Displacement; });
+
+        double min_diff = std::numeric_limits<double>::max();
+        std::pair<RecoParticle, RecoParticle> closest_pair;
+
+        for (const auto& pion_plus : PionPlusCandidatesVector) {
+            for (const auto& pion_minus : PionMinusCandidatesVector) {
+                double diff = std::abs(pion_plus.Displacement - pion_minus.Displacement);
+                if (diff < min_diff) {
+                    min_diff = diff;
+                    closest_pair = {pion_plus, pion_minus};
+                }
+            }
+        }
+
+        e.TrueDecayPionPlusIndex = closest_pair.first.Index;
+        e.TrueDecayPionMinusIndex = closest_pair.second.Index;
+    }
+
    	e.GoodReco = e.EventIsSignal && found_pion_plus && found_pion_minus;
+
+    if(e.GoodReco) {
+        //std::cout << "Indices of found pion candidates " << e.TrueDecayPionMinusIndex << " " << e.TrueDecayPionPlusIndex << std::endl;
+        for(size_t i_tr = 0; i_tr < e.TracklikePrimaryDaughters.size(); i_tr++) {
+            if (e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionMinusIndex) {
+                if(e.TracklikePrimaryDaughters.at(i_tr).TrackLength == 0) {
+                    std::cout << "Found an event with 0 track length " << e.TracklikePrimaryDaughters.at(i_tr).TrackLength << std::endl;
+                }
+            }
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,7 +342,6 @@ void SelectionManager::Reset(){
 // Load the track selector BDT weights
 
 void SelectionManager::ImportSelectorBDTWeights(std::string WeightDir){
-
 
     std::cout << "SelectionManager: Importing Selector BDT Weights from " << WeightDir << std::endl;
     a_SelectorBDTManager.SetupSelectorBDT(WeightDir);
@@ -398,7 +444,7 @@ bool SelectionManager::TrackLengthCut(const Event &e){
 
 bool SelectionManager::ChoosePionPairCandidates(Event &e, bool cheat){
 
-    std::pair<int,int> candidates;
+    std::pair<int,int> candidates; // <pion_plus_index, pion_minus_index>
 
     if(cheat) candidates = a_SelectorBDTManager.NominateTracksCheat(e);
     else candidates = a_SelectorBDTManager.NominateTracks(e);
@@ -410,25 +456,25 @@ bool SelectionManager::ChoosePionPairCandidates(Event &e, bool cheat){
         return false;
     }
 
-    if (candidates.first < e.TracklikePrimaryDaughters.size()) {
-        e.DecayPionPlusCandidate = e.TracklikePrimaryDaughters.at(candidates.first);
-    } else {
-        std::cout << "Tried to access TracklikePrimaryDaughters index " << candidates.first << " -- the range is " << e.TracklikePrimaryDaughters.size() << std::endl;
-        return false;
-    }
-
-    if (candidates.second < e.TracklikePrimaryDaughters.size()) {
-        e.DecayPionMinusCandidate = e.TracklikePrimaryDaughters.at(candidates.second);
-    } else {
-        std::cout << "Tried to access TracklikePrimaryDaughters index " << candidates.second << " -- the range is " << e.TracklikePrimaryDaughters.size() << std::endl;
-        return false;
+    for (size_t i_tr=0; i_tr<e.TracklikePrimaryDaughters.size(); i_tr++){
+        if (candidates.first == e.TracklikePrimaryDaughters.at(i_tr).Index) {
+            e.DecayPionPlusCandidate = e.TracklikePrimaryDaughters.at(i_tr);
+        }
+        else if (candidates.second == e.TracklikePrimaryDaughters.at(i_tr).Index) {
+            e.DecayPionMinusCandidate = e.TracklikePrimaryDaughters.at(i_tr);
+        }
     }
 
     // Erase from track vector
     std::vector<RecoParticle> TracklikePrimaryDaughters_tmp;
 
-    for(size_t i = 0; i < e.TracklikePrimaryDaughters.size(); i++) {
-        if(i != candidates.first && i != candidates.second) TracklikePrimaryDaughters_tmp.push_back(e.TracklikePrimaryDaughters.at(i));
+    for(size_t i_tr=0; i_tr<e.TracklikePrimaryDaughters.size(); i_tr++) {
+        if (candidates.first == e.TracklikePrimaryDaughters.at(i_tr).Index) {
+            TracklikePrimaryDaughters_tmp.push_back(e.TracklikePrimaryDaughters.at(i_tr));
+        }
+        else if (candidates.second == e.TracklikePrimaryDaughters.at(i_tr).Index) {
+            TracklikePrimaryDaughters_tmp.push_back(e.TracklikePrimaryDaughters.at(i_tr));
+        }
     }
 
     e.TracklikePrimaryDaughters = TracklikePrimaryDaughters_tmp;

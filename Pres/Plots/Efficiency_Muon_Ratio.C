@@ -1,7 +1,7 @@
 void Efficiency_Muon_Ratio()
 {
 //=========Macro generated from canvas: c1/c1
-//=========  (Sun Nov 19 15:01:36 2023) by ROOT version 6.12/06
+//=========  (Mon Dec  4 08:50:31 2023) by ROOT version 6.12/06
    TCanvas *c1 = new TCanvas("c1", "c1",0,0,800,600);
    c1->Range(0,0,1,1);
    c1->SetFillColor(0);
@@ -63,7 +63,7 @@ void Efficiency_Muon_Ratio()
    TPad *pad1 = new TPad("pad1", "pad1",0,0,1,0.85);
    pad1->Draw();
    pad1->cd();
-   pad1->Range(-1.25,-7.809939,11.25,70.28945);
+   pad1->Range(-1.75,-2.004292,15.75,18.03863);
    pad1->SetFillColor(0);
    pad1->SetBorderMode(0);
    pad1->SetBorderSize(2);
@@ -73,60 +73,92 @@ void Efficiency_Muon_Ratio()
    
    THStack *hs = new THStack();
    hs->SetName("hs");
-   hs->SetTitle("Muon");
-   hs->SetMaximum(69.50845);
+   hs->SetTitle("");
+   hs->SetMaximum(17.8382);
    
-   TH1F *hs_stack_2 = new TH1F("hs_stack_2","Muon",10,0,10);
-   hs_stack_2->SetMinimum(0);
-   hs_stack_2->SetMaximum(69.50845);
-   hs_stack_2->SetDirectory(0);
-   hs_stack_2->SetStats(0);
+   TH1F *hs_stack_5 = new TH1F("hs_stack_5","",28,0,14);
+   hs_stack_5->SetMinimum(0);
+   hs_stack_5->SetMaximum(17.8382);
+   hs_stack_5->SetDirectory(0);
+   hs_stack_5->SetStats(0);
 
    ci = TColor::GetColor("#000099");
-   hs_stack_2->SetLineColor(ci);
-   hs_stack_2->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
-   hs_stack_2->GetXaxis()->SetLabelFont(42);
-   hs_stack_2->GetXaxis()->SetLabelSize(0.045);
-   hs_stack_2->GetXaxis()->SetTitleSize(0.05);
-   hs_stack_2->GetXaxis()->SetTitleOffset(0.93);
-   hs_stack_2->GetXaxis()->SetTitleFont(42);
-   hs_stack_2->GetYaxis()->SetTitle(" Entries/bin");
-   hs_stack_2->GetYaxis()->SetLabelFont(42);
-   hs_stack_2->GetYaxis()->SetLabelSize(0.045);
-   hs_stack_2->GetYaxis()->SetTitleSize(0.05);
-   hs_stack_2->GetYaxis()->SetTitleOffset(1.06);
-   hs_stack_2->GetYaxis()->SetTitleFont(42);
-   hs_stack_2->GetZaxis()->SetLabelFont(42);
-   hs_stack_2->GetZaxis()->SetLabelSize(0.035);
-   hs_stack_2->GetZaxis()->SetTitleSize(0.035);
-   hs_stack_2->GetZaxis()->SetTitleFont(42);
-   hs->SetHistogram(hs_stack_2);
+   hs_stack_5->SetLineColor(ci);
+   hs_stack_5->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
+   hs_stack_5->GetXaxis()->SetLabelFont(42);
+   hs_stack_5->GetXaxis()->SetLabelSize(0.045);
+   hs_stack_5->GetXaxis()->SetTitleSize(0.05);
+   hs_stack_5->GetXaxis()->SetTitleOffset(0.93);
+   hs_stack_5->GetXaxis()->SetTitleFont(42);
+   hs_stack_5->GetYaxis()->SetTitle(" Entries/bin");
+   hs_stack_5->GetYaxis()->SetLabelFont(42);
+   hs_stack_5->GetYaxis()->SetLabelSize(0.045);
+   hs_stack_5->GetYaxis()->SetTitleSize(0.05);
+   hs_stack_5->GetYaxis()->SetTitleOffset(1.06);
+   hs_stack_5->GetYaxis()->SetTitleFont(42);
+   hs_stack_5->GetZaxis()->SetLabelFont(42);
+   hs_stack_5->GetZaxis()->SetLabelSize(0.035);
+   hs_stack_5->GetZaxis()->SetTitleSize(0.035);
+   hs_stack_5->GetZaxis()->SetTitleFont(42);
+   hs->SetHistogram(hs_stack_5);
    
    
-   TH1D *h_Before_stack_1 = new TH1D("h_Before_stack_1"," (total)",10,0,10);
-   h_Before_stack_1->SetBinContent(1,1.844337);
-   h_Before_stack_1->SetBinContent(2,14.8008);
-   h_Before_stack_1->SetBinContent(3,51.61838);
-   h_Before_stack_1->SetBinContent(4,55.60676);
-   h_Before_stack_1->SetBinContent(5,40.06822);
-   h_Before_stack_1->SetBinContent(6,26.44318);
-   h_Before_stack_1->SetBinContent(7,14.82386);
-   h_Before_stack_1->SetBinContent(8,7.700107);
-   h_Before_stack_1->SetBinContent(9,3.342861);
-   h_Before_stack_1->SetBinContent(10,1.198819);
-   h_Before_stack_1->SetBinContent(11,1.590741);
-   h_Before_stack_1->SetBinError(1,0.2062031);
-   h_Before_stack_1->SetBinError(2,0.5841412);
-   h_Before_stack_1->SetBinError(3,1.090881);
-   h_Before_stack_1->SetBinError(4,1.132241);
-   h_Before_stack_1->SetBinError(5,0.9611146);
-   h_Before_stack_1->SetBinError(6,0.780786);
-   h_Before_stack_1->SetBinError(7,0.5845959);
-   h_Before_stack_1->SetBinError(8,0.4213311);
-   h_Before_stack_1->SetBinError(9,0.2776095);
-   h_Before_stack_1->SetBinError(10,0.1662463);
-   h_Before_stack_1->SetBinError(11,0.1915027);
-   h_Before_stack_1->SetEntries(9501);
+   TH1D *h_Before_stack_1 = new TH1D("h_Before_stack_1"," (total)",28,0,14);
+   h_Before_stack_1->SetBinContent(1,0.1844337);
+   h_Before_stack_1->SetBinContent(2,0.4841385);
+   h_Before_stack_1->SetBinContent(3,1.636849);
+   h_Before_stack_1->SetBinContent(4,8.092029);
+   h_Before_stack_1->SetBinContent(5,14.27056);
+   h_Before_stack_1->SetBinContent(6,11.25046);
+   h_Before_stack_1->SetBinContent(7,12.51844);
+   h_Before_stack_1->SetBinContent(8,12.40317);
+   h_Before_stack_1->SetBinContent(9,9.821095);
+   h_Before_stack_1->SetBinContent(10,7.999812);
+   h_Before_stack_1->SetBinContent(11,6.524342);
+   h_Before_stack_1->SetBinContent(12,4.910547);
+   h_Before_stack_1->SetBinContent(13,3.550349);
+   h_Before_stack_1->SetBinContent(14,2.19015);
+   h_Before_stack_1->SetBinContent(15,1.544632);
+   h_Before_stack_1->SetBinContent(16,1.267982);
+   h_Before_stack_1->SetBinContent(17,1.03744);
+   h_Before_stack_1->SetBinContent(18,0.3688674);
+   h_Before_stack_1->SetBinContent(19,0.2997048);
+   h_Before_stack_1->SetBinContent(20,0.2305421);
+   h_Before_stack_1->SetBinContent(21,0.1152711);
+   h_Before_stack_1->SetBinContent(22,0.02305421);
+   h_Before_stack_1->SetBinContent(23,0.1152711);
+   h_Before_stack_1->SetBinContent(25,0.1152711);
+   h_Before_stack_1->SetBinContent(26,0.06916264);
+   h_Before_stack_1->SetBinContent(28,0.02305421);
+   h_Before_stack_1->SetBinContent(29,0.02305421);
+   h_Before_stack_1->SetBinError(1,0.06520716);
+   h_Before_stack_1->SetBinError(2,0.1056477);
+   h_Before_stack_1->SetBinError(3,0.1942583);
+   h_Before_stack_1->SetBinError(4,0.4319205);
+   h_Before_stack_1->SetBinError(5,0.5735821);
+   h_Before_stack_1->SetBinError(6,0.5092842);
+   h_Before_stack_1->SetBinError(7,0.5372176);
+   h_Before_stack_1->SetBinError(8,0.5347385);
+   h_Before_stack_1->SetBinError(9,0.4758336);
+   h_Before_stack_1->SetBinError(10,0.4294524);
+   h_Before_stack_1->SetBinError(11,0.3878319);
+   h_Before_stack_1->SetBinError(12,0.3364652);
+   h_Before_stack_1->SetBinError(13,0.2860953);
+   h_Before_stack_1->SetBinError(14,0.2247047);
+   h_Before_stack_1->SetBinError(15,0.1887069);
+   h_Before_stack_1->SetBinError(16,0.1709746);
+   h_Before_stack_1->SetBinError(17,0.1546524);
+   h_Before_stack_1->SetBinError(18,0.09221685);
+   h_Before_stack_1->SetBinError(19,0.08312315);
+   h_Before_stack_1->SetBinError(20,0.07290382);
+   h_Before_stack_1->SetBinError(21,0.05155079);
+   h_Before_stack_1->SetBinError(22,0.02305421);
+   h_Before_stack_1->SetBinError(23,0.05155079);
+   h_Before_stack_1->SetBinError(25,0.05155079);
+   h_Before_stack_1->SetBinError(26,0.03993107);
+   h_Before_stack_1->SetBinError(28,0.02305421);
+   h_Before_stack_1->SetBinError(29,0.02305421);
+   h_Before_stack_1->SetEntries(4384);
    h_Before_stack_1->SetLineWidth(2);
    h_Before_stack_1->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
    h_Before_stack_1->GetXaxis()->SetLabelFont(42);
@@ -145,30 +177,56 @@ void Efficiency_Muon_Ratio()
    h_Before_stack_1->GetZaxis()->SetTitleFont(42);
    hs->Add(h_Before_stack_1,"");
    
-   TH1D *h_After_stack_2 = new TH1D("h_After_stack_2"," (passed)",10,0,10);
-   h_After_stack_2->SetBinContent(1,0.3688674);
-   h_After_stack_2->SetBinContent(2,2.120988);
-   h_After_stack_2->SetBinContent(3,7.884541);
-   h_After_stack_2->SetBinContent(4,8.945035);
-   h_After_stack_2->SetBinContent(5,5.85577);
-   h_After_stack_2->SetBinContent(6,4.518626);
-   h_After_stack_2->SetBinContent(7,2.120988);
-   h_After_stack_2->SetBinContent(8,1.03744);
-   h_After_stack_2->SetBinContent(9,0.3919216);
-   h_After_stack_2->SetBinContent(10,0.1152711);
-   h_After_stack_2->SetBinContent(11,0.1844337);
-   h_After_stack_2->SetBinError(1,0.09221685);
-   h_After_stack_2->SetBinError(2,0.2211282);
-   h_After_stack_2->SetBinError(3,0.4263471);
-   h_After_stack_2->SetBinError(4,0.4541153);
-   h_After_stack_2->SetBinError(5,0.3674237);
-   h_After_stack_2->SetBinError(6,0.322759);
-   h_After_stack_2->SetBinError(7,0.2211282);
-   h_After_stack_2->SetBinError(8,0.1546524);
-   h_After_stack_2->SetBinError(9,0.09505496);
-   h_After_stack_2->SetBinError(10,0.05155079);
-   h_After_stack_2->SetBinError(11,0.06520716);
-   h_After_stack_2->SetEntries(1455);
+   TH1D *h_After_stack_2 = new TH1D("h_After_stack_2"," (passed)",28,0,14);
+   h_After_stack_2->SetBinContent(1,0.06916264);
+   h_After_stack_2->SetBinContent(2,0.1152711);
+   h_After_stack_2->SetBinContent(3,0.3688674);
+   h_After_stack_2->SetBinContent(4,2.420692);
+   h_After_stack_2->SetBinContent(5,4.357246);
+   h_After_stack_2->SetBinContent(6,3.365915);
+   h_After_stack_2->SetBinContent(7,3.919216);
+   h_After_stack_2->SetBinContent(8,3.711728);
+   h_After_stack_2->SetBinContent(9,2.950939);
+   h_After_stack_2->SetBinContent(10,2.282367);
+   h_After_stack_2->SetBinContent(11,2.074879);
+   h_After_stack_2->SetBinContent(12,1.682958);
+   h_After_stack_2->SetBinContent(13,1.014385);
+   h_After_stack_2->SetBinContent(14,0.7146806);
+   h_After_stack_2->SetBinContent(15,0.4149758);
+   h_After_stack_2->SetBinContent(16,0.3919216);
+   h_After_stack_2->SetBinContent(17,0.2305421);
+   h_After_stack_2->SetBinContent(18,0.02305421);
+   h_After_stack_2->SetBinContent(19,0.09221685);
+   h_After_stack_2->SetBinContent(20,0.06916264);
+   h_After_stack_2->SetBinContent(21,0.02305421);
+   h_After_stack_2->SetBinContent(23,0.04610843);
+   h_After_stack_2->SetBinContent(25,0.02305421);
+   h_After_stack_2->SetBinContent(29,0.02305421);
+   h_After_stack_2->SetBinError(1,0.03993107);
+   h_After_stack_2->SetBinError(2,0.05155079);
+   h_After_stack_2->SetBinError(3,0.09221685);
+   h_After_stack_2->SetBinError(4,0.2362354);
+   h_After_stack_2->SetBinError(5,0.316943);
+   h_After_stack_2->SetBinError(6,0.2785651);
+   h_After_stack_2->SetBinError(7,0.3005902);
+   h_After_stack_2->SetBinError(8,0.2925252);
+   h_After_stack_2->SetBinError(9,0.2608286);
+   h_After_stack_2->SetBinError(10,0.2293865);
+   h_After_stack_2->SetBinError(11,0.2187115);
+   h_After_stack_2->SetBinError(12,0.1969753);
+   h_After_stack_2->SetBinError(13,0.1529243);
+   h_After_stack_2->SetBinError(14,0.1283604);
+   h_After_stack_2->SetBinError(15,0.09781074);
+   h_After_stack_2->SetBinError(16,0.09505496);
+   h_After_stack_2->SetBinError(17,0.07290382);
+   h_After_stack_2->SetBinError(18,0.02305421);
+   h_After_stack_2->SetBinError(19,0.04610843);
+   h_After_stack_2->SetBinError(20,0.03993107);
+   h_After_stack_2->SetBinError(21,0.02305421);
+   h_After_stack_2->SetBinError(23,0.03260358);
+   h_After_stack_2->SetBinError(25,0.02305421);
+   h_After_stack_2->SetBinError(29,0.02305421);
+   h_After_stack_2->SetEntries(1318);
    h_After_stack_2->SetLineColor(3);
    h_After_stack_2->SetLineWidth(2);
    h_After_stack_2->GetXaxis()->SetTitle("Neutrino Energy (GeV)");
@@ -188,16 +246,7 @@ void Efficiency_Muon_Ratio()
    h_After_stack_2->GetZaxis()->SetTitleFont(42);
    hs->Add(h_After_stack_2,"");
    hs->Draw("nostack e0");
-   
-   TPaveText *pt = new TPaveText(0.4485427,0.94,0.5514573,0.995,"blNDC");
-   pt->SetName("title");
-   pt->SetBorderSize(0);
-   pt->SetFillColor(0);
-   pt->SetFillStyle(0);
-   pt->SetTextFont(42);
-   TText *pt_LaTex = pt->AddText("Muon");
-   pt->Draw();
-   TGaxis *gaxis = new TGaxis(10,0,10,69.50845,0,0.2957924,510,"+L");
+   TGaxis *gaxis = new TGaxis(14,0,14,17.8382,0,0.7128541,510,"+L");
    gaxis->SetLabelOffset(0.005);
    gaxis->SetLabelSize(0.045);
    gaxis->SetTickSize(0.03);
@@ -212,29 +261,77 @@ void Efficiency_Muon_Ratio()
    gaxis->SetLabelColor(ci);
    gaxis->Draw();
    
-   Double_t Graph0_fx3002[10] = {
-   0.5,
-   1.5,
-   2.5,
-   3.5,
-   4.5,
-   5.5,
-   6.5,
-   7.5,
-   8.5,
-   9.5};
-   Double_t Graph0_fy3002[10] = {
-   46.99814,
-   33.67468,
-   35.89407,
-   37.80116,
-   34.34271,
-   40.15534,
-   33.62231,
-   31.66042,
-   27.55063,
-   22.59526};
-   Double_t Graph0_felx3002[10] = {
+   Double_t Graph0_fx3005[26] = {
+   0.25,
+   0.75,
+   1.25,
+   1.75,
+   2.25,
+   2.75,
+   3.25,
+   3.75,
+   4.25,
+   4.75,
+   5.25,
+   5.75,
+   6.25,
+   6.75,
+   7.25,
+   7.75,
+   8.25,
+   8.75,
+   9.25,
+   9.75,
+   10.25,
+   10.75,
+   11.25,
+   12.25,
+   12.75,
+   13.75};
+   Double_t Graph0_fy3005[26] = {
+   9.383861,
+   5.958007,
+   5.639128,
+   7.485701,
+   7.640495,
+   7.486578,
+   7.834286,
+   7.488484,
+   7.518837,
+   7.139307,
+   7.958045,
+   8.576174,
+   7.149609,
+   8.165606,
+   6.722766,
+   7.734577,
+   5.560807,
+   1.563977,
+   7.699579,
+   7.507089,
+   5.004726,
+   0,
+   10.00945,
+   5.004726,
+   0,
+   0};
+   Double_t Graph0_felx3005[26] = {
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
    0,
    0,
    0,
@@ -245,18 +342,50 @@ void Efficiency_Muon_Ratio()
    0,
    0,
    0};
-   Double_t Graph0_fely3002[10] = {
-   9.784168,
-   3.142916,
-   1.752175,
-   1.725984,
-   1.94799,
-   2.551336,
-   3.138404,
-   4.19063,
-   5.821185,
-   8.336047};
-   Double_t Graph0_fehx3002[10] = {
+   Double_t Graph0_fely3005[26] = {
+   3.608051,
+   2.035549,
+   1.15772,
+   0.5972187,
+   0.4547884,
+   0.5080908,
+   0.4887368,
+   0.4843327,
+   0.5438803,
+   0.5915217,
+   0.676104,
+   0.7936041,
+   0.8779511,
+   1.155817,
+   1.274704,
+   1.469726,
+   1.417143,
+   1.091609,
+   2.765422,
+   3.033909,
+   3.150592,
+   0,
+   4.36991,
+   3.150592,
+   0,
+   0};
+   Double_t Graph0_fehx3005[26] = {
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
    0,
    0,
    0,
@@ -267,18 +396,34 @@ void Efficiency_Muon_Ratio()
    0,
    0,
    0};
-   Double_t Graph0_fehy3002[10] = {
-   10.92557,
-   3.314766,
-   1.800205,
-   1.769528,
-   2.011035,
-   2.640144,
-   3.310094,
-   4.528402,
-   6.63403,
-   10.71468};
-   TGraphAsymmErrors *grae = new TGraphAsymmErrors(10,Graph0_fx3002,Graph0_fy3002,Graph0_felx3002,Graph0_fehx3002,Graph0_fely3002,Graph0_fehy3002);
+   Double_t Graph0_fehy3005[26] = {
+   4.030365,
+   2.418784,
+   1.282677,
+   0.6160104,
+   0.4651372,
+   0.5216226,
+   0.5000601,
+   0.4966061,
+   0.5592743,
+   0.6118402,
+   0.6971948,
+   0.8177716,
+   0.9233756,
+   1.215075,
+   1.385937,
+   1.580843,
+   1.614203,
+   2.004882,
+   3.197475,
+   3.599223,
+   4.701262,
+   10.86813,
+   4.855712,
+   4.701262,
+   6.202842,
+   10.86813};
+   TGraphAsymmErrors *grae = new TGraphAsymmErrors(26,Graph0_fx3005,Graph0_fy3005,Graph0_felx3005,Graph0_fehx3005,Graph0_fely3005,Graph0_fehy3005);
    grae->SetName("Graph0");
    grae->SetTitle("Graph");
    grae->SetFillStyle(1000);
@@ -292,28 +437,28 @@ void Efficiency_Muon_Ratio()
    grae->SetMarkerStyle(5);
    grae->SetMarkerSize(2);
    
-   TH1F *Graph_Graph3002 = new TH1F("Graph_Graph3002","Graph",100,0,10.4);
-   Graph_Graph3002->SetMinimum(9.892761);
-   Graph_Graph3002->SetMaximum(62.29016);
-   Graph_Graph3002->SetDirectory(0);
-   Graph_Graph3002->SetStats(0);
+   TH1F *Graph_Graph3005 = new TH1F("Graph_Graph3005","Graph",100,0,15.1);
+   Graph_Graph3005->SetMinimum(0);
+   Graph_Graph3005->SetMaximum(16.35168);
+   Graph_Graph3005->SetDirectory(0);
+   Graph_Graph3005->SetStats(0);
 
    ci = TColor::GetColor("#000099");
-   Graph_Graph3002->SetLineColor(ci);
-   Graph_Graph3002->GetXaxis()->SetLabelFont(42);
-   Graph_Graph3002->GetXaxis()->SetLabelSize(0.035);
-   Graph_Graph3002->GetXaxis()->SetTitleSize(0.035);
-   Graph_Graph3002->GetXaxis()->SetTitleFont(42);
-   Graph_Graph3002->GetYaxis()->SetLabelFont(42);
-   Graph_Graph3002->GetYaxis()->SetLabelSize(0.035);
-   Graph_Graph3002->GetYaxis()->SetTitleSize(0.035);
-   Graph_Graph3002->GetYaxis()->SetTitleOffset(0);
-   Graph_Graph3002->GetYaxis()->SetTitleFont(42);
-   Graph_Graph3002->GetZaxis()->SetLabelFont(42);
-   Graph_Graph3002->GetZaxis()->SetLabelSize(0.035);
-   Graph_Graph3002->GetZaxis()->SetTitleSize(0.035);
-   Graph_Graph3002->GetZaxis()->SetTitleFont(42);
-   grae->SetHistogram(Graph_Graph3002);
+   Graph_Graph3005->SetLineColor(ci);
+   Graph_Graph3005->GetXaxis()->SetLabelFont(42);
+   Graph_Graph3005->GetXaxis()->SetLabelSize(0.035);
+   Graph_Graph3005->GetXaxis()->SetTitleSize(0.035);
+   Graph_Graph3005->GetXaxis()->SetTitleFont(42);
+   Graph_Graph3005->GetYaxis()->SetLabelFont(42);
+   Graph_Graph3005->GetYaxis()->SetLabelSize(0.035);
+   Graph_Graph3005->GetYaxis()->SetTitleSize(0.035);
+   Graph_Graph3005->GetYaxis()->SetTitleOffset(0);
+   Graph_Graph3005->GetYaxis()->SetTitleFont(42);
+   Graph_Graph3005->GetZaxis()->SetLabelFont(42);
+   Graph_Graph3005->GetZaxis()->SetLabelSize(0.035);
+   Graph_Graph3005->GetZaxis()->SetTitleSize(0.035);
+   Graph_Graph3005->GetZaxis()->SetTitleFont(42);
+   grae->SetHistogram(Graph_Graph3005);
    
    grae->Draw("p ");
    
