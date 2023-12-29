@@ -103,7 +103,7 @@ void AnalysisBDTManager::FillTree(const Event &e){
 
 bool AnalysisBDTManager::SetVariables(const Event &e){
 
-   SecondaryVertex V = Fitter.MakeVertex(e.DecayProtonCandidate,e.DecayPionCandidate);
+   /*SecondaryVertex V = Fitter.MakeVertex(e.DecayProtonCandidate,e.DecayPionCandidate);
 
    // Reject if fit failed
    //if(!V.fitStatus) return false;
@@ -120,7 +120,7 @@ bool AnalysisBDTManager::SetVariables(const Event &e){
    v_bdt_score = e.SelectorBDTScore; 
    v_lambda_angle = (180/3.142)*lambdadirection.Angle(gap_vector);
    v_lambda_V_crossing_dist = V.CrossingDist;
-   v_weight = e.Weight;
+   v_weight = e.Weight;*/
 
    return true;
 

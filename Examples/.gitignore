@@ -32,9 +32,6 @@ sites
 *.app
 
 *.root
-Lib/*
 
-*.png
-*.pdf
-
-Work/*
+*/Plots/
+*/*/Plots/
