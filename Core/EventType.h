@@ -211,6 +211,34 @@ namespace EventType {
         880,
     };
 
+    ////////////////
+    
+    const std::vector<std::string> PureKaonProc = {"SignalSingle", "SignalAssociated", "Other", "NeutralCurrent"};
+    const std::vector<std::string> PureKaonCaptions = {"Signal (#Delta S = 1)", "Signal (#Delta S = 0)", "Other CC", "NC"};
+    const std::vector<int> PureKaonColors = {
+        kGreen,
+        kGreen + 1,
+        30,
+        15,
+    };
+
+    std::string GetPureKaonType(const Event &e){
+        if(e.CCNC.at(0) == "CC"){
+            if(e.EventIsSignal && e.EventIsSingleStrangeProduction){
+                return "SignalSingle";
+            }
+            else if(e.EventIsSignal && e.EventIsAssociatedStrangeProduction){
+                return "SignalAssociated";
+            }
+            else{
+                return "Other";
+            }
+        }
+        else{
+            return "NeutralCurrent";
+        }
+    }
+
 //
 // Get the event category 
 

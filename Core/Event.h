@@ -29,6 +29,9 @@ struct Event {
     Bool_t EventHasKaon = false;
     Bool_t EventHasK0S = false;
 
+    Bool_t EventIsAssociatedStrangeProduction = false;
+    Bool_t EventIsSingleStrangeProduction = false;
+
     // Flags for each MCTruth
     vector<string> Mode;
     vector<string> CCNC;

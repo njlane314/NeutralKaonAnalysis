@@ -36,7 +36,7 @@ void DisplacementRes(){
 
         if(i % 10000 == 0) std::cout << i << "/" << E.GetNEvents() << std::endl;
 
-        //if(i > 10000) continue;
+        if(i > 10000) continue;
 
         Event e = E.GetEvent(i);
 
