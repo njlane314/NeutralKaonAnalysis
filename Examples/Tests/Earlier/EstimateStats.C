@@ -10,10 +10,12 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so);
 #include "SampleSets_Example.h"
 
 void EstimateStats(){
-    double POT = 1.0e21; 
+    //double POT = 1.25e21; // POT to scale samples to
+    double POT = 1.5e21;
 
     BuildTunes();
-    SelectionParameters P = P_FHC_Tune_325_NoBDT;
+    //SelectionParameters P = P_FHC_Tune_325_NoBDT;
+    SelectionParameters P = P_RHC_Tune_397_NoBDT;
 
     std::string label = "test";
     std::string SampleType = "background";
@@ -42,12 +44,12 @@ void EstimateStats(){
     double lsigmazerok = 0.0;
     double lsigmazerok_var = 0.0;
 
-    E.SetFile("analysisOutputFHC_GENIE_Overlay_Kaon.root", "Background");
-    M.AddSample("Background","Background",E.GetPOT());
+    double lotherk = 0.0;
+    double lotherk_var = 0.0;
 
-    TEfficiency* pFiducalEfficX = new TEfficiency("pFiducalEffic", ";Interaction Vertex X (cm); Entries/bin", 12, 1, 0);
-    TEfficiency* pFiducalEfficY = new TEfficiency("pFiducalEffic", ";Interaction Vertex Y (cm); Entries/bin", 12, 1, 0);
-    TEfficiency* pFiducalEfficZ = new TEfficiency("pFiducalEffic", ";Interaction Vertex Z (cm); Entries/bin", 12, 1, 0);
+    //E.SetFile("analysisOutputFHC_Overlay_GENIE_Kaon_cthorpe_make_k0s_events_numi_fhc_reco2_reco2_reco2.root",  "signal");
+    E.SetFile("analysisOutputRHC_GENIE_Overlay_Kaon_cthorpe_make_k0s_events_numi_rhc_reco2_REAL_reco2_reco2.root", "signal");
+    M.AddSample("Background","Background",E.GetPOT());
 
     for(int i = 0; i < E.GetNEvents(); i++){
 
@@ -66,12 +68,8 @@ void EstimateStats(){
         if(passed_Showers) passed_MuonID = M.ChooseMuonCandidate(e);
         if(passed_MuonID) passed_Selector = M.ChoosePionPairCandidates(e, true);
 
-        pFiducalEfficX->FillWeighted(passed_FV, e.Weight, e.Neutrino.at(0).EndX);
-        pFiducalEfficY->FillWeighted(passed_FV, e.Weight, e.Neutrino.at(0).EndY);
-        pFiducalEfficZ->FillWeighted(passed_FV, e.Weight, e.Neutrino.at(0).EndZ);
-
         //if(!passed_Showers) continue;
-        //if(!e.EventIsSignal) continue;
+        if(!e.EventIsSignal) continue;
 
         bool found_lambda = false;
         bool found_sigma_plus = false;
@@ -81,7 +79,6 @@ void EstimateStats(){
         bool found_muon = false;
         bool found_anti_muon = false;
         for(size_t i_tr = 0; i_tr < e.NMCTruths; i_tr++){
-            if(!e.InActiveTPC.at(i_tr)) continue;
             if(abs(e.Lepton.at(i_tr).PDG) == 13){
                 for(SimParticle hyperon : e.Hyperon){
                     if(abs(hyperon.PDG) == 3122) found_lambda = true;   
@@ -106,6 +103,10 @@ void EstimateStats(){
                 lnk += e.Weight;
                 lnk_var += e.Weight*e.Weight;
             }
+            else{
+                lotherk += e.Weight;
+                lotherk_var += e.Weight*e.Weight;
+            }
         }
         else if(found_associated_hyperon){
             if(found_anti_muon && found_lambda && !found_sigma_plus && !found_sigma_zero && !found_sigma_minus){
@@ -124,12 +125,12 @@ void EstimateStats(){
                 lsigmaminusk += e.Weight;
                 lsigmaminusk_var += e.Weight*e.Weight;
             }
+            else{
+                lotherk += e.Weight;
+                lotherk_var += e.Weight*e.Weight;
+            }
         }
     }
-
-    HypPlot::DrawEfficiencyPlot(pFiducalEfficX, "FiducialX", "FiducialX", {kFHC}, {POT});
-    HypPlot::DrawEfficiencyPlot(pFiducalEfficY, "FiducialY", "FiducialY", {kFHC}, {POT});
-    HypPlot::DrawEfficiencyPlot(pFiducalEfficZ, "FiducialZ", "FiducialZ", {kFHC}, {POT});
 
     std::cout << "lpk = " << lpk << "  +/-  " << sqrt(lpk_var) << std::endl;
     std::cout << "lnk = " << lnk << "  +/-  " << sqrt(lnk_var) << std::endl;
@@ -137,6 +138,7 @@ void EstimateStats(){
     std::cout << "lsigmaplusk = " << lsigmaplusk << "  +/-  " << sqrt(lsigmaplusk_var) << std::endl;
     std::cout << "lsigmaminusk = " << lsigmaminusk << "  +/-  " << sqrt(lsigmaminusk_var) << std::endl;
     std::cout << "lsigmazerok = " << lsigmazerok << "  +/-  " << sqrt(lsigmazerok_var) << std::endl;
+    std::cout << "lotherl = " << lotherk << " +/ " << sqrt(lotherk_var) << std::endl;
 
     E.Close();
 }

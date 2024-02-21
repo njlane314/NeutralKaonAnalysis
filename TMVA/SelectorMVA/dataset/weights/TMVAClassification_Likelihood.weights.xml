@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<MethodSetup Method="Likelihood::Likelihood">
+  <GeneralInfo>
+    <Info name="TMVA Release" value="4.2.1 [262657]"/>
+    <Info name="ROOT Release" value="6.12/06 [396294]"/>
+    <Info name="Creator" value="nlane"/>
+    <Info name="Date" value="Mon Jan 29 09:44:07 2024"/>
+    <Info name="Host" value="Linux buildservice008.fnal.gov 3.10.0-693.17.1.el7.x86_64 #1 SMP Thu Jan 25 04:11:40 CST 2018 x86_64 x86_64 x86_64 GNU/Linux"/>
+    <Info name="Dir" value="/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA"/>
+    <Info name="Training events" value="267"/>
+    <Info name="TrainingTime" value="5.99789619e-03"/>
+    <Info name="AnalysisType" value="Classification"/>
+  </GeneralInfo>
+  <Options>
+    <Option name="V" modified="Yes">False</Option>
+    <Option name="VerbosityLevel" modified="No">Default</Option>
+    <Option name="VarTransform" modified="No">None</Option>
+    <Option name="H" modified="Yes">True</Option>
+    <Option name="CreateMVAPdfs" modified="No">False</Option>
+    <Option name="IgnoreNegWeightsInTraining" modified="No">False</Option>
+    <Option name="TransformOutput" modified="Yes">True</Option>
+  </Options>
+  <Variables NVar="7">
+    <Variable VarIndex="0" Expression="separation" Label="separation" Title="Track Start Separation" Unit="cm" Internal="separation" Type="F" Min="3.57186459e-02" Max="4.96464396e+00"/>
+    <Variable VarIndex="1" Expression="pion1_trkscore" Label="pion1_trkscore" Title="Pion1 Candidate Track/Shower Score" Unit="F" Internal="pion1_trkscore" Type="F" Min="5.04645646e-01" Max="1.00000000e+00"/>
+    <Variable VarIndex="2" Expression="pion2_trkscore" Label="pion2_trkscore" Title="Pion2 Candidate Track/Shower Score" Unit="F" Internal="pion2_trkscore" Type="F" Min="5.04645646e-01" Max="1.00000000e+00"/>
+    <Variable VarIndex="3" Expression="pion1_dEdX" Label="pion1_dEdX" Title="Pion1 Candidate Mean dE/dX" Unit="F" Internal="pion1_dEdX" Type="F" Min="5.02278090e-01" Max="2.00000000e+01"/>
+    <Variable VarIndex="4" Expression="pion2_dEdX" Label="pion2_dEdX" Title="Pion2 Candidate Mean dE/dX" Unit="F" Internal="pion2_dEdX" Type="F" Min="5.02278090e-01" Max="2.00000000e+01"/>
+    <Variable VarIndex="5" Expression="pion1_LLR" Label="pion1_LLR" Title="Pion1 LLR PID Score" Unit="F" Internal="pion1_LLR" Type="F" Min="-4.88725603e-02" Max="9.93764102e-01"/>
+    <Variable VarIndex="6" Expression="pion2_LLR" Label="pion2_LLR" Title="Pion2 LLR PID Score" Unit="F" Internal="pion2_LLR" Type="F" Min="-8.34757015e-02" Max="9.79369938e-01"/>
+  </Variables>
+  <Spectators NSpec="0"/>
+  <Classes NClass="2">
+    <Class Name="Signal" Index="0"/>
+    <Class Name="Background" Index="1"/>
+  </Classes>
+  <Transformations NTransformations="0"/>
+  <MVAPdfs/>
+  <Weights NVariables="7" NClasses="2">
+    <PDFDescriptor VarIndex="0" ClassIndex="0">
+      <PDF Name="Likelihood PDF Sig[0]" MinNSmooth="20" MaxNSmooth="20" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_separation_sig_original" NBins="1" XMin="3.5718645900487900e-02" XMax="4.9646439552307129e+00" HasEquidistantBins="1">
+          2.90000000e+01 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="0" ClassIndex="1">
+      <PDF Name="Likelihood PDF Bkg[0]" MinNSmooth="20" MaxNSmooth="20" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_separation_bgd_original" NBins="1" XMin="3.5718645900487900e-02" XMax="4.9646439552307129e+00" HasEquidistantBins="1">
+          2.38000000e+02 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="1" ClassIndex="0">
+      <PDF Name="Likelihood PDF Sig[1]" MinNSmooth="1" MaxNSmooth="1" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion1_trkscore_sig_original" NBins="1" XMin="5.0464564561843872e-01" XMax="1.0000000000000000e+00" HasEquidistantBins="1">
+          2.90000000e+01 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="1" ClassIndex="1">
+      <PDF Name="Likelihood PDF Bkg[1]" MinNSmooth="10" MaxNSmooth="10" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion1_trkscore_bgd_original" NBins="1" XMin="5.0464564561843872e-01" XMax="1.0000000000000000e+00" HasEquidistantBins="1">
+          2.38000000e+02 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="2" ClassIndex="0">
+      <PDF Name="Likelihood PDF Sig[2]" MinNSmooth="1" MaxNSmooth="1" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion2_trkscore_sig_original" NBins="1" XMin="5.0464564561843872e-01" XMax="1.0000000000000000e+00" HasEquidistantBins="1">
+          2.90000000e+01 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="2" ClassIndex="1">
+      <PDF Name="Likelihood PDF Bkg[2]" MinNSmooth="1" MaxNSmooth="1" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion2_trkscore_bgd_original" NBins="1" XMin="5.0464564561843872e-01" XMax="1.0000000000000000e+00" HasEquidistantBins="1">
+          2.38000000e+02 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="3" ClassIndex="0">
+      <PDF Name="Likelihood PDF Sig[3]" MinNSmooth="1" MaxNSmooth="1" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion1_dEdX_sig_original" NBins="1" XMin="5.0227808952331543e-01" XMax="2.0000000000000000e+01" HasEquidistantBins="1">
+          2.90000000e+01 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="3" ClassIndex="1">
+      <PDF Name="Likelihood PDF Bkg[3]" MinNSmooth="1" MaxNSmooth="1" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion1_dEdX_bgd_original" NBins="1" XMin="5.0227808952331543e-01" XMax="2.0000000000000000e+01" HasEquidistantBins="1">
+          2.38000000e+02 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="4" ClassIndex="0">
+      <PDF Name="Likelihood PDF Sig[4]" MinNSmooth="1" MaxNSmooth="1" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion2_dEdX_sig_original" NBins="1" XMin="5.0227808952331543e-01" XMax="2.0000000000000000e+01" HasEquidistantBins="1">
+          2.90000000e+01 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="4" ClassIndex="1">
+      <PDF Name="Likelihood PDF Bkg[4]" MinNSmooth="1" MaxNSmooth="1" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion2_dEdX_bgd_original" NBins="1" XMin="5.0227808952331543e-01" XMax="2.0000000000000000e+01" HasEquidistantBins="1">
+          2.38000000e+02 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="5" ClassIndex="0">
+      <PDF Name="Likelihood PDF Sig[5]" MinNSmooth="1" MaxNSmooth="1" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion1_LLR_sig_original" NBins="1" XMin="-4.8872560262680054e-02" XMax="9.9376410245895386e-01" HasEquidistantBins="1">
+          2.90000000e+01 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="5" ClassIndex="1">
+      <PDF Name="Likelihood PDF Bkg[5]" MinNSmooth="1" MaxNSmooth="1" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion1_LLR_bgd_original" NBins="1" XMin="-4.8872560262680054e-02" XMax="9.9376410245895386e-01" HasEquidistantBins="1">
+          2.38000000e+02 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="6" ClassIndex="0">
+      <PDF Name="Likelihood PDF Sig[6]" MinNSmooth="1" MaxNSmooth="1" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion2_LLR_sig_original" NBins="1" XMin="-8.3475701510906219e-02" XMax="9.7936993837356567e-01" HasEquidistantBins="1">
+          2.90000000e+01 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+    <PDFDescriptor VarIndex="6" ClassIndex="1">
+      <PDF Name="Likelihood PDF Bkg[6]" MinNSmooth="1" MaxNSmooth="1" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
+        <Histogram Name="dataset_Likelihood_pion2_LLR_bgd_original" NBins="1" XMin="-8.3475701510906219e-02" XMax="9.7936993837356567e-01" HasEquidistantBins="1">
+          2.38000000e+02 
+        </Histogram>
+      </PDF>
+    </PDFDescriptor>
+  </Weights>
+</MethodSetup>

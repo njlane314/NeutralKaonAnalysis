@@ -37,7 +37,7 @@ void CTTest::LoadInfo(std::vector<std::vector<int>> seedindexes,std::vector<std:
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-bool CTTest::DoTest(int muonindex,int protonindex,int pionindex){
+bool CTTest::DoTest(int muonindex,int pionplusindex,int pionminusindex){
 
    // Get the entry of the vectors corresponding to that combination of seeds
 
@@ -45,25 +45,25 @@ bool CTTest::DoTest(int muonindex,int protonindex,int pionindex){
 
    for(size_t i=0;i<SeedIndexes.size();i++){
 
-      bool found_muon=false,found_proton=false,found_pion=false;
+      bool found_muon=false,found_pion_plus=false,found_pion_minus=false;
 
       for(int j=0;j<3;j++) if(SeedIndexes.at(i).at(j) == muonindex) found_muon = true;
-      for(int j=0;j<3;j++) if(SeedIndexes.at(i).at(j) == protonindex) found_proton = true;
-      for(int j=0;j<3;j++) if(SeedIndexes.at(i).at(j) == pionindex) found_pion = true;
+      for(int j=0;j<3;j++) if(SeedIndexes.at(i).at(j) == pionplusindex) found_pion_plus = true;
+      for(int j=0;j<3;j++) if(SeedIndexes.at(i).at(j) == pionminusindex) found_pion_minus = true;
 
-      if(found_muon && found_proton && found_pion){ test_index = i; break; }
+      if(found_muon && found_pion_plus && found_pion_minus){ test_index = i; break; }
 
    }
 
    if(test_index == -1) return false;
 
    int output_muonindex=-1;
-   int output_protonindex=-1;
-   int output_pionindex=-1;
+   int output_pion_plus_index=-1;
+   int output_pion_minus_index=-1;
 
    for(int j=0;j<3;j++) if(SeedIndexes.at(test_index).at(j) == muonindex)  output_muonindex = j;
-   for(int j=0;j<3;j++) if(SeedIndexes.at(test_index).at(j) == protonindex)  output_protonindex = j;
-   for(int j=0;j<3;j++) if(SeedIndexes.at(test_index).at(j) == pionindex)  output_pionindex = j;
+   for(int j=0;j<3;j++) if(SeedIndexes.at(test_index).at(j) == pionplusindex)  output_pion_plus_index = j;
+   for(int j=0;j<3;j++) if(SeedIndexes.at(test_index).at(j) == pionminusindex)  output_pion_minus_index = j;
 
    // Reject events with a -1
    if(OutputIndexes.at(test_index).at(0) == -1 || OutputIndexes.at(test_index).at(1) == -1 || OutputIndexes.at(test_index).at(2) == -1) return false;
@@ -78,9 +78,9 @@ bool CTTest::DoTest(int muonindex,int protonindex,int pionindex){
    // Fail if all three output indexes are the same = all three particles merged
    if(OutputIndexes.at(test_index).at(0) == OutputIndexes.at(test_index).at(1) && OutputIndexes.at(test_index).at(1) == OutputIndexes.at(test_index).at(2)) return false;
 
-   if(OutputIndexes.at(test_index).at(output_muonindex) != OutputIndexes.at(test_index).at(output_protonindex)
-         && OutputIndexes.at(test_index).at(output_muonindex) != OutputIndexes.at(test_index).at(output_pionindex)
-         && OutputIndexes.at(test_index).at(output_protonindex) == OutputIndexes.at(test_index).at(output_pionindex)) return true;
+   if(OutputIndexes.at(test_index).at(output_muonindex) != OutputIndexes.at(test_index).at(output_pion_plus_index)
+         && OutputIndexes.at(test_index).at(output_muonindex) != OutputIndexes.at(test_index).at(output_pion_minus_index)
+         && OutputIndexes.at(test_index).at(output_pion_plus_index) == OutputIndexes.at(test_index).at(output_pion_minus_index)) return true;
 
    return false;
 }

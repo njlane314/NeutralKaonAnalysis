@@ -6,37 +6,61 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 #include "AnalysisBDTManager.h"
 #include "Cut.h"
 #include "SelectionParameters.h"
+#include "TSystem.h"
 
 #include "Parameters.h"
-#include "SampleSets_Nov21.h"
+#include "SampleSets_Example.h"
 
    // Fills the trees for the analysis MVA training
 
    void FillAnalysisTree(std::string Mode){
 
+      //double POT = 1.25e21; // POT to scale samples to
+      double POT = 1.5e21;
+
+      double EXT_POT = 1.0421e20;
+
       BuildTunes();
+      //SelectionParameters P = P_FHC_Tune_325_NoBDT;
+      SelectionParameters P = P_RHC_Tune_397_NoBDT;
 
-      // POT to scale samples to
-      double POT = 1.0e21;
+      std::string label = "background_fhc_pion_pair";
+      std::string SampleType = "background";
 
-      // Set the parameters you want to use
-      SelectionParameters P = P_FHC_Tune_325;
-
+      EventAssembler E(false);
       SelectionManager M(P);
+      M.ImportSelectorBDTWeights("/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA/dataset/weights");
+
+      //M.SetBeamMode(kFHC);
+      M.SetBeamMode(kRHC);
+      
       M.SetPOT(POT);
-      M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
-
-      EventAssembler E;
-
+      M.UseFluxWeight(false);
+      M.UseGenWeight(false);
 
       if(Mode == "Signal"){
-         ImportSamples(sNuWroNoCosmicFHC);
+         SampleNames.push_back("GENIE kaon");
+         SampleTypes.push_back("Kaon");
+         SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Kaon_cthorpe_make_k0s_events_numi_rhc_reco2_REAL_reco2_reco2.root");
       }
       else if(Mode == "Background"){  
-         ImportSamples(sGENIEFullFHC_Train);
+         SampleNames.push_back("GENIE Background");
+         SampleTypes.push_back("Background");
+         SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Background_prodgenie_numi_uboone_overlay_rhc_mcc9_run3b_v28_v2_sample0.root");
+
+         SampleNames.push_back("GENIE Dirt");
+         SampleTypes.push_back("Dirt");
+         SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Dirt_prodgenie_numi_uboone_overlay_dirt_rhc_mcc9_run3b_v28_sample0.root");
+
+         SampleNames.push_back("EXT run3");
+         SampleTypes.push_back("EXT");
+         SampleFiles.push_back("analysisOutputEXT_cthorpe_prod_extnumi_mcc9_v08_00_00_45_run3_run3b_reco2_all_reco2_pt1.root");
+
+         SampleNames.push_back("EXT run1");
+         SampleTypes.push_back("EXT");
+         SampleFiles.push_back("analysisOutputEXT_cthorpe_prod_mcc9_v08_00_00_45_extnumi_reco2_run1_all_reco2_pt1.root");
       }
       else { std::cout << "Select \"Signal\" or \"Background\" Modes" << std::endl; return; }
-
 
       // Setup Selector BDT Manager Object
       AnalysisBDTManager BDTManager("Train");
@@ -45,7 +69,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       // Sample Loop
       for(size_t i_s=0;i_s<SampleNames.size();i_s++){
         
-         E.SetFile(SampleFiles.at(i_s));
+         E.SetFile(SampleFiles.at(i_s), SampleTypes.at(i_s));
          if(SampleTypes.at(i_s) != "EXT" && SampleTypes.at(i_s) != "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),E.GetPOT());
          else if(SampleTypes.at(i_s) == "Data") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),Data_POT);
          else if(SampleTypes.at(i_s) == "EXT") M.AddSample(SampleNames.at(i_s),SampleTypes.at(i_s),EXT_POT);
@@ -62,11 +86,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
             if(!M.TrackCut(e)) continue;
             if(!M.ShowerCut(e)) continue;
             if(!M.ChooseMuonCandidate(e)) continue;
-            if(!M.ChooseProtonPionCandidates(e)) continue;
+            if(!M.ChoosePionPairCandidates(e)) continue;
 
-           // if(!M.ConnectednessTest(e)) continue;
-
-            //if(e.EventIsSignal) std::cout << e.GoodReco << std::endl;
             BDTManager.FillTree(e);
 
          }
@@ -79,6 +100,5 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       if(Mode == "Signal") gSystem->Exec("mv AnalysisMVA/Trees.root AnalysisMVA/Trees_Signal.root");
       else if(Mode == "Background") gSystem->Exec("mv AnalysisMVA/Trees.root AnalysisMVA/Trees_Background.root");
-
 
    }

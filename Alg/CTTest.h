@@ -15,7 +15,7 @@ class CTTest {
       CTTest(int plane);
       void LoadInfo(std::vector<std::vector<int>> seedindexes,std::vector<std::vector<int>> outputindexes,std::vector<std::vector<int>> outputsizes,std::vector<std::vector<int>> seedchannels);
 
-      bool DoTest(int muonindex,int protonindex,int pionindex);
+      bool DoTest(int muonindex,int pionplusindex,int pionminusindex);
 
    private:
 

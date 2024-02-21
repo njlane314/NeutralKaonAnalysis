@@ -24,10 +24,9 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
       EventAssembler E;
       SelectionManager M(P);
       M.SetPOT(POT);
-      M.ImportSelectorBDTWeights(P.p_SelectorBDT_WeightsDir);
-      M.ImportAnalysisBDTWeights(P.p_AnalysisBDT_WeightsDir);
+      M.ImportSelectorBDTWeights("/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA/dataset/weights");
 
-      E.SetFile("run1_FHC/analysisOutputFHC_Overlay_GENIE_Hyperon_All.root");
+      E.SetFile("analysisOutputFHC_Overlay_GENIE_Kaon_cthorpe_make_k0s_events_numi_fhc_reco2_reco2_reco2.root", "Signal");
       M.AddSample("Hyperon","Hyperon",E.GetPOT());
 
       double Signal = 0.0;
@@ -49,9 +48,8 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
          if(!M.TrackCut(e)) continue;
          if(!M.ShowerCut(e)) continue;
          if(!M.ChooseMuonCandidate(e)) continue;
-         if(!M.ChooseProtonPionCandidates(e)) continue;
-         if(!M.AnalysisBDTCut(e)) continue;       
-         if(!M.ConnectednessTest(e)) continue;           
+         if(!M.ChoosePionPairCandidates(e)) continue;     
+         //if(!M.ConnectednessTest(e)) continue;           
 
          if(e.EventIsSignal) Selected_Signal += e.Weight;
       }

@@ -119,12 +119,18 @@ class SelectionManager {
    private:
 
       // Cut Data Management //
-      const std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" , "InvariantMass" , "AlphaAngle" };
+      const std::vector<std::string> CutTypes = { "FV" , "Tracks" , "Showers" , "MuonID" , "SubleadingTracks" , "DecaySelector" , "DecayAnalysis" , "Connectedness" , "InvariantMass" , "AlphaAngle" , "PionPairSelector" };
       void DeclareCuts();
       std::vector<Cut> Cuts;
       void UpdateCut(const Event &e,bool Passed,std::string CutName);
 
    public:
+      void PrintAllCuts() const {
+         for (const Cut& cut : Cuts) {
+               std::cout << "----------------" << std::endl;
+               cut.Print();
+         }
+      }
 
       Cut GetCut(std::string CutName);
       void Reset();
@@ -144,6 +150,7 @@ class SelectionManager {
       bool ConnectednessTest(const Event &e, int nplanes=1);
       bool WCut(const Event &e);
       bool AngleCut(const Event &e);
+      bool PionPairSelector(const Event &e);
 
       // Histogram Functions //
 
@@ -160,13 +167,8 @@ class SelectionManager {
 
       TH1D* Hist_Data=nullptr;
       TH1D* Hist_All=nullptr;
-      std::map<std::string,TH1D*> Hists_ByProc;
-      std::map<std::string,TH1D*> Hists_ByType;
-      std::map<std::string,TH1D*> Hists_ByType2;
-      std::map<std::string, TH1D*> Hists_ByKaonFinalStates;
-      std::map<std::string, TH1D*> Hists_ByKaonDecayChannels;
-      std::map<std::string, TH1D*> Hists_ByHyperonFinalStates;
-      std::map<std::string, TH1D*> Hists_ByPureKaonProc;
+      std::map<std::string,TH1D*> Hists_ByPureKaonTypes;
+      std::map<std::string,TH1D*> Hists_ByBackgroundTypes;
 
       std::map<std::string,std::vector<TH1D*>> Multisim_Sys_Hists_All;
       std::map<std::string,std::vector<TH1D*>> SingleUnisim_Sys_Hists_All;

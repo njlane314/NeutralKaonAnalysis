@@ -1,7 +1,7 @@
 
 // Put pre-defined sample sets in here.
 
-enum settings { sNuWroFullFHCvsData , sNuWroFullFHC };
+enum settings { sNuWroFullFHCvsData , sNuWroFullFHC , sKaonFHC };
 
 std::vector<std::string> SampleNames,SampleTypes,SampleFiles,EventLists;
 
@@ -42,6 +42,13 @@ void ImportSamples(int Setting){
       EXT_POT = 1.0421e20; 
 
       EventLists = { "FHC_Tune_325/analysisOutputFHC_Overlay_NuWro_Background_kmistry_numi_run1_fhc_nuwro.root_Selected.txt" , "FHC_Tune_325/analysisOutputFHC_Overlay_NuWro_Hyperon_prod_numi_uboone_overlay_fhc_mcc9_run1_v51_nuwro_hyperon_nuwro_reco2_reco2.root_Selected.txt" ,  "FHC_Tune_325/analysisOutputFHC_GENIE_Overlay_Dirt_prodgenie_numi_uboone_overlay_dirt_fhc_mcc9_run1_v28_sample1.root_Selected.txt" , "FHC_Tune_325/analysisOutput_EXT_cthorpe_numi_uboone_run1_beamoff_offset1_mcc9_reco2_v08_00_00_28_sample2_sample3_all.root_Selected.txt" };
+   }
+
+   if(Setting == sKaonFHC){
+
+      SampleNames = { "Kaon", "Background", "Hyperon" };
+      SampleTypes = { "Kaon", "Background", "Hyperon" };
+      SampleFiles = { "analysisOutputFHC_Overlay_GENIE_Kaon_cthorpe_make_k0s_events_numi_fhc_reco2_reco2_reco2.root", "analysisOutputFHC_GENIE_Overlay_Background_prodgenie_numi_uboone_overlay_fhc_mcc9_run1_v28_v2_sample0.root", "analysisOutputFHC_GENIE_Overlay_Hyperon_cthorpe_make_hyperon_events_reco2_numi_fhc_run1_pt1_hyperon_reco2_reco2.root"};
    }
 
 /*

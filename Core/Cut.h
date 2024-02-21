@@ -32,24 +32,24 @@ struct Cut {
     double fGoodRecoEventsInVar=0.;
     double fGoodRecoEventsOutVar=0.;
 
-    double SignalEfficiency(){ return fSignalEventsOut/fSignalEvents; }
-    double SignalPurity(){ return fSignalEventsOut/fEventsOut; }
+    double SignalEfficiency() const { return fSignalEventsOut/fSignalEvents; }
+    double SignalPurity() const { return fSignalEventsOut/fEventsOut; }
 
-    double SignalPurityErrorLow() { return PurityError_Low(fSignalEventsOut,fEventsOut-fSignalEventsOut,sqrt(fSignalEventsOutVar),sqrt(fEventsOutVar-fSignalEventsOutVar)); }
-    double SignalPurityErrorHigh() { return PurityError_High(fSignalEventsOut,fEventsOut-fSignalEventsOut,sqrt(fSignalEventsOutVar),sqrt(fEventsOutVar-fSignalEventsOutVar)); }
+    double SignalPurityErrorLow() const { return PurityError_Low(fSignalEventsOut,fEventsOut-fSignalEventsOut,sqrt(fSignalEventsOutVar),sqrt(fEventsOutVar-fSignalEventsOutVar)); }
+    double SignalPurityErrorHigh() const { return PurityError_High(fSignalEventsOut,fEventsOut-fSignalEventsOut,sqrt(fSignalEventsOutVar),sqrt(fEventsOutVar-fSignalEventsOutVar)); }
 
-    double GoodRecoEfficiency(){ return fGoodRecoEventsOut/fGoodRecoEvents; }
-    double GoodRecoPurity(){ return fGoodRecoEventsOut/fEventsOut; }
+    double GoodRecoEfficiency() const { return fGoodRecoEventsOut/fGoodRecoEvents; }
+    double GoodRecoPurity() const { return fGoodRecoEventsOut/fEventsOut; }
 
-    double Significance(){ return fSignalEventsOut/sqrt(fEventsOut); }
+    double Significance() const { return fSignalEventsOut/sqrt(fEventsOut); }
 
-    double BackgroundAcceptance(){ return (fEventsOut-fSignalEventsOut)/(fTotalEvents - fSignalEvents); }
+    double BackgroundAcceptance() const { return (fEventsOut-fSignalEventsOut)/(fTotalEvents - fSignalEvents); }
 
-    double PredictedSignal(){ return fSignalEventsOut; };
-    double PredictedSignalError(){ return sqrt(fSignalEventsOutVar); };
+    double PredictedSignal() const { return fSignalEventsOut; };
+    double PredictedSignalError() const { return sqrt(fSignalEventsOutVar); };
     
-    double PredictedBackground(){ return fEventsOut-fSignalEventsOut; };
-    double PredictedBackgroundError(){ return sqrt(fEventsOutVar-fSignalEventsOutVar); };
+    double PredictedBackground() const { return fEventsOut-fSignalEventsOut; };
+    double PredictedBackgroundError() const { return sqrt(fEventsOutVar-fSignalEventsOutVar); };
     
     void Reset(){
         fTotalEvents=0;
@@ -61,6 +61,30 @@ struct Cut {
         fSignalEventsOut=0;
         fGoodRecoEventsIn=0;
         fGoodRecoEventsOut=0;
+    }
+
+    void Print() const {
+        std::cout << "Cut: " << fName << std::endl;
+        std::cout << "Total Events: " << fTotalEvents << ", Variance: " << fTotalEventsVar << std::endl;
+        std::cout << "Signal Events: " << fSignalEvents << ", Variance: " << fSignalEventsVar << std::endl;
+        std::cout << "Good Reco Events: " << fGoodRecoEvents << ", Variance: " << fGoodRecoEventsVar << std::endl;
+        std::cout << "Events In: " << fEventsIn << ", Variance: " << fEventsInVar << std::endl;
+        std::cout << "Events Out: " << fEventsOut << ", Variance: " << fEventsOutVar << std::endl;
+        std::cout << "Signal Events In: " << fSignalEventsIn << ", Variance: " << fSignalEventsInVar << std::endl;
+        std::cout << "Signal Events Out: " << fSignalEventsOut << ", Variance: " << fSignalEventsOutVar << std::endl;
+        std::cout << "Good Reco Events In: " << fGoodRecoEventsIn << ", Variance: " << fGoodRecoEventsInVar << std::endl;
+        std::cout << "Good Reco Events Out: " << fGoodRecoEventsOut << ", Variance: " << fGoodRecoEventsOutVar << std::endl;
+
+        std::cout << "Signal Efficiency: " << SignalEfficiency() << std::endl;
+        std::cout << "Signal Purity: " << SignalPurity() << std::endl;
+        std::cout << "Signal Purity Error Low: " << SignalPurityErrorLow() << std::endl;
+        std::cout << "Signal Purity Error High: " << SignalPurityErrorHigh() << std::endl;
+        std::cout << "Good Reco Efficiency: " << GoodRecoEfficiency() << std::endl;
+        std::cout << "Good Reco Purity: " << GoodRecoPurity() << std::endl;
+        std::cout << "Significance: " << Significance() << std::endl;
+        std::cout << "Background Acceptance: " << BackgroundAcceptance() << std::endl;
+        std::cout << "Predicted Signal: " << PredictedSignal() << ", Error: " << PredictedSignalError() << std::endl;
+        std::cout << "Predicted Background: " << PredictedBackground() << ", Error: " << PredictedBackgroundError() << std::endl;
     }
 
 };

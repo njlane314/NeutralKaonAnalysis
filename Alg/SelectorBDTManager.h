@@ -26,7 +26,8 @@ class SelectorBDTManager {
       void FillTree(const Event &e);
       void WriteTrainingTrees();    
 
-      void SetCuts(double ProtonPIDCut,double PionPIDCut,double SelectionCut);
+      void SetCuts(double PionPIDCut,double SelectionCut);
+   
 
    private:
 
@@ -36,7 +37,6 @@ class SelectorBDTManager {
 
       std::string fMode;
 
-      double fProtonPIDCut;
       double fPionPIDCut;
       double fSeparationCut;
 
@@ -52,12 +52,12 @@ class SelectorBDTManager {
 
       // Variables
       Float_t v_separation;
-      Float_t v_proton_trkscore;
-      Float_t v_pion_trkscore;
-      Float_t v_proton_dEdX;
-      Float_t v_pion_dEdX;
-      Float_t v_proton_LLR;
-      Float_t v_pion_LLR;
+      Float_t v_pion1_trkscore;
+      Float_t v_pion2_trkscore;
+      Float_t v_pion1_dEdX;
+      Float_t v_pion2_dEdX;
+      Float_t v_pion1_LLR;
+      Float_t v_pion2_LLR;
 
       const std::pair<double,double> separation_limits = { 0 , 20 };
       const std::pair<double,double> pid_limits = { -10 , 10 };

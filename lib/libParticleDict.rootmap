@@ -1,0 +1,11 @@
+{ decls }
+namespace std {  }
+
+[ /uboone/app/users/nlane/NeutralKaonAnalysis//lib/libParticleDict.so ]
+# List of selected classes
+class RecoParticle
+class SimParticle
+class vector<RecoParticle>
+class vector<SimParticle>
+header RecoParticle.h
+header SimParticle.h

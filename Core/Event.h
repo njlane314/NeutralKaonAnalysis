@@ -24,13 +24,15 @@ struct Event {
     // Flags applying to the entire event
     Bool_t EventIsSignal = false;
     Bool_t EventHasHyperon = false;
+    Bool_t EventInFV = false;
+
     Bool_t EventHasNeutronScatter = false;
     Bool_t EventIsSignalSigmaZero = false;
     Bool_t EventHasKaon = false;
     Bool_t EventHasK0S = false;
 
-    Bool_t EventIsAssociatedStrangeProduction = false;
-    Bool_t EventIsSingleStrangeProduction = false;
+    Bool_t EventIsAssociatedProduction = false;
+    Bool_t EventIsSingleProduction = false;
 
     // Flags for each MCTruth
     vector<string> Mode;

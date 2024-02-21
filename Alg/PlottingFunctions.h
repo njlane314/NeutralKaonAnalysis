@@ -393,6 +393,9 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
 
    for(size_t i_h=0;i_h<hist_v.size();i_h++){ 
       hist_v.at(i_h)->SetFillColor(colors.at(i_h));
+      if(colors.at(i_h) == kBlack){
+         hist_v.at(i_h)->SetFillStyle(3004);
+      }
       hs->Add(hist_v.at(i_h),"HIST");
       if(hasdata) l->AddEntry(hist_v.at(i_h),(captions.at(i_h) + " = " + to_string_with_precision(hist_v.at(i_h)->Integral(),1)).c_str(),"F");
       else l->AddEntry(hist_v.at(i_h),captions.at(i_h).c_str(),"F");
@@ -448,13 +451,13 @@ void DrawHistogram(std::vector<TH1D*> hist_v,TH1D* h_errors,TH1D* h_data,vector<
    l_Chi2->SetTextSize(0.05);
    l_Chi2->SetHeader(("#chi^{2}/ndof = " + to_string_with_precision(chi2ndof.first,1) + "/" + std::to_string(chi2ndof.second)).c_str());
 
-   if(mode.at(0) == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
+   if(mode.at(0) == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(0)/1e21,1) + " #times 10^{21} POT").c_str());
+   else if(mode.at(0) == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(0)/1e21,1) + " #times 10^{21} POT").c_str());
+   else if(mode.at(0) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0)/1e21,1) + " #times 10^{21} POT").c_str());
 
-   if(mode.size() == 2 && mode.at(1) == kFHC) l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(1) == kRHC) l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(0) == kBNB && mode.at(1) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0) + POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
+   if(mode.size() == 2 && mode.at(1) == kFHC) l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(1)/1e21,1) + " #times 10^{21} POT").c_str());
+   else if(mode.size() == 2 && mode.at(1) == kRHC) l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(1)/1e21,1) + " #times 10^{21} POT").c_str());
+   else if(mode.size() == 2 && mode.at(0) == kBNB && mode.at(1) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0) + POT.at(1)/1e21,1) + " #times 10^{21} POT").c_str());
 
    // Setup the axis titles etc
    h_errors->SetTitle(hs->GetTitle());
@@ -863,6 +866,8 @@ void DrawSystematicBreakdown(TFile* f,TH1D* h_template,vector<string> dials,vect
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string name,vector<int> mode,vector<double> POT){
+
+   std::cout << "Drawing efficiency plot..." << std::endl;
 
    TH1D* h_Before = (TH1D*)Efficiency->GetTotalHistogram()->Clone("h_Before");
    TH1D* h_After = (TH1D*)Efficiency->GetPassedHistogram()->Clone("h_After");

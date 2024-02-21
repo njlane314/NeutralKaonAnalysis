@@ -21,9 +21,7 @@ void TrainSelectorBDT(){
    TString outfileName( "TMVA.root" );
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
-
    //grab the trees
-
    TTree* t_Signal;
    TTree* t_Background;
 
@@ -36,7 +34,7 @@ void TrainSelectorBDT(){
    std::cout << "Training Analyser BDT with " << nSignal << " signal and " << nBackground << " background" << std::endl;
 
    std::map<std::string,int> Use;
-   Use["LD"]              = 1;
+   Use["LD"] = 1;
    Use["BDT"] = 1;
    Use["BDTG"] = 1;
    Use["KNN"] = 1;
@@ -49,17 +47,15 @@ void TrainSelectorBDT(){
    TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification", outputFile,
          "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
 
-
    TMVA::DataLoader *dataloader=new TMVA::DataLoader("dataset");
 
    dataloader->AddVariable("separation","Track Start Separation","cm",'F');
-   dataloader->AddVariable("proton_trkscore","Proton Candidate Track/Shower Score",'F');
-   dataloader->AddVariable("pion_trkscore","Pion Candidate Track/Shower Score",'F');
-   dataloader->AddVariable("proton_dEdX","Proton Candidate Mean dE/dX",'F');
-   dataloader->AddVariable("pion_dEdX","Pion Candidate Mean dE/dX",'F');
-   dataloader->AddVariable("proton_LLR","Proton LLR PID Score",'F');
-   dataloader->AddVariable("pion_LLR","Pion LLR PID Score",'F');
-
+   dataloader->AddVariable("pion1_trkscore","Pion1 Candidate Track/Shower Score",'F');
+   dataloader->AddVariable("pion2_trkscore","Pion2 Candidate Track/Shower Score",'F');
+   dataloader->AddVariable("pion1_dEdX","Pion1 Candidate Mean dE/dX",'F');
+   dataloader->AddVariable("pion2_dEdX","Pion2 Candidate Mean dE/dX",'F');
+   dataloader->AddVariable("pion1_LLR","Pion1 LLR PID Score",'F');
+   dataloader->AddVariable("pion2_LLR","Pion2 LLR PID Score",'F');
 
    dataloader->AddSignalTree( t_Signal , 1.0 );
    dataloader->AddBackgroundTree( t_Background , 1.0 );
@@ -69,8 +65,6 @@ void TrainSelectorBDT(){
 
    TString Setup = "nTrain_Signal=" + std::to_string(nSignal/2) + ":nTrain_Background=" + std::to_string(nBackground/2) + ":SplitMode=Random:NormMode=NumEvents:!V";
    dataloader->PrepareTrainingAndTestTree(mycuts,mycutb,Setup);
-
-
 
    if (Use["LD"]) factory->BookMethod( dataloader, TMVA::Types::kLD, "LD", "H:!V:VarTransform=None:CreateMVAPdfs:PDFInterpolMVAPdf=Spline2:NbinsMVAPdf=50:NsmoothMVAPdf=10" );
 
@@ -84,7 +78,6 @@ void TrainSelectorBDT(){
 
    if (Use["MLPBNN"]) factory->BookMethod( dataloader, TMVA::Types::kMLP, "MLPBNN", "H:!V:NeuronType=tanh:VarTransform=N:NCycles=60:HiddenLayers=N+5:TestRate=5:TrainingMethod=BFGS:UseRegulator" ); // BFGS training with bayesian regulators
 
-
    factory->TrainAllMethods();
    factory->TestAllMethods();
    factory->EvaluateAllMethods();
@@ -94,14 +87,11 @@ void TrainSelectorBDT(){
    std::cout << "==> Wrote root file: " << outputFile->GetName() << std::endl;
    std::cout << "==> TMVAClassification is done!" << std::endl;
 
-
    delete factory;
    delete dataloader;
 
-
    //launch GUI
    if (!gROOT->IsBatch()) TMVA::TMVAGui( outfileName );
-
 
 }
 
