@@ -33,6 +33,12 @@ void MuonID::SetTune(double PIDCut,double MinLength,double MaxSeparation){
 
 }
 
+void MuonID::Print(){
+   std::cout << fPIDCut << std::endl;
+   std::cout << fMinLength << std::endl;
+   std::cout << fMaxSeparation << std::endl;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 int MuonID::SelectCandidate(std::vector<RecoParticle> P_v){

@@ -53,6 +53,7 @@ class SelectionManager {
 
       // Start processing a sample
       void AddSample(std::string Name,std::string Type,double SamplePOT,std::string EventList="");
+      void TuneMuonID(double PIDCut,double MinLength,double MaxSeparation);
 
       // Increment metadata
       void AddEvent(Event &e);  
@@ -66,6 +67,9 @@ class SelectionManager {
       int Run = 1;
       void SetBeamMode(int mode);
       void SetRun(int run){ Run = run; }
+      double GetSelectorBDTScore(RecoParticle DecayProtonCandidate,RecoParticle DecayPionCandidate);
+
+      SelectorBDTManager a_SelectorBDTManager;
 
       void ImportSelectorBDTWeights(std::string WeightDir="");
       void ImportAnalysisBDTWeights(std::string WeightDir="");
@@ -97,7 +101,6 @@ class SelectionManager {
       FV::FiducialVolume a_FiducialVolume;
       MuonID a_MuonID;
       TrackLengthCutManager a_TrackLengthCutManager;
-      SelectorBDTManager a_SelectorBDTManager;
       AnalysisBDTManager a_AnalysisBDTManager;
       EventListFilter a_EventListFilter;
       SecondaryVertexFitter a_SecondaryVertexFitter;

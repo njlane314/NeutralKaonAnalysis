@@ -6,7 +6,7 @@
 namespace EventType {
 
     const std::vector<std::string> PureKaonSampleTypes = {"SignalNuMuCCKaon", "SignalNuMuCCKaonMultiPion", "SignalNuMuCCKaonHyperon", "SignalNuMuCCKaonHyperonMultiPion", "OtherNuMuCC", "NuECC", "NC", "OutFV","BeamOff", "Other"};
-    const std::vector<std::string> PureKaonSampleCaptions = {"#nu_{#mu}CCK^{0}0#pi", "#nu_{#mu}CCK^{0}N#pi", "#nu_{#mu}CCK^{0}Y0#pi", "#nu_{#mu}CCK^{0}YN#pi", "Other #nu_{#mu}CC", "#nu_{e}CC", "NC", "Out FV", "Beam-Off", "Other"};
+    const std::vector<std::string> PureKaonSampleCaptions = {"#nu_{#mu}CCK^{0}0#pi", "#nu_{#mu}CCK^{0}N#pi", "#nu_{#mu}CCK^{0}Y0#pi", "#nu_{#mu}CCK^{0}YN#pi", "Other #nu_{#mu}CCK^{0}", "#nu_{e}CCK^{0}", "NCK^{0}", "Out FV", "Beam-Off", "Other"};
     const std::vector<int> PureKaonSampleColours = {kGreen, kGreen + 1, kGreen + 2, kGreen + 3, 30, kViolet - 2, kOrange, kGray, kBlack, kRed + 1};
 
     std::string GetPureKaonType(const Event &e){

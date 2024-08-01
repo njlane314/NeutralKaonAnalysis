@@ -1,7 +1,7 @@
 void background_fhc_invariant_mass_ByPureKaonType()
 {
 //=========Macro generated from canvas: c/c
-//=========  (Wed Feb 14 07:08:15 2024) by ROOT version 6.12/06
+//=========  (Mon Feb 26 14:19:56 2024) by ROOT version 6.12/06
    TCanvas *c = new TCanvas("c", "c",0,0,800,600);
    c->Range(0,0,1,1);
    c->SetFillColor(0);
@@ -139,32 +139,6 @@ void background_fhc_invariant_mass_ByPureKaonType()
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
    entry->SetTextFont(42);
-   entry=leg->AddEntry("h_PureKaonBeamOff","Beam-Off","F");
-   entry->SetFillColor(1);
-   entry->SetFillStyle(3004);
-
-   ci = TColor::GetColor("#000099");
-   entry->SetLineColor(ci);
-   entry->SetLineStyle(1);
-   entry->SetLineWidth(1);
-   entry->SetMarkerColor(1);
-   entry->SetMarkerStyle(21);
-   entry->SetMarkerSize(1);
-   entry->SetTextFont(42);
-   entry=leg->AddEntry("h_PureKaonOther","Other","F");
-
-   ci = TColor::GetColor("#cc0000");
-   entry->SetFillColor(ci);
-   entry->SetFillStyle(1001);
-
-   ci = TColor::GetColor("#000099");
-   entry->SetLineColor(ci);
-   entry->SetLineStyle(1);
-   entry->SetLineWidth(1);
-   entry->SetMarkerColor(1);
-   entry->SetMarkerStyle(21);
-   entry->SetMarkerSize(1);
-   entry->SetTextFont(42);
    leg->Draw();
    p_legend->Modified();
    c->cd();
@@ -173,7 +147,7 @@ void background_fhc_invariant_mass_ByPureKaonType()
    TPad *p_plot = new TPad("p_plot", "p_plot",0,0,1,0.85);
    p_plot->Draw();
    p_plot->cd();
-   p_plot->Range(-1.25,-159.1894,1.25,1432.704);
+   p_plot->Range(0.15,-1.602212,0.65,14.41991);
    p_plot->SetFillColor(0);
    p_plot->SetBorderMode(0);
    p_plot->SetBorderSize(2);
@@ -181,27 +155,27 @@ void background_fhc_invariant_mass_ByPureKaonType()
    p_plot->SetFrameBorderMode(0);
    p_plot->SetFrameBorderMode(0);
    
-   TH1D *h_errors__1 = new TH1D("h_errors__1","",10,-1,1);
-   h_errors__1->SetBinContent(2,114.8115);
-   h_errors__1->SetBinContent(3,1060.25);
-   h_errors__1->SetBinContent(4,914.2278);
-   h_errors__1->SetBinContent(5,93.78907);
-   h_errors__1->SetBinContent(6,0.01062692);
-   h_errors__1->SetBinError(2,17.32807);
-   h_errors__1->SetBinError(3,73.17797);
-   h_errors__1->SetBinError(4,64.70893);
-   h_errors__1->SetBinError(5,15.63163);
-   h_errors__1->SetBinError(6,0.007514369);
+   TH1D *h_errors__1 = new TH1D("h_errors__1","",4,0.2,0.6);
+   h_errors__1->SetBinContent(1,2.097194);
+   h_errors__1->SetBinContent(2,11.07518);
+   h_errors__1->SetBinContent(3,4.793585);
+   h_errors__1->SetBinContent(4,2.237006);
+   h_errors__1->SetBinContent(5,37.79942);
+   h_errors__1->SetBinError(1,0.1447201);
+   h_errors__1->SetBinError(2,0.3325715);
+   h_errors__1->SetBinError(3,0.2187962);
+   h_errors__1->SetBinError(4,0.1494663);
+   h_errors__1->SetBinError(5,0.6144013);
    h_errors__1->SetMinimum(0);
-   h_errors__1->SetMaximum(1416.785);
-   h_errors__1->SetEntries(4805);
+   h_errors__1->SetMaximum(14.25969);
+   h_errors__1->SetEntries(5808);
    h_errors__1->SetStats(0);
    h_errors__1->SetFillColor(1);
    h_errors__1->SetFillStyle(3253);
 
    ci = TColor::GetColor("#000099");
    h_errors__1->SetLineColor(ci);
-   h_errors__1->GetXaxis()->SetTitle("Selector BDT Score");
+   h_errors__1->GetXaxis()->SetTitle("Invariant Mass (GeV)");
    h_errors__1->GetXaxis()->SetLabelFont(42);
    h_errors__1->GetXaxis()->SetLabelSize(0.045);
    h_errors__1->GetXaxis()->SetTitleSize(0.05);
@@ -223,9 +197,9 @@ void background_fhc_invariant_mass_ByPureKaonType()
    hs->SetName("hs");
    hs->SetTitle("");
    
-   TH1F *hs_stack_1 = new TH1F("hs_stack_1","",10,-1,1);
+   TH1F *hs_stack_1 = new TH1F("hs_stack_1","",4,0.2,0.6);
    hs_stack_1->SetMinimum(0);
-   hs_stack_1->SetMaximum(1113.263);
+   hs_stack_1->SetMaximum(11.62894);
    hs_stack_1->SetDirectory(0);
    hs_stack_1->SetStats(0);
 
@@ -247,23 +221,25 @@ void background_fhc_invariant_mass_ByPureKaonType()
    hs->SetHistogram(hs_stack_1);
    
    
-   TH1D *h_PureKaonSignalNuMuCCKaon_stack_1 = new TH1D("h_PureKaonSignalNuMuCCKaon_stack_1","",10,-1,1);
-   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinContent(2,0.005313461);
-   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinContent(3,0.1859711);
-   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinContent(4,0.1328365);
-   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinContent(5,0.03188077);
-   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinError(2,0.005313461);
-   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinError(3,0.03143486);
-   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinError(4,0.02656731);
-   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinError(5,0.01301527);
-   h_PureKaonSignalNuMuCCKaon_stack_1->SetEntries(68);
+   TH1D *h_PureKaonSignalNuMuCCKaon_stack_1 = new TH1D("h_PureKaonSignalNuMuCCKaon_stack_1","",4,0.2,0.6);
+   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinContent(1,0.07989309);
+   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinContent(2,0.2896124);
+   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinContent(3,0.1797594);
+   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinContent(4,0.04993318);
+   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinContent(5,1.318236);
+   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinError(1,0.02824647);
+   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinError(2,0.05377968);
+   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinError(3,0.04236971);
+   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinError(4,0.0223308);
+   h_PureKaonSignalNuMuCCKaon_stack_1->SetBinError(5,0.1147377);
+   h_PureKaonSignalNuMuCCKaon_stack_1->SetEntries(192);
 
    ci = TColor::GetColor("#00ff00");
    h_PureKaonSignalNuMuCCKaon_stack_1->SetFillColor(ci);
 
    ci = TColor::GetColor("#000099");
    h_PureKaonSignalNuMuCCKaon_stack_1->SetLineColor(ci);
-   h_PureKaonSignalNuMuCCKaon_stack_1->GetXaxis()->SetTitle("Selector BDT Score");
+   h_PureKaonSignalNuMuCCKaon_stack_1->GetXaxis()->SetTitle("Invariant Mass (GeV)");
    h_PureKaonSignalNuMuCCKaon_stack_1->GetXaxis()->SetLabelFont(42);
    h_PureKaonSignalNuMuCCKaon_stack_1->GetXaxis()->SetLabelSize(0.035);
    h_PureKaonSignalNuMuCCKaon_stack_1->GetXaxis()->SetTitleSize(0.035);
@@ -280,23 +256,25 @@ void background_fhc_invariant_mass_ByPureKaonType()
    h_PureKaonSignalNuMuCCKaon_stack_1->GetZaxis()->SetTitleFont(42);
    hs->Add(h_PureKaonSignalNuMuCCKaon_stack_1,"HIST");
    
-   TH1D *h_PureKaonSignalNuMuCCKaonMultiPion_stack_2 = new TH1D("h_PureKaonSignalNuMuCCKaonMultiPion_stack_2","",10,-1,1);
-   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinContent(2,0.05844807);
-   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinContent(3,0.5047788);
-   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinContent(4,0.4675846);
-   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinContent(5,0.08501538);
-   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinError(2,0.01762276);
-   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinError(3,0.05178921);
-   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinError(4,0.04984468);
-   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinError(5,0.02125384);
-   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetEntries(220);
+   TH1D *h_PureKaonSignalNuMuCCKaonMultiPion_stack_2 = new TH1D("h_PureKaonSignalNuMuCCKaonMultiPion_stack_2","",4,0.2,0.6);
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinContent(1,0.08987972);
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinContent(2,0.6291581);
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinContent(3,0.2596525);
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinContent(4,0.1697728);
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinContent(5,2.037274);
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinError(1,0.02995991);
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinError(2,0.07926646);
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinError(3,0.05092205);
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinError(4,0.04117595);
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetBinError(5,0.1426377);
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetEntries(319);
 
    ci = TColor::GetColor("#00cc00");
    h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetFillColor(ci);
 
    ci = TColor::GetColor("#000099");
    h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->SetLineColor(ci);
-   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->GetXaxis()->SetTitle("Selector BDT Score");
+   h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->GetXaxis()->SetTitle("Invariant Mass (GeV)");
    h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->GetXaxis()->SetLabelFont(42);
    h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->GetXaxis()->SetLabelSize(0.035);
    h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->GetXaxis()->SetTitleSize(0.035);
@@ -313,23 +291,25 @@ void background_fhc_invariant_mass_ByPureKaonType()
    h_PureKaonSignalNuMuCCKaonMultiPion_stack_2->GetZaxis()->SetTitleFont(42);
    hs->Add(h_PureKaonSignalNuMuCCKaonMultiPion_stack_2,"HIST");
    
-   TH1D *h_PureKaonSignalNuMuCCKaonHyperon_stack_3 = new TH1D("h_PureKaonSignalNuMuCCKaonHyperon_stack_3","",10,-1,1);
-   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinContent(2,0.09032884);
-   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinContent(3,0.749198);
-   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinContent(4,1.073319);
-   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinContent(5,0.1965981);
-   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinError(2,0.02190796);
-   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinError(3,0.06309385);
-   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinError(4,0.07551847);
-   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinError(5,0.03232052);
-   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetEntries(397);
+   TH1D *h_PureKaonSignalNuMuCCKaonHyperon_stack_3 = new TH1D("h_PureKaonSignalNuMuCCKaonHyperon_stack_3","",4,0.2,0.6);
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinContent(1,0.1497995);
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinContent(2,1.228356);
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinContent(3,0.7290244);
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinContent(4,0.2696392);
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinContent(5,4.693719);
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinError(1,0.03867807);
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinError(2,0.1107571);
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinError(3,0.08532585);
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinError(4,0.05189208);
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetBinError(5,0.2165051);
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetEntries(708);
 
    ci = TColor::GetColor("#009900");
    h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetFillColor(ci);
 
    ci = TColor::GetColor("#000099");
    h_PureKaonSignalNuMuCCKaonHyperon_stack_3->SetLineColor(ci);
-   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->GetXaxis()->SetTitle("Selector BDT Score");
+   h_PureKaonSignalNuMuCCKaonHyperon_stack_3->GetXaxis()->SetTitle("Invariant Mass (GeV)");
    h_PureKaonSignalNuMuCCKaonHyperon_stack_3->GetXaxis()->SetLabelFont(42);
    h_PureKaonSignalNuMuCCKaonHyperon_stack_3->GetXaxis()->SetLabelSize(0.035);
    h_PureKaonSignalNuMuCCKaonHyperon_stack_3->GetXaxis()->SetTitleSize(0.035);
@@ -346,23 +326,25 @@ void background_fhc_invariant_mass_ByPureKaonType()
    h_PureKaonSignalNuMuCCKaonHyperon_stack_3->GetZaxis()->SetTitleFont(42);
    hs->Add(h_PureKaonSignalNuMuCCKaonHyperon_stack_3,"HIST");
    
-   TH1D *h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4 = new TH1D("h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4","",10,-1,1);
-   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinContent(2,0.207225);
-   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinContent(3,2.337923);
-   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinContent(4,2.231654);
-   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinContent(5,0.2816134);
-   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinError(2,0.03318255);
-   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinError(3,0.1114561);
-   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinError(4,0.1088935);
-   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinError(5,0.03868258);
-   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetEntries(955);
+   TH1D *h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4 = new TH1D("h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4","",4,0.2,0.6);
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinContent(1,0.6491313);
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinContent(2,2.936071);
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinContent(3,1.398129);
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinContent(4,0.6391447);
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinContent(5,8.418734);
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinError(1,0.08051483);
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinError(2,0.1712351);
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinError(3,0.1181635);
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinError(4,0.07989309);
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetBinError(5,0.2899566);
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetEntries(1406);
 
    ci = TColor::GetColor("#006600");
    h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetFillColor(ci);
 
    ci = TColor::GetColor("#000099");
    h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->SetLineColor(ci);
-   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->GetXaxis()->SetTitle("Selector BDT Score");
+   h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->GetXaxis()->SetTitle("Invariant Mass (GeV)");
    h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->GetXaxis()->SetLabelFont(42);
    h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->GetXaxis()->SetLabelSize(0.035);
    h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->GetXaxis()->SetTitleSize(0.035);
@@ -379,23 +361,23 @@ void background_fhc_invariant_mass_ByPureKaonType()
    h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4->GetZaxis()->SetTitleFont(42);
    hs->Add(h_PureKaonSignalNuMuCCKaonHyperonMultiPion_stack_4,"HIST");
    
-   TH1D *h_PureKaonOtherNuMuCC_stack_5 = new TH1D("h_PureKaonOtherNuMuCC_stack_5","",10,-1,1);
-   h_PureKaonOtherNuMuCC_stack_5->SetBinContent(2,95.64995);
-   h_PureKaonOtherNuMuCC_stack_5->SetBinContent(3,651.4349);
-   h_PureKaonOtherNuMuCC_stack_5->SetBinContent(4,602.8448);
-   h_PureKaonOtherNuMuCC_stack_5->SetBinContent(5,71.75075);
-   h_PureKaonOtherNuMuCC_stack_5->SetBinContent(6,0.01062692);
-   h_PureKaonOtherNuMuCC_stack_5->SetBinError(2,15.85496);
-   h_PureKaonOtherNuMuCC_stack_5->SetBinError(3,41.36159);
-   h_PureKaonOtherNuMuCC_stack_5->SetBinError(4,39.81316);
-   h_PureKaonOtherNuMuCC_stack_5->SetBinError(5,13.7308);
-   h_PureKaonOtherNuMuCC_stack_5->SetBinError(6,0.007514369);
-   h_PureKaonOtherNuMuCC_stack_5->SetEntries(2075);
+   TH1D *h_PureKaonOtherNuMuCC_stack_5 = new TH1D("h_PureKaonOtherNuMuCC_stack_5","",4,0.2,0.6);
+   h_PureKaonOtherNuMuCC_stack_5->SetBinContent(1,0.5392783);
+   h_PureKaonOtherNuMuCC_stack_5->SetBinContent(2,3.08587);
+   h_PureKaonOtherNuMuCC_stack_5->SetBinContent(3,1.15845);
+   h_PureKaonOtherNuMuCC_stack_5->SetBinContent(4,0.659118);
+   h_PureKaonOtherNuMuCC_stack_5->SetBinContent(5,11.3548);
+   h_PureKaonOtherNuMuCC_stack_5->SetBinError(1,0.07338649);
+   h_PureKaonOtherNuMuCC_stack_5->SetBinError(2,0.175549);
+   h_PureKaonOtherNuMuCC_stack_5->SetBinError(3,0.1075594);
+   h_PureKaonOtherNuMuCC_stack_5->SetBinError(4,0.08113181);
+   h_PureKaonOtherNuMuCC_stack_5->SetBinError(5,0.3367437);
+   h_PureKaonOtherNuMuCC_stack_5->SetEntries(1682);
    h_PureKaonOtherNuMuCC_stack_5->SetFillColor(30);
 
    ci = TColor::GetColor("#000099");
    h_PureKaonOtherNuMuCC_stack_5->SetLineColor(ci);
-   h_PureKaonOtherNuMuCC_stack_5->GetXaxis()->SetTitle("Selector BDT Score");
+   h_PureKaonOtherNuMuCC_stack_5->GetXaxis()->SetTitle("Invariant Mass (GeV)");
    h_PureKaonOtherNuMuCC_stack_5->GetXaxis()->SetLabelFont(42);
    h_PureKaonOtherNuMuCC_stack_5->GetXaxis()->SetLabelSize(0.035);
    h_PureKaonOtherNuMuCC_stack_5->GetXaxis()->SetTitleSize(0.035);
@@ -412,23 +394,21 @@ void background_fhc_invariant_mass_ByPureKaonType()
    h_PureKaonOtherNuMuCC_stack_5->GetZaxis()->SetTitleFont(42);
    hs->Add(h_PureKaonOtherNuMuCC_stack_5,"HIST");
    
-   TH1D *h_PureKaonNuECC_stack_6 = new TH1D("h_PureKaonNuECC_stack_6","",10,-1,1);
-   h_PureKaonNuECC_stack_6->SetBinContent(2,0.05313461);
-   h_PureKaonNuECC_stack_6->SetBinContent(3,8.145288);
-   h_PureKaonNuECC_stack_6->SetBinContent(4,26.55762);
-   h_PureKaonNuECC_stack_6->SetBinContent(5,2.653106);
-   h_PureKaonNuECC_stack_6->SetBinError(2,0.01680264);
-   h_PureKaonNuECC_stack_6->SetBinError(3,4.577034);
-   h_PureKaonNuECC_stack_6->SetBinError(4,8.356294);
-   h_PureKaonNuECC_stack_6->SetBinError(5,2.642489);
-   h_PureKaonNuECC_stack_6->SetEntries(93);
+   TH1D *h_PureKaonNuECC_stack_6 = new TH1D("h_PureKaonNuECC_stack_6","",4,0.2,0.6);
+   h_PureKaonNuECC_stack_6->SetBinContent(2,0.109853);
+   h_PureKaonNuECC_stack_6->SetBinContent(3,0.009986636);
+   h_PureKaonNuECC_stack_6->SetBinContent(5,0.2296926);
+   h_PureKaonNuECC_stack_6->SetBinError(2,0.03312192);
+   h_PureKaonNuECC_stack_6->SetBinError(3,0.009986636);
+   h_PureKaonNuECC_stack_6->SetBinError(5,0.04789422);
+   h_PureKaonNuECC_stack_6->SetEntries(35);
 
    ci = TColor::GetColor("#cc33ff");
    h_PureKaonNuECC_stack_6->SetFillColor(ci);
 
    ci = TColor::GetColor("#000099");
    h_PureKaonNuECC_stack_6->SetLineColor(ci);
-   h_PureKaonNuECC_stack_6->GetXaxis()->SetTitle("Selector BDT Score");
+   h_PureKaonNuECC_stack_6->GetXaxis()->SetTitle("Invariant Mass (GeV)");
    h_PureKaonNuECC_stack_6->GetXaxis()->SetLabelFont(42);
    h_PureKaonNuECC_stack_6->GetXaxis()->SetLabelSize(0.035);
    h_PureKaonNuECC_stack_6->GetXaxis()->SetTitleSize(0.035);
@@ -445,23 +425,25 @@ void background_fhc_invariant_mass_ByPureKaonType()
    h_PureKaonNuECC_stack_6->GetZaxis()->SetTitleFont(42);
    hs->Add(h_PureKaonNuECC_stack_6,"HIST");
    
-   TH1D *h_PureKaonNC_stack_7 = new TH1D("h_PureKaonNC_stack_7","",10,-1,1);
-   h_PureKaonNC_stack_7->SetBinContent(2,10.7612);
-   h_PureKaonNC_stack_7->SetBinContent(3,83.69154);
-   h_PureKaonNC_stack_7->SetBinContent(4,56.97451);
-   h_PureKaonNC_stack_7->SetBinContent(5,13.43556);
-   h_PureKaonNC_stack_7->SetBinError(2,5.285054);
-   h_PureKaonNC_stack_7->SetBinError(3,14.71302);
-   h_PureKaonNC_stack_7->SetBinError(4,12.10968);
-   h_PureKaonNC_stack_7->SetBinError(5,5.908862);
-   h_PureKaonNC_stack_7->SetEntries(762);
+   TH1D *h_PureKaonNC_stack_7 = new TH1D("h_PureKaonNC_stack_7","",4,0.2,0.6);
+   h_PureKaonNC_stack_7->SetBinContent(1,0.5093184);
+   h_PureKaonNC_stack_7->SetBinContent(2,2.296926);
+   h_PureKaonNC_stack_7->SetBinContent(3,0.8189041);
+   h_PureKaonNC_stack_7->SetBinContent(4,0.2995991);
+   h_PureKaonNC_stack_7->SetBinContent(5,6.541246);
+   h_PureKaonNC_stack_7->SetBinError(1,0.07131885);
+   h_PureKaonNC_stack_7->SetBinError(2,0.1514548);
+   h_PureKaonNC_stack_7->SetBinError(3,0.09043283);
+   h_PureKaonNC_stack_7->SetBinError(4,0.05469906);
+   h_PureKaonNC_stack_7->SetBinError(5,0.2555876);
+   h_PureKaonNC_stack_7->SetEntries(1048);
 
    ci = TColor::GetColor("#ffcc00");
    h_PureKaonNC_stack_7->SetFillColor(ci);
 
    ci = TColor::GetColor("#000099");
    h_PureKaonNC_stack_7->SetLineColor(ci);
-   h_PureKaonNC_stack_7->GetXaxis()->SetTitle("Selector BDT Score");
+   h_PureKaonNC_stack_7->GetXaxis()->SetTitle("Invariant Mass (GeV)");
    h_PureKaonNC_stack_7->GetXaxis()->SetLabelFont(42);
    h_PureKaonNC_stack_7->GetXaxis()->SetLabelSize(0.035);
    h_PureKaonNC_stack_7->GetXaxis()->SetTitleSize(0.035);
@@ -478,23 +460,25 @@ void background_fhc_invariant_mass_ByPureKaonType()
    h_PureKaonNC_stack_7->GetZaxis()->SetTitleFont(42);
    hs->Add(h_PureKaonNC_stack_7,"HIST");
    
-   TH1D *h_PureKaonOutFV_stack_8 = new TH1D("h_PureKaonOutFV_stack_8","",10,-1,1);
-   h_PureKaonOutFV_stack_8->SetBinContent(2,7.985884);
-   h_PureKaonOutFV_stack_8->SetBinContent(3,26.7861);
-   h_PureKaonOutFV_stack_8->SetBinContent(4,21.49583);
-   h_PureKaonOutFV_stack_8->SetBinContent(5,2.722181);
-   h_PureKaonOutFV_stack_8->SetBinError(2,4.576941);
-   h_PureKaonOutFV_stack_8->SetBinError(3,8.356366);
-   h_PureKaonOutFV_stack_8->SetBinError(4,7.474185);
-   h_PureKaonOutFV_stack_8->SetBinError(5,2.642559);
-   h_PureKaonOutFV_stack_8->SetEntries(187);
+   TH1D *h_PureKaonOutFV_stack_8 = new TH1D("h_PureKaonOutFV_stack_8","",4,0.2,0.6);
+   h_PureKaonOutFV_stack_8->SetBinContent(1,0.07989309);
+   h_PureKaonOutFV_stack_8->SetBinContent(2,0.4993318);
+   h_PureKaonOutFV_stack_8->SetBinContent(3,0.2396793);
+   h_PureKaonOutFV_stack_8->SetBinContent(4,0.1497995);
+   h_PureKaonOutFV_stack_8->SetBinContent(5,3.20571);
+   h_PureKaonOutFV_stack_8->SetBinError(1,0.02824647);
+   h_PureKaonOutFV_stack_8->SetBinError(2,0.07061618);
+   h_PureKaonOutFV_stack_8->SetBinError(3,0.04892432);
+   h_PureKaonOutFV_stack_8->SetBinError(4,0.03867807);
+   h_PureKaonOutFV_stack_8->SetBinError(5,0.1789253);
+   h_PureKaonOutFV_stack_8->SetEntries(418);
 
    ci = TColor::GetColor("#cccccc");
    h_PureKaonOutFV_stack_8->SetFillColor(ci);
 
    ci = TColor::GetColor("#000099");
    h_PureKaonOutFV_stack_8->SetLineColor(ci);
-   h_PureKaonOutFV_stack_8->GetXaxis()->SetTitle("Selector BDT Score");
+   h_PureKaonOutFV_stack_8->GetXaxis()->SetTitle("Invariant Mass (GeV)");
    h_PureKaonOutFV_stack_8->GetXaxis()->SetLabelFont(42);
    h_PureKaonOutFV_stack_8->GetXaxis()->SetLabelSize(0.035);
    h_PureKaonOutFV_stack_8->GetXaxis()->SetTitleSize(0.035);
@@ -510,88 +494,29 @@ void background_fhc_invariant_mass_ByPureKaonType()
    h_PureKaonOutFV_stack_8->GetZaxis()->SetTitleSize(0.035);
    h_PureKaonOutFV_stack_8->GetZaxis()->SetTitleFont(42);
    hs->Add(h_PureKaonOutFV_stack_8,"HIST");
-   
-   TH1D *h_PureKaonBeamOff_stack_9 = new TH1D("h_PureKaonBeamOff_stack_9","",10,-1,1);
-   h_PureKaonBeamOff_stack_9->SetBinContent(3,10.52947);
-   h_PureKaonBeamOff_stack_9->SetBinContent(4,10.52947);
-   h_PureKaonBeamOff_stack_9->SetBinContent(5,2.632366);
-   h_PureKaonBeamOff_stack_9->SetBinError(3,5.264733);
-   h_PureKaonBeamOff_stack_9->SetBinError(4,5.264733);
-   h_PureKaonBeamOff_stack_9->SetBinError(5,2.632366);
-   h_PureKaonBeamOff_stack_9->SetEntries(9);
-   h_PureKaonBeamOff_stack_9->SetFillColor(1);
-   h_PureKaonBeamOff_stack_9->SetFillStyle(3004);
-
-   ci = TColor::GetColor("#000099");
-   h_PureKaonBeamOff_stack_9->SetLineColor(ci);
-   h_PureKaonBeamOff_stack_9->GetXaxis()->SetTitle("Selector BDT Score");
-   h_PureKaonBeamOff_stack_9->GetXaxis()->SetLabelFont(42);
-   h_PureKaonBeamOff_stack_9->GetXaxis()->SetLabelSize(0.035);
-   h_PureKaonBeamOff_stack_9->GetXaxis()->SetTitleSize(0.035);
-   h_PureKaonBeamOff_stack_9->GetXaxis()->SetTitleFont(42);
-   h_PureKaonBeamOff_stack_9->GetYaxis()->SetTitle("Events/bin");
-   h_PureKaonBeamOff_stack_9->GetYaxis()->SetLabelFont(42);
-   h_PureKaonBeamOff_stack_9->GetYaxis()->SetLabelSize(0.035);
-   h_PureKaonBeamOff_stack_9->GetYaxis()->SetTitleSize(0.035);
-   h_PureKaonBeamOff_stack_9->GetYaxis()->SetTitleOffset(0);
-   h_PureKaonBeamOff_stack_9->GetYaxis()->SetTitleFont(42);
-   h_PureKaonBeamOff_stack_9->GetZaxis()->SetLabelFont(42);
-   h_PureKaonBeamOff_stack_9->GetZaxis()->SetLabelSize(0.035);
-   h_PureKaonBeamOff_stack_9->GetZaxis()->SetTitleSize(0.035);
-   h_PureKaonBeamOff_stack_9->GetZaxis()->SetTitleFont(42);
-   hs->Add(h_PureKaonBeamOff_stack_9,"HIST");
-   
-   TH1D *h_PureKaonOther_stack_10 = new TH1D("h_PureKaonOther_stack_10","",10,-1,1);
-   h_PureKaonOther_stack_10->SetBinContent(3,275.8852);
-   h_PureKaonOther_stack_10->SetBinContent(4,191.9202);
-   h_PureKaonOther_stack_10->SetBinError(3,57.52605);
-   h_PureKaonOther_stack_10->SetBinError(4,47.98004);
-   h_PureKaonOther_stack_10->SetEntries(39);
-
-   ci = TColor::GetColor("#cc0000");
-   h_PureKaonOther_stack_10->SetFillColor(ci);
-
-   ci = TColor::GetColor("#000099");
-   h_PureKaonOther_stack_10->SetLineColor(ci);
-   h_PureKaonOther_stack_10->GetXaxis()->SetTitle("Selector BDT Score");
-   h_PureKaonOther_stack_10->GetXaxis()->SetLabelFont(42);
-   h_PureKaonOther_stack_10->GetXaxis()->SetLabelSize(0.035);
-   h_PureKaonOther_stack_10->GetXaxis()->SetTitleSize(0.035);
-   h_PureKaonOther_stack_10->GetXaxis()->SetTitleFont(42);
-   h_PureKaonOther_stack_10->GetYaxis()->SetTitle("Events/bin");
-   h_PureKaonOther_stack_10->GetYaxis()->SetLabelFont(42);
-   h_PureKaonOther_stack_10->GetYaxis()->SetLabelSize(0.035);
-   h_PureKaonOther_stack_10->GetYaxis()->SetTitleSize(0.035);
-   h_PureKaonOther_stack_10->GetYaxis()->SetTitleOffset(0);
-   h_PureKaonOther_stack_10->GetYaxis()->SetTitleFont(42);
-   h_PureKaonOther_stack_10->GetZaxis()->SetLabelFont(42);
-   h_PureKaonOther_stack_10->GetZaxis()->SetLabelSize(0.035);
-   h_PureKaonOther_stack_10->GetZaxis()->SetTitleSize(0.035);
-   h_PureKaonOther_stack_10->GetZaxis()->SetTitleFont(42);
-   hs->Add(h_PureKaonOther_stack_10,"HIST");
    hs->Draw("hist same");
    
-   TH1D *h_errors__2 = new TH1D("h_errors__2","",10,-1,1);
-   h_errors__2->SetBinContent(2,114.8115);
-   h_errors__2->SetBinContent(3,1060.25);
-   h_errors__2->SetBinContent(4,914.2278);
-   h_errors__2->SetBinContent(5,93.78907);
-   h_errors__2->SetBinContent(6,0.01062692);
-   h_errors__2->SetBinError(2,17.32807);
-   h_errors__2->SetBinError(3,73.17797);
-   h_errors__2->SetBinError(4,64.70893);
-   h_errors__2->SetBinError(5,15.63163);
-   h_errors__2->SetBinError(6,0.007514369);
+   TH1D *h_errors__2 = new TH1D("h_errors__2","",4,0.2,0.6);
+   h_errors__2->SetBinContent(1,2.097194);
+   h_errors__2->SetBinContent(2,11.07518);
+   h_errors__2->SetBinContent(3,4.793585);
+   h_errors__2->SetBinContent(4,2.237006);
+   h_errors__2->SetBinContent(5,37.79942);
+   h_errors__2->SetBinError(1,0.1447201);
+   h_errors__2->SetBinError(2,0.3325715);
+   h_errors__2->SetBinError(3,0.2187962);
+   h_errors__2->SetBinError(4,0.1494663);
+   h_errors__2->SetBinError(5,0.6144013);
    h_errors__2->SetMinimum(0);
-   h_errors__2->SetMaximum(1416.785);
-   h_errors__2->SetEntries(4805);
+   h_errors__2->SetMaximum(14.25969);
+   h_errors__2->SetEntries(5808);
    h_errors__2->SetStats(0);
    h_errors__2->SetFillColor(1);
    h_errors__2->SetFillStyle(3253);
 
    ci = TColor::GetColor("#000099");
    h_errors__2->SetLineColor(ci);
-   h_errors__2->GetXaxis()->SetTitle("Selector BDT Score");
+   h_errors__2->GetXaxis()->SetTitle("Invariant Mass (GeV)");
    h_errors__2->GetXaxis()->SetLabelFont(42);
    h_errors__2->GetXaxis()->SetLabelSize(0.045);
    h_errors__2->GetXaxis()->SetTitleSize(0.05);
@@ -609,20 +534,20 @@ void background_fhc_invariant_mass_ByPureKaonType()
    h_errors__2->GetZaxis()->SetTitleFont(42);
    h_errors__2->Draw("E2 same");
    
-   TH1D *h_errors_copy__3 = new TH1D("h_errors_copy__3","",10,-1,1);
-   h_errors_copy__3->SetBinContent(2,114.8115);
-   h_errors_copy__3->SetBinContent(3,1060.25);
-   h_errors_copy__3->SetBinContent(4,914.2278);
-   h_errors_copy__3->SetBinContent(5,93.78907);
-   h_errors_copy__3->SetBinContent(6,0.01062692);
-   h_errors_copy__3->SetBinError(2,17.32807);
-   h_errors_copy__3->SetBinError(3,73.17797);
-   h_errors_copy__3->SetBinError(4,64.70893);
-   h_errors_copy__3->SetBinError(5,15.63163);
-   h_errors_copy__3->SetBinError(6,0.007514369);
+   TH1D *h_errors_copy__3 = new TH1D("h_errors_copy__3","",4,0.2,0.6);
+   h_errors_copy__3->SetBinContent(1,2.097194);
+   h_errors_copy__3->SetBinContent(2,11.07518);
+   h_errors_copy__3->SetBinContent(3,4.793585);
+   h_errors_copy__3->SetBinContent(4,2.237006);
+   h_errors_copy__3->SetBinContent(5,37.79942);
+   h_errors_copy__3->SetBinError(1,0.1447201);
+   h_errors_copy__3->SetBinError(2,0.3325715);
+   h_errors_copy__3->SetBinError(3,0.2187962);
+   h_errors_copy__3->SetBinError(4,0.1494663);
+   h_errors_copy__3->SetBinError(5,0.6144013);
    h_errors_copy__3->SetMinimum(0);
-   h_errors_copy__3->SetMaximum(1416.785);
-   h_errors_copy__3->SetEntries(4805);
+   h_errors_copy__3->SetMaximum(14.25969);
+   h_errors_copy__3->SetEntries(5808);
    h_errors_copy__3->SetDirectory(0);
    h_errors_copy__3->SetStats(0);
    h_errors_copy__3->SetFillColor(1);
@@ -630,7 +555,7 @@ void background_fhc_invariant_mass_ByPureKaonType()
 
    ci = TColor::GetColor("#000099");
    h_errors_copy__3->SetLineColor(ci);
-   h_errors_copy__3->GetXaxis()->SetTitle("Selector BDT Score");
+   h_errors_copy__3->GetXaxis()->SetTitle("Invariant Mass (GeV)");
    h_errors_copy__3->GetXaxis()->SetLabelFont(42);
    h_errors_copy__3->GetXaxis()->SetLabelSize(0.045);
    h_errors_copy__3->GetXaxis()->SetTitleSize(0.05);
@@ -656,7 +581,7 @@ void background_fhc_invariant_mass_ByPureKaonType()
    leg->SetLineWidth(1);
    leg->SetFillColor(0);
    leg->SetFillStyle(1001);
-   entry=leg->AddEntry("NULL","NuMI FHC, 1.2 #times 10^{21} POT","h");
+   entry=leg->AddEntry("NULL","NuMI RHC, 1.5 #times 10^{21} POT","h");
    entry->SetLineColor(1);
    entry->SetLineStyle(1);
    entry->SetLineWidth(1);

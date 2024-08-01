@@ -11,30 +11,34 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
 void background_invariant_mass(){
 
-    double POT = 1.25e21; // POT to scale samples to
-    //double POT = 1.5e21;
+    //double POT = 1.25e21; // POT to scale samples to
+    double POT = 1.5e21;
 
     double EXT_POT = 1.0421e20;
 
     BuildTunes();
-    SelectionParameters P = P_FHC_Tune_325_NoBDT;
-    //SelectionParameters P = P_RHC_Tune_397_NoBDT;
+    //SelectionParameters P = P_FHC_Tune_325_NoBDT;
+    SelectionParameters P = P_RHC_Tune_397_NoBDT;
 
     std::string label = "background_fhc_invariant_mass";
     std::string SampleType = "background";
 
     EventAssembler E(false);
     SelectionManager M(P);
-    M.ImportSelectorBDTWeights("/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA/dataset/weights");
+    M.ImportSelectorBDTWeights("/exp/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA/dataset/weights");
 
-    M.SetBeamMode(kFHC);
-    //M.SetBeamMode(kRHC);
+    //M.SetBeamMode(kFHC);
+    M.SetBeamMode(kRHC);
     
     M.SetPOT(POT);
     M.UseFluxWeight(false);
     M.UseGenWeight(false);
 
     //////// RHC!!!
+
+    SampleNames.push_back("GENIE kaon");
+    SampleTypes.push_back("Kaon");
+    SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Kaon_cthorpe_make_k0s_events_numi_rhc_reco2_REAL_reco2_reco2.root");
 
     /*SampleNames.push_back("GENIE Background");
     SampleTypes.push_back("Background");
@@ -43,10 +47,6 @@ void background_invariant_mass(){
     SampleNames.push_back("GENIE Dirt");
     SampleTypes.push_back("Dirt");
     SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Dirt_prodgenie_numi_uboone_overlay_dirt_rhc_mcc9_run3b_v28_sample0.root");
-
-    SampleNames.push_back("GENIE kaon");
-    SampleTypes.push_back("Kaon");
-    SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Kaon_cthorpe_make_k0s_events_numi_rhc_reco2_REAL_reco2_reco2.root");
 
     SampleNames.push_back("EXT run3");
     SampleTypes.push_back("EXT");
@@ -59,25 +59,25 @@ void background_invariant_mass(){
 
     /////// FHC!!!!!
 
-    SampleNames.push_back("GENIE Background");
+    /*SampleNames.push_back("GENIE Background");
     SampleTypes.push_back("Background");
     SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Background_prodgenie_numi_uboone_overlay_fhc_mcc9_run1_v28_v2_sample0.root");
 
     SampleNames.push_back("GENIE Dirt");
     SampleTypes.push_back("Dirt");
     SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Dirt_prodgenie_numi_uboone_overlay_dirt_rhc_mcc9_run3b_v28_sample0.root");
-
+    
     SampleNames.push_back("GENIE kaon");
     SampleTypes.push_back("Kaon");
     SampleFiles.push_back("analysisOutputFHC_Overlay_GENIE_Kaon_cthorpe_make_k0s_events_numi_fhc_reco2_reco2_reco2.root");
-
+    
     SampleNames.push_back("EXT run3");
     SampleTypes.push_back("EXT");
     SampleFiles.push_back("analysisOutputEXT_cthorpe_prod_extnumi_mcc9_v08_00_00_45_run3_run3b_reco2_all_reco2_pt1.root");
 
     SampleNames.push_back("EXT run1");
     SampleTypes.push_back("EXT");
-    SampleFiles.push_back("analysisOutputEXT_cthorpe_prod_mcc9_v08_00_00_45_extnumi_reco2_run1_all_reco2_pt1.root");
+    SampleFiles.push_back("analysisOutputEXT_cthorpe_prod_mcc9_v08_00_00_45_extnumi_reco2_run1_all_reco2_pt1.root");*/
 
     /*SampleNames.push_back("Neutron");
     SampleTypes.push_back("Neutron");
@@ -86,8 +86,8 @@ void background_invariant_mass(){
     //M.SetupHistograms(8,0,8.0,";Track Multiplicity; Events/bin"); 
     //M.SetupHistograms(5,0,5.0,";Shower Multiplicity; Events/bin");
 
-    //M.SetupHistograms(9,0.2,1.1,";Invariant Mass (GeV);Events/bin");
-    M.SetupHistograms(10,-1,1,";Selector BDT Score;Events/bin");
+    M.SetupHistograms(4,0.2,0.6,";Invariant Mass (GeV);Events/bin");
+    //M.SetupHistograms(10,-1,1,";Selector BDT Score;Events/bin");
 
     for(size_t i_s=0;i_s<SampleNames.size();i_s++){
 
@@ -106,12 +106,11 @@ void background_invariant_mass(){
 
             if(!M.FiducialVolumeCut(e)) continue;
             if(!M.TrackCut(e)) continue;
-            if(!M.ShowerCut(e)) continue;
             if(!M.ChooseMuonCandidate(e)) continue;
             if(!M.ChoosePionPairCandidates(e)) continue;
             
-            //M.FillHistograms(e,PionPairInvariantMass(e.DecayPionPlusCandidate, e.DecayPionMinusCandidate));   
-            M.FillHistograms(e,e.SelectorBDTScore);
+            M.FillHistograms(e,PionPairInvariantMass(e.DecayPionPlusCandidate, e.DecayPionMinusCandidate));   
+            //M.FillHistograms(e,e.SelectorBDTScore);
             
         }
     }

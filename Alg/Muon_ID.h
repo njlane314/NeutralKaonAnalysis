@@ -13,6 +13,7 @@
          int SelectCandidate(std::vector<RecoParticle> P_v);
 
          void SetTune(double PIDCut,double MinLength,double MaxSeparation);
+         void Print();
 
       private:
 

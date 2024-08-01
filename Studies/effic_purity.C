@@ -25,8 +25,8 @@ void effic_purity(){
 
     EventAssembler E(false);
     SelectionManager M(P);
-    M.ImportSelectorBDTWeights("/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA/dataset/weights");
-    M.ImportAnalysisBDTWeights("/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/AnalysisMVA/dataset/weights");
+    M.ImportSelectorBDTWeights("/exp/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA/dataset/weights");
+    M.ImportAnalysisBDTWeights("/exp/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/AnalysisMVA/dataset/weights");
 
     //M.SetBeamMode(kFHC);
     M.SetBeamMode(kRHC);
@@ -60,17 +60,17 @@ void effic_purity(){
 
     /////// FHC!!!!!
 
-    /*SampleNames.push_back("GENIE Background");
+    /*SampleNames.push_back("GENIE kaon");
+    SampleTypes.push_back("Kaon");
+    SampleFiles.push_back("analysisOutputFHC_Overlay_GENIE_Kaon_cthorpe_make_k0s_events_numi_fhc_reco2_reco2_reco2.root");
+
+    SampleNames.push_back("GENIE Background");
     SampleTypes.push_back("Background");
     SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Background_prodgenie_numi_uboone_overlay_fhc_mcc9_run1_v28_v2_sample0.root");
 
     SampleNames.push_back("GENIE Dirt");
     SampleTypes.push_back("Dirt");
     SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Dirt_prodgenie_numi_uboone_overlay_dirt_rhc_mcc9_run3b_v28_sample0.root");
-
-    SampleNames.push_back("GENIE kaon");
-    SampleTypes.push_back("Kaon");
-    SampleFiles.push_back("analysisOutputFHC_Overlay_GENIE_Kaon_cthorpe_make_k0s_events_numi_fhc_reco2_reco2_reco2.root");
 
     SampleNames.push_back("EXT run3");
     SampleTypes.push_back("EXT");

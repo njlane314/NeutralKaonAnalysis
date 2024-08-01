@@ -4,11 +4,11 @@
     <Info name="TMVA Release" value="4.2.1 [262657]"/>
     <Info name="ROOT Release" value="6.12/06 [396294]"/>
     <Info name="Creator" value="nlane"/>
-    <Info name="Date" value="Mon Jan 29 09:44:05 2024"/>
+    <Info name="Date" value="Sun Apr 14 14:25:24 2024"/>
     <Info name="Host" value="Linux buildservice008.fnal.gov 3.10.0-693.17.1.el7.x86_64 #1 SMP Thu Jan 25 04:11:40 CST 2018 x86_64 x86_64 x86_64 GNU/Linux"/>
-    <Info name="Dir" value="/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA"/>
-    <Info name="Training events" value="267"/>
-    <Info name="TrainingTime" value="6.70194626e-04"/>
+    <Info name="Dir" value="/exp/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA"/>
+    <Info name="Training events" value="9958"/>
+    <Info name="TrainingTime" value="1.40740871e-02"/>
     <Info name="AnalysisType" value="Classification"/>
   </GeneralInfo>
   <Options>
@@ -20,13 +20,13 @@
     <Option name="IgnoreNegWeightsInTraining" modified="No">False</Option>
   </Options>
   <Variables NVar="7">
-    <Variable VarIndex="0" Expression="separation" Label="separation" Title="Track Start Separation" Unit="cm" Internal="separation" Type="F" Min="3.57186459e-02" Max="4.96464396e+00"/>
-    <Variable VarIndex="1" Expression="pion1_trkscore" Label="pion1_trkscore" Title="Pion1 Candidate Track/Shower Score" Unit="F" Internal="pion1_trkscore" Type="F" Min="5.04645646e-01" Max="1.00000000e+00"/>
-    <Variable VarIndex="2" Expression="pion2_trkscore" Label="pion2_trkscore" Title="Pion2 Candidate Track/Shower Score" Unit="F" Internal="pion2_trkscore" Type="F" Min="5.04645646e-01" Max="1.00000000e+00"/>
-    <Variable VarIndex="3" Expression="pion1_dEdX" Label="pion1_dEdX" Title="Pion1 Candidate Mean dE/dX" Unit="F" Internal="pion1_dEdX" Type="F" Min="5.02278090e-01" Max="2.00000000e+01"/>
-    <Variable VarIndex="4" Expression="pion2_dEdX" Label="pion2_dEdX" Title="Pion2 Candidate Mean dE/dX" Unit="F" Internal="pion2_dEdX" Type="F" Min="5.02278090e-01" Max="2.00000000e+01"/>
-    <Variable VarIndex="5" Expression="pion1_LLR" Label="pion1_LLR" Title="Pion1 LLR PID Score" Unit="F" Internal="pion1_LLR" Type="F" Min="-4.88725603e-02" Max="9.93764102e-01"/>
-    <Variable VarIndex="6" Expression="pion2_LLR" Label="pion2_LLR" Title="Pion2 LLR PID Score" Unit="F" Internal="pion2_LLR" Type="F" Min="-8.34757015e-02" Max="9.79369938e-01"/>
+    <Variable VarIndex="0" Expression="separation" Label="separation" Title="Track Start Separation" Unit="cm" Internal="separation" Type="F" Min="1.43901026e-02" Max="4.99534798e+00"/>
+    <Variable VarIndex="1" Expression="pion_plus_trkscore" Label="pion_plus_trkscore" Title="Pion Plus Candidate Track/Shower Score" Unit="F" Internal="pion_plus_trkscore" Type="F" Min="0.00000000e+00" Max="1.00000000e+00"/>
+    <Variable VarIndex="2" Expression="pion_minus_trkscore" Label="pion_minus_trkscore" Title="Pion Minus Candidate Track/Shower Score" Unit="F" Internal="pion_minus_trkscore" Type="F" Min="0.00000000e+00" Max="1.00000000e+00"/>
+    <Variable VarIndex="3" Expression="pion_plus_dEdX" Label="pion_plus_dEdX" Title="Pion Plus Candidate Mean dE/dX" Unit="F" Internal="pion_plus_dEdX" Type="F" Min="2.10916549e-01" Max="2.00000000e+01"/>
+    <Variable VarIndex="4" Expression="pion_minus_dEdX" Label="pion_minus_dEdX" Title="Pion Minus Candidate Mean dE/dX" Unit="F" Internal="pion_minus_dEdX" Type="F" Min="2.33498022e-01" Max="2.00000000e+01"/>
+    <Variable VarIndex="5" Expression="pion_plus_LLR" Label="pion_plus_LLR" Title="Pion Plus LLR PID Score" Unit="F" Internal="pion_plus_LLR" Type="F" Min="-9.99723971e-02" Max="9.94055629e-01"/>
+    <Variable VarIndex="6" Expression="pion_minus_LLR" Label="pion_minus_LLR" Title="Pion Minus LLR PID Score" Unit="F" Internal="pion_minus_LLR" Type="F" Min="-9.99723971e-02" Max="9.93233263e-01"/>
   </Variables>
   <Spectators NSpec="0"/>
   <Classes NClass="2">
@@ -36,24 +36,24 @@
   <Transformations NTransformations="0"/>
   <MVAPdfs>
     <PDF Name="LD_PDFSig" MinNSmooth="10" MaxNSmooth="10" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
-      <Histogram Name="LD_tr_S_original" NBins="50" XMin="-2.9089471697807312e-01" XMax="2.0755493640899658e-01" HasEquidistantBins="1">
-        0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 3.45900116e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 3.45900116e+00 0.00000000e+00 3.45900116e+00 3.45900116e+00 6.91800233e+00 3.45900116e+00 0.00000000e+00 3.45900116e+00 6.91800233e+00 3.45900116e+00 1.72950058e+01 1.38360047e+01 1.38360047e+01 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 6.91800233e+00 0.00000000e+00 3.45900116e+00 0.00000000e+00 0.00000000e+00 6.91800233e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 
+      <Histogram Name="LD_tr_S_original" NBins="50" XMin="-1.3670921325683594e-01" XMax="5.2732799202203751e-02" HasEquidistantBins="1">
+        0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 3.45914819e-01 0.00000000e+00 3.45914819e-01 0.00000000e+00 6.91829638e-01 3.45914819e-01 0.00000000e+00 1.38365928e+00 1.03774446e+00 1.03774446e+00 1.03774446e+00 2.76731855e+00 5.18872229e+00 3.45914819e+00 2.42140373e+00 5.18872229e+00 6.91829638e+00 7.26421120e+00 7.26421120e+00 6.57238156e+00 1.14151890e+01 1.07233594e+01 1.27988483e+01 1.31447631e+01 1.27988483e+01 1.07233594e+01 1.17611039e+01 1.66039113e+01 1.41825076e+01 1.24529335e+01 1.59120817e+01 1.41825076e+01 1.48743372e+01 9.33970012e+00 9.68561494e+00 7.95604084e+00 4.84280747e+00 4.15097783e+00 2.07548891e+00 6.91829638e-01 0.00000000e+00 3.45914819e-01 0.00000000e+00 0.00000000e+00 0.00000000e+00 
       </Histogram>
     </PDF>
     <PDF Name="LD_PDFBkg" MinNSmooth="10" MaxNSmooth="10" InterpolMethod="2" KDE_type="1" KDE_iter="1" KDE_border="1" KDE_finefactor="1.0000000000000000e+00">
-      <Histogram Name="LD_tr_B_original" NBins="50" XMin="-2.9089471697807312e-01" XMax="2.0755493640899658e-01" HasEquidistantBins="1">
-        4.23253307e-01 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 8.46506614e-01 0.00000000e+00 8.46506614e-01 8.46506614e-01 8.46506614e-01 1.69301323e+00 8.46506614e-01 1.26975992e+00 1.26975992e+00 8.46506614e-01 8.46506614e-01 1.69301323e+00 2.96277315e+00 1.69301323e+00 4.65578638e+00 4.65578638e+00 3.80927976e+00 5.92554630e+00 5.50229299e+00 3.38602646e+00 4.23253307e+00 2.96277315e+00 5.07903968e+00 7.19530622e+00 6.34879960e+00 3.38602646e+00 3.38602646e+00 4.65578638e+00 3.80927976e+00 3.80927976e+00 5.50229299e+00 1.26975992e+00 8.46506614e-01 4.23253307e-01 4.23253307e-01 4.23253307e-01 4.23253307e-01 0.00000000e+00 4.23253307e-01 4.23253307e-01 0.00000000e+00 4.23253307e-01 0.00000000e+00 0.00000000e+00 
+      <Histogram Name="LD_tr_B_original" NBins="50" XMin="-1.3670921325683594e-01" XMax="5.2732799202203751e-02" HasEquidistantBins="1">
+        5.74141847e-02 0.00000000e+00 8.61212770e-02 8.61212770e-02 4.30606385e-01 4.59313477e-01 6.31556032e-01 6.31556032e-01 1.00474823e+00 1.29181916e+00 1.66501136e+00 1.75113263e+00 2.72717377e+00 3.50226527e+00 4.04770002e+00 4.70796314e+00 5.51176173e+00 5.74141847e+00 6.91840925e+00 7.54996529e+00 9.04273409e+00 1.07651596e+01 1.03345532e+01 1.09086951e+01 1.15689582e+01 1.14254228e+01 1.13680086e+01 1.06503313e+01 1.06216242e+01 1.21143930e+01 1.20282717e+01 1.16837866e+01 1.07364525e+01 1.00761894e+01 1.03345532e+01 1.00187752e+01 9.87523977e+00 8.32505678e+00 6.97582344e+00 6.88970216e+00 4.10511420e+00 2.95683051e+00 1.26311206e+00 4.59313477e-01 3.15778016e-01 1.14828369e-01 2.87070923e-02 8.61212770e-02 2.87070923e-02 2.87070923e-02 
       </Histogram>
     </PDF>
   </MVAPdfs>
   <Weights NOut="1" NCoeff="8">
-    <Coefficient IndexOut="0" IndexCoeff="0" Value="1.7365549681993810e-02"/>
-    <Coefficient IndexOut="0" IndexCoeff="1" Value="-2.0707274818935754e-02"/>
-    <Coefficient IndexOut="0" IndexCoeff="2" Value="2.9183431007519567e-01"/>
-    <Coefficient IndexOut="0" IndexCoeff="3" Value="-3.6758600788876250e-01"/>
-    <Coefficient IndexOut="0" IndexCoeff="4" Value="-4.2461930562733502e-03"/>
-    <Coefficient IndexOut="0" IndexCoeff="5" Value="-3.5300683242301539e-05"/>
-    <Coefficient IndexOut="0" IndexCoeff="6" Value="4.3128675996963094e-02"/>
-    <Coefficient IndexOut="0" IndexCoeff="7" Value="1.3451964950357587e-01"/>
+    <Coefficient IndexOut="0" IndexCoeff="0" Value="3.2040000106474870e-02"/>
+    <Coefficient IndexOut="0" IndexCoeff="1" Value="-1.7312805851888463e-02"/>
+    <Coefficient IndexOut="0" IndexCoeff="2" Value="-1.8862459709154438e-02"/>
+    <Coefficient IndexOut="0" IndexCoeff="3" Value="-5.4542588067139741e-02"/>
+    <Coefficient IndexOut="0" IndexCoeff="4" Value="-9.2163907271953225e-04"/>
+    <Coefficient IndexOut="0" IndexCoeff="5" Value="5.8628207637322072e-05"/>
+    <Coefficient IndexOut="0" IndexCoeff="6" Value="4.5713543488775710e-02"/>
+    <Coefficient IndexOut="0" IndexCoeff="7" Value="3.0105694033354058e-02"/>
   </Weights>
 </MethodSetup>

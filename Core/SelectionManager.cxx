@@ -55,9 +55,15 @@ SelectionManager::SelectionManager(SelectionParameters p) :
     // Set the selection parameters
     TheParams = p;
     DeclareCuts();
-    a_SelectorBDTManager.SetCuts(p.p_Pion_PID_Cut,p.p_Separation_Cut);
+    a_SelectorBDTManager.SetCuts(-0.1,5);
     a_AnalysisBDTManager.SetPull(p.p_VertexPull);
 
+}
+
+void SelectionManager::TuneMuonID(double PIDCut,double MinLength,double MaxSeparation){
+    a_MuonID.SetTune(PIDCut, MinLength, MaxSeparation);
+
+    a_MuonID.Print();
 }
 
 // Close selection manager
@@ -84,6 +90,10 @@ SelectionParameters SelectionManager::GetParams(){
 
     return TheParams;
 
+}
+
+double SelectionManager::GetSelectorBDTScore(RecoParticle DecayProtonCandidate,RecoParticle DecayPionCandidate){
+    return a_SelectorBDTManager.GetScore(DecayProtonCandidate, DecayPionCandidate);
 }
 
 // Load a sample of events, specify name, type and POT. Can also load list of selected events
@@ -512,7 +522,7 @@ bool SelectionManager::TrackCut(const Event &e){
 
 bool SelectionManager::ShowerCut(const Event &e){
 
-    bool passed = e.NPrimaryShowerDaughters > 0; 
+    bool passed = e.NPrimaryShowerDaughters >= 0; 
 
     UpdateCut(e,passed,"Showers");
 
@@ -552,6 +562,7 @@ bool SelectionManager::TrackLengthCut(const Event &e){
     return passed;
 
 }
+
 
 // Select pion pair tracks. If cheat is selected uses truth information instead of BDT 
 
@@ -637,6 +648,7 @@ bool SelectionManager::EventListCut(const Event &e){
 
 // Apply the connectedness test
 
+
 bool SelectionManager::ConnectednessTest(const Event &e, int nplanes){
 
     int muon_index = e.MuonCandidate.Index;
@@ -673,6 +685,7 @@ bool SelectionManager::WCut(const Event &e){
     return passed;
 
 }
+
 
 // Apply the angle cut
 

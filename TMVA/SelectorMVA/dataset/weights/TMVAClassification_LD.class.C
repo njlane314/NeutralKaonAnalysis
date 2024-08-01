@@ -10,10 +10,10 @@ Method         : LD::LD
 TMVA Release   : 4.2.1         [262657]
 ROOT Release   : 6.12/06       [396294]
 Creator        : nlane
-Date           : Mon Jan 29 09:44:05 2024
+Date           : Sun Apr 14 14:25:24 2024
 Host           : Linux buildservice008.fnal.gov 3.10.0-693.17.1.el7.x86_64 #1 SMP Thu Jan 25 04:11:40 CST 2018 x86_64 x86_64 x86_64 GNU/Linux
-Dir            : /uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA
-Training events: 267
+Dir            : /exp/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA
+Training events: 9958
 Analysis type  : [Classification]
 
 
@@ -33,13 +33,13 @@ IgnoreNegWeightsInTraining: "False" [Events with negative weights are ignored in
 #VAR -*-*-*-*-*-*-*-*-*-*-*-* variables *-*-*-*-*-*-*-*-*-*-*-*-
 
 NVar 7
-separation                    separation                    separation                    Track Start Separation        cm                                'F'    [0.0357186459005,4.96464395523]
-pion1_trkscore                pion1_trkscore                pion1_trkscore                Pion1 Candidate Track/Shower ScoreF                                 'F'    [0.504645645618,1]
-pion2_trkscore                pion2_trkscore                pion2_trkscore                Pion2 Candidate Track/Shower ScoreF                                 'F'    [0.504645645618,1]
-pion1_dEdX                    pion1_dEdX                    pion1_dEdX                    Pion1 Candidate Mean dE/dX    F                                 'F'    [0.502278089523,20]
-pion2_dEdX                    pion2_dEdX                    pion2_dEdX                    Pion2 Candidate Mean dE/dX    F                                 'F'    [0.502278089523,20]
-pion1_LLR                     pion1_LLR                     pion1_LLR                     Pion1 LLR PID Score           F                                 'F'    [-0.0488725602627,0.993764102459]
-pion2_LLR                     pion2_LLR                     pion2_LLR                     Pion2 LLR PID Score           F                                 'F'    [-0.0834757015109,0.979369938374]
+separation                    separation                    separation                    Track Start Separation        cm                                'F'    [0.0143901025876,4.99534797668]
+pion_plus_trkscore            pion_plus_trkscore            pion_plus_trkscore            Pion Plus Candidate Track/Shower ScoreF                                 'F'    [0,1]
+pion_minus_trkscore           pion_minus_trkscore           pion_minus_trkscore           Pion Minus Candidate Track/Shower ScoreF                                 'F'    [0,1]
+pion_plus_dEdX                pion_plus_dEdX                pion_plus_dEdX                Pion Plus Candidate Mean dE/dXF                                 'F'    [0.210916548967,20]
+pion_minus_dEdX               pion_minus_dEdX               pion_minus_dEdX               Pion Minus Candidate Mean dE/dXF                                 'F'    [0.23349802196,20]
+pion_plus_LLR                 pion_plus_LLR                 pion_plus_LLR                 Pion Plus LLR PID Score       F                                 'F'    [-0.099972397089,0.994055628777]
+pion_minus_LLR                pion_minus_LLR                pion_minus_LLR                Pion Minus LLR PID Score      F                                 'F'    [-0.099972397089,0.993233263493]
 NSpec 0
 
 
@@ -87,7 +87,7 @@ class ReadLD : public IClassifierReader {
         fIsNormalised( false )
    {      
       // the training input variables
-      const char* inputVars[] = { "separation", "pion1_trkscore", "pion2_trkscore", "pion1_dEdX", "pion2_dEdX", "pion1_LLR", "pion2_LLR" };
+      const char* inputVars[] = { "separation", "pion_plus_trkscore", "pion_minus_trkscore", "pion_plus_dEdX", "pion_minus_dEdX", "pion_plus_LLR", "pion_minus_LLR" };
 
       // sanity checks
       if (theInputVars.size() <= 0) {
@@ -185,14 +185,14 @@ class ReadLD : public IClassifierReader {
 
 inline void ReadLD::Initialize() 
 {
-   fLDCoefficients.push_back( 0.017365549682 );
-   fLDCoefficients.push_back( -0.0207072748189 );
-   fLDCoefficients.push_back( 0.291834310075 );
-   fLDCoefficients.push_back( -0.367586007889 );
-   fLDCoefficients.push_back( -0.00424619305627 );
-   fLDCoefficients.push_back( -3.53006832423e-05 );
-   fLDCoefficients.push_back( 0.043128675997 );
-   fLDCoefficients.push_back( 0.134519649504 );
+   fLDCoefficients.push_back( 0.0320400001065 );
+   fLDCoefficients.push_back( -0.0173128058519 );
+   fLDCoefficients.push_back( -0.0188624597092 );
+   fLDCoefficients.push_back( -0.0545425880671 );
+   fLDCoefficients.push_back( -0.00092163907272 );
+   fLDCoefficients.push_back( 5.86282076373e-05 );
+   fLDCoefficients.push_back( 0.0457135434888 );
+   fLDCoefficients.push_back( 0.0301056940334 );
 
    // sanity check
    if (fLDCoefficients.size() != fNvars+1) {

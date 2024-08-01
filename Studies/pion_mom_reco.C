@@ -30,8 +30,20 @@ void pion_mom_reco(){
     M.SetPOT(POT);
     M.UseFluxWeight(false);
     M.UseGenWeight(false);
+
+    SampleNames.push_back("GENIE kaon");
+    SampleTypes.push_back("Kaon");
+    SampleFiles.push_back("analysisOutputFHC_Overlay_GENIE_Kaon_cthorpe_make_k0s_events_numi_fhc_reco2_reco2_reco2.root");
+
+    SampleNames.push_back("GENIE kaon");
+    SampleTypes.push_back("Kaon");
+    SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Kaon_cthorpe_make_k0s_events_numi_rhc_reco2_REAL_reco2_reco2.root");
+
+    SampleNames.push_back("GENIE kaon");
+    SampleTypes.push_back("Kaon");
+    SampleFiles.push_back("NoCosmic/analysisOutputFHC_GENIE_NoCosmic_Kaon.root");
     
-    SampleNames.push_back("GENIE EXT");
+    /*SampleNames.push_back("GENIE EXT");
     SampleTypes.push_back("EXT");
     SampleFiles.push_back("analysisOutputEXT_cthorpe_prod_extnumi_mcc9_v08_00_00_45_run3_run3b_reco2_all_reco2_pt1.root");
 
@@ -42,10 +54,6 @@ void pion_mom_reco(){
     SampleNames.push_back("GENIE Dirt");
     SampleTypes.push_back("Dirt");
     SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Dirt_prodgenie_numi_uboone_overlay_dirt_rhc_mcc9_run3b_v28_sample0.root");
-
-    SampleNames.push_back("GENIE kaon");
-    SampleTypes.push_back("Kaon");
-    SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Kaon_cthorpe_make_k0s_events_numi_rhc_reco2_REAL_reco2_reco2.root");
 
     SampleNames.push_back("EXT run3");
     SampleTypes.push_back("EXT");
@@ -63,10 +71,6 @@ void pion_mom_reco(){
     SampleTypes.push_back("Dirt");
     SampleFiles.push_back("analysisOutputRHC_GENIE_Overlay_Dirt_prodgenie_numi_uboone_overlay_dirt_rhc_mcc9_run3b_v28_sample0.root");
 
-    SampleNames.push_back("GENIE kaon");
-    SampleTypes.push_back("Kaon");
-    SampleFiles.push_back("analysisOutputFHC_Overlay_GENIE_Kaon_cthorpe_make_k0s_events_numi_fhc_reco2_reco2_reco2.root");
-
     SampleNames.push_back("EXT run3");
     SampleTypes.push_back("EXT");
     SampleFiles.push_back("analysisOutputEXT_cthorpe_prod_extnumi_mcc9_v08_00_00_45_run3_run3b_reco2_all_reco2_pt1.root");
@@ -77,7 +81,7 @@ void pion_mom_reco(){
 
     SampleNames.push_back("Neutron");
     SampleTypes.push_back("Neutron");
-    SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Neutron_cthorpe_numi_run1_fhc_neutron.root");
+    SampleFiles.push_back("analysisOutputFHC_GENIE_Overlay_Neutron_cthorpe_numi_run1_fhc_neutron.root");*/
 
     TH2F *hMuonMom = new TH2F("hMuonMom", "", 200, 0, 200, 200, 0, 1); 
 
@@ -103,8 +107,8 @@ void pion_mom_reco(){
                 double trackPionMomentum = PionMomentum(e.TracklikePrimaryDaughters.at(i).TrackLength);
                 int trackPDG = e.TracklikePrimaryDaughters.at(i).TrackTruePDG;
 
-                if(abs(trackPDG) == 211){ // 13 muon, 211 pion, 2212 proton
-                    hMuonMom->Fill(trackLength, trackTrueMomentum);
+                if(e.TracklikePrimaryDaughters.at(i).Index == e.TrueDecayPionPlusIndex || e.TracklikePrimaryDaughters.at(i).Index == e.TrueDecayPionMinusIndex ){ // 13 muon, 211 pion, 2212 proton
+                    if(e.GoodReco && trackLength > 0 && trackTrueMomentum > 0 && trackPDG == 211) hMuonMom->Fill(trackLength, trackTrueMomentum);
                 }
             }      
 

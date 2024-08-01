@@ -28,7 +28,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
       SampleNames.push_back("GENIE kaon");
       SampleTypes.push_back("Kaon");
-      SampleFiles.push_back("analysisOutputFHC_GENIE_NoCosmic_Kaon_prodgenie_k0s_events_numi_fhc_nocosmic_pt1.root");
+      SampleFiles.push_back("NoCosmic/analysisOutputFHC_GENIE_NoCosmic_Kaon.root");
 
       // Setup Selector BDT Manager Object
       SelectorBDTManager BDTManager("Train");
@@ -53,8 +53,7 @@ R__LOAD_LIBRARY($HYP_TOP/lib/libParticleDict.so)
 
             if(!M.FiducialVolumeCut(e)) continue;
             if(!M.TrackCut(e)) continue;
-            if(!M.ShowerCut(e)) continue;
-            if(!M.ChooseMuonCandidate(e)) continue;
+            //if(!M.ChooseMuonCandidate(e)) continue;
 
             BDTManager.FillTree(e);
 

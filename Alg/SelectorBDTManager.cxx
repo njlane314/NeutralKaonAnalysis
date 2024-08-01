@@ -72,20 +72,20 @@ void SelectorBDTManager::SetupTrainingTrees(){
    t_Background = new TTree("t_SelectorMVA_Background","Background Pairings");
 
    t_Signal->Branch("separation",&v_separation);
-   t_Signal->Branch("pion1_trkscore",&v_pion1_trkscore);
-   t_Signal->Branch("pion2_trkscore",&v_pion2_trkscore);
-   t_Signal->Branch("pion1_dEdX",&v_pion1_dEdX);
-   t_Signal->Branch("pion2_dEdX",&v_pion2_dEdX);
-   t_Signal->Branch("pion1_LLR",&v_pion1_LLR);
-   t_Signal->Branch("pion2_LLR",&v_pion2_LLR);
+   t_Signal->Branch("pion_plus_trkscore",&v_pion_plus_trkscore);
+   t_Signal->Branch("pion_minus_trkscore",&v_pion_minus_trkscore);
+   t_Signal->Branch("pion_plus_dEdX",&v_pion_plus_dEdX);
+   t_Signal->Branch("pion_minus_dEdX",&v_pion_minus_dEdX);
+   t_Signal->Branch("pion_plus_LLR",&v_pion_plus_LLR);
+   t_Signal->Branch("pion_minus_LLR",&v_pion_minus_LLR);
 
    t_Background->Branch("separation",&v_separation);
-   t_Background->Branch("pion1_trkscore",&v_pion1_trkscore);
-   t_Background->Branch("pion2_trkscore",&v_pion2_trkscore);
-   t_Background->Branch("pion1_dEdX",&v_pion1_dEdX);
-   t_Background->Branch("pion2_dEdX",&v_pion2_dEdX);
-   t_Background->Branch("pion1_LLR",&v_pion1_LLR);
-   t_Background->Branch("pion2_LLR",&v_pion2_LLR);
+   t_Background->Branch("pion_plus_trkscore",&v_pion_plus_trkscore);
+   t_Background->Branch("pion_minus_trkscore",&v_pion_minus_trkscore);
+   t_Background->Branch("pion_plus_dEdX",&v_pion_plus_dEdX);
+   t_Background->Branch("pion_minus_dEdX",&v_pion_minus_dEdX);
+   t_Background->Branch("pion_plus_LLR",&v_pion_plus_LLR);
+   t_Background->Branch("pion_minus_LLR",&v_pion_minus_LLR);
 
 }
 
@@ -115,9 +115,9 @@ void SelectorBDTManager::FillTree(const Event &e){
          if(e.GoodReco && e.TracklikePrimaryDaughters.at(i_tr).Index == e.TrueDecayPionPlusIndex && e.TracklikePrimaryDaughters.at(j_tr).Index == e.TrueDecayPionMinusIndex)
             t_Signal->Fill();         
          else t_Background->Fill();
-
       }
    }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,22 +128,22 @@ bool SelectorBDTManager::SetVariables(RecoParticle thisPionPlusIndex, RecoPartic
    TVector3 PionMinusPosition(thisPionMinusIndex.TrackStartX,thisPionMinusIndex.TrackStartY,thisPionMinusIndex.TrackStartZ);
 
    v_separation = Limit((PionPlusPosition-PionMinusPosition).Mag(),separation_limits);
-   v_pion1_trkscore = Limit(thisPionPlusIndex.TrackShowerScore,trkscore_limits);
-   v_pion2_trkscore = Limit(thisPionMinusIndex.TrackShowerScore,trkscore_limits);
+   v_pion_plus_trkscore = Limit(thisPionPlusIndex.TrackShowerScore,trkscore_limits);
+   v_pion_minus_trkscore = Limit(thisPionMinusIndex.TrackShowerScore,trkscore_limits);
 
    // Catch default dEdX fills
    if(thisPionPlusIndex.MeandEdX_ThreePlane < 0 || thisPionMinusIndex.MeandEdX_ThreePlane < 0) return false;
    if(std::isnan(thisPionPlusIndex.MeandEdX_ThreePlane) || std::isnan(thisPionMinusIndex.MeandEdX_ThreePlane)) return false;
 
-   v_pion1_dEdX = Limit(thisPionPlusIndex.MeandEdX_ThreePlane,dEdX_limits);
-   v_pion2_dEdX = Limit(thisPionMinusIndex.MeandEdX_ThreePlane,dEdX_limits);
+   v_pion_plus_dEdX = Limit(thisPionPlusIndex.MeandEdX_ThreePlane,dEdX_limits);
+   v_pion_minus_dEdX = Limit(thisPionMinusIndex.MeandEdX_ThreePlane,dEdX_limits);
 
-   v_pion1_LLR = Limit(thisPionPlusIndex.Track_LLR_PID,LLR_limits);
-   v_pion2_LLR = Limit(thisPionMinusIndex.Track_LLR_PID,LLR_limits);
+   v_pion_plus_LLR = Limit(thisPionPlusIndex.Track_LLR_PID,LLR_limits);
+   v_pion_minus_LLR = Limit(thisPionMinusIndex.Track_LLR_PID,LLR_limits);
 
    // Pion PID Cut
-   if(v_pion2_LLR < fPionPIDCut) return false;
-   if(v_pion1_LLR < fPionPIDCut) return false;
+   if(v_pion_minus_LLR < fPionPIDCut) return false;
+   if(v_pion_plus_LLR < fPionPIDCut) return false;
 
    // Separation
    if(v_separation > fSeparationCut) return false;
@@ -169,12 +169,12 @@ void SelectorBDTManager::SetupSelectorBDT(std::string WeightsDir,std::string alg
    reader = new TMVA::Reader( "!Color:!Silent" );
 
    reader->AddVariable("separation",&v_separation);
-   reader->AddVariable("pion1_trkscore",&v_pion1_trkscore);
-   reader->AddVariable("pion2_trkscore",&v_pion2_trkscore);
-   reader->AddVariable("pion1_dEdX",&v_pion1_dEdX);
-   reader->AddVariable("pion2_dEdX",&v_pion2_dEdX);
-   reader->AddVariable("pion1_LLR",&v_pion1_LLR);
-   reader->AddVariable("pion2_LLR",&v_pion2_LLR);
+   reader->AddVariable("pion_plus_trkscore",&v_pion_plus_trkscore);
+   reader->AddVariable("pion_minus_trkscore",&v_pion_minus_trkscore);
+   reader->AddVariable("pion_plus_dEdX",&v_pion_plus_dEdX);
+   reader->AddVariable("pion_minus_dEdX",&v_pion_minus_dEdX);
+   reader->AddVariable("pion_plus_LLR",&v_pion_plus_LLR);
+   reader->AddVariable("pion_minus_LLR",&v_pion_minus_LLR);
 
    std::map<std::string,int> Use;
    for(size_t i_a=0;i_a<Algs_str.size();i_a++)
@@ -274,9 +274,9 @@ std::pair<int,int> SelectorBDTManager::NominateTracksCheat(Event &e){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-double SelectorBDTManager::GetScore(RecoParticle DecayProtonCandidate,RecoParticle DecayPionCandidate){
+double SelectorBDTManager::GetScore(RecoParticle DecayPionPlusCandidate,RecoParticle DecayPionMinusCandidate){
 
-   if(!SetVariables(DecayProtonCandidate,DecayPionCandidate)) return -1000;
+   if(!SetVariables(DecayPionPlusCandidate,DecayPionMinusCandidate)) return -1000;
 
    return reader->EvaluateMVA(Alg + " method");
 }

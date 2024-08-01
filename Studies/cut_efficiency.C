@@ -41,6 +41,8 @@ void cut_efficiency(){
     //M.SetBeamMode(kFHC);
     M.SetBeamMode(kRHC);
 
+    M.ImportSelectorBDTWeights("/exp/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA/dataset/weights");
+
     M.SetPOT(POT);
     M.UseFluxWeight(false);
     M.UseGenWeight(false);
@@ -51,7 +53,6 @@ void cut_efficiency(){
 
     std::vector<std::map<std::string, Statistics>> effStatsFVCut(EventType::PureKaonSampleTypes.size());
     std::vector<std::map<std::string, Statistics>> effStatsTrackCut(EventType::PureKaonSampleTypes.size());
-    std::vector<std::map<std::string, Statistics>> effStatsShowerCut(EventType::PureKaonSampleTypes.size());
     std::vector<std::map<std::string, Statistics>> effStatsMuonIdentifCut(EventType::PureKaonSampleTypes.size());
     std::vector<std::map<std::string, Statistics>> effStatsChoosePionPairCut(EventType::PureKaonSampleTypes.size());
 
@@ -66,15 +67,13 @@ void cut_efficiency(){
 
         bool passed_FV = false;
         bool passed_track = false;
-        bool passed_shower = false;
         bool passed_muon = false;
         bool passed_pion_pair = false;
 
         passed_FV = M.FiducialVolumeCut(e);
-        passed_track = M.TrackCut(e);
-        passed_shower = M.ShowerCut(e);
-        passed_muon = M.ChooseMuonCandidate(e);
-        passed_pion_pair = M.ChoosePionPairCandidates(e, true);
+        if(passed_FV) passed_track = M.TrackCut(e);
+        if(passed_track) passed_muon = M.ChooseMuonCandidate(e);
+        if(passed_muon) passed_pion_pair = M.ChoosePionPairCandidates(e);
 
         std::string kaonType = EventType::GetPureKaonType(e); 
 
@@ -86,14 +85,11 @@ void cut_efficiency(){
                 updateDenominator(effStatsTrackCut[j][kaonType]);
                 if (passed_FV && passed_track) updateNumerator(effStatsTrackCut[j][kaonType]);
 
-                updateDenominator(effStatsShowerCut[j][kaonType]);
-                if (passed_FV && passed_track && passed_shower) updateNumerator(effStatsShowerCut[j][kaonType]);
-
                 updateDenominator(effStatsMuonIdentifCut[j][kaonType]);
-                if (passed_FV && passed_track && passed_shower && passed_muon) updateNumerator(effStatsMuonIdentifCut[j][kaonType]);
+                if (passed_FV && passed_track && passed_muon) updateNumerator(effStatsMuonIdentifCut[j][kaonType]);
 
                 updateDenominator(effStatsChoosePionPairCut[j][kaonType]);
-                if (passed_FV && passed_track && passed_shower && passed_muon && passed_pion_pair && e.GoodReco) updateNumerator(effStatsChoosePionPairCut[j][kaonType]);
+                if (passed_FV && passed_track && passed_muon && passed_pion_pair && e.GoodReco) updateNumerator(effStatsChoosePionPairCut[j][kaonType]);
             }
         }
     }
@@ -111,13 +107,12 @@ void cut_efficiency(){
     c1->SetBottomMargin(0.12); // Adjust bottom margin
 
     TH1F *frame = new TH1F("", "", nCuts, 0, nCuts);
-    frame->SetMinimum(0.1);
+    frame->SetMinimum(0.04);
     frame->SetMaximum(1);
     frame->GetXaxis()->SetBinLabel(1, "In FV");
     frame->GetXaxis()->SetBinLabel(2, "Track Cut");
-    frame->GetXaxis()->SetBinLabel(3, "Shower Cut");
-    frame->GetXaxis()->SetBinLabel(4, "Muon Identif.");
-    frame->GetXaxis()->SetBinLabel(5, "Pion Pair Selec.");
+    frame->GetXaxis()->SetBinLabel(3, "Muon Identif");
+    frame->GetXaxis()->SetBinLabel(4, "Pion Pair Selec.");
     frame->GetXaxis()->SetTitleSize(0.04); // Increase x-axis title size
     frame->GetXaxis()->SetLabelSize(0.04);
     frame->GetYaxis()->SetTitle("Signal Efficiency");
@@ -134,21 +129,18 @@ void cut_efficiency(){
 
         double effFV = effStatsFVCut[j][eventType].numerator / effStatsFVCut[j][eventType].denominator;
         double effTrack = effStatsTrackCut[j][eventType].numerator / effStatsTrackCut[j][eventType].denominator;
-        double effShower = effStatsShowerCut[j][eventType].numerator / effStatsShowerCut[j][eventType].denominator;
         double effMuon = effStatsMuonIdentifCut[j][eventType].numerator / effStatsMuonIdentifCut[j][eventType].denominator;
         double effPionPair = effStatsChoosePionPairCut[j][eventType].numerator / effStatsChoosePionPairCut[j][eventType].denominator;
 
         double relEffTrack = effStatsTrackCut[j][eventType].numerator / effStatsFVCut[j][eventType].numerator;
-        double relEffShower = effStatsShowerCut[j][eventType].numerator / effStatsTrackCut[j][eventType].numerator;
-        double relEffMuon = effStatsMuonIdentifCut[j][eventType].numerator / effStatsShowerCut[j][eventType].numerator;
+        double relEffMuon = effStatsMuonIdentifCut[j][eventType].numerator / effStatsTrackCut[j][eventType].numerator;
 
         std::cout << eventType << std::endl;
         std::cout << effFV << std::endl;
         std::cout << relEffTrack << std::endl;
-        std::cout << relEffShower << std::endl;
         std::cout << relEffMuon << std::endl << std::endl;
         
-        double efficiencies[nCuts] = {effFV, effTrack, effShower, effMuon/*, effPionPair*/};
+        double efficiencies[nCuts] = {effFV, effTrack, effMuon, effPionPair};
         
         TGraph *graph = new TGraph(nCuts, xValues, efficiencies);
         graph->SetMarkerColor(EventType::PureKaonSampleColours[j]);

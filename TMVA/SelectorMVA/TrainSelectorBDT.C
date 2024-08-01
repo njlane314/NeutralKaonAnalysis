@@ -50,12 +50,12 @@ void TrainSelectorBDT(){
    TMVA::DataLoader *dataloader=new TMVA::DataLoader("dataset");
 
    dataloader->AddVariable("separation","Track Start Separation","cm",'F');
-   dataloader->AddVariable("pion1_trkscore","Pion1 Candidate Track/Shower Score",'F');
-   dataloader->AddVariable("pion2_trkscore","Pion2 Candidate Track/Shower Score",'F');
-   dataloader->AddVariable("pion1_dEdX","Pion1 Candidate Mean dE/dX",'F');
-   dataloader->AddVariable("pion2_dEdX","Pion2 Candidate Mean dE/dX",'F');
-   dataloader->AddVariable("pion1_LLR","Pion1 LLR PID Score",'F');
-   dataloader->AddVariable("pion2_LLR","Pion2 LLR PID Score",'F');
+   dataloader->AddVariable("pion_plus_trkscore","Pion Plus Candidate Track/Shower Score",'F');
+   dataloader->AddVariable("pion_minus_trkscore","Pion Minus Candidate Track/Shower Score",'F');
+   dataloader->AddVariable("pion_plus_dEdX","Pion Plus Candidate Mean dE/dX",'F');
+   dataloader->AddVariable("pion_minus_dEdX","Pion Minus Candidate Mean dE/dX",'F');
+   dataloader->AddVariable("pion_plus_LLR","Pion Plus LLR PID Score",'F');
+   dataloader->AddVariable("pion_minus_LLR","Pion Minus LLR PID Score",'F');
 
    dataloader->AddSignalTree( t_Signal , 1.0 );
    dataloader->AddBackgroundTree( t_Background , 1.0 );
@@ -94,6 +94,3 @@ void TrainSelectorBDT(){
    if (!gROOT->IsBatch()) TMVA::TMVAGui( outfileName );
 
 }
-
-
-

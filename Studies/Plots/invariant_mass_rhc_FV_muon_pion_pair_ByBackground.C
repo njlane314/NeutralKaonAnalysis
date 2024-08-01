@@ -1,7 +1,7 @@
 void invariant_mass_rhc_FV_muon_pion_pair_ByBackground()
 {
 //=========Macro generated from canvas: c/c
-//=========  (Mon Feb 12 10:09:57 2024) by ROOT version 6.12/06
+//=========  (Wed Feb 21 08:52:28 2024) by ROOT version 6.12/06
    TCanvas *c = new TCanvas("c", "c",0,0,800,600);
    c->Range(0,0,1,1);
    c->SetFillColor(0);
@@ -41,7 +41,7 @@ void invariant_mass_rhc_FV_muon_pion_pair_ByBackground()
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
    entry->SetTextFont(42);
-   entry=leg->AddEntry("h_BackgroundOther","Other","F");
+   entry=leg->AddEntry("h_BackgroundOther","Other #nu","F");
    entry->SetFillColor(30);
    entry->SetFillStyle(1001);
 
@@ -85,7 +85,7 @@ void invariant_mass_rhc_FV_muon_pion_pair_ByBackground()
    TPad *p_plot = new TPad("p_plot", "p_plot",0,0,1,0.85);
    p_plot->Draw();
    p_plot->cd();
-   p_plot->Range(0.15,-1.354336,0.65,12.18903);
+   p_plot->Range(0.15,-0.1123596,0.65,1.011236);
    p_plot->SetFillColor(0);
    p_plot->SetBorderMode(0);
    p_plot->SetBorderSize(2);
@@ -94,19 +94,9 @@ void invariant_mass_rhc_FV_muon_pion_pair_ByBackground()
    p_plot->SetFrameBorderMode(0);
    
    TH1D *h_errors__4 = new TH1D("h_errors__4","",4,0.2,0.6);
-   h_errors__4->SetBinContent(1,1.847528);
-   h_errors__4->SetBinContent(2,9.337505);
-   h_errors__4->SetBinContent(3,4.004641);
-   h_errors__4->SetBinContent(4,1.737675);
-   h_errors__4->SetBinContent(5,26.79414);
-   h_errors__4->SetBinError(1,0.1358329);
-   h_errors__4->SetBinError(2,0.3053691);
-   h_errors__4->SetBinError(3,0.1999822);
-   h_errors__4->SetBinError(4,0.1317328);
-   h_errors__4->SetBinError(5,0.5172846);
    h_errors__4->SetMinimum(0);
-   h_errors__4->SetMaximum(12.05359);
-   h_errors__4->SetEntries(4435);
+   h_errors__4->SetMaximum(0);
+   h_errors__4->SetEntries(1717);
    h_errors__4->SetStats(0);
    h_errors__4->SetFillColor(1);
    h_errors__4->SetFillStyle(3253);
@@ -137,7 +127,7 @@ void invariant_mass_rhc_FV_muon_pion_pair_ByBackground()
    
    TH1F *hs_stack_2 = new TH1F("hs_stack_2","",4,0.2,0.6);
    hs_stack_2->SetMinimum(0);
-   hs_stack_2->SetMaximum(9.80438);
+   hs_stack_2->SetMaximum(0);
    hs_stack_2->SetDirectory(0);
    hs_stack_2->SetStats(0);
 
@@ -160,17 +150,7 @@ void invariant_mass_rhc_FV_muon_pion_pair_ByBackground()
    
    
    TH1D *h_BackgroundSignal_stack_1 = new TH1D("h_BackgroundSignal_stack_1","",4,0.2,0.6);
-   h_BackgroundSignal_stack_1->SetBinContent(1,0.9187705);
-   h_BackgroundSignal_stack_1->SetBinContent(2,4.27428);
-   h_BackgroundSignal_stack_1->SetBinContent(3,2.207047);
-   h_BackgroundSignal_stack_1->SetBinContent(4,0.9387438);
-   h_BackgroundSignal_stack_1->SetBinContent(5,11.72431);
-   h_BackgroundSignal_stack_1->SetBinError(1,0.09578845);
-   h_BackgroundSignal_stack_1->SetBinError(2,0.2066051);
-   h_BackgroundSignal_stack_1->SetBinError(3,0.148462);
-   h_BackgroundSignal_stack_1->SetBinError(4,0.09682403);
-   h_BackgroundSignal_stack_1->SetBinError(5,0.3421789);
-   h_BackgroundSignal_stack_1->SetEntries(2030);
+   h_BackgroundSignal_stack_1->SetEntries(843);
    h_BackgroundSignal_stack_1->SetFillColor(8);
 
    ci = TColor::GetColor("#000099");
@@ -193,17 +173,7 @@ void invariant_mass_rhc_FV_muon_pion_pair_ByBackground()
    hs->Add(h_BackgroundSignal_stack_1,"HIST");
    
    TH1D *h_BackgroundOther_stack_2 = new TH1D("h_BackgroundOther_stack_2","",4,0.2,0.6);
-   h_BackgroundOther_stack_2->SetBinContent(1,0.9287571);
-   h_BackgroundOther_stack_2->SetBinContent(2,5.063224);
-   h_BackgroundOther_stack_2->SetBinContent(3,1.797594);
-   h_BackgroundOther_stack_2->SetBinContent(4,0.7989309);
-   h_BackgroundOther_stack_2->SetBinContent(5,15.06983);
-   h_BackgroundOther_stack_2->SetBinError(1,0.09630763);
-   h_BackgroundOther_stack_2->SetBinError(2,0.2248657);
-   h_BackgroundOther_stack_2->SetBinError(3,0.1339848);
-   h_BackgroundOther_stack_2->SetBinError(4,0.08932319);
-   h_BackgroundOther_stack_2->SetBinError(5,0.3879393);
-   h_BackgroundOther_stack_2->SetEntries(2405);
+   h_BackgroundOther_stack_2->SetEntries(874);
    h_BackgroundOther_stack_2->SetFillColor(30);
 
    ci = TColor::GetColor("#000099");
@@ -271,19 +241,9 @@ void invariant_mass_rhc_FV_muon_pion_pair_ByBackground()
    hs->Draw("hist same");
    
    TH1D *h_errors__5 = new TH1D("h_errors__5","",4,0.2,0.6);
-   h_errors__5->SetBinContent(1,1.847528);
-   h_errors__5->SetBinContent(2,9.337505);
-   h_errors__5->SetBinContent(3,4.004641);
-   h_errors__5->SetBinContent(4,1.737675);
-   h_errors__5->SetBinContent(5,26.79414);
-   h_errors__5->SetBinError(1,0.1358329);
-   h_errors__5->SetBinError(2,0.3053691);
-   h_errors__5->SetBinError(3,0.1999822);
-   h_errors__5->SetBinError(4,0.1317328);
-   h_errors__5->SetBinError(5,0.5172846);
    h_errors__5->SetMinimum(0);
-   h_errors__5->SetMaximum(12.05359);
-   h_errors__5->SetEntries(4435);
+   h_errors__5->SetMaximum(0);
+   h_errors__5->SetEntries(1717);
    h_errors__5->SetStats(0);
    h_errors__5->SetFillColor(1);
    h_errors__5->SetFillStyle(3253);
@@ -309,19 +269,9 @@ void invariant_mass_rhc_FV_muon_pion_pair_ByBackground()
    h_errors__5->Draw("E2 same");
    
    TH1D *h_errors_copy__6 = new TH1D("h_errors_copy__6","",4,0.2,0.6);
-   h_errors_copy__6->SetBinContent(1,1.847528);
-   h_errors_copy__6->SetBinContent(2,9.337505);
-   h_errors_copy__6->SetBinContent(3,4.004641);
-   h_errors_copy__6->SetBinContent(4,1.737675);
-   h_errors_copy__6->SetBinContent(5,26.79414);
-   h_errors_copy__6->SetBinError(1,0.1358329);
-   h_errors_copy__6->SetBinError(2,0.3053691);
-   h_errors_copy__6->SetBinError(3,0.1999822);
-   h_errors_copy__6->SetBinError(4,0.1317328);
-   h_errors_copy__6->SetBinError(5,0.5172846);
    h_errors_copy__6->SetMinimum(0);
-   h_errors_copy__6->SetMaximum(12.05359);
-   h_errors_copy__6->SetEntries(4435);
+   h_errors_copy__6->SetMaximum(0);
+   h_errors_copy__6->SetEntries(1717);
    h_errors_copy__6->SetDirectory(0);
    h_errors_copy__6->SetStats(0);
    h_errors_copy__6->SetFillColor(1);

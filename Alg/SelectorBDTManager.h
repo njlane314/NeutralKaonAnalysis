@@ -52,12 +52,12 @@ class SelectorBDTManager {
 
       // Variables
       Float_t v_separation;
-      Float_t v_pion1_trkscore;
-      Float_t v_pion2_trkscore;
-      Float_t v_pion1_dEdX;
-      Float_t v_pion2_dEdX;
-      Float_t v_pion1_LLR;
-      Float_t v_pion2_LLR;
+      Float_t v_pion_plus_trkscore;
+      Float_t v_pion_minus_trkscore;
+      Float_t v_pion_plus_dEdX;
+      Float_t v_pion_minus_dEdX;
+      Float_t v_pion_plus_LLR;
+      Float_t v_pion_minus_LLR;
 
       const std::pair<double,double> separation_limits = { 0 , 20 };
       const std::pair<double,double> pid_limits = { -10 , 10 };

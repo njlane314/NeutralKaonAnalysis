@@ -23,7 +23,7 @@ void muon_effic_plots(){
 
     EventAssembler E(false);
     SelectionManager M(P);
-    M.ImportSelectorBDTWeights("/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA/dataset/weights");
+    M.ImportSelectorBDTWeights("/exp/uboone/app/users/nlane/NeutralKaonAnalysis/TMVA/SelectorMVA/dataset/weights");
 
     //M.SetBeamMode(kFHC);
     M.SetBeamMode(kRHC);
@@ -70,20 +70,20 @@ void muon_effic_plots(){
         MuonKE = e.Lepton.at(0).ModMomentum;
 
         // Get the Neutrino's true direction
-        TVector3 NuDirection(e.Neutrino.at(0).Px,e.Neutrino.at(0).Py,e.Neutrino.at(0).Pz);
-        NuDirection *= 1.0/NuDirection.Mag();
+        //TVector3 NuDirection(e.Neutrino.at(0).Px,e.Neutrino.at(0).Py,e.Neutrino.at(0).Pz);
+        //NuDirection *= 1.0/NuDirection.Mag();
 
         // Get the muon's true direction
-        TVector3 MuonTrueDir(e.Lepton.at(0).Px,e.Lepton.at(0).Py,e.Lepton.at(0).Pz);
+        //TVector3 MuonTrueDir(e.Lepton.at(0).Px,e.Lepton.at(0).Py,e.Lepton.at(0).Pz);
 
-        double MuonTrueTheta = MuonTrueDir.Angle(NuDirection);
-        double MuonDetectorTheta = MuonTrueDir.Theta();
-        double MuonDetectorPhi = MuonTrueDir.Phi();
+        //double MuonTrueTheta = MuonTrueDir.Angle(NuDirection);
+        //double MuonDetectorTheta = MuonTrueDir.Theta();
+        //double MuonDetectorPhi = MuonTrueDir.Phi();
 
-        TVector3 MuonTrueDirBeam = RotateToBeam(MuonTrueDir);
+        //TVector3 MuonTrueDirBeam = RotateToBeam(MuonTrueDir);
 
-        double MuonBeamTheta = MuonTrueDirBeam.Theta();
-        double MuonBeamPhi = MuonTrueDirBeam.Phi();
+        //double MuonBeamTheta = MuonTrueDirBeam.Theta();
+        //double MuonBeamPhi = MuonTrueDirBeam.Phi();
 
         bool passed_FV=false,passed_Tracks=false,passed_Showers=false,passed_MuonID=false,passed_TrackLengths=false,passed_Selector=false,passed_CT=false,passed_WCut=false,passed_AngleCut=false,passed_All=false;
     
@@ -97,16 +97,16 @@ void muon_effic_plots(){
         passed_All = passed_MuonID;
 
         Efficiency_MuonMom_All->FillWeighted(passed_All,e.Weight,MuonKE);
-        Efficiency_MuonDetectorTheta_All->FillWeighted(passed_All,e.Weight,MuonDetectorTheta);
-        Efficiency_MuonDetectorPhi_All->FillWeighted(passed_All,e.Weight,MuonDetectorPhi);
+        //Efficiency_MuonDetectorTheta_All->FillWeighted(passed_All,e.Weight,MuonDetectorTheta);
+        //Efficiency_MuonDetectorPhi_All->FillWeighted(passed_All,e.Weight,MuonDetectorPhi);
 
     }
 
     std::cout << "Drawing histograms..." << std::endl;
 
     HypPlot::DrawEfficiencyPlot(Efficiency_MuonMom_All,";Muon Momentum (GeV/c);Events/bin",label + "_MuonMom_All",{kRHC},{POT});
-    HypPlot::DrawEfficiencyPlot(Efficiency_MuonDetectorTheta_All,";Muon #theta;Events/bin",label + "_MuonDetectorTheta_All",{kRHC},{POT});
-    HypPlot::DrawEfficiencyPlot(Efficiency_MuonDetectorPhi_All,";Muon #phi;Events/bin",label + "_MuonDetectorPhi_All",{kRHC},{POT});
+    //HypPlot::DrawEfficiencyPlot(Efficiency_MuonDetectorTheta_All,";Muon #theta;Events/bin",label + "_MuonDetectorTheta_All",{kRHC},{POT});
+    //HypPlot::DrawEfficiencyPlot(Efficiency_MuonDetectorPhi_All,";Muon #phi;Events/bin",label + "_MuonDetectorPhi_All",{kRHC},{POT});
 
     E.Close();
 

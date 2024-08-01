@@ -51,6 +51,11 @@ class RecoParticle {
         int TrackTrueOrigin; // 1 - primary , 2 - hyperon decay, 3 - other, 4 - kaon decay, 5 - Sigma0 decay
         double TrackTruthPurity;
 
+	    //double Track_Bragg_PID_PionPlus_Forward;
+	    //double Track_Bragg_PID_PionPlus_Backward;
+	    //double Track_Bragg_PID_PionMinus_Forward;
+	    //double Track_Bragg_PID_PionMinus_Backward;
+
         inline void SetVertex(TVector3 V);
         inline void SetTrackPositions(TVector3 Start,TVector3 End);
         inline void Print();

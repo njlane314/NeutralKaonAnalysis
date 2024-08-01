@@ -865,12 +865,29 @@ void DrawSystematicBreakdown(TFile* f,TH1D* h_template,vector<string> dials,vect
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string name,vector<int> mode,vector<double> POT){
+void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string name,std::string xaxis_name,vector<int> mode,vector<double> POT){
+   if (!Efficiency) {
+        std::cerr << "Efficiency pointer is null." << std::endl;
+        return;
+    }
 
-   std::cout << "Drawing efficiency plot..." << std::endl;
+    if (mode.empty() || POT.empty()) {
+        std::cerr << "Mode or POT vector is empty." << std::endl;
+        return;
+    }
+
 
    TH1D* h_Before = (TH1D*)Efficiency->GetTotalHistogram()->Clone("h_Before");
    TH1D* h_After = (TH1D*)Efficiency->GetPassedHistogram()->Clone("h_After");
+   if (!h_Before || !h_After) {
+      std::cerr << "Failed to clone histograms." << std::endl;
+      return;
+   }
+
+   if (h_Before->GetEntries() == 0 || h_After->GetEntries() == 0) {
+      std::cerr << "One or more histograms are empty." << std::endl;
+      return;
+   }
 
    TCanvas *c = new TCanvas("c1","c1",Single_CanvasX,Single_CanvasY);
    TPad *p_plot = new TPad("pad1","pad1",0,0,1,Single_PadSplit);
@@ -878,7 +895,6 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    p_legend->SetBottomMargin(0);
    p_legend->SetTopMargin(0.1);
    p_plot->SetTopMargin(0.01);
-   //p_plot->SetLogy();
 
    TLegend *l = new TLegend(0.1,0.0,0.9,1.0);
    l->SetBorderSize(0);
@@ -903,13 +919,13 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    l_POT2->SetMargin(0.005);
    l_POT2->SetTextAlign(32);
 
-   if(mode.at(0) == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.at(0) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0)/1e20,1) + " #times 10^{20} POT").c_str());
+   if(mode.at(0) == kFHC) l_POT->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(0)/1e21,1) + " #times 10^{21} POT").c_str());
+   else if(mode.at(0) == kRHC) l_POT->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(0)/1e21,1) + " #times 10^{21} POT").c_str());
+   else if(mode.at(0) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0)/1e21,1) + " #times 10^{21} POT").c_str());
 
-   if(mode.size() == 2 && mode.at(1) == kFHC) l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(1) == kRHC) l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
-   else if(mode.size() == 2 && mode.at(0) == kBNB && mode.at(1) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0) + POT.at(1)/1e20,1) + " #times 10^{20} POT").c_str());
+   if(mode.size() == 2 && mode.at(1) == kFHC) l_POT2->SetHeader(("NuMI FHC, " + to_string_with_precision(POT.at(1)/1e21,1) + " #times 10^{21} POT").c_str());
+   else if(mode.size() == 2 && mode.at(1) == kRHC) l_POT2->SetHeader(("NuMI RHC, " + to_string_with_precision(POT.at(1)/1e21,1) + " #times 10^{21} POT").c_str());
+   else if(mode.size() == 2 && mode.at(0) == kBNB && mode.at(1) == kBNB) l_POT->SetHeader(("BNB, " + to_string_with_precision(POT.at(0) + POT.at(1)/1e21,1) + " #times 10^{21} POT").c_str());
 
    THStack *hs = new THStack("hs",title.c_str());
 
@@ -935,8 +951,8 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    hs->GetYaxis()->SetTitleOffset(Single_YaxisTitleOffset);
    hs->GetXaxis()->SetLabelSize(Single_XaxisLabelSize);
    hs->GetYaxis()->SetLabelSize(Single_YaxisLabelSize);
-   hs->GetXaxis()->SetTitle(h_Before->GetXaxis()->GetTitle());
-   hs->GetYaxis()->SetTitle(h_Before->GetYaxis()->GetTitle());
+   hs->GetXaxis()->SetTitle(xaxis_name.c_str());
+   hs->GetYaxis()->SetTitle("Entries/bin");
 
    hs->SetMaximum(1.25*hs->GetMaximum("nostack"));
    if(POT.size() > 1) hs->SetMaximum(hs->GetMaximum("nostack")*1.5);
@@ -961,7 +977,7 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
    int binmax = h_Before->GetMaximumBin();
    Float_t rightmax = 1.2*effmax;
    if(POT.size() > 1) rightmax = 1.5*effmax;
-   double scale = p_plot->GetUymax()/rightmax;
+   double scale = (rightmax > 0) ? p_plot->GetUymax() / rightmax : 1;
 
    for(size_t i=1;i<h_Before->GetNbinsX()+1;i++){
       if(std::isnan(Efficiency->GetEfficiency(i))) continue;
@@ -970,6 +986,7 @@ void DrawEfficiencyPlot(TEfficiency * Efficiency,std::string title,std::string n
       Efficiency_Low.push_back(Efficiency->GetEfficiencyErrorLow(i)*scale);
       Efficiency_High.push_back(Efficiency->GetEfficiencyErrorUp(i)*scale);
    }
+
 
    TGraphAsymmErrors *g_Efficiency = new  TGraphAsymmErrors(Efficiency_X.size(),&(Efficiency_X[0]),&(Efficiency_CV[0]),0,0,&(Efficiency_Low[0]),&(Efficiency_High[0]));
    g_Efficiency->SetLineColor(kRed);
